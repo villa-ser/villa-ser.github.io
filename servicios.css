@@ -241,3 +241,58 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     color: var(--gnc-text);
     transform: translateX(-5px); /* Efecto de movimiento hacia la izquierda */
 }
+/* --- FOOTER REDES SOCIALES --- */
+.footer-gnc-compact {
+    width: 100%; 
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0; 
+    background: var(--gnc-glass);
+    backdrop-filter: var(--gnc-blur);
+    -webkit-backdrop-filter: var(--gnc-blur);
+    border: var(--gnc-border);
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.btn-social {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8); 
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+}
+
+.btn-social i {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-share {
+    color: rgba(255, 255, 255, 0.5); 
+}
+
+.btn-social:hover {
+    color: var(--gnc-neon); 
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+}
+
+.whatsapp-pulse {
+    color: #28a745;
+    animation: intense-beat 0.7s infinite alternate;
+}
+
+.whatsapp-pulse:hover {
+    color: #34d058;
+    filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8));
+}
+
+@keyframes intense-beat {
+    0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
+    100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
+}
