@@ -259,6 +259,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .btn-social {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8); 
+    font-size: 26px; /* Importante: este es el tamaño del icono */
     transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
@@ -266,6 +267,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     width: 45px;
     height: 45px;
 }
+
 
 .btn-social i {
     width: 24px;
