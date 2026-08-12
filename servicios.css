@@ -204,3 +204,33 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
       
+/* --- BOTÓN VOLVER AL INICIO --- */
+.gnc-btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: var(--gnc-blur);
+    -webkit-backdrop-filter: var(--gnc-blur);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--gnc-neon);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    align-self: flex-start; /* Evita que el botón ocupe todo el ancho */
+    margin-bottom: 5px;
+    animation: fadeIn 0.4s ease;
+}
+
+.gnc-btn-back:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--gnc-neon);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    color: var(--gnc-text);
+    transform: translateX(-5px); /* Efecto de movimiento hacia la izquierda */
+}
