@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Villaser - Presupuesto GNC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --ngc-primary: #00d4ff; 
+            --ngc-success: #28a745; 
+            --ngc-danger: #ff4444;
+            --ngc-warning: #ffc107; 
+            --ngc-info: #007bff;
+            --ngc-text: #ffffff; 
+            --ngc-text-dim: rgba(255, 255, 255, 0.6);
+            --ngc-glass: rgba(220, 220, 220, 0.25); 
+            --ngc-input-bg: rgba(26, 26, 26, 0.95);
+            --ngc-dropdown-bg: rgba(20, 20, 20, 0.95);
+            --ngc-blur: blur(1px); 
+            --ngc-border: 0px solid rgba(255, 255, 255, 0.1);
+            --btn-height: 42px; 
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: transparent; color: var(--ngc-text); margin: 0; padding: 0; display: flex; justify-content: center; width: 100%; }
+        .container { width: 100%; max-width: 100%; display: flex; flex-direction: column; gap: 12px; padding: 0px; box-sizing: border-box; }
+        .ngc-card { background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur); border: var(--ngc-border); border-radius: 6px; padding: 0px; }
+        h4 { color: var(--ngc-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0; }
+        label { font-size: 0.7rem; color: var(--ngc-text-dim); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; display: block; }
+        
+        input:not([type="hidden"]), textarea { width: 100%; background: var(--ngc-input-bg) !important; color: white !important; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 5px; font-size: 0.9rem; outline: none; box-sizing: border-box; }
+       
+        .row-group { 
+    display: flex; 
+    flex-direction: column; /* Esto los apila verticalmente */
+    gap: 5px; 
+    margin-bottom: 0px; 
+    align-items: stretch;   /* Esto hace que ocupen todo el ancho */
+    width: 100%;
+}
+
+        .row-group-stretch { display: flex; gap: 10px; margin-bottom: 10px; align-items: stretch; }
+        .flex-1 { flex: 1; } .flex-3 { flex: 3; } .flex-btn-small { flex: 0 0 65px; }
+        .btn-ngc { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--ngc-primary); color: var(--ngc-primary); border-radius: 6px; height: var(--btn-height); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-adapt { height: 70px !important; width: 100%; }
+        .btn-ngc.active-success { background: var(--ngc-success); border-color: var(--ngc-success); color: white; }
+        .stepper { display: flex; background: var(--ngc-input-bg); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; overflow: hidden; height: var(--btn-height); }
+        .btn-step { background: rgba(255,255,255,0.05); border: none; color: white; width: 45px; cursor: pointer; font-size: 1.2rem; }
+        .stepper input { border: none !important; text-align: center; }
+        .obs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .obs-actions { display: flex; gap: 5px; }
+        .btn-obs { background: rgba(0, 212, 255, 0.1); border: 1px solid var(--ngc-primary); color: var(--ngc-primary); border-radius: 4px; font-size: 10px; padding: 4px 8px; cursor: pointer; text-transform: uppercase; }
+        .btn-obs.btn-danger { border-color: var(--ngc-danger); color: var(--ngc-danger); }
+        .capture-zone { background: #333333; border: 1px solid #555; border-radius: 12px; padding: 7px 4px; margin-top: 10px; width: 100%; box-sizing: border-box; }
+        .header-brand { text-align: center; color: var(--ngc-primary); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 1.4rem; margin-bottom: 15px; border-bottom: 1px solid rgba(0, 212, 255, 0.3); padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 12px 5px; border-bottom: 1px solid rgba(0, 212, 255, 0.15); font-size: 0.9rem; }
+        .total-display { margin-top: 20px; background: rgba(0, 212, 255, 0.1); padding: 10px; border-radius: 8px; border: 1px solid var(--ngc-primary); text-align: right; font-size: 1.5rem; font-weight: bold; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .action-grid-footer { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 10px; margin-top: 10px; padding-bottom: 20px; }
+        .btn-main { height: 50px; font-size: 0.85rem; }
+        .btn-wsp { border-color: var(--ngc-success); color: var(--ngc-success); }
+        .btn-exp { border-color: var(--ngc-warning); color: var(--ngc-warning); }
+        .btn-imp { border-color: var(--ngc-info); color: var(--ngc-info); }
+        .trash-icon { color: #ff5555; background: none; border: none; cursor: pointer; }
+
+        /* ----- ESTILOS DEL SELECT PERSONALIZADO (Integrado) ----- */
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-selected {
+            background: var(--ngc-input-bg);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .select-selected.disabled-select {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .select-selected:focus, .select-arrow-active {
+            border-color: var(--ngc-primary);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+
+        .select-selected::after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-size: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .select-selected.select-arrow-active::after {
+            transform: rotate(180deg);
+        }
+
+        .select-items {
+            position: absolute;
+            background: var(--ngc-dropdown-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 99;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+            margin-top: 5px;
+            max-height: 220px;
+            overflow-y: auto;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .select-items.show {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown { 
+            from { opacity: 0; transform: translateY(-5px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .select-items div {
+            color: rgba(255, 255, 255, 0.9);
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .select-items div:last-child { border-bottom: none; }
+
+        .select-items div:hover {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--ngc-primary);
+            padding-left: 16px;
+        }
+
+        .select-items::-webkit-scrollbar { width: 6px; }
+        .select-items::-webkit-scrollbar-track { background: transparent; }
+        .select-items::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.5);
+            border-radius: 4px;
+        }
+/* Busca o añade esto en tu <style> si quieres que luzca más equilibrado */
+#unitarioLabel {
+    text-align: left; /* Asegura que el precio pegue a la izquierda */
+    margin-top: 0 !important; /* Quita el margen superior que tenía antes */
+    white-space: nowrap; /* Evita que el precio se parta en dos líneas */
+}
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="loading">📡 SINCRONIZANDO SISTEMA NGC...</div>
+    <div id="app" style="display:none;">
+        
+        <div id="step-cliente" class="ngc-card">
+            <h4>Identificación Cliente</h4>
+            <label>Seleccionar Cliente</label>
+            <div class="custom-select">
+                <div class="select-selected" id="display-cliente" onclick="toggleDropdown('list-cliente', 'display-cliente')">-- CLIENTE --</div>
+                <div class="select-items" id="list-cliente"></div>
+            </div>
+            <input type="hidden" id="selCliente" value="">
+            
+            <div class="row-group-stretch" style="margin-top:10px;">
+                <div class="flex-3"><textarea id="cliInfo" readonly placeholder="Info cliente..." style="height: 70px; resize: none; font-size: 0.75rem;"></textarea></div>
+                <div class="flex-btn-small"><button id="btnLoadCli" class="btn-ngc btn-adapt" onclick="cargarClienteALista()" style="height: 70px;">Cargar</button></div>
+            </div>
+        </div>
+
+        <div id="step-trabajo" style="display:none; flex-direction: column; gap: 12px;">
+
+<div class="ngc-card">
+    <h4>Detalle del Trabajo</h4>
+    
+    <div class="row-group">
+        <div class="flex-1">
+            <label>Rubro</label>
+            <div class="custom-select">
+                <div class="select-selected" id="display-tema" onclick="toggleDropdown('list-tema', 'display-tema')">-- RUBRO --</div>
+                <div class="select-items" id="list-tema"></div>
+            </div>
+            <input type="hidden" id="selTema" value="">
+        </div>
+    </div>
+
+    <div class="row-group">
+        <div class="flex-1">
+            <label>Trabajo</label>
+            <div class="custom-select">
+                <div class="select-selected disabled-select" id="display-concepto" onclick="toggleDropdown('list-concepto', 'display-concepto')">-- TRABAJO --</div>
+                <div class="select-items" id="list-concepto"></div>
+            </div>
+            <input type="hidden" id="selConcepto" value="">
+        </div>
+    </div>
+
+    <div class="row-group-stretch">
+        <div class="flex-1">
+            <label>Cantidad</label>
+            <div class="stepper">
+                <button class="btn-step" onclick="step('cantidad', -1)">-</button>
+                <input type="number" id="cantidad" value="1">
+                <button class="btn-step" onclick="step('cantidad', 1)">+</button>
+            </div>
+        </div>
+        <div class="flex-1">
+            <label>Desc %</label>
+            <div class="stepper">
+                <button class="btn-step" onclick="step('porcentajeDesc', -5)">-</button>
+                <input type="number" id="porcentajeDesc" value="0">
+                <button class="btn-step" onclick="step('porcentajeDesc', 5)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="obs-header" style="margin-top: 10px;">
+        <label>Notas del Item</label>
+        <div class="obs-actions">
+            <button class="btn-obs" onclick="habilitarEdicionObs()">✏️ Editar</button>
+            <button class="btn-obs" onclick="volverNotasOriginales()">↩️ Volver</button>
+            <button class="btn-obs btn-danger" onclick="borrarTodasNotas()">🗑️ Borrar</button>
+        </div>
+    </div>
+    <textarea id="obsManual" placeholder="Notas aclaratorias..." readonly style="height: 150px; resize: none;"></textarea>
+
+<div class="row-group-stretch" style="margin-top: 15px; align-items: center;">
+    <div id="unitarioLabel" style="font-size: 18px; color: var(--ngc-warning); flex: 0.8; font-weight: bold; text-align: center;">
+        Unitario: $ 0,00
+    </div>
+    
+    <div style="flex: 1.2;">
+        <button id="btnAddItem" class="btn-ngc" style="width: 100%; margin-top: 0;" onclick="agregarTrabajo()">
+            Agregar
+        </button>
+    </div>
+</div>       
+            <div class="ngc-card"><label>Notas Globales</label><div class="row-group-stretch"><textarea id="obsGenerales" placeholder="Ej: Válido por 10 días..." style="height: 75px; resize: none;" class="flex-3"></textarea><div class="flex-btn-small"><button class="btn-ngc btn-adapt" onclick="renderTabla()">OK</button></div></div></div>
+            <div id="zonaCaptura" class="capture-zone"><div class="header-brand">VILLASER - PRESUPUESTO</div><table id="tablaMain"><tbody id="cuerpoTabla"></tbody></table><div class="total-display" id="totalDisplay">TOTAL: $ 0,00</div></div>
+            
+            <div class="action-grid">
+                <button id="btnCopyTitle" class="btn-ngc btn-main" onclick="copiarTitulo()" style="background: rgba(255,255,255,0.1); border-color: var(--ngc-primary);">📄 Copiar Título</button>
+                <button class="btn-ngc btn-main" onclick="tomarCaptura()" style="background: var(--ngc-primary); color: #000;">📸 Descargar Imagen</button>
+            </div>
+            <div class="action-grid-footer">
+                <button class="btn-ngc btn-main btn-exp" onclick="exportarPresupuesto()">💾 Exportar</button>
+                <button class="btn-ngc btn-main btn-imp" onclick="document.getElementById('fileInput').click()">📂 Importar</button>
+                <button class="btn-ngc btn-main btn-wsp" onclick="enviarWhatsApp()">🟢 WhatsApp</button>
+                <input type="file" id="fileInput" style="display:none" accept=".txt" onchange="importarPresupuesto(event)">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const SHEET_ID = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
+    const URL_PRECIOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
+    const URL_CLIENTES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Clientes`;
+    let dbPrecios=[], dbClientes=[], clienteActual=null, listaItems=[], notasOriginales="";
+
+    window.onload = fetchData;
+    
+    async function fetchData() {
+        try {
+            const [resCli, resPre] = await Promise.all([fetch(URL_CLIENTES), fetch(URL_PRECIOS)]);
+            const txtCli = await resCli.text(), txtPre = await resPre.text();
+            const jCli = JSON.parse(txtCli.substring(txtCli.indexOf("{"), txtCli.lastIndexOf("}") + 1));
+            const jPre = JSON.parse(txtPre.substring(txtPre.indexOf("{"), txtPre.lastIndexOf("}") + 1));
+            dbClientes = jCli.table.rows.map(r => ({ nombre: r.c[0]?.v || '', tel: String(r.c[1]?.v || ''), dir: r.c[2]?.v || '' })).filter(c => c.nombre && c.nombre !== "Nombre");
+            dbPrecios = jPre.table.rows.filter(r => r.c[1] && r.c[1].v !== "Concepto").map(r => ({ tema: r.c[0]?.v || 'Gral', concepto: r.c[1]?.v || '', precio: typeof r.c[2]?.v === 'number' ? r.c[2].v : 0, notas: r.c[3]?.v || '' }));
+            document.getElementById('loading').style.display = 'none'; document.getElementById('app').style.display = 'block';
+            poblarClientes(); 
+            poblarTemas();
+        } catch (e) { document.getElementById('loading').innerText = "⚠️ Error de conexión"; }
+    }
+
+    function step(id, val) { const el = document.getElementById(id); el.value = Math.max(0, parseInt(el.value || 0) + val); }
+    
+    /* --- FUNCIONES ADAPTADAS PARA CUSTOM SELECTS --- */
+    function poblarClientes() { 
+        const list = document.getElementById('list-cliente'); 
+        list.innerHTML = ''; 
+        dbClientes.forEach(c => { 
+            let div = document.createElement('div'); 
+            div.innerText = c.nombre; 
+            div.onclick = function() {
+                selectOption('display-cliente', 'selCliente', c.nombre);
+                actualizarCamposCliente();
+            };
+            list.appendChild(div); 
+        }); 
+    }
+
+    function poblarTemas() { 
+        const list = document.getElementById('list-tema'); 
+        list.innerHTML = ''; 
+        [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { 
+            let div = document.createElement('div'); 
+            div.innerText = t; 
+            div.onclick = function() {
+                selectOption('display-tema', 'selTema', t);
+                cambioTema();
+            };
+            list.appendChild(div); 
+        }); 
+    }
+
+    function cambioTema() { 
+        const t = document.getElementById('selTema').value; 
+        const listC = document.getElementById('list-concepto'); 
+        const displayC = document.getElementById('display-concepto');
+
+        listC.innerHTML = ''; 
+        document.getElementById('selConcepto').value = '';
+        displayC.innerText = '-- TRABAJO --';
+
+        if(t) {
+            displayC.classList.remove('disabled-select');
+            dbPrecios.filter(i => i.tema === t).forEach(i => { 
+                let div = document.createElement('div'); 
+                div.innerText = i.concepto; 
+                div.onclick = function() {
+                    selectOption('display-concepto', 'selConcepto', i.concepto);
+                    cargarDetallePrecios();
+                };
+                listC.appendChild(div); 
+            }); 
+        } else {
+            displayC.classList.add('disabled-select');
+        }
+    }
+
+    /* --- LOGICA DE DESPLEGABLES --- */
+    function toggleDropdown(listId, displayId) {
+        const list = document.getElementById(listId);
+        const display = document.getElementById(displayId);
+        if (display.classList.contains('disabled-select')) return;
+        
+        const isShowing = list.classList.contains('show');
+        closeAllDropdowns();
+
+        if (!isShowing) {
+            list.classList.add('show');
+            display.classList.add('select-arrow-active');
+        }
+    }
+
+    function selectOption(displayId, inputId, value) {
+        document.getElementById(displayId).innerText = value;
+        document.getElementById(inputId).value = value;
+        closeAllDropdowns();
+    }
+
+    function closeAllDropdowns() {
+        const lists = document.getElementsByClassName('select-items');
+        const displays = document.getElementsByClassName('select-selected');
+        for (let i = 0; i < lists.length; i++) lists[i].classList.remove('show');
+        for (let i = 0; i < displays.length; i++) displays[i].classList.remove('select-arrow-active');
+    }
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.matches('.select-selected')) { closeAllDropdowns(); }
+    });
+    /* ----------------------------------------------- */
+
+    function actualizarCamposCliente() { const c = dbClientes.find(i => i.nombre === document.getElementById('selCliente').value); document.getElementById('cliInfo').value = c ? `Tel: ${c.tel}\nDir: ${c.dir}` : ''; }
+    
+    function cargarClienteALista() { 
+        const c = dbClientes.find(i => i.nombre === document.getElementById('selCliente').value); 
+        if(!c) return alert("Seleccione un cliente"); 
+        clienteActual = {...c, fecha: new Date().toLocaleDateString('es-AR')}; 
+        document.getElementById('step-cliente').style.display = 'none';
+        document.getElementById('step-trabajo').style.display = 'flex';
+        renderTabla(); 
+    }
+
+    function copiarTitulo() {
+        if(!clienteActual) return;
+        const primerNombre = clienteActual.nombre.split(' ')[0];
+        const hoy = new Date();
+        const f = hoy.getDate().toString().padStart(2,'0')+'-'+(hoy.getMonth()+1).toString().padStart(2,'0')+'-'+hoy.getFullYear();
+        const texto = `${primerNombre}_Villaser_Presupuesto_${f}`;
+        
+        const textArea = document.createElement("textarea");
+        textArea.value = texto;
+        textArea.style.position = "fixed"; textArea.style.left = "-99999px"; textArea.style.top = "0";
+        document.body.appendChild(textArea);
+        textArea.focus(); textArea.select();
+        try { document.execCommand('copy'); animarBoton('btnCopyTitle'); } catch (err) {}
+        document.body.removeChild(textArea);
+    }
+
+    function cargarDetallePrecios() { const item = dbPrecios.find(i => i.tema === document.getElementById('selTema').value && i.concepto === document.getElementById('selConcepto').value); if(item) { document.getElementById('unitarioLabel').innerText = `Unitario: $ ${item.precio.toLocaleString('es-AR')}`; const f = document.getElementById('obsManual'); f.value = item.notas; notasOriginales = item.notas; f.readOnly = true; } }
+    function habilitarEdicionObs() { const f = document.getElementById('obsManual'); f.readOnly = false; f.focus(); }
+    function volverNotasOriginales() { const f = document.getElementById('obsManual'); f.value = notasOriginales; f.readOnly = true; }
+    function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
+    
+    function agregarTrabajo() {
+        const item = dbPrecios.find(i => i.tema === document.getElementById('selTema').value && i.concepto === document.getElementById('selConcepto').value);
+        if(!item) return;
+        const qty = parseInt(document.getElementById('cantidad').value) || 1, desc = parseInt(document.getElementById('porcentajeDesc').value) || 0, final = (item.precio * qty) * (1 - desc / 100);
+        listaItems.push({ id: Date.now(), concepto: item.concepto, obs: document.getElementById('obsManual').value, qty, total: final, unitario: item.precio, desc });
+        renderTabla(); document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; animarBoton('btnAddItem');
+    }
+    
+    function renderTabla() {
+        const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; let total = 0;
+        if(clienteActual) { const r = tbody.insertRow(); r.innerHTML = `<td colspan="4" style="color:var(--ngc-primary); font-size:0.8rem; padding-bottom:15px;"><b>CLIENTE:</b> ${clienteActual.nombre}<br><b>FECHA:</b> ${clienteActual.fecha} | <b>TEL:</b> ${clienteActual.tel}</td>`; }
+        listaItems.forEach(i => { total += i.total; const r = tbody.insertRow(); r.innerHTML = `<td><b>${i.concepto}</b><span class="item-info-line" style="display:block; font-size:0.75rem; color:rgba(255,255,255,0.6);">Unit: $${i.unitario.toLocaleString('es-AR')}${i.desc > 0 ? ' <span class="discount-badge">Desc. ' + i.desc + '%</span>' : ''}</span>${i.obs ? '<small style="display:block; opacity:0.7; white-space: pre-wrap;">'+i.obs+'</small>' : ''}</td><td align="center">x${i.qty}</td><td align="right" style="color:var(--ngc-primary); font-weight:bold;">${i.total.toLocaleString('es-AR')}</td><td align="right"><button class="trash-icon" onclick="borrarItem(${i.id})">✕</button></td>`; });
+        const og = document.getElementById('obsGenerales').value; if(og) { const r = tbody.insertRow(); r.innerHTML = `<td colspan="4" style="font-size:0.85rem; color:rgba(255,255,255,0.5); padding-top:15px; font-style:italic;">Nota: ${og}</td>`; }
+        document.getElementById('totalDisplay').innerText = `TOTAL: $ ${total.toLocaleString('es-AR')}`;
+    }
+    function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); renderTabla(); }
+
+    function exportarPresupuesto() {
+        if (!clienteActual || listaItems.length === 0) return alert("No hay datos para exportar.");
+        const data = { cliente: clienteActual, items: listaItems, obsG: document.getElementById('obsGenerales').value };
+        const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+        const a = document.createElement('a');
+        const f = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
+        a.href = 'data:text/plain;base64,' + base64Data;
+        a.download = `${clienteActual.nombre.split(' ')[0]}_Villaser_${f}.txt`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    function importarPresupuesto(e) {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const data = JSON.parse(ev.target.result);
+                clienteActual = data.cliente; listaItems = data.items;
+                document.getElementById('obsGenerales').value = data.obsG || "";
+                
+                // Actualizar UI para reflejar importación
+                document.getElementById('selCliente').value = clienteActual.nombre;
+                document.getElementById('display-cliente').innerText = clienteActual.nombre;
+                
+                document.getElementById('step-cliente').style.display = 'none';
+                document.getElementById('step-trabajo').style.display = 'flex';
+                renderTabla();
+            } catch(err) { alert("Archivo no válido"); }
+        };
+        reader.readAsText(file); e.target.value = '';
+    }
+    
+    async function tomarCaptura() { const zona = document.getElementById('zonaCaptura'); const trash = document.querySelectorAll('.trash-icon'); trash.forEach(b => b.style.display = 'none'); const canvas = await html2canvas(zona, { backgroundColor: "#333333", scale: 2 }); const link = document.createElement('a'); link.download = `Presupuesto_NGC_${clienteActual?.nombre}.png`; link.href = canvas.toDataURL(); link.click(); trash.forEach(b => b.style.display = 'inline-block'); }
+    function enviarWhatsApp() { if(!clienteActual) return; let m = `*VILLASER - PRESUPUESTO*\nCliente: ${clienteActual.nombre}\n`; listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; window.open(`https://wa.me/549${clienteActual.tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); }
+    function animarBoton(id) { const b = document.getElementById(id); b.classList.add('active-success'); setTimeout(() => b.classList.remove('active-success'), 800); }
+</script>
+</body>
+</html>
