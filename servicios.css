@@ -12,12 +12,17 @@
 
 body {
     margin: 0;
-    padding: 0;
-    background: transparent; 
+    padding: 15px; /* Un poco de margen para móviles */
+    /* Aquí llamamos al fondo.png */
+    background: url('fondo.png') no-repeat center center fixed;
+    background-size: cover; 
     font-family: 'Segoe UI', sans-serif;
     color: var(--gnc-text);
     width: 100%;
+    min-height: 100vh;
     overflow-x: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 .gnc-wrapper {
@@ -25,9 +30,11 @@ body {
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    max-width: 500px; /* Mantiene la proporción de tarjeta en PC */
     margin: 0;
     padding: 0;
 }
+
 
 /* ESTILO DEL NUEVO TÍTULO */
 .gnc-main-title {
