@@ -16,7 +16,7 @@
 body {
     /* Aquí se llama a tu imagen de fondo */
     margin: 0;
-    padding: 50px 5px 5px 5px; /* Arriba 40px, Derecha 15px, Abajo 15px, Izquierda 15px */
+    padding: 50px 4px 4px 4px; /* Arriba 40px, Derecha 15px, Abajo 15px, Izquierda 15px */
     /* ... no modifiques el resto de las propiedades que tengas aquí ... */
     background: url('fondo.png') no-repeat center center fixed;
     background-size: cover;
@@ -301,8 +301,8 @@ body {
 
 .hero-profile-container {
     position: relative;
-    width: 130px; 
-    height: 130px; 
+    width: 170px; 
+    height: 170px; 
     /* Quitamos el margin auto porque ahora se alinea a la izquierda */
     margin: 0; 
 }
