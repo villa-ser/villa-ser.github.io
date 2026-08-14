@@ -190,6 +190,7 @@ body {
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
+    border-left: 4px solid var(--ngc-neon);
     border: var(--ngc-border-glass);
     border-radius: 12px;
     color: #ffffff;
@@ -286,6 +287,7 @@ body {
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
+    border-left: 4px solid var(--ngc-neon);
     border: var(--ngc-border-glass);
     border-radius: 16px;
     padding: 25px 20px;
