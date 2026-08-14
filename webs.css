@@ -1,22 +1,24 @@
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC APLICADO) --- */
 :root {
     --gnc-neon: #00d4ff; 
-    --gnc-glass: rgba(255, 255, 255, 0.08); 
-    --gnc-blur: blur(5px);
-    --gnc-border: 1px solid rgba(255, 255, 255, 0.15);
+    --gnc-glass: rgba(0, 0, 0, 0.4); /* Cristal oscuro unificado */
+    --gnc-blur: blur(10px); /* Desenfoque intenso */
+    --gnc-border: 1px solid rgba(0, 212, 255, 0.3); /* Borde cian sutil */
     --gnc-text: #ffffff;
-    --gnc-bg-input: rgba(0, 0, 0, 0.4);
-    --gnc-success: #28a745;
+    --gnc-text-muted: rgba(255, 255, 255, 0.7); /* Para textos secundarios */
+    --gnc-bg-input: rgba(0, 0, 0, 0.6); /* Fondo de input más oscuro */
+    --gnc-success: #28a745; /* VERDE RESPETADO */
 }
 
-/* Reseteo y Base */
-* { box-sizing: border-box; }
+/* --- RESETEO Y BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     margin: 0;
-    padding: 15px; /* Margen para móviles */
+    padding: 80px 15px 15px 15px; /* Padding superior para mantener estructura de PC/Móvil unificada */
     background: url('fondo.png') no-repeat center center fixed;
     background-size: cover;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--gnc-text);
     width: 100%;
     min-height: 100vh;
@@ -28,7 +30,7 @@ body {
 .gnc-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; /* Espaciado unificado */
     width: 100%;
     max-width: 500px; /* Mantiene la proporción de tarjeta en PC */
     margin: 0;
@@ -40,12 +42,12 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border: var(--gnc-border);
+    border-radius: 12px;
     color: var(--gnc-neon);
     text-decoration: none;
     font-size: 0.8rem;
@@ -56,26 +58,28 @@ body {
     align-self: flex-start;
     margin-bottom: 5px;
     animation: fadeIn 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .gnc-btn-back:hover {
-    background: rgba(0, 212, 255, 0.1);
+    background: rgba(0, 212, 255, 0.15);
     border-color: var(--gnc-neon);
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
     color: var(--gnc-text);
     transform: translateX(-5px);
 }
 
-/* Títulos y Etiquetas */
+/* --- TÍTULOS Y ETIQUETAS --- */
 .gnc-main-title {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--gnc-neon);
     text-align: center;
     margin: 10px 0 5px 0;
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.2);
+    line-height: 1.1;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
     animation: fadeIn 0.6s ease;
 }
 
@@ -84,39 +88,42 @@ body {
     text-transform: uppercase;
     color: var(--gnc-neon);
     letter-spacing: 1.5px;
-    margin: 10px 0 2px 5px;
+    margin: 5px 0 2px 5px;
     font-weight: 700;
-    opacity: 0.8;
+    opacity: 0.9;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
 }
 
-/* Contenedores Genéricos (Glass-Neon) */
+/* --- CONTENEDORES GENÉRICOS (Banners, Acordeones, Items) --- */
 .gnc-banner, details, .gnc-form-container, .gnc-item {
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 8px;
+    border-radius: 16px; /* Ajustado a 16px */
     border-left: 4px solid var(--gnc-neon);
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
 }
 
-.gnc-banner:hover i, details:hover i, .gnc-form-container:hover i {
+.gnc-banner:hover i:not(.fa-whatsapp), details:hover i, .gnc-form-container:hover i, .gnc-item:hover i {
     filter: drop-shadow(0 0 5px var(--gnc-neon));
+    transition: filter 0.3s ease;
 }
 
-/* Acordeones Compactos */
+/* --- ACORDEONES COMPACTOS --- */
 summary, .form-header {
-    padding: 8px 16px; 
+    padding: 15px 20px; 
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-weight: 600;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    font-size: 0.82rem;
-    min-height: 38px;
+    font-size: 0.85rem;
+    min-height: 45px;
     cursor: pointer;
     list-style: none;
 }
@@ -125,110 +132,136 @@ summary::-webkit-details-marker { display: none; }
 .summary-title, .form-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--gnc-neon);
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
 }
 
-/* Contenido Interno */
+/* --- CONTENIDO INTERNO --- */
 .gnc-content, .form-body {
-    padding: 5px 18px 12px 48px;
-    font-size: 0.90rem;
-    line-height: 1.4;
+    padding: 5px 20px 20px 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--gnc-text-muted);
     animation: fadeIn 0.4s ease;
 }
 
-/* Banners Informativos */
+/* --- BANNERS INFORMATIVOS --- */
 .gnc-banner {
-    padding: 10px 16px;
+    padding: 15px 20px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
 }
 .gnc-banner span:first-child {
     color: var(--gnc-neon);
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.8px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+.gnc-banner span {
+    color: var(--gnc-text-muted);
 }
 
-/* Enlaces con Formato Especial */
+/* --- ENLACES FORMATO ESPECIAL --- */
 .gnc-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: #fff;
+    gap: 10px;
+    color: var(--gnc-text);
     text-decoration: none;
-    margin-top: 8px;
-    padding: 5px 12px;
-    background: rgba(0, 212, 255, 0.1);
-    border-radius: 4px;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    margin-top: 10px;
+    padding: 10px 16px;
+    background: var(--gnc-glass);
+    backdrop-filter: var(--gnc-blur);
+    -webkit-backdrop-filter: var(--gnc-blur);
+    border-radius: 12px;
+    border: var(--gnc-border);
     font-size: 0.85rem;
-    transition: 0.3s;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 .gnc-link:hover {
-    background: var(--gnc-neon);
-    color: #000;
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--gnc-neon);
+    color: var(--gnc-neon);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
 }
 
-/* Formularios */
+/* --- FORMULARIOS --- */
 .field-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 15px;
 }
 
 label {
-    font-size: 0.70rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--gnc-neon);
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     font-weight: 600;
 }
 
 input, textarea {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 14px;
     background: var(--gnc-bg-input);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
     color: white;
     font-family: inherit;
     outline: none;
     transition: 0.3s;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
 input:focus, textarea:focus { 
     border-color: var(--gnc-neon);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
 .btn-submit {
+    position: relative;
     width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: 2px solid var(--gnc-neon);
-    color: white;
-    border-radius: 8px;
+    padding: 14px 10px;
+    background: var(--gnc-glass);
+    backdrop-filter: var(--gnc-blur);
+    -webkit-backdrop-filter: var(--gnc-blur);
+    border: var(--gnc-border);
+    border-left: 4px solid var(--gnc-neon);
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
-    letter-spacing: 1.5px;
-    transition: all 0.3s;
-    margin-top: 5px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 .btn-submit:hover {
-    background: var(--gnc-neon);
-    color: #000;
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--gnc-neon);
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    color: var(--gnc-neon);
+    transform: translateY(-2px);
 }
 
-/* Utilidades */
-.neon { color: var(--gnc-neon) !important; font-weight: 600; }
-.icon-box { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; }
+/* --- UTILIDADES --- */
+.neon { 
+    color: var(--gnc-neon) !important; 
+    font-weight: 600; 
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.4);
+}
+.icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); filter: drop-shadow(0 0 5px var(--gnc-neon)); }
 
 /* --- FOOTER REDES SOCIALES --- */
 .footer-gnc-compact {
@@ -241,8 +274,9 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 12px;
-    margin-top: 20px;
+    border-radius: 16px;
+    margin-top: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .btn-social {
@@ -268,8 +302,9 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
 }
 
+/* --- WHATSAPP (VERDE RESPETADO EXACTAMENTE IGUAL) --- */
 .whatsapp-pulse {
-    color: #28a745;
+    color: var(--gnc-success);
     animation: intense-beat 0.7s infinite alternate;
 }
 
@@ -278,11 +313,11 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8));
 }
 
+/* --- KEYFRAMES --- */
 @keyframes intense-beat {
     0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
     100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
 }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
-
