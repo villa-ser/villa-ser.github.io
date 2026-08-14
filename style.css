@@ -1,9 +1,9 @@
 /* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
     --ngc-neon: #00d4ff; 
-    --ngc-glass: rgba(255, 255, 255, 0.08); 
+    --ngc-glass: rgba(0, 0, 0, 0.04); 
     --ngc-blur: blur(8px);
-    --ngc-border-glass: 1px solid rgba(255, 255, 255, 0.1);
+    --ngc-border-glass: 1px solid rgba(0, 212, 255, 0.3);
     --ngc-text-muted: rgba(255, 255, 255, 0.5);
 }
 
