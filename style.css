@@ -231,7 +231,7 @@ body {
     justify-content: space-around;
     align-items: center;
     padding: 12px 0; 
-    background: var(--ngc-glass);
+    background: var();
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass);
@@ -247,8 +247,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
 }
 
 .btn-share {
