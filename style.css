@@ -1,10 +1,10 @@
 /* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
     --ngc-neon: #00d4ff; 
-    --ngc-glass: rgba(0, 0, 0, 0.04); 
-    --ngc-blur: blur(8px);
+    --ngc-glass: rgba(0, 0, 0, 0.4); 
+    --ngc-blur: blur(10px);
     --ngc-border-glass: 1px solid rgba(0, 212, 255, 0.3);
-    --ngc-text-muted: rgba(255, 255, 255, 0.5);
+    --ngc-text-muted: rgba(255, 255, 255, 0.7);
 }
 
 * { 
@@ -14,10 +14,8 @@
 }
 
 body {
-    /* Aquí se llama a tu imagen de fondo */
     margin: 0;
-    padding: 80px 4px 4px 4px; /* Arriba 40px, Derecha 15px, Abajo 15px, Izquierda 15px */
-    /* ... no modifiques el resto de las propiedades que tengas aquí ... */
+    padding: 80px 4px 4px 4px;
     background: url('fondo.png') no-repeat center center fixed;
     background-size: cover;
     width: 100%;
@@ -42,25 +40,27 @@ body {
     margin-bottom: 12px;
 }
 
-/* --- ESTILOS COMPARTIDOS (CONTENEDORES GLASS) --- */
+/* --- ESTILOS COMPARTIDOS (CONTENEDORES GLASS UNIFICADOS AL HERO) --- */
 .ngc-full-container {
     width: 100%;
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); 
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    margin-bottom: 20px;
 }
 
 .ngc-photo-container img {
     width: 100%; 
     height: auto;
     display: block;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 .ngc-neon-svg {
@@ -90,17 +90,18 @@ body {
     to { stroke-dashoffset: -400%; }
 }
 
-/* --- TARJETA CENTRAL --- */
+/* --- TARJETA CENTRAL / BLOQUES --- */
 .ngc-card {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--ngc-glass);
+    backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
     border-left: 4px solid var(--ngc-neon);
-    border-radius: 12px;
-    padding: 20px 25px; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 25px 20px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    margin-bottom: 20px;
 }
 
 .ngc-card-title {
@@ -116,10 +117,10 @@ body {
 
 .ngc-category {
     display: block;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 500;
-    margin-top: 2px;
+    margin-top: 4px;
     margin-bottom: 8px;
 }
 
@@ -135,11 +136,11 @@ body {
 
 .ngc-footer-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     color: #ffffff;
-    padding: 4px 12px;
-    border-radius: 4px;
+    padding: 6px 14px;
+    border-radius: 6px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -158,6 +159,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 1.5px;
     margin-bottom: 6px;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
 }
 
 .ngc-user-details {
@@ -171,10 +173,10 @@ body {
     width: 100%;
 }
 
-/* --- LOS 6 BOTONES ESTILO NGC --- */
+/* --- BOTONES ESTILO UNIFICADO --- */
 .ngc-button-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Cuadrícula de 2 columnas */
+    grid-template-columns: 1fr 1fr; 
     gap: 12px;
     width: 100%;
 }
@@ -184,12 +186,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 10px;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 14px 10px;
+    background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border: var(--ngc-border-glass);
+    border-radius: 12px;
     color: #ffffff;
     text-decoration: none;
     font-size: 0.8rem;
@@ -199,12 +201,13 @@ body {
     transition: all 0.3s ease;
     overflow: hidden;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .ngc-btn:hover {
-    background: rgba(0, 212, 255, 0.1);
+    background: rgba(0, 212, 255, 0.15);
     border-color: var(--ngc-neon);
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
     color: var(--ngc-neon);
     transform: translateY(-2px);
 }
@@ -231,24 +234,25 @@ body {
     justify-content: space-around;
     align-items: center;
     padding: 12px 0; 
-    background: var();
+    background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass);
-    border-radius: 12px;
+    border-radius: 16px;
     margin-top: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .btn-social {
     text-decoration: none;
-    color: rgba(0, 0, 0, 0.4); 
+    color: rgba(255, 255, 255, 0.8); 
     font-size: 26px;
     transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
 }
 
 .btn-share {
@@ -275,13 +279,14 @@ body {
 @keyframes intense-beat {
     0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
     100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
-  }
+}
+
 /* --- ESTILOS DE LA TARJETA HERO (INICIO PROFESIONAL) --- */
 .gnc-hero-card {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: var(--ngc-glass);
+    backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
     border-radius: 16px;
     padding: 25px 20px;
     text-align: center;
@@ -303,7 +308,6 @@ body {
     position: relative;
     width: 170px; 
     height: 170px; 
-    /* Quitamos el margin auto porque ahora se alinea a la izquierda */
     margin: 0; 
 }
 
@@ -335,7 +339,7 @@ body {
 /* --- LOGO ANIMADO COMO ICONO A LA DERECHA --- */
 .hero-logo-icon {
     position: relative;
-    width: 60px; /* Tamaño del logo tipo icono */
+    width: 60px;
     height: 60px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
@@ -368,12 +372,7 @@ body {
     vector-effect: non-scaling-stroke;
     filter: drop-shadow(0 0 4px var(--ngc-neon));
     stroke-dasharray: 100% 300%; 
-    animation: run-border 3s linear infinite; /* Un poco más rápido por ser más pequeño */
-}
-
-@keyframes run-border {
-    from { stroke-dashoffset: 0%; }
-    to { stroke-dashoffset: -400%; }
+    animation: run-border 3s linear infinite;
 }
 
 /* Textos de la tarjeta */
@@ -383,27 +382,26 @@ body {
     font-weight: 800;
     margin: 0;
     letter-spacing: 1px;
-    text-align: left; /* Alineado a la izquierda */
+    text-align: left;
 }
 
 .hero-profession {
-    color: var(--gnc-neon); /* o --ngc-neon dependiendo de cómo lo tengas escrito en tus variables */
-    font-size: 0.95rem; /* Un pelín más grande para que destaque */
-    font-weight: 800; /* Mismo peso (grosor) que Explorar Navegación */
+    color: var(--ngc-neon);
+    font-size: 0.95rem;
+    font-weight: 800;
     text-transform: uppercase;
     margin: 5px 0 15px 0;
     letter-spacing: 2px;
     text-align: left;
-    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4); /* El mismo resplandor neón */
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
 }
-
 
 .hero-description {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem;
     line-height: 1.5;
     margin-bottom: 20px;
-    text-align: left; /* Alineado a la izquierda */
+    text-align: left;
 }
 
 .hero-cta-whatsapp {
@@ -412,10 +410,10 @@ body {
     justify-content: center;
     gap: 10px;
     width: 100%;
-    background: #25D366; /* Verde Oficial de WhatsApp */
+    background: #25D366; 
     color: white;
     padding: 14px;
-    border-radius: 8px;
+    border-radius: 12px;
     text-decoration: none;
     font-weight: 800;
     font-size: 0.95rem;
@@ -431,3 +429,9 @@ body {
     box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
     color: white;
 }
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+                                 }
+    
