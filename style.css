@@ -15,6 +15,9 @@
 
 body {
     /* Aquí se llama a tu imagen de fondo */
+    margin: 0;
+    padding: 40px 15px 15px 15px; /* Arriba 40px, Derecha 15px, Abajo 15px, Izquierda 15px */
+    /* ... no modifiques el resto de las propiedades que tengas aquí ... */
     background: url('fondo.png') no-repeat center center fixed;
     background-size: cover;
     width: 100%;
