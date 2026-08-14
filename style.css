@@ -190,9 +190,9 @@ body {
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    border-left: 4px solid var(--ngc-neon);
     border: var(--ngc-border-glass);
     border-radius: 12px;
+    border-left: 4px solid var(--ngc-neon);
     color: #ffffff;
     text-decoration: none;
     font-size: 0.8rem;
@@ -287,9 +287,9 @@ body {
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    border-left: 4px solid var(--ngc-neon);
     border: var(--ngc-border-glass);
     border-radius: 16px;
+    border-left: 4px solid var(--ngc-neon);
     padding: 25px 20px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
