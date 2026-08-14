@@ -1,4 +1,14 @@
-
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC) --- */
+:root {
+  --gnc-neon: #00d4ff; 
+  --gnc-glass: rgba(0, 0, 0, 0.4); /* Cristal oscuro característico */
+  --gnc-blur: blur(10px); /* Desenfoque profundo */
+  --gnc-border: 1px solid rgba(0, 212, 255, 0.3); /* Borde cian sutil */
+  --gnc-text: #ffffff;
+  --gnc-text-muted: rgba(255, 255, 255, 0.7);
+  --gnc-bg-input: rgba(0, 0, 0, 0.6); 
+  --gnc-success: #28a745; /* VERDE MANTENIDO PARA EL REGISTRO */
+}
 
 /* GNC STYLE - CONFIGURACIÓN BASE */
 body {
@@ -6,11 +16,12 @@ body {
   background-size: cover !important;
   margin: 0;
   padding: 20px;
-  font-family: 'Segoe UI', 'Montserrat', sans-serif;
-  color: #FFFFFF;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--gnc-text);
   display: flex;
   justify-content: center;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 .ecard-container {
@@ -20,19 +31,20 @@ body {
   animation: fadeIn 0.8s ease-out;
 }
 
-/* CABECERA */
+/* --- CABECERA --- */
 #headerSection {
   transition: all 0.4s ease;
 }
 
 h1 {
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 800; /* Igualado a la tipografía fuerte NGC */
   margin-bottom: 10px;
-  color: #00d4ff; 
+  color: var(--gnc-neon); 
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   animation: neonGlow 2s infinite alternate;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
 }
 
 .subtitle {
@@ -40,18 +52,19 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 35px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--gnc-text-muted);
   line-height: 1.5;
 }
 
 .nro-registro {
   display: block;
-  color: #28a745; 
-  font-weight: 600;
+  color: var(--gnc-success); /* VERDE RESPETADO */
+  font-weight: 700;
   margin-top: 5px;
+  filter: drop-shadow(0 0 4px rgba(40, 167, 69, 0.4)); /* Brillo verde sutil */
 }
 
-/* CONTENEDORES */
+/* --- CONTENEDORES --- */
 #mainButtons, #formSection {
   display: flex;
   flex-direction: column;
@@ -60,20 +73,23 @@ h1 {
 
 #formSection { display: none; }
 
-/* ESTILO GLASS-NEON BOTONES */
+/* --- ESTILO GLASS-NEON BOTONES (Adaptados a NGC) --- */
 .btn-link {
   width: 100%;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.08); 
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1.5px solid rgba(0, 212, 255, 0.8);
-  border-radius: 10px;
-  color: #FFFFFF;
+  background: var(--gnc-glass); 
+  backdrop-filter: var(--gnc-blur);
+  -webkit-backdrop-filter: var(--gnc-blur);
+  border: var(--gnc-border);
+  border-left: 4px solid var(--gnc-neon); /* Franja izquierda característica */
+  border-radius: 12px;
+  color: var(--gnc-text);
   text-decoration: none;
   text-align: center;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
@@ -82,9 +98,11 @@ h1 {
   align-items: center;
   justify-content: center;
   position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Animaciones de entrada y destello escalonadas */
+/* Animaciones de entrada escalonadas originales mantenidas */
 .btn-link:nth-child(1) { animation-delay: 0.1s, 0s; }
 .btn-link:nth-child(2) { animation-delay: 0.2s, 1s; }
 .btn-link:nth-child(3) { animation-delay: 0.3s, 2s; }
@@ -93,32 +111,34 @@ h1 {
 .btn-link:nth-child(6) { animation-delay: 0.6s, 5s; }
 
 .btn-link:hover {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: #00d4ff;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--gnc-neon);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  color: var(--gnc-neon);
   transform: translateY(-3px);
 }
 
-/* ESTILO PARA LOS ICONOS SUTILES */
+/* --- ESTILO PARA LOS ICONOS INTERNOS DE LOS BOTONES --- */
 .btn-icon {
   position: absolute;
   right: 20px;
   width: 18px;
   height: 18px;
   opacity: 0.4;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, filter 0.3s;
 }
 
 .btn-link:hover .btn-icon {
-  opacity: 0.8;
+  opacity: 1;
+  filter: drop-shadow(0 0 5px var(--gnc-neon));
 }
 
 .btn-form-trigger {
-  font-weight: 600;
+  font-weight: 700;
   opacity: 1 !important;
 }
 
-/* BOTÓN COMPARTIR SUTIL */
+/* --- BOTÓN COMPARTIR --- */
 .share-container {
   margin-top: 25px;
   display: flex;
@@ -131,30 +151,39 @@ h1 {
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 30px;
-  color: rgba(255, 255, 255, 0.6);
+  background: var(--gnc-glass);
+  backdrop-filter: var(--gnc-blur);
+  -webkit-backdrop-filter: var(--gnc-blur);
+  border: var(--gnc-border);
+  border-radius: 12px;
+  color: var(--gnc-text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-decoration: none;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-share:hover {
-  color: #00d4ff;
-  background: rgba(0, 212, 255, 0.05);
-  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--gnc-neon);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  color: var(--gnc-text);
+  transform: translateY(-2px);
 }
 
-/* FORMULARIO MEJORADO */
+/* --- FORMULARIO MEJORADO AL ESTILO NGC --- */
 .form-container {
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  padding: 25px 20px;
+  background: var(--gnc-glass);
+  backdrop-filter: var(--gnc-blur);
+  -webkit-backdrop-filter: var(--gnc-blur);
+  border: var(--gnc-border);
+  border-left: 4px solid var(--gnc-neon);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+  text-align: left;
 }
 
 .field-group { margin-bottom: 20px; }
@@ -165,47 +194,64 @@ label {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #00d4ff;
+  color: var(--gnc-neon);
   letter-spacing: 1.5px;
 }
 
 input, textarea {
   width: 100%;
   padding: 14px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: white;
-  font-family: 'Montserrat', sans-serif;
+  background: var(--gnc-bg-input);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  color: var(--gnc-text);
+  font-family: inherit;
   box-sizing: border-box;
   outline: none;
   transition: 0.3s;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
 
 textarea { 
-  min-height: 250px;
+  min-height: 200px;
   resize: vertical; 
   line-height: 1.6;
 }
 
 input:focus, textarea:focus { 
-  border-color: #00d4ff; 
-  background: rgba(0, 0, 0, 0.6);
+  border-color: var(--gnc-neon); 
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
+/* --- BOTÓN SUBMIT --- */
 .btn-submit {
+  position: relative;
   width: 100%;
   padding: 16px;
-  background: transparent;
-  border: 2px solid #00d4ff;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
+  background: var(--gnc-glass);
+  backdrop-filter: var(--gnc-blur);
+  -webkit-backdrop-filter: var(--gnc-blur);
+  border: var(--gnc-border);
+  border-left: 4px solid var(--gnc-neon);
+  color: var(--gnc-text);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
   letter-spacing: 2px;
-  position: relative;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-submit:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--gnc-neon);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  color: var(--gnc-neon);
+  transform: translateY(-2px);
 }
 
 .btn-submit.loading {
@@ -221,8 +267,8 @@ input:focus, textarea:focus {
   top: 50%;
   left: 50%;
   margin: -10px 0 0 -10px;
-  border: 3px solid rgba(0, 212, 255, 0.3);
-  border-top-color: #00d4ff;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--gnc-neon);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -230,25 +276,41 @@ input:focus, textarea:focus {
 .btn-back-text {
   margin-top: 15px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--gnc-text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   cursor: pointer;
   display: block;
+  transition: color 0.3s;
 }
 
-/* KEYFRAMES */
+.btn-back-text:hover {
+  color: var(--gnc-neon);
+}
+
+/* MENSAJE DE ÉXITO */
+#success-message { 
+  display: none; 
+  text-align: center; 
+  padding: 20px 10px;
+  color: var(--gnc-success);
+  font-weight: bold;
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid var(--gnc-success);
+  border-radius: 12px;
+  margin-top: 15px;
+  animation: fadeIn 0.4s ease;
+}
+
+/* --- KEYFRAMES --- */
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes neonGlow { from { text-shadow: 0 0 5px rgba(0, 212, 255, 0.2); } to { text-shadow: 0 0 15px rgba(0, 212, 255, 0.6); } }
 
-/* Llamado de atención más fuerte e intenso */
+/* Llamado de atención manteniendo la variable cyan */
 @keyframes pulseNeon {
   0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.8), 0 0 8px rgba(0, 212, 255, 0.4); }
   20% { box-shadow: 0 0 0 14px rgba(0, 212, 255, 0), 0 0 4px rgba(0, 212, 255, 0); }
   100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
 }
-
-#success-message { display: none; text-align: center; padding: 30px 10px; }
-                   
