@@ -142,7 +142,7 @@ h1 {
 .share-container {
   margin-top: 25px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   animation: fadeIn 1.5s ease-in;
 }
 
