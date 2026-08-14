@@ -387,14 +387,16 @@ body {
 }
 
 .hero-profession {
-    color: var(--gnc-neon);
-    font-size: 0.9rem;
-    font-weight: 600;
+    color: var(--gnc-neon); /* o --ngc-neon dependiendo de cómo lo tengas escrito en tus variables */
+    font-size: 0.95rem; /* Un pelín más grande para que destaque */
+    font-weight: 800; /* Mismo peso (grosor) que Explorar Navegación */
     text-transform: uppercase;
     margin: 5px 0 15px 0;
     letter-spacing: 2px;
-    text-align: left; /* Alineado a la izquierda */
+    text-align: left;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4); /* El mismo resplandor neón */
 }
+
 
 .hero-description {
     color: rgba(255, 255, 255, 0.8);
