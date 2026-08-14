@@ -1,19 +1,20 @@
-/* VARIABLES UNIFICADAS ESTILO GNC CIAN */
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC APLICADO) --- */
 :root {
     --gnc-neon: #00d4ff; 
-    --gnc-glass: rgba(255, 255, 255, 0.08); 
-    --gnc-blur: blur(5px);
-    --gnc-border: 1px solid rgba(255, 255, 255, 0.15);
+    --gnc-glass: rgba(0, 0, 0, 0.4); /* Cristal oscuro unificado */
+    --gnc-blur: blur(10px); /* Desenfoque intenso */
+    --gnc-border: 1px solid rgba(0, 212, 255, 0.3); /* Borde cian sutil */
     --gnc-text: #ffffff;
     --gnc-text-silver: rgba(255, 255, 255, 0.9);
-    --gnc-text-muted: rgba(255, 255, 255, 0.5);
+    --gnc-text-muted: rgba(255, 255, 255, 0.7); /* Textos secundarios adaptados */
+    --gnc-success: #28a745; /* VERDE RESPETADO */
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     margin: 0;
-    padding: 15px; /* Margen para móviles */
+    padding: 80px 15px 15px 15px; /* Padding superior para mantener estructura de PC/Móvil unificada */
     background: url('fondo.png') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,10 +29,11 @@ body {
 .gnc-main-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 15px; /* Espaciado unificado */
     width: 100%;
     max-width: 500px; /* Mantiene la proporción de tarjeta en PC */
     padding: 0;
+    margin: 0;
 }
 
 /* --- BOTÓN VOLVER AL INICIO --- */
@@ -39,12 +41,12 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border: var(--gnc-border);
+    border-radius: 12px;
     color: var(--gnc-neon);
     text-decoration: none;
     font-size: 0.8rem;
@@ -55,54 +57,59 @@ body {
     align-self: flex-start;
     margin-bottom: 5px;
     animation: fadeIn 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .gnc-btn-back:hover {
-    background: rgba(0, 212, 255, 0.1);
+    background: rgba(0, 212, 255, 0.15);
     border-color: var(--gnc-neon);
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
     color: var(--gnc-text);
     transform: translateX(-5px);
 }
 
+/* --- TÍTULO PRINCIPAL --- */
 .gnc-main-title {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--gnc-neon);
     text-align: center;
-    margin: 10px 0 5px 0;
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+    margin: 10px 0 15px 0;
+    line-height: 1.1;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
     animation: fadeIn 0.6s ease;
 }
 
+/* --- CONTENEDOR PRINCIPAL PERFIL/SECCIÓN --- */
 .ngc-full-container {
     width: 100%;
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 10px;
-    padding: 20px;
-    border-left: 6px solid var(--gnc-neon);
+    border-radius: 16px; /* Ajustado a 16px */
+    padding: 25px 20px;
+    border-left: 4px solid var(--gnc-neon);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
 }
 
-/* MARCO APAISADO CON LUZ PERIMETRAL */
+/* --- MARCO APAISADO CON LUZ PERIMETRAL ANIMADA --- */
 .ngc-photo-landscape {
     position: relative;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     padding: 2px; /* Grosor del borde neón */
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 .ngc-photo-landscape::before {
@@ -116,15 +123,15 @@ body {
         var(--gnc-neon), 
         transparent 30%
     );
-    animation: rotateNeon 5s linear infinite;
+    animation: rotateNeon 4s linear infinite;
 }
 
 .ngc-photo-landscape::after {
     content: '';
     position: absolute;
     inset: 2px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 6px;
+    background: var(--gnc-glass); /* Fondo interior para resaltar la imagen */
+    border-radius: 10px;
     z-index: 0;
 }
 
@@ -133,7 +140,7 @@ body {
     height: auto;
     display: block;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 10px;
     z-index: 1;
     position: relative;
 }
@@ -143,6 +150,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* --- TEXTOS DEL PERFIL --- */
 .ngc-content-area {
     width: 100%;
     text-align: left;
@@ -152,80 +160,96 @@ body {
     display: block;
     color: var(--gnc-text-silver);
     font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-weight: 700;
+    margin-bottom: 6px;
     line-height: 1.2;
+    letter-spacing: 1px;
 }
 
 .ngc-user-name.active, .active-cyan {
     color: var(--gnc-neon);
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.4);
 }
 
 .ngc-user-details {
     color: var(--gnc-text-muted);
-    font-size: 0.75rem; 
+    font-size: 0.8rem; 
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.5px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 6px;
+    padding-top: 10px;
     margin-top: 4px;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
+/* --- BANNERS Y ACORDEONES --- */
 .gnc-banner, details {
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 8px;
+    border-radius: 16px; /* Ajustado a 16px */
     border-left: 4px solid var(--gnc-neon);
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+}
+
+details:hover i {
+    filter: drop-shadow(0 0 5px var(--gnc-neon));
+    transition: filter 0.3s ease;
 }
 
 .gnc-banner {
-    padding: 12px 20px;
+    padding: 15px 20px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
-.gnc-banner p { margin: 0; }
-.gnc-banner span { display: block; font-size: 0.90rem; line-height: 1.3; }
+.gnc-banner p { margin: 0; color: var(--gnc-text-muted); }
+.gnc-banner span { display: block; font-size: 0.95rem; line-height: 1.4; }
 .gnc-banner span:first-child {
     color: var(--gnc-neon);
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.80rem;
-    letter-spacing: 0.8px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
 }
 
 summary {
-    padding: 8px 18px; 
+    padding: 15px 20px; 
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-weight: 600;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 0.85rem;
-    min-height: 40px;
+    min-height: 45px;
     cursor: pointer;
     list-style: none;
 }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--gnc-neon); }
+.summary-title { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    color: var(--gnc-neon); 
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
+}
 
 .gnc-content {
-    padding: 5px 20px 15px 52px;
+    padding: 5px 20px 20px 20px;
     font-size: 0.95rem;
     line-height: 1.5;
+    color: var(--gnc-text-muted);
 }
 
 .icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); filter: drop-shadow(0 0 5px var(--gnc-neon)); }
 
 /* --- FOOTER REDES SOCIALES --- */
 .footer-gnc-compact {
@@ -238,8 +262,9 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 12px;
-    margin-top: 20px;
+    border-radius: 16px;
+    margin-top: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .btn-social {
@@ -265,8 +290,9 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
 }
 
+/* --- WHATSAPP (VERDE RESPETADO) --- */
 .whatsapp-pulse {
-    color: #28a745;
+    color: var(--gnc-success);
     animation: intense-beat 0.7s infinite alternate;
 }
 
@@ -275,10 +301,11 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8));
 }
 
+/* --- KEYFRAMES --- */
 @keyframes intense-beat {
     0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
     100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
 }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-  
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    
