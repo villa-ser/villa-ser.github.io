@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Buscador Inteligente - Villaser Gestión</title>
     
-    <!-- Librerías de Iconos y SheetJS (Para leer Excel) -->
+    <!-- Librerías de Iconos y SheetJS -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
-    <!-- Vinculación al CSS -->
     <link rel="stylesheet" href="buscadorinteligente.css">
 </head>
 <body>
@@ -23,43 +22,53 @@
         </a>
 
         <div class="gnc-container">
-            <h2>Buscador Inteligente</h2>
+            <h2>Buscador de Costos</h2>
             
+            <!-- AVISO EXTENDIDO SOBRE PRECIOS REFERENCIALES -->
             <div class="info-banner">
-                <i data-lucide="search" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;"></i>
-                Ingresa hasta 5 palabras clave para buscar en los conceptos.
+                <div class="banner-title">
+                    <i data-lucide="shield-alert" style="width: 16px; height: 16px;"></i>
+                    Valores Referenciales
+                </div>
+                <div class="banner-text">
+                    Los precios aquí mostrados son <strong>estrictamente estimativos y de carácter orientativo</strong>. Son una recopilación de diversas entidades del sector eléctrico.<br><br>
+                    <strong>Aclaración:</strong> Estos valores no incluyen materiales, traslados, ni contemplan la complejidad o riesgos específicos de cada obra.
+                </div>
             </div>
 
-            <div id="status-message" class="status-msg">Cargando base de datos de archivo.xlsx...</div>
+            <div id="status-message" class="status-msg">
+                <i class="fas fa-spinner fa-spin"></i> Sincronizando base de datos...
+            </div>
 
             <!-- CAJA DE BÚSQUEDA -->
             <div class="input-section">
                 <div class="input-group">
-                    <label>Palabras clave (Máx. 5)</label>
+                    <label>Buscar Concepto de Mano de Obra</label>
                     <div class="search-box-row">
                         <input type="text" id="searchInput" placeholder="Ej: pilar trifasico o boca..." disabled>
                         <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
                     </div>
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 6px; display: block;">
+                        * Ingresa hasta 5 palabras clave (Ej: <em>durlock caja boca</em>).
+                    </span>
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE RESULTADOS (Máximo 5) -->
+            <!-- CONTENEDOR DE RESULTADOS -->
             <div id="resultsContainer" class="results-wrapper"></div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer-gnc-compact">
             <a href="mailto:contacto@villaser.com.ar" class="btn-social"><i class="far fa-envelope"></i></a>
-            <a href="https://instagram.com/villaserelectricista?igshid=OGQ5ZDc2ODk2ZA==" target="_blank" class="btn-social"><i class="fab fa-instagram"></i></a>
+            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social"><i class="fab fa-instagram"></i></a>
             <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social"><i class="fab fa-facebook-f"></i></a>
             <a href="https://api.whatsapp.com/send?text=Mira%20esta%20web:%20https://villaser.com.ar" target="_blank" class="btn-social btn-share"><i class="fa-solid fa-share-nodes"></i></a>
             <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse"><i class="fab fa-whatsapp"></i></a>
         </div>
     </div>
 
-    <!-- Inicializar Iconos y Scripts -->
     <script>lucide.createIcons();</script>
     <script src="buscadorinteligente.js"></script>
 </body>
 </html>
-
