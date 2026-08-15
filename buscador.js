@@ -1,46 +1,23 @@
-// ==========================================
-// 1. TU BASE DE DATOS INTEGRADA
-// ==========================================
-// Copia aquí los datos de tu Excel. Cada bloque entre { } es una fila.
-// Esto evita errores de columnas desordenadas y hace que funcione a la velocidad de la luz.
-
-const baseDeDatos = [
-    {
-        codigo: "08-03",
-        organizacion: "Organización de Ejemplo",
-        tema: "Acometidas y Tableros",
-        concepto: "Solo cableado, independientemente de la cantidad de conductores.",
-        precio: "18500",
-        observaciones: "Sin observaciones."
-    },
-    {
-        codigo: "02-15",
-        organizacion: "AEA",
-        tema: "Instalación",
-        concepto: "Armado pilar trifásico con cañería completa",
-        precio: "45000",
-        observaciones: "No incluye materiales de mampostería."
-    }
-    // Añade más bloques separados por comas según necesites
-];
-
-// ==========================================
-// 2. LÓGICA DEL BUSCADOR
-// ==========================================
+// Variable global que se llenará con los datos de tu archivo.json
+let baseDeDatos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
+    const resultsContainer = document.getElementById("resultsContainer");
 
-    // Habilitar el botón SOLO si hay más de 2 letras escritas
+    // 1. CARGAR EL ARCHIVO JSON EXTERNO
+    cargarDatosJSON();
+
+    // 2. Habilitar el botón SOLO si hay más de 2 letras escritas y los datos cargaron
     searchInput.addEventListener("input", () => {
-        btnBuscar.disabled = searchInput.value.trim().length < 2;
+        btnBuscar.disabled = searchInput.value.trim().length < 2 || baseDeDatos.length === 0;
     });
 
-    // Ejecutar la búsqueda al hacer clic
+    // 3. Ejecutar la búsqueda al hacer clic
     btnBuscar.addEventListener("click", realizarBusqueda);
 
-    // Permitir buscar presionando la tecla "Enter"
+    // 4. Permitir buscar presionando la tecla "Enter"
     searchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && !btnBuscar.disabled) {
             realizarBusqueda();
@@ -48,31 +25,64 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+async function cargarDatosJSON() {
+    const searchInput = document.getElementById("searchInput");
+    const resultsContainer = document.getElementById("resultsContainer");
+
+    try {
+        // Asegúrate de que el nombre aquí coincida exactamente con tu archivo
+        const respuesta = await fetch('archivo.json');
+        
+        if (!respuesta.ok) {
+            throw new Error("No se pudo acceder al archivo JSON.");
+        }
+
+        baseDeDatos = await respuesta.json();
+        
+        // Desbloquear el buscador para el usuario
+        searchInput.disabled = false;
+        searchInput.placeholder = "Ej: armado pilar trifásico...";
+
+    } catch (error) {
+        console.error("Error al cargar el JSON:", error);
+        
+        // Mensaje de advertencia si lo abre localmente sin servidor
+        resultsContainer.innerHTML = `
+            <div class="no-results" style="border-color: #ffc107; color: #ffc107;">
+                <i data-lucide="alert-triangle" style="margin-bottom:10px;"></i><br>
+                <b>No se pudo cargar 'archivo.json'.</b><br><br>
+                Si estás abriendo este archivo HTML directamente desde tu computadora (con doble clic), el navegador bloquea la lectura del JSON por seguridad.<br><br>
+                Para que funcione, debes subir los archivos a tu servidor web, o usar un servidor local (como Live Server).
+            </div>
+        `;
+        if (window.lucide) { lucide.createIcons(); }
+    }
+}
+
 function realizarBusqueda() {
     const searchInput = document.getElementById("searchInput").value.trim();
     const resultsContainer = document.getElementById("resultsContainer");
 
     if (searchInput.length < 2) return;
 
-    // Extraer hasta 5 palabras clave, ignorando mayúsculas y espacios vacíos
+    // Extraer hasta 5 palabras clave
     let palabrasClave = searchInput.toLowerCase().split(/\s+/).filter(p => p.length > 0).slice(0, 5);
-    const resultados = [
+    const resultados = [];
 
-        
-    ];
-
-    // Iterar directamente sobre nuestra base de datos limpia
+    // Iterar sobre nuestra base de datos JSON
     for (const fila of baseDeDatos) {
         
-        // RESTRICCIÓN ABSOLUTA: Buscar ÚNICAMENTE en "concepto" (lo que era la columna D)
-        const textoConcepto = String(fila.concepto || "").toLowerCase();
+        // RESTRICCIÓN ABSOLUTA: Buscar ÚNICAMENTE en el Concepto
+        // Se incluyen varias opciones por si el convertidor JSON usó diferentes nombres de columna
+        const conceptoOriginal = fila.concepto || fila.Concepto || fila['D'] || fila['d'] || "";
+        const textoConcepto = String(conceptoOriginal).toLowerCase();
 
         // Verificar que TODAS las palabras ingresadas estén dentro del concepto
         const coincidenciaExacta = palabrasClave.every(palabra => textoConcepto.includes(palabra));
 
         if (coincidenciaExacta) {
             resultados.push(fila);
-            if (resultados.length >= 6) break; // Máximo 6 resultados
+            if (resultados.length >= 6) break; // Límite de 6 resultados
         }
     }
 
@@ -85,8 +95,8 @@ function resaltarTexto(texto, palabrasClave) {
     
     const palabrasValidas = palabrasClave
         .filter(p => p.length > 0)
-        .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // Escapar caracteres raros
-        .sort((a, b) => b.length - a.length); // Previene que palabras cortas rompan palabras largas
+        .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) 
+        .sort((a, b) => b.length - a.length);
 
     if (palabrasValidas.length === 0) return texto;
 
@@ -107,18 +117,18 @@ function renderizarResultados(resultados, palabrasClave) {
     }
 
     resultados.forEach(fila => {
-        // Datos extraídos de forma exacta desde el bloque JSON
-        const codigo = fila.codigo || "-";
-        const organizacion = fila.organizacion || "No especificado";
-        const tema = fila.tema || "General";
-        const concepto = fila.concepto || "Mano de obra";
+        // Extraemos los datos previendo los nombres de columnas que suele generar un convertidor de Excel a JSON
+        const codigo = fila.codigo || fila.Codigo || fila['A'] || "-";
+        const organizacion = fila.organizacion || fila.Organizacion || fila['B'] || "No especificado";
+        const tema = fila.tema || fila.Tema || fila['C'] || "General";
+        const concepto = fila.concepto || fila.Concepto || fila['D'] || "Mano de obra";
         
-        // Formatear precio para que siempre tenga el símbolo o diga "Consultar"
-        let precio = fila.precio ? `$ ${fila.precio}` : "$ Consultar";
+        const valorPrecio = fila.precio || fila.Precio || fila['E'];
+        let precio = valorPrecio ? `$ ${valorPrecio}` : "$ Consultar";
         
-        const observaciones = fila.observaciones || "Sin observaciones.";
+        const observaciones = fila.observaciones || fila.Observaciones || fila['F'] || "Sin observaciones.";
 
-        // Resaltar palabras solo en el título (Concepto)
+        // Resaltar palabras solo en el concepto
         const conceptoResaltado = resaltarTexto(concepto, palabrasClave);
 
         const card = document.createElement("div");
