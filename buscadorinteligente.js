@@ -87,7 +87,7 @@ function ejecutarBusqueda() {
     }
 
     if (coincidencias.length === 0) {
-        resultsContainer.innerHTML = `<div class="no-results">No se encontraron resultados para su búsqueda.<br><span style="font-size:0.75rem; font-weight:normal; color:rgba(255,255,255,0.5);">Intenta usando menos palabras o sinónimos.</span></div>`;
+        resultsContainer.innerHTML = `<div class="no-results">No se encontraron resultados para su búsqueda.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted);">Intenta usando menos palabras o sinónimos.</span></div>`;
         return;
     }
 
@@ -143,5 +143,5 @@ function ejecutarBusqueda() {
     
     // Renderizar iconos lucide
     lucide.createIcons();
-}
-    
+    }
+
