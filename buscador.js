@@ -62,15 +62,12 @@ function manejarCargaManual(evento) {
 
 // Función central para leer el Excel mediante SheetJS
 function procesarBufferExcel(buffer) {
-    // Leer el libro de trabajo
     const workbook = XLSX.read(buffer, { type: 'array' });
     const primeraHoja = workbook.SheetNames[0];
     const hoja = workbook.Sheets[primeraHoja];
     
-    // Convertir hoja a JSON. header: "A" mapea las columnas a las letras reales de Excel
+    // Convertir hoja a JSON mapeando columnas a letras (A, B, C...)
     excelData = XLSX.utils.sheet_to_json(hoja, { header: "A", defval: "" });
-    
-    // excelData ahora es un array de objetos: { A: "...", B: "...", C: "..." }
 }
 
 // Lógica del buscador
@@ -78,42 +75,57 @@ function realizarBusqueda() {
     const searchInput = document.getElementById("searchInput").value.trim();
     const resultsContainer = document.getElementById("resultsContainer");
 
-    // Limpiar resultados si el input está vacío
     if (searchInput === "") {
         resultsContainer.innerHTML = "";
         return;
     }
 
-    // Dividir la entrada en palabras clave, máximo 5, ignorando mayúsculas
+    // Máximo 5 palabras clave
     const palabrasClave = searchInput.toLowerCase().split(/\s+/).slice(0, 5);
     const resultados = [];
 
-    // Iterar sobre los datos (empezando desde el índice 1 para saltar la posible fila de títulos)
+    // Iterar saltando la fila 0 (asumiendo que es el encabezado del Excel)
     for (let i = 1; i < excelData.length; i++) {
         const fila = excelData[i];
         
-        // Extraer texto de las columnas B, C, D y F asegurando que sean Strings
-        const colB = String(fila['B'] || "").toLowerCase();
-        const colC = String(fila['C'] || "").toLowerCase();
+        // BÚSQUEDA RESTRINGIDA: Solo en columna D (Concepto) y F (Observaciones)
         const colD = String(fila['D'] || "").toLowerCase();
         const colF = String(fila['F'] || "").toLowerCase();
 
-        const textoBusqueda = `${colB} ${colC} ${colD} ${colF}`;
+        const textoBusqueda = `${colD} ${colF}`;
 
-        // Chequear si TODAS las palabras clave ingresadas existen en la fila
+        // Chequear coincidencia de todas las palabras clave
         const coincidenciaExacta = palabrasClave.every(palabra => textoBusqueda.includes(palabra));
 
         if (coincidenciaExacta) {
             resultados.push(fila);
-            if (resultados.length >= 5) break; // Detenerse al encontrar 5 resultados
+            // AMPLIACIÓN: Límite de 6 resultados
+            if (resultados.length >= 6) break; 
         }
     }
 
-    renderizarResultados(resultados);
+    renderizarResultados(resultados, palabrasClave);
+}
+
+// Función para envolver las palabras coincidentes en una etiqueta HTML de resaltado
+function resaltarTexto(texto, palabrasClave) {
+    if (!texto) return "";
+    let textoResaltado = texto;
+    
+    // Filtrar palabras vacías por seguridad
+    const palabrasValidas = palabrasClave.filter(p => p.length > 0);
+
+    palabrasValidas.forEach(palabra => {
+        // Expresión regular insensible a mayúsculas/minúsculas (gi)
+        const regex = new RegExp(`(${palabra})`, 'gi');
+        textoResaltado = textoResaltado.replace(regex, `<span class="gnc-highlight">$1</span>`);
+    });
+
+    return textoResaltado;
 }
 
 // Generar el HTML de las tarjetas de resultados
-function renderizarResultados(resultados) {
+function renderizarResultados(resultados, palabrasClave) {
     const resultsContainer = document.getElementById("resultsContainer");
     resultsContainer.innerHTML = "";
 
@@ -123,32 +135,36 @@ function renderizarResultados(resultados) {
     }
 
     resultados.forEach(fila => {
-        // Formatear datos, mostrando valores por defecto si la celda está vacía
-        const fuente = fila['B'] || "No especificado";
+        // Asignación de títulos correspondientes
+        const organizacion = fila['B'] || "No especificado";
         const tema = fila['C'] || "General";
         const concepto = fila['D'] || "Mano de obra";
         const precio = fila['E'] || "Consultar";
-        const descripcion = fila['F'] || "Sin descripción adicional.";
+        const observaciones = fila['F'] || "Sin observaciones.";
 
-        // Crear tarjeta (Card)
+        // Aplicar el resaltado SOLO a las columnas donde se hizo la búsqueda
+        const conceptoResaltado = resaltarTexto(concepto, palabrasClave);
+        const observacionesResaltadas = resaltarTexto(observaciones, palabrasClave);
+
+        // Crear tarjeta
         const card = document.createElement("div");
         card.className = "result-card";
         
         card.innerHTML = `
             <div class="result-header">
-                <span class="result-concept">${concepto}</span>
+                <span class="result-concept">${conceptoResaltado}</span>
                 <span class="result-price">$ ${precio}</span>
             </div>
             <div class="result-body">
                 <p><span class="tag">TEMA:</span> ${tema}</p>
-                <p><span class="tag">FUENTE:</span> ${fuente}</p>
+                <p><span class="tag">ORGANIZACIÓN:</span> ${organizacion}</p>
                 <p style="margin-top: 8px; border-top: 1px dashed rgba(0,212,255,0.2); padding-top: 8px;">
-                    ${descripcion}
+                    <span class="tag" style="display:block; margin-bottom:4px;">OBSERVACIONES:</span>
+                    ${observacionesResaltadas}
                 </p>
             </div>
         `;
 
         resultsContainer.appendChild(card);
     });
-          }
-
+}
