@@ -56,6 +56,7 @@ function manejarCargaManual(evento) {
         statusMessage.style.color = "var(--gnc-success)";
         searchInput.disabled = false;
         document.getElementById("fileUploadContainer").style.display = "none";
+        realizarBusqueda(); // Intentar buscar por si había texto previo
     };
     reader.readAsArrayBuffer(file);
 }
@@ -75,7 +76,8 @@ function realizarBusqueda() {
     const searchInput = document.getElementById("searchInput").value.trim();
     const resultsContainer = document.getElementById("resultsContainer");
 
-    if (searchInput === "") {
+    // SOLUCIÓN: Limpiar pantalla y no buscar si hay menos de 2 letras (Evita sobrecarga y congelamiento)
+    if (searchInput.length < 2) {
         resultsContainer.innerHTML = "";
         return;
     }
@@ -96,7 +98,7 @@ function realizarBusqueda() {
 
         if (coincidenciaExacta) {
             resultados.push(fila);
-            // AMPLIACIÓN: Límite de 6 resultados
+            // Límite de 6 resultados
             if (resultados.length >= 6) break; 
         }
     }
@@ -104,21 +106,22 @@ function realizarBusqueda() {
     renderizarResultados(resultados, palabrasClave);
 }
 
-// Función para envolver las palabras coincidentes en una etiqueta HTML de resaltado
+// SOLUCIÓN AL CRASHEO: Nuevo motor de resaltado que no corrompe etiquetas HTML
 function resaltarTexto(texto, palabrasClave) {
     if (!texto) return "";
-    let textoResaltado = texto;
     
-    // Filtrar palabras vacías por seguridad
-    const palabrasValidas = palabrasClave.filter(p => p.length > 0);
+    // 1. Filtramos vacíos y escapamos caracteres especiales por si el usuario tipea "(" o "+"
+    const palabrasValidas = palabrasClave
+        .filter(p => p.length > 0)
+        .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
-    palabrasValidas.forEach(palabra => {
-        // Expresión regular insensible a mayúsculas/minúsculas (gi)
-        const regex = new RegExp(`(${palabra})`, 'gi');
-        textoResaltado = textoResaltado.replace(regex, `<span class="gnc-highlight">$1</span>`);
-    });
+    if (palabrasValidas.length === 0) return texto;
 
-    return textoResaltado;
+    // 2. Hacemos una única pasada de expresión regular usando "|" (O lógico). 
+    // Esto evita que una palabra rompa el span generado por otra palabra.
+    const regex = new RegExp(`(${palabrasValidas.join('|')})`, 'gi');
+    
+    return texto.replace(regex, `<span class="gnc-highlight">$1</span>`);
 }
 
 // Generar el HTML de las tarjetas de resultados
@@ -132,18 +135,18 @@ function renderizarResultados(resultados, palabrasClave) {
     }
 
     resultados.forEach(fila => {
-        // Asignación de títulos correspondientes
+        // ASIGNACIÓN DE TODAS LAS COLUMNAS (A HASTA F)
+        const colA = fila['A'] || "-";
         const organizacion = fila['B'] || "No especificado";
         const tema = fila['C'] || "General";
         const concepto = fila['D'] || "Mano de obra";
         const precio = fila['E'] || "Consultar";
         const observaciones = fila['F'] || "Sin observaciones.";
 
-        // Aplicar el resaltado a las columnas para evidenciar el texto buscado
+        // Aplicar el resaltado SOLO a la columna donde buscamos
         const conceptoResaltado = resaltarTexto(concepto, palabrasClave);
-        const observacionesResaltadas = resaltarTexto(observaciones, palabrasClave);
 
-        // Crear tarjeta
+        // Crear tarjeta mostrando todos los datos extraídos
         const card = document.createElement("div");
         card.className = "result-card";
         
@@ -153,16 +156,16 @@ function renderizarResultados(resultados, palabrasClave) {
                 <span class="result-price">$ ${precio}</span>
             </div>
             <div class="result-body">
-                <p><span class="tag">TEMA:</span> ${tema}</p>
-                <p><span class="tag">ORGANIZACIÓN:</span> ${organizacion}</p>
+                <p><span class="tag">CÓDIGO/REF (Col A):</span> ${colA}</p>
+                <p><span class="tag">ORGANIZACIÓN (Col B):</span> ${organizacion}</p>
+                <p><span class="tag">TEMA (Col C):</span> ${tema}</p>
                 <p style="margin-top: 8px; border-top: 1px dashed rgba(0,212,255,0.2); padding-top: 8px;">
-                    <span class="tag" style="display:block; margin-bottom:4px;">OBSERVACIONES:</span>
-                    ${observacionesResaltadas}
+                    <span class="tag" style="display:block; margin-bottom:4px;">OBSERVACIONES (Col F):</span>
+                    ${observaciones}
                 </p>
             </div>
         `;
 
         resultsContainer.appendChild(card);
     });
-        }
-        
+}
