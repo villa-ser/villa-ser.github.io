@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscador de Presupuestos - Villaser Gestión</title>
     
-    <!-- Librería para los iconos desplegables (Lucide) -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Librería de FontAwesome para las redes sociales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Librería SheetJS para leer archivos Excel (.xlsx) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
-    <!-- Vinculación al archivo CSS del buscador -->
     <link rel="stylesheet" href="buscador.css">
 </head>
 
@@ -20,7 +15,6 @@
     
     <div class="gnc-wrapper">
         
-        <!-- BOTÓN DE VOLVER (Intacto) -->
         <a href="index.html" class="gnc-btn-back">
             <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
             Volver al Inicio
@@ -28,13 +22,11 @@
 
         <h1 class="gnc-main-title">Buscador de Precios</h1>
 
-        <!-- DESCRIPCIÓN DEL BUSCADOR -->
         <div class="gnc-banner">
             <span><p>Calculadora de referencias para <span class="neon">mano de obra</span>.</p></span>
-            <p>Ingresa hasta <b>5 palabras clave</b> (ej. <i>"boca", "tablero", "acometida monofásica"</i>) para filtrar los precios sugeridos del mercado, recomendados por distintas organizaciones, y asegurar presupuestos justos acordes a la Ley de Seguridad Eléctrica.</p>
+            <p>Ingresa hasta <b>5 palabras clave</b> para filtrar los precios sugeridos del mercado, recomendados por distintas organizaciones, y asegurar presupuestos justos acordes a la Ley de Seguridad Eléctrica.</p>
         </div>
 
-        <!-- CONTENEDOR DEL BUSCADOR -->
         <div class="gnc-form-container" style="margin-bottom: 0;">
             <div class="form-header">
                 <div class="form-title">
@@ -44,34 +36,21 @@
             </div>
             
             <div class="form-body">
-                <!-- Fallback por si no se puede auto-cargar el Excel por bloqueos del navegador -->
-                <div id="fileUploadContainer" class="field-group" style="display: none; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding-bottom: 15px; margin-bottom: 15px;">
-                    <label>Cargar archivo Excel (PRESUPUESTO V 5.xlsx)</label>
-                    <input type="file" id="excelFileInput" accept=".xlsx" style="padding: 5px;">
+                <div class="field-group">
+                    <label>Términos de búsqueda (Máx. 5 palabras)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="searchInput" placeholder="Ej: armado pilar trifásico...">
+                        <button id="btnBuscar" class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px; display: flex; align-items: center; justify-content: center;" disabled>
+                            <i data-lucide="search" style="width: 18px; height: 18px; margin-right: 5px;"></i> Buscar
+                        </button>
+                    </div>
                 </div>
-
-                <!-- REEMPLAZA ESTE BLOQUE EN TU HTML -->
-<div class="field-group">
-    <label>Términos de búsqueda (Máx. 5 palabras)</label>
-    <div style="display: flex; gap: 10px;">
-        <input type="text" id="searchInput" placeholder="Ej: armado pilar trifásico...">
-        
-        <!-- NUEVO BOTÓN DE BUSCAR -->
-        <button id="btnBuscar" class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px; display: flex; align-items: center; justify-content: center;" disabled>
-            <i data-lucide="search" style="width: 18px; height: 18px; margin-right: 5px;"></i> Buscar
-        </button>
-    </div>
-</div>
-
             </div>
         </div>
 
-        <!-- CONTENEDOR DE RESULTADOS (Máximo 5) -->
-        <div id="resultsContainer" class="results-wrapper">
-            <!-- Los resultados se inyectarán aquí vía JS -->
-        </div>
+        <!-- CONTENEDOR DE RESULTADOS -->
+        <div id="resultsContainer" class="results-wrapper"></div>
 
-        <!-- BLOQUE FOOTER: Redes Sociales (Intacto) -->
         <div class="footer-gnc-compact">
             <a href="mailto:contacto@villaser.com.ar" class="btn-social">
                 <i class="far fa-envelope"></i>
@@ -92,10 +71,7 @@
         
     </div>
 
-    <!-- Inicialización de íconos base -->
     <script>lucide.createIcons();</script>
-    <!-- Vinculación al archivo JS del buscador -->
     <script src="buscador.js"></script>
 </body>
 </html>
-
