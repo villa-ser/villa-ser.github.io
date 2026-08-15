@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Presupuestos - Villaser Gestión</title>
+    
+    <!-- Librería para los iconos desplegables (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Librería de FontAwesome para las redes sociales -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Librería SheetJS para leer archivos Excel (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Vinculación al archivo CSS del buscador -->
+    <link rel="stylesheet" href="buscador.css">
+</head>
+
+<body>
+    
+    <div class="gnc-wrapper">
+        
+        <!-- BOTÓN DE VOLVER (Intacto) -->
+        <a href="index.html" class="gnc-btn-back">
+            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
+            Volver al Inicio
+        </a>
+
+        <h1 class="gnc-main-title">Buscador de Precios</h1>
+
+        <!-- DESCRIPCIÓN DEL BUSCADOR -->
+        <div class="gnc-banner">
+            <span><p>Calculadora de referencias para <span class="neon">mano de obra</span>.</p></span>
+            <p>Ingresa hasta <b>5 palabras clave</b> (ej. <i>"boca", "tablero", "acometida monofásica"</i>) para filtrar los precios sugeridos del mercado, recomendados por distintas organizaciones, y asegurar presupuestos justos acordes a la Ley de Seguridad Eléctrica.</p>
+        </div>
+
+        <!-- CONTENEDOR DEL BUSCADOR -->
+        <div class="gnc-form-container" style="margin-bottom: 0;">
+            <div class="form-header">
+                <div class="form-title">
+                    <div class="icon-box"><i data-lucide="Search"></i></div>
+                    <span>Consultar Base de Datos</span>
+                </div>
+            </div>
+            
+            <div class="form-body">
+                <!-- Fallback por si no se puede auto-cargar el Excel por bloqueos del navegador -->
+                <div id="fileUploadContainer" class="field-group" style="display: none; border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding-bottom: 15px; margin-bottom: 15px;">
+                    <label>Cargar archivo Excel (PRESUPUESTO V 5.xlsx)</label>
+                    <input type="file" id="excelFileInput" accept=".xlsx" style="padding: 5px;">
+                </div>
+
+                <div class="field-group">
+                    <label>Términos de búsqueda (Máx. 5 palabras)</label>
+                    <input type="text" id="searchInput" placeholder="Ej: armado pilar trifásico..." disabled>
+                </div>
+                <div id="statusMessage" style="font-size: 0.8rem; color: var(--gnc-neon); margin-top: -5px; margin-bottom: 15px;">
+                    Cargando base de datos...
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE RESULTADOS (Máximo 5) -->
+        <div id="resultsContainer" class="results-wrapper">
+            <!-- Los resultados se inyectarán aquí vía JS -->
+        </div>
+
+        <!-- BLOQUE FOOTER: Redes Sociales (Intacto) -->
+        <div class="footer-gnc-compact">
+            <a href="mailto:contacto@villaser.com.ar" class="btn-social">
+                <i class="far fa-envelope"></i>
+            </a>
+            <a href="https://instagram.com/villaserelectricista?igshid=OGQ5ZDc2ODk2ZA==" target="_blank" class="btn-social">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://api.whatsapp.com/send?text=Mira%20esta%20web:%20https://villaser.com.ar" target="_blank" class="btn-social btn-share">
+                <i class="fa-solid fa-share-nodes"></i>
+            </a>
+            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+        
+    </div>
+
+    <!-- Inicialización de íconos base -->
+    <script>lucide.createIcons();</script>
+    <!-- Vinculación al archivo JS del buscador -->
+    <script src="buscador.js"></script>
+</body>
+</html>
+
