@@ -2,89 +2,60 @@ let allData = [];
 let selectedFuentes = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-    const fileInput = document.getElementById("excelFileInput");
-    
-    // 1. Intentar cargar el archivo localmente primero
-    cargarExcelAutomatico();
-
-    // 2. Escucha manual en caso de que el navegador bloquee la auto-carga
-    fileInput.addEventListener("change", manejarCargaManual);
+    cargarExcel();
 });
 
-// --- LÓGICA DE CARGA DE EXCEL ---
-async function cargarExcelAutomatico() {
-    const statusMessage = document.getElementById("statusMessage");
-    const fileUploadContainer = document.getElementById("fileUploadContainer");
-
+// 1. CARGAR ARCHIVO.XLSX AUTOMÁTICAMENTE
+async function cargarExcel() {
+    const statusMsg = document.getElementById("status-message");
+    
     try {
         const response = await fetch('archivo.xlsx');
-        if (!response.ok) throw new Error("Archivo no encontrado");
+        if (!response.ok) throw new Error("No se pudo cargar archivo.xlsx");
         
-        const arrayBuffer = await response.arrayBuffer();
-        procesarBufferExcel(arrayBuffer);
+        const buffer = await response.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const primeraHoja = workbook.SheetNames[0];
+        const hoja = workbook.Sheets[primeraHoja];
         
-        statusMessage.style.display = "none"; // Ocultar mensaje si cargó bien
+        // Mapeo automático de columnas A, B, C...
+        const jsonRaw = XLSX.utils.sheet_to_json(hoja, { header: "A", defval: "" });
+        
+        allData = [];
+        // Saltamos la fila 0 (Títulos) y procesamos el resto
+        for (let i = 1; i < jsonRaw.length; i++) {
+            const fila = jsonRaw[i];
+            
+            // Si la fila no tiene Organización, Tema ni Concepto, la ignoramos
+            if (!fila['B'] && !fila['C'] && !fila['D']) continue;
+
+            allData.push({
+                codigo: String(fila['A']).trim() || "-",
+                fuente: String(fila['B']).trim() || "General",  // Organización
+                tema: String(fila['C']).trim() || "Sin Tema",   // Tema
+                concepto: String(fila['D']).trim(),             // Concepto
+                precio: fila['E'] || "",                        // Precio
+                notas: String(fila['F']).trim() || ""           // Observaciones
+            });
+        }
+        
+        statusMsg.style.display = "none";
+        iniciarUI();
 
     } catch (error) {
-        console.warn("Carga automática bloqueada (CORS). Requiere carga manual.");
-        statusMessage.textContent = "⚠ Selecciona tu 'archivo.xlsx' manualmente para comenzar.";
-        statusMessage.style.color = "var(--gnc-warning)";
-        fileUploadContainer.style.display = "flex";
+        statusMsg.innerText = "Error: No se encontró 'archivo.xlsx'. Asegúrate de subirlo al servidor.";
+        statusMsg.style.color = "var(--error-red)";
+        console.error(error);
     }
 }
 
-function manejarCargaManual(evento) {
-    const file = evento.target.files[0];
-    const statusMessage = document.getElementById("statusMessage");
-
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        procesarBufferExcel(e.target.result);
-        statusMessage.style.display = "none";
-        document.getElementById("fileUploadContainer").style.display = "none";
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-function procesarBufferExcel(buffer) {
-    const workbook = XLSX.read(buffer, { type: 'array' });
-    const primeraHoja = workbook.SheetNames[0];
-    const hoja = workbook.Sheets[primeraHoja];
-    
-    // Leer todo el excel basado en columnas de la A a la F
-    const jsonRaw = XLSX.utils.sheet_to_json(hoja, { header: "A", defval: "" });
-    
-    allData = [];
-    // Empezamos en i=1 asumiendo que la fila 0 son los Títulos (Código, Org, Tema, etc)
-    for (let i = 1; i < jsonRaw.length; i++) {
-        const fila = jsonRaw[i];
-        
-        // Evitar filas vacías
-        if (!fila['B'] && !fila['C'] && !fila['D']) continue;
-
-        allData.push({
-            codigo: String(fila['A'] || "").trim(),
-            fuente: String(fila['B'] || "").trim() || "General",
-            tema: String(fila['C'] || "").trim() || "Sin Categoría",
-            concepto: String(fila['D'] || "").trim(),
-            precio: fila['E'] || "",
-            notas: String(fila['F'] || "").trim()
-        });
-    }
-
-    iniciarFiltrosUI();
-}
-
-// --- LÓGICA DE FILTROS EN CASCADA ---
-function iniciarFiltrosUI() {
-    // 1. Extraer fuentes únicas
+// 2. INICIAR INTERFAZ Y BOTONES DE ORGANIZACIÓN
+function iniciarUI() {
     const fuentesUnicas = [...new Set(allData.map(d => d.fuente))].filter(f => f).sort();
     const container = document.getElementById('fuente-container');
     container.innerHTML = '';
 
-    // Botón "TODOS"
+    // Botón TODOS
     const btnAll = document.createElement('button');
     btnAll.className = 'fuente-btn active';
     btnAll.innerText = 'TODOS';
@@ -92,7 +63,7 @@ function iniciarFiltrosUI() {
     btnAll.onclick = () => selectFuente('ALL', btnAll);
     container.appendChild(btnAll);
     
-    selectedFuentes = [...fuentesUnicas]; // Inician todos activos
+    selectedFuentes = [...fuentesUnicas]; // Iniciar con todas activas
 
     fuentesUnicas.forEach(f => {
         const btn = document.createElement('button');
@@ -105,6 +76,7 @@ function iniciarFiltrosUI() {
     updateTemas();
 }
 
+// 3. LÓGICA DE SELECCIÓN DE ORGANIZACIÓN
 function selectFuente(fuente, btn) {
     const btnAll = document.getElementById('btn-fuente-all');
     const allButtons = document.querySelectorAll('.fuente-btn');
@@ -130,6 +102,7 @@ function selectFuente(fuente, btn) {
     updateTemas();
 }
 
+// 4. ACTUALIZAR LISTA DE TEMAS (Columna C)
 function updateTemas() {
     const filteredByFuente = allData.filter(d => selectedFuentes.includes(d.fuente));
     const temas = [...new Set(filteredByFuente.map(d => d.tema))].filter(t => t).sort();
@@ -153,6 +126,7 @@ function updateTemas() {
     });
 }
 
+// 5. ACTUALIZAR LISTA DE CONCEPTOS (Columna D)
 function updateSubtema() {
     const temaSelected = document.getElementById('val-tema').value;
     const listSub = document.getElementById('list-subtema');
@@ -163,7 +137,7 @@ function updateSubtema() {
     document.getElementById('val-subtema').value = '';
     listSub.innerHTML = '';
     
-    // Filtrar base de datos
+    // Filtrar por fuentes activas y tema seleccionado
     allData.filter(d => selectedFuentes.includes(d.fuente) && d.tema === temaSelected).forEach(d => {
         if(d.concepto) {
             let item = document.createElement('div');
@@ -180,7 +154,7 @@ function updateSubtema() {
     document.getElementById('result-card').style.display = 'none';
 }
 
-// --- MOSTRAR RESULTADO FINAL ---
+// 6. MOSTRAR RESULTADOS (Columna E y F)
 function showDetails() {
     const temaSelected = document.getElementById('val-tema').value;
     const subSelected = document.getElementById('val-subtema').value;
@@ -193,7 +167,7 @@ function showDetails() {
         document.getElementById('res-org').innerText = item.fuente;
         document.getElementById('res-notes-content').innerText = item.notas || 'Sin observaciones.';
         
-        // Formatear precio
+        // Interpretar precio (número o texto "Consultar")
         let priceNum = Number(item.precio);
         if (!isNaN(priceNum) && item.precio !== "") {
             document.getElementById('res-precio').innerText = `$ ${priceNum.toLocaleString('es-AR')}`;
@@ -205,7 +179,7 @@ function showDetails() {
     }
 }
 
-// --- LIMPIEZA Y RESETS ---
+// 7. LIMPIEZA Y MENÚS DESPLEGABLES
 function resetDropdownsCascade() {
     document.getElementById('val-tema').value = '';
     const dTema = document.getElementById('display-tema');
@@ -231,7 +205,6 @@ function resetForm() {
     closeAllDropdowns();
 }
 
-// --- LÓGICA GRÁFICA DEL MENÚ DESPLEGABLE ---
 function toggleDropdown(listId, displayId, groupId) {
     const list = document.getElementById(listId);
     const display = document.getElementById(displayId);
@@ -250,7 +223,7 @@ function toggleDropdown(listId, displayId, groupId) {
 function selectOption(displayId, inputId, value) {
     const display = document.getElementById(displayId);
     display.innerText = value;
-    display.style.color = "var(--gnc-neon)";
+    display.style.color = "var(--primary-neon)";
     document.getElementById(inputId).value = value;
 }
 
@@ -264,7 +237,7 @@ function closeAllDropdowns() {
     for (let i = 0; i < groups.length; i++) groups[i].classList.remove('active');
 }
 
-// Cerrar al hacer clic afuera
+// Cierra los menús si tocas cualquier parte de la pantalla
 document.addEventListener("click", function(event) {
     if (!event.target.matches('.select-selected')) {
         closeAllDropdowns();
