@@ -33,7 +33,7 @@ async function cargarExcelAutomatico() {
         searchInput.disabled = false; // Habilitar buscador
 
     } catch (error) {
-        console.warn("Carga automática fallida (probablemente bloqueado por CORS o archivo faltante). Requiere carga manual.");
+        console.warn("Carga automática fallida. Requiere carga manual.");
         statusMessage.textContent = "⚠ Por favor, selecciona el archivo PRESUPUESTO V 5.xlsx manualmente.";
         statusMessage.style.color = "#ffc107"; // Amarillo de alerta
         fileUploadContainer.style.display = "flex"; // Mostrar input file
@@ -88,13 +88,10 @@ function realizarBusqueda() {
     for (let i = 1; i < excelData.length; i++) {
         const fila = excelData[i];
         
-        // BÚSQUEDA RESTRINGIDA: Solo en columna D (Concepto) y F (Observaciones)
-        const colD = String(fila['D'] || "").toLowerCase();
-        const colF = String(fila['F'] || "").toLowerCase();
+        // BÚSQUEDA RESTRINGIDA: EXCLUSIVAMENTE en columna D (Concepto)
+        const textoBusqueda = String(fila['D'] || "").toLowerCase();
 
-        const textoBusqueda = `${colD} ${colF}`;
-
-        // Chequear coincidencia de todas las palabras clave
+        // Chequear coincidencia de todas las palabras clave en la columna D
         const coincidenciaExacta = palabrasClave.every(palabra => textoBusqueda.includes(palabra));
 
         if (coincidenciaExacta) {
@@ -142,7 +139,7 @@ function renderizarResultados(resultados, palabrasClave) {
         const precio = fila['E'] || "Consultar";
         const observaciones = fila['F'] || "Sin observaciones.";
 
-        // Aplicar el resaltado SOLO a las columnas donde se hizo la búsqueda
+        // Aplicar el resaltado a las columnas para evidenciar el texto buscado
         const conceptoResaltado = resaltarTexto(concepto, palabrasClave);
         const observacionesResaltadas = resaltarTexto(observaciones, palabrasClave);
 
@@ -167,4 +164,5 @@ function renderizarResultados(resultados, palabrasClave) {
 
         resultsContainer.appendChild(card);
     });
-}
+        }
+        
