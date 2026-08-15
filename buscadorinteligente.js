@@ -6,15 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
 
-    // Habilitar botón si hay texto
     searchInput.addEventListener("input", () => {
         btnBuscar.disabled = searchInput.value.trim().length === 0;
     });
 
-    // Ejecutar búsqueda al hacer clic
     btnBuscar.addEventListener("click", ejecutarBusqueda);
 
-    // Permitir Enter
     searchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && !btnBuscar.disabled) {
             ejecutarBusqueda();
@@ -22,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Cargar archivo.xlsx de forma automática
 async function cargarExcel() {
     const statusMsg = document.getElementById("status-message");
     const searchInput = document.getElementById("searchInput");
@@ -48,26 +44,25 @@ async function cargarExcel() {
             if (precio.toLowerCase().includes("importe neto") || precio === "") continue;
 
             allData.push({
-                organizacion: String(fila['B'] || "").trim() || "General",  // Columna B
-                tema: String(fila['C'] || "").trim() || "General",          // Columna C
-                concepto: concepto,                                         // Columna D
-                precio: fila['E'],                                          // Columna E
-                observaciones: String(fila['F'] || "").trim()               // Columna F
+                organizacion: String(fila['B'] || "").trim() || "General",  
+                tema: String(fila['C'] || "").trim() || "General",          
+                concepto: concepto,                                         
+                precio: fila['E'],                                          
+                observaciones: String(fila['F'] || "").trim()               
             });
         }
         
         statusMsg.style.display = "none";
         searchInput.disabled = false;
-        searchInput.placeholder = "Ej: pilar trifasico...";
+        searchInput.placeholder = "Ej: armado pilar trifásico...";
 
     } catch (error) {
-        statusMsg.innerText = "Error al leer 'archivo.xlsx'. Verifique que esté en la carpeta.";
+        statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error al leer archivo.xlsx';
         statusMsg.style.color = "var(--error-red)";
         console.error(error);
     }
 }
 
-// Ejecutar búsqueda estricta sobre la Columna D (Concepto)
 function ejecutarBusqueda() {
     const query = document.getElementById("searchInput").value.trim().toLowerCase();
     const resultsContainer = document.getElementById("resultsContainer");
@@ -75,29 +70,27 @@ function ejecutarBusqueda() {
 
     if (query === "") return;
 
-    // Tomar hasta 5 palabras clave separadas por espacio
+    // Extraer hasta 5 palabras clave
     const palabras = query.split(/\s+/).filter(p => p.length > 0).slice(0, 5);
-
     const coincidencias = [];
 
     for (const item of allData) {
         const textoConcepto = item.concepto.toLowerCase();
         
-        // Verificar que TODAS las palabras ingresadas se encuentren en el concepto (Columna D)
+        // La fila debe contener TODAS las palabras ingresadas (sin importar el orden)
         const cumpleTodas = palabras.every(palabra => textoConcepto.includes(palabra));
 
         if (cumpleTodas) {
             coincidencias.push(item);
-            if (coincidencias.length >= 5) break; // Máximo 5 resultados
+            if (coincidencias.length >= 5) break; // Límite de 5 resultados
         }
     }
 
     if (coincidencias.length === 0) {
-        resultsContainer.innerHTML = `<div class="no-results">No se encontraron conceptos coincidentes.</div>`;
+        resultsContainer.innerHTML = `<div class="no-results">No se encontraron resultados para su búsqueda.<br><span style="font-size:0.75rem; font-weight:normal; color:rgba(255,255,255,0.5);">Intenta usando menos palabras o sinónimos.</span></div>`;
         return;
     }
 
-    // Renderizar los hasta 5 resultados
     coincidencias.forEach(item => {
         let precioFormat = "$ Consultar";
         let priceNum = Number(item.precio);
@@ -111,7 +104,7 @@ function ejecutarBusqueda() {
         card.className = "result-card";
 
         // Mensaje pre-armado para WhatsApp
-        const mensajeWp = encodeURIComponent(`Hola, necesito asesoramiento / presupuesto sobre el servicio: "${item.concepto}" con precio referencial de ${precioFormat} (${item.organizacion}).`);
+        const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
         card.innerHTML = `
@@ -120,29 +113,35 @@ function ejecutarBusqueda() {
                 <span class="result-price">${precioFormat}</span>
             </div>
             <div class="result-obs">
-                ${item.observaciones ? item.observaciones : "Sin observaciones."}
+                <i data-lucide="info" style="width: 14px; height: 14px; display:inline-block; vertical-align: middle;"></i> 
+                ${item.observaciones ? item.observaciones : "Sin observaciones adicionales."}
             </div>
             <div class="result-details">
-                <div class="detail-row" style="margin-top: 8px;">
-                    <span class="detail-label">Organización:</span> ${item.organizacion}
+                <div class="detail-row">
+                    <span class="detail-label">Organización / Entidad:</span><br> ${item.organizacion}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Tema / Categoría:</span> ${item.tema}
+                    <span class="detail-label">Tema General:</span><br> ${item.tema}
                 </div>
-                <a href="${urlWp}" target="_blank" class="btn-whatsapp">
-                    <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar por WhatsApp
-                </a>
+                
+                <div class="wsp-section">
+                    <span class="wsp-leyenda">¿Queres un presupuesto completo, y a la medida?</span>
+                    <a href="${urlWp}" target="_blank" class="btn-whatsapp">
+                        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Solicitar Presupuesto
+                    </a>
+                </div>
             </div>
         `;
 
-        // Al hacer clic en la tarjeta, se despliegan los detalles y el botón de WhatsApp
         card.addEventListener("click", (e) => {
-            // Evitar conflicto si hace clic directamente en el enlace de WhatsApp
             if (e.target.closest('.btn-whatsapp')) return;
             card.classList.toggle("active");
         });
 
         resultsContainer.appendChild(card);
     });
-          }
-
+    
+    // Renderizar iconos lucide
+    lucide.createIcons();
+}
+    
