@@ -4,15 +4,32 @@ let excelData = [];
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const fileInput = document.getElementById("excelFileInput");
+    const btnBuscar = document.getElementById("btnBuscar");
 
     // 1. Intentar cargar el archivo automáticamente al abrir la página
     cargarExcelAutomatico();
 
-    // 2. Escuchar la carga manual (por si falla la automática)
+    // 2. Escuchar la carga manual
     fileInput.addEventListener("change", manejarCargaManual);
 
-    // 3. Escuchar cada vez que se teclea en el buscador
-    searchInput.addEventListener("input", realizarBusqueda);
+    // 3. Habilitar el botón SOLO si hay más de 2 letras escritas
+    searchInput.addEventListener("input", () => {
+        if (searchInput.value.trim().length >= 2 && excelData.length > 0) {
+            btnBuscar.disabled = false;
+        } else {
+            btnBuscar.disabled = true;
+        }
+    });
+
+    // 4. Ejecutar la búsqueda al hacer clic en el botón
+    btnBuscar.addEventListener("click", realizarBusqueda);
+
+    // 5. Permitir buscar presionando la tecla "Enter"
+    searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !btnBuscar.disabled) {
+            realizarBusqueda();
+        }
+    });
 });
 
 // Función para cargar automáticamente 'PRESUPUESTO V 5.xlsx'
@@ -30,13 +47,13 @@ async function cargarExcelAutomatico() {
         
         statusMessage.textContent = "✓ Base de datos conectada correctamente.";
         statusMessage.style.color = "var(--gnc-success)";
-        searchInput.disabled = false; // Habilitar buscador
+        searchInput.disabled = false; // Habilitar input, pero el botón espera a que escribas
 
     } catch (error) {
         console.warn("Carga automática fallida. Requiere carga manual.");
         statusMessage.textContent = "⚠ Por favor, selecciona el archivo PRESUPUESTO V 5.xlsx manualmente.";
-        statusMessage.style.color = "#ffc107"; // Amarillo de alerta
-        fileUploadContainer.style.display = "flex"; // Mostrar input file
+        statusMessage.style.color = "#ffc107";
+        fileUploadContainer.style.display = "flex";
     }
 }
 
@@ -56,7 +73,6 @@ function manejarCargaManual(evento) {
         statusMessage.style.color = "var(--gnc-success)";
         searchInput.disabled = false;
         document.getElementById("fileUploadContainer").style.display = "none";
-        realizarBusqueda(); // Intentar buscar por si había texto previo
     };
     reader.readAsArrayBuffer(file);
 }
@@ -67,34 +83,37 @@ function procesarBufferExcel(buffer) {
     const primeraHoja = workbook.SheetNames[0];
     const hoja = workbook.Sheets[primeraHoja];
     
-    // Convertir hoja a JSON mapeando columnas a letras (A, B, C...)
+    // Convertir hoja a JSON mapeando columnas a letras
     excelData = XLSX.utils.sheet_to_json(hoja, { header: "A", defval: "" });
 }
 
-// Lógica del buscador
+// Lógica del buscador manual
 function realizarBusqueda() {
     const searchInput = document.getElementById("searchInput").value.trim();
     const resultsContainer = document.getElementById("resultsContainer");
 
-    // SOLUCIÓN: Limpiar pantalla y no buscar si hay menos de 2 letras (Evita sobrecarga y congelamiento)
     if (searchInput.length < 2) {
         resultsContainer.innerHTML = "";
         return;
     }
 
-    // Máximo 5 palabras clave
-    const palabrasClave = searchInput.toLowerCase().split(/\s+/).slice(0, 5);
+    // Dividir palabras, limpiar espacios vacíos y limitar estrictamente a 5 palabras
+    let palabrasClave = searchInput.toLowerCase().split(/\s+/).filter(p => p.length > 0);
+    if (palabrasClave.length > 5) {
+        palabrasClave = palabrasClave.slice(0, 5);
+    }
+
     const resultados = [];
 
-    // Iterar saltando la fila 0 (asumiendo que es el encabezado del Excel)
+    // Iterar saltando la fila 0 (encabezado del Excel)
     for (let i = 1; i < excelData.length; i++) {
         const fila = excelData[i];
         
-        // BÚSQUEDA RESTRINGIDA: EXCLUSIVAMENTE en columna D (Concepto)
-        const textoBusqueda = String(fila['D'] || "").toLowerCase();
+        // RESTRICCIÓN ABSOLUTA: Leer y buscar ÚNICAMENTE en la columna D (Concepto)
+        const conceptoColumnaD = String(fila['D'] || "").toLowerCase();
 
-        // Chequear coincidencia de todas las palabras clave en la columna D
-        const coincidenciaExacta = palabrasClave.every(palabra => textoBusqueda.includes(palabra));
+        // Chequear que todas las palabras ingresadas existan dentro de la celda D
+        const coincidenciaExacta = palabrasClave.every(palabra => conceptoColumnaD.includes(palabra));
 
         if (coincidenciaExacta) {
             resultados.push(fila);
@@ -106,28 +125,29 @@ function realizarBusqueda() {
     renderizarResultados(resultados, palabrasClave);
 }
 
-// SOLUCIÓN AL CRASHEO: Nuevo motor de resaltado que no corrompe etiquetas HTML
+// Resaltador optimizado para no romper etiquetas HTML
 function resaltarTexto(texto, palabrasClave) {
     if (!texto) return "";
     
-    // 1. Filtramos vacíos y escapamos caracteres especiales por si el usuario tipea "(" o "+"
+    // Escapar caracteres especiales y ordenar de mayor a menor longitud
     const palabrasValidas = palabrasClave
         .filter(p => p.length > 0)
-        .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+        .sort((a, b) => b.length - a.length); // Evita errores de superposición
 
     if (palabrasValidas.length === 0) return texto;
 
-    // 2. Hacemos una única pasada de expresión regular usando "|" (O lógico). 
-    // Esto evita que una palabra rompa el span generado por otra palabra.
     const regex = new RegExp(`(${palabrasValidas.join('|')})`, 'gi');
-    
     return texto.replace(regex, `<span class="gnc-highlight">$1</span>`);
 }
 
-// Generar el HTML de las tarjetas de resultados
+// Generar el HTML de las tarjetas
 function renderizarResultados(resultados, palabrasClave) {
     const resultsContainer = document.getElementById("resultsContainer");
     resultsContainer.innerHTML = "";
+
+    // Volver a inicializar los iconos en caso de que se necesiten
+    if(window.lucide) { lucide.createIcons(); }
 
     if (resultados.length === 0) {
         resultsContainer.innerHTML = `<div class="no-results">No se encontraron resultados para esta búsqueda.</div>`;
@@ -135,7 +155,7 @@ function renderizarResultados(resultados, palabrasClave) {
     }
 
     resultados.forEach(fila => {
-        // ASIGNACIÓN DE TODAS LAS COLUMNAS (A HASTA F)
+        // ASIGNACIÓN DE TODAS LAS COLUMNAS REQUERIDAS (A HASTA F)
         const colA = fila['A'] || "-";
         const organizacion = fila['B'] || "No especificado";
         const tema = fila['C'] || "General";
@@ -143,10 +163,10 @@ function renderizarResultados(resultados, palabrasClave) {
         const precio = fila['E'] || "Consultar";
         const observaciones = fila['F'] || "Sin observaciones.";
 
-        // Aplicar el resaltado SOLO a la columna donde buscamos
+        // Aplicar el resaltado SOLO al Concepto (Columna D)
         const conceptoResaltado = resaltarTexto(concepto, palabrasClave);
 
-        // Crear tarjeta mostrando todos los datos extraídos
+        // Crear tarjeta
         const card = document.createElement("div");
         card.className = "result-card";
         
@@ -156,7 +176,7 @@ function renderizarResultados(resultados, palabrasClave) {
                 <span class="result-price">$ ${precio}</span>
             </div>
             <div class="result-body">
-                <p><span class="tag">CÓDIGO/REF (Col A):</span> ${colA}</p>
+                <p><span class="tag">CÓDIGO (Col A):</span> ${colA}</p>
                 <p><span class="tag">ORGANIZACIÓN (Col B):</span> ${organizacion}</p>
                 <p><span class="tag">TEMA (Col C):</span> ${tema}</p>
                 <p style="margin-top: 8px; border-top: 1px dashed rgba(0,212,255,0.2); padding-top: 8px;">
