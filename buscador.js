@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Escuchar la carga manual
     fileInput.addEventListener("change", manejarCargaManual);
 
-    // 3. Habilitar el botón SOLO si hay más de 2 letras escritas
+    // 3. Habilitar el botón SOLO si hay más de 2 letras escritas Y el Excel está cargado
     searchInput.addEventListener("input", () => {
         if (searchInput.value.trim().length >= 2 && excelData.length > 0) {
             btnBuscar.disabled = false;
@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // Función para cargar automáticamente 'PRESUPUESTO V 5.xlsx'
 async function cargarExcelAutomatico() {
     const statusMessage = document.getElementById("statusMessage");
-    const searchInput = document.getElementById("searchInput");
     const fileUploadContainer = document.getElementById("fileUploadContainer");
+    const btnBuscar = document.getElementById("btnBuscar");
+    const searchInput = document.getElementById("searchInput");
 
     try {
         const response = await fetch('PRESUPUESTO V 5.xlsx');
@@ -47,7 +48,11 @@ async function cargarExcelAutomatico() {
         
         statusMessage.textContent = "✓ Base de datos conectada correctamente.";
         statusMessage.style.color = "var(--gnc-success)";
-        searchInput.disabled = false; // Habilitar input, pero el botón espera a que escribas
+        
+        // Si el usuario ya había escrito antes de que cargara, habilitamos el botón
+        if (searchInput.value.trim().length >= 2) {
+            btnBuscar.disabled = false;
+        }
 
     } catch (error) {
         console.warn("Carga automática fallida. Requiere carga manual.");
@@ -61,6 +66,7 @@ async function cargarExcelAutomatico() {
 function manejarCargaManual(evento) {
     const file = evento.target.files[0];
     const statusMessage = document.getElementById("statusMessage");
+    const btnBuscar = document.getElementById("btnBuscar");
     const searchInput = document.getElementById("searchInput");
 
     if (!file) return;
@@ -69,10 +75,15 @@ function manejarCargaManual(evento) {
     reader.onload = function(e) {
         const arrayBuffer = e.target.result;
         procesarBufferExcel(arrayBuffer);
+        
         statusMessage.textContent = "✓ Base de datos cargada manualmente.";
         statusMessage.style.color = "var(--gnc-success)";
-        searchInput.disabled = false;
         document.getElementById("fileUploadContainer").style.display = "none";
+        
+        // Si el usuario ya había escrito antes de subir el archivo, habilitamos el botón
+        if (searchInput.value.trim().length >= 2) {
+            btnBuscar.disabled = false;
+        }
     };
     reader.readAsArrayBuffer(file);
 }
@@ -133,7 +144,7 @@ function resaltarTexto(texto, palabrasClave) {
     const palabrasValidas = palabrasClave
         .filter(p => p.length > 0)
         .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-        .sort((a, b) => b.length - a.length); // Evita errores de superposición
+        .sort((a, b) => b.length - a.length);
 
     if (palabrasValidas.length === 0) return texto;
 
