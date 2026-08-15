@@ -306,4 +306,14 @@ input:disabled {
     0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
     100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
   }
+/* --- RESALTADO DE BÚSQUEDA --- */
+.gnc-highlight {
+    background: rgba(0, 212, 255, 0.25);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0 3px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
 
