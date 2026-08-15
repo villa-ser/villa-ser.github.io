@@ -277,7 +277,20 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 16px; margin-top: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-.btn-social { color: rgba(255,255,255,0.8); font-size: 26px; transition: 0.2s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;}
+
+/* AQUÍ ESTÁ LA CORRECCIÓN: text-decoration: none; agregado */
+.btn-social { 
+    text-decoration: none; 
+    color: rgba(255,255,255,0.8); 
+    font-size: 26px; 
+    transition: 0.2s; 
+    width: 45px; 
+    height: 45px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
 .btn-share { color: rgba(255,255,255,0.5); font-size: 20px;}
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));}
 .whatsapp-pulse { color: #28a745; animation: intense-beat 0.7s infinite alternate;}
@@ -285,5 +298,5 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 @keyframes intense-beat {
     0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
     100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
-    }
+                }
     
