@@ -48,16 +48,17 @@ body {
 /* --- TARJETA CENTRAL (Reemplaza al gnc-container) --- */
 .ngc-card {
     width: 100%;
-    background: rgba(0, 0, 0, 0.0);
+    background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass);
-    border-left: 4px solid var(--ngc-neon); /* AQUÍ ESTÁ EL BORDE AZUL */
+    border-left: 1px solid var(--ngc-neon); /* AQUÍ ESTÁ EL BORDE AZUL */
     border-radius: 16px;
     padding: 25px 20px; /* ESTO ES LO QUE EMPUJA LOS ELEMENTOS HACIA ADENTRO */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
     margin-bottom: 20px;
 }
+
 
 
 .ngc-card-title {
