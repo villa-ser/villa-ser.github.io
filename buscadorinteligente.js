@@ -7,7 +7,7 @@ const gruposSinonimos = [
     ["tomacorriente", "toma", "enchufe", "modulo"],
     ["conductor", "cable", "alambre", "linea"],
     ["jabalina", "electrodo", "tierra"],
-    ["luminaria", "lampara", "foco", "artefacto", "luz"]
+    ["luminaria", "lampara", "foco", "artefacto", "luz"],
     ["instalacion", "montaje", "colocacion", "implementacion", "implantacion", "establecimiento", "puesta en marcha", "conexion", "cambio"],
 ];
 
