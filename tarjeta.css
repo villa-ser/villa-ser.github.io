@@ -142,11 +142,12 @@ h1 {
 .share-container {
   margin-top: 25px;
   display: flex;
-  flex-direction: column; /* NUEVO: Apila los botones verticalmente */
-  align-items: center; /* NUEVO: Centra los botones en el medio */
-  gap: 12px; /* NUEVO: Añade espacio entre los botones */
+  flex-direction: column;
+  align-items: flex-start; /* Esto mueve los botones a la izquierda */
+  gap: 12px;
   animation: fadeIn 1.5s ease-in;
 }
+
 
 /* El .btn-share actual se mantiene igual, no hace falta que lo cambies, 
 pero te aseguras de que el diseño se vea uniforme */
