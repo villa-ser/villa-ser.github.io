@@ -58,3 +58,20 @@ END:VCARD`;
   // Liberamos la memoria
   URL.revokeObjectURL(url);
 }
+
+function compartirTarjeta() {
+  // Verifica si el navegador soporta el menú de compartir nativo
+  if (navigator.share) {
+    navigator.share({
+      title: 'Sergio Villagra - Electricista',
+      text: '¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado Cat III):',
+      url: 'https://villaser.com.ar/tarjeta.html'
+    })
+    .then(() => console.log('Compartido con éxito'))
+    .catch((error) => console.log('Error al compartir', error));
+  } else {
+    // Plan B: Si el navegador no lo soporta (ej. PC de escritorio), abre WhatsApp
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado): https://villaser.com.ar/tarjeta.html");
+    window.open(whatsappUrl, '_blank');
+  }
+}
