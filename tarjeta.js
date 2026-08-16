@@ -27,3 +27,34 @@ function handleSubmit() {
     btn.classList.remove('loading');
   }, 1500);
 }
+// Función para generar y descargar el contacto en formato vCard
+function descargarVCard() {
+  // Aquí definimos los datos exactos que se guardarán en la agenda del cliente
+  const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:Sergio Villagra - Electricista
+ORG:Electricista Habilitado Cat III
+TEL;TYPE=CELL,VOICE,PREF:+5493513559347
+EMAIL:contacto@villaser.com.ar
+URL:https://villaser.com.ar
+NOTE:Idóneo Registro Nro. 20290293899 - 14027
+END:VCARD`;
+
+  // Creamos un archivo virtual tipo Blob con el contenido de la vCard
+  const blob = new Blob([vcard], { type: 'text/vcard' });
+  const url = URL.createObjectURL(blob);
+  
+  // Creamos un enlace temporal (invisible) para forzar la descarga
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = 'Sergio_Villagra.vcf'; // Nombre del archivo que se descargará
+  
+  // Lo agregamos a la web, simulamos el clic y lo borramos
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  // Liberamos la memoria
+  URL.revokeObjectURL(url);
+}
