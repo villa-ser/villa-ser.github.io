@@ -45,18 +45,11 @@ body {
     margin-bottom: 12px;
 }
 
-/* --- TARJETA CENTRAL (Reemplaza al gnc-container) --- */
+/* --- TARJETA CENTRAL (Vuelta invisible para que los elementos usen el 100% del ancho) --- */
 .ngc-card {
     width: 100%;
-    background: var(--ngc-glass);
-    backdrop-filter: var(--ngc-blur);
-    -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass);
-    border-left: 4px solid var(--ngc-neon);
-    border-radius: 16px;
-    padding: 25px 20px; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
     margin-bottom: 20px;
+    /* Se eliminó background, bordes, sombras y padding */
 }
 
 .ngc-card-title {
