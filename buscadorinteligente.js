@@ -5,9 +5,10 @@ const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "llave", "breaker"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
     ["tomacorriente", "toma", "enchufe", "modulo"],
-    ["conductor", "cable", "alambre"],
+    ["conductor", "cable", "alambre", "linea"],
     ["jabalina", "electrodo", "tierra"],
-    ["luminaria", "lampara", "foco", "artefacto"]
+    ["luminaria", "lampara", "foco", "artefacto", "luz"]
+    ["instalacion", "montaje", "colocacion", "implementacion", "implantacion", "establecimiento", "puesta en marcha", "conexion", "cambio"]
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
