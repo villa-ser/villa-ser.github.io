@@ -8,7 +8,7 @@ const gruposSinonimos = [
     ["conductor", "cable", "alambre", "linea"],
     ["jabalina", "electrodo", "tierra"],
     ["luminaria", "lampara", "foco", "artefacto", "luz"]
-    ["instalacion", "montaje", "colocacion", "implementacion", "implantacion", "establecimiento", "puesta en marcha", "conexion", "cambio"]
+    ["instalacion", "montaje", "colocacion", "implementacion", "implantacion", "establecimiento", "puesta en marcha", "conexion", "cambio"],
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
