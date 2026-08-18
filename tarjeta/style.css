@@ -12,7 +12,7 @@
 
 /* GNC STYLE - CONFIGURACIÓN BASE */
 body {
-  background: url('../fondotarjeta.png') no-repeat center center fixed !important;
+  background: url('../img/fondotarjeta.png') no-repeat center center fixed !important;
   background-size: cover !important;
   margin: 0;
   padding: 20px;
