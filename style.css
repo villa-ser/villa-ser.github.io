@@ -15,7 +15,7 @@
 
 body {
     margin: 0;
-    padding: 70px 4px 4px 4px;
+    padding: 80px 4px 4px 4px;
     background: url('img/fondo.png') no-repeat center center fixed;
     background-size: cover;
     width: 100%;
@@ -344,8 +344,8 @@ body {
     top: 15px;       /* Distancia desde el borde superior de la pantalla */
     right: 15px;     /* Distancia desde el borde derecho de la pantalla */
     z-index: 9999;   /* Asegura que siempre esté por encima del resto del contenido */
-    width: 90px;     /* Tamaño ligeramente reducido (original 110px) para no estorbar la lectura */
-    height: 90px;
+    width: 70px;     /* Tamaño ligeramente reducido (original 110px) para no estorbar la lectura */
+    height: 70px;
     border-radius: 8px;
     background: var(--ngc-glass); /* Fondo oscuro para que contraste al scrollear */
     backdrop-filter: var(--ngc-blur); /* Efecto de desenfoque del fondo */
