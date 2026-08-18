@@ -300,7 +300,7 @@ body {
 /* Fila para poner foto a la izquierda y logo a la derecha */
 .hero-header-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     width: 100%;
     margin-bottom: 15px;
