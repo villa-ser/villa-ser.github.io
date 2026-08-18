@@ -1,13 +1,21 @@
+// Inicializar icono de flecha "Volver"
 lucide.createIcons();
 
 let listado = [];
 
 // Funciones del menú desplegable personalizado
 function toggleDropdown(listId, displayId) {
+    // Si el evento existe, detenemos la propagación para evitar cierres accidentales
+    if (window.event) {
+        window.event.stopPropagation();
+    }
+    
     const list = document.getElementById(listId);
     const display = document.getElementById(displayId);
     const isShowing = list.classList.contains('show');
+    
     closeAllDropdowns();
+    
     if (!isShowing) { 
         list.classList.add('show'); 
         display.classList.add('select-arrow-active'); 
@@ -19,6 +27,7 @@ function selectOption(val, text) {
     const hiddenInput = document.getElementById('aparato');
     hiddenInput.value = val;
     hiddenInput.setAttribute('data-text', text);
+    
     closeAllDropdowns();
     actualizarWatts();
 }
@@ -26,14 +35,18 @@ function selectOption(val, text) {
 function closeAllDropdowns() {
     const list = document.getElementById('list-aparato');
     const display = document.getElementById('display-aparato');
-    if(list) list.classList.remove('show');
-    if(display) display.classList.remove('select-arrow-active');
+    if (list) list.classList.remove('show');
+    if (display) display.classList.remove('select-arrow-active');
 }
 
+// CORRECCIÓN: Usamos closest() para que los toques en móviles no fallen
 document.addEventListener("click", function(event) {
-    if (!event.target.matches('.select-selected')) closeAllDropdowns();
+    if (!event.target.closest('.custom-select')) {
+        closeAllDropdowns();
+    }
 });
 
+// Lógica de cálculo 
 function actualizarWatts() {
     const val = document.getElementById('aparato').value;
     if(val == "0") {
@@ -55,7 +68,7 @@ function resetAll() {
 
 function agregarItem() {
     const inputObj = document.getElementById('aparato');
-    if(inputObj.value == "0") return;
+    if (inputObj.value == "0") return;
     
     const nombre = inputObj.getAttribute('data-text'); 
     const w = parseFloat(inputObj.value);
@@ -64,6 +77,13 @@ function agregarItem() {
     const kwhMensual = (w * h * (d/7) * 30) / 1000;
     
     listado.push({ id: Date.now(), nombre, kwhMensual });
+    
+    // Reseteamos el selector visualmente tras agregar
+    inputObj.value = "0";
+    inputObj.setAttribute('data-text', "");
+    document.getElementById('display-aparato').innerText = "Seleccionar...";
+    document.getElementById('watts_display').innerText = "0 Watts (Aprox)";
+    
     render();
 }
 
@@ -87,8 +107,10 @@ function render() {
 // LÓGICA DE TARIFAS SEGMENTADAS ESCALONADAS
 function recalcularTotal() {
     const totalKwh = listado.reduce((sum, i) => sum + i.kwhMensual, 0);
-    const tipoTarifa = document.querySelector('input[name="tarifa"]:checked').value;
+    const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
+    if (!tarifaRadio) return; // Prevención de errores
     
+    const tipoTarifa = tarifaRadio.value;
     let costoEnergiaPura = 0;
 
     if (totalKwh > 0) {
@@ -99,7 +121,7 @@ function recalcularTotal() {
             } else if (totalKwh <= 500) {
                 let bloque1 = 120 * 147.82742;
                 let excedente120 = totalKwh - 120;
-                let bloque2 = Math.min(excedente120, 180) * 191.10731; // Cubre los "stes 30" y "stes 150"
+                let bloque2 = Math.min(excedente120, 180) * 191.10731; // Cubre hasta 300
                 let excedente300 = Math.max(0, totalKwh - 300);
                 let bloque3 = excedente300 * 278.37436;
                 costoEnergiaPura = bloque1 + bloque2 + bloque3;
@@ -142,15 +164,14 @@ function recalcularTotal() {
     }
 
     // MULTIPLICADOR DE IMPUESTOS (21% IVA + 15% Tasas Municipales/Provinciales)
-    // El cuadro tarifario refleja la energía sin impuestos; con este coeficiente mantenemos tu funcionalidad original.
     const FACTOR_IMPUESTOS = 1.36; 
-    
     const totalPesos = Math.round(costoEnergiaPura * FACTOR_IMPUESTOS);
 
     document.getElementById('total-kwh').innerText = totalKwh.toFixed(2);
     document.getElementById('total-pesos').innerText = "$ " + totalPesos.toLocaleString('es-AR');
 }
 
+// Función para el botón de compartir del footer
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
@@ -161,8 +182,8 @@ function compartirWeb() {
     .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
+    // Plan B: Si está en PC, abre WhatsApp Web
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
     window.open(whatsappUrl, '_blank');
   }
 }
-
