@@ -46,3 +46,26 @@ function compartirWeb() {
     window.open(whatsappUrl, '_blank');
   }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Revisamos si el usuario viene de tocar el botón "Volver"
+    if (sessionStorage.getItem('abrirMenu') === 'true') {
+        
+        const menuBotones = document.getElementById('menu-botones');
+        const iconoMenu = document.getElementById('icono-menu');
+        
+        if (menuBotones) {
+            // Le quitamos la clase que lo oculta para que aparezca desplegado
+            menuBotones.classList.remove('menu-oculto');
+            
+            // Opcional: Cambiamos el icono de flecha hacia arriba (si tu CSS lo maneja así)
+            if (iconoMenu) {
+                iconoMenu.classList.remove('fa-chevron-down');
+                iconoMenu.classList.add('fa-chevron-up'); 
+            }
+        }
+
+        // Limpiamos la memoria para que si entra otro día, el menú empiece cerrado
+        sessionStorage.removeItem('abrirMenu');
+    }
+});
