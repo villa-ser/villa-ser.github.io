@@ -65,7 +65,7 @@ function compartirTarjeta() {
     navigator.share({
       title: 'Sergio Villagra - Electricista',
       text: '¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado Cat III):',
-      url: 'https://villaser.com.ar/tarjeta.html'
+      url: 'https://villaser.com.ar/tarjeta/index.html'
     })
     .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
