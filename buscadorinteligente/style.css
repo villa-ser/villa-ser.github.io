@@ -321,8 +321,8 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     top: 15px;
     right: 15px;
     z-index: 9999;
-    width: 90px;
-    height: 90px;
+    width: 70px;
+    height: 70px;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.4); /* Fondo cristal oscuro */
     backdrop-filter: blur(10px);
