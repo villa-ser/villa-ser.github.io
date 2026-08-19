@@ -4,269 +4,274 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Electricista Habilitado Categoria III en Córdoba Capital | Villaser</title>
+    <title>Servicios Eléctricos | Villaser Categoría III Córdoba</title>
+    <meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
+    <meta name="keywords" content="electricista matriculado, servicios en instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
+    <meta name="author" content="Sergio Adrian Villagra">
 
-<!-- Descripción de la página (El texto que aparece debajo del título en los resultados de búsqueda) -->
-<!-- Máximo recomendado: 155-160 caracteres -->
-<meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
-
-<!-- Palabras clave (Ayudan a contextualizar la página para distintos motores de búsqueda) -->
-<meta name="keywords" content="electricista matriculado, servicios en instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
-
-<!-- Autor de la página -->
-<meta name="author" content="Sergio Adrian Villagra">
-
-<!-- Etiquetas Open Graph (Optimizan cómo se ve el enlace cuando lo compartís por WhatsApp, Facebook, etc.) -->
-<meta property="og:title" content="Villaser Electricista | Instalaciones Eléctricas Seguras">
-<meta property="og:description" content="Electricista matriculado Categoría III habilitado por ERSeP. Brindamos soluciones y seguridad eléctrica en Córdoba Capital.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="es_AR">
-<!-- Recordá reemplazar estos valores con tus enlaces reales -->
-<meta property="og:url" content="https://villaser.com.ar">
-<meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
-    
+    <meta property="og:title" content="Villaser Electricista | Servicios y Soluciones">
+    <meta property="og:description" content="Conocé todos los servicios eléctricos certificados que brindo en Córdoba Capital. Seguridad y cumplimiento de la Ley 10.281.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:url" content="https://villaser.com.ar/servicios">
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.png">
     
-    <!-- Librería para los iconos desplegables -->
+    <!-- Librerías de iconos -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- NUEVO: Librería de FontAwesome para las redes sociales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Vinculación al archivo CSS de servicios -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- LOGO FLOTANTE PARA SUBPÁGINAS -->
+    <!-- LOGO FLOTANTE -->
     <div class="hero-logo-icon">
-        <!-- Ojo al ../ antes de img -->
         <img src="../img/logo.png" alt="Villaser Logo">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
     </div>
+
     <div class="gnc-wrapper">
         
         <!-- BOTÓN DE VOLVER -->
         <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
-    Volver al Inicio
-</a>
+            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
+            Volver al Inicio
+        </a>
 
-        <h1 class="gnc-main-title">Servicios Eléctricos</h1>
+        <h1 class="gnc-main-title">Mis Servicios</h1>
 
+        <!-- BANNER INTRODUCTORIO MEJORADO -->
         <div class="gnc-banner">
-            <span><p>Asesor e instalador eléctrico <span class="neon">residencial y comercial</span>.</p></span><p><span class="neon">Córdoba, Barrio Los Álamos</span></p>
-            <span><p>Todas las instalaciones eléctricas requieren de una planeación a detalle, elección de materiales confiables, ejecución y una terminación de calidad.</p></span>
+            <div style="text-align: center; margin-bottom: 5px;">
+                <i data-lucide="map-pin" style="color: var(--gnc-neon); width: 20px; height: 20px;"></i>
+                <span style="display: inline; font-size: 0.85rem; letter-spacing: 2px;"> CÓRDOBA CAPITAL</span>
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; margin-bottom: 10px;">
+                Toda instalación requiere planificación, materiales confiables y una ejecución bajo 
+                <span class="neon">estrictas normas de seguridad (Ley 10.281)</span>.
+            </p>
+            <a href="#formulario-contacto" class="gnc-btn-outline">
+                <i data-lucide="clipboard-list"></i> Pedir Presupuesto Rápido
+            </a>
         </div>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="FileCheck"></i></div>
-                    <span>Apto Eléctrico</span>
+        <!-- LISTA DE SERVICIOS (ACORDEONES) -->
+        <div class="servicios-container">
+            
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="FileCheck"></i></div>
+                        <span>Apto Eléctrico</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>Verificación de la instalación conforme a las <span class="neon">normas de seguridad</span>. Incluye memoria técnica y gráfica con fotos.</p>
+                    <p>Documento obligatorio emitido exclusivamente por un <span class="neon">Electricista Habilitado (Categoría III)</span> para viviendas y comercios.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20Apto%20Eléctrico." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar por Apto
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Es la verificación de toda la instalación conforme a las <span class="neon">normas de seguridad</span> emitidas (nacional, provincial y municipal)</p>
-                <p>Describe la instalación, materiales usados, se realiza una <span class="neon">memoria técnica y gráfica</span> con fotos incluido</p>
-                <p>Falsear datos, viola directamente la <span class="neon">ley de seguridad eléctrica</span>.</p>
-                <p>Solo un <span class="neon">profesional con incumbencia</span> lo emite, para viviendas y comercios es un "Electricista Habilitado Categoría III"</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="Cable"></i></div>
-                    <span>Cableado</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="Cable"></i></div>
+                        <span>Cableado y Recableado</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>El sistema de venas por donde llega la energía. Materiales deficientes o mal canalizados pueden producir <span class="neon">sobrecalentamiento o incendios</span>.</p>
+                    <p>Realizamos adecuaciones y recableados completos bajo normas vigentes.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20trabajo%20de%20cableado." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Cotizar Cableado
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Parte vital del sistema (<span class="neon">venas</span>) por el llega energía a cada rincón de la vivienda; patio, asador, baño, living, etc</p>
-                <p>Por eso es importante que si los materiales son de baja calidad, sin pasar pruebas, normas, con malos conexionados y canalizaciones deficientes. Puede producir <span class="neon">calentamiento, derretimiento, cortocircuito</span> y hasta generar un <b>incendio.</b></p>
-                <p>Al momento de adecuarlos, mejorarlos o cambiarlos es mejor que lo realice un <span class="neon">profesional calificado</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="ZapOff"></i></div>
-                    <span>Diferenciales</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="ZapOff"></i></div>
+                        <span>Diferenciales (Disyuntores)</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>Cortan el suministro si detectan una <span class="neon">fuga eléctrica</span>, siendo vitales para proteger la vida de las personas.</p>
+                    <p>Diagnóstico, prueba de salto y reemplazo seguro por profesional calificado.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20un%20disyuntor." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar Disyuntor
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Cortan el suministro automáticamente si detectan una <span class="neon">fuga eléctrica</span>. Son de vital importancia para proteger a los usuarios.</p>
-                <p>Se ubican en cajas especiales, accesibles y visibles para ser inspeccionados o actuar de forma manual. Si tienen mala calidad de materiales pueden generar <span class="neon">calentamiento, derretirse, cortocircuitos e incendios</span>.</p>
-                <p>Al momento de adecuarlos, mejorarlos o cambiarlos es mejor que lo realice un <span class="neon">profesional calificado</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="Construction"></i></div>
-                    <span>Luz de Obra</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="Construction"></i></div>
+                        <span>Luz de Obra</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>Conexión provisoria segura y normalizada (monofásica o trifásica) para uso de maquinaria de construcción.</p>
+                    <p>Asegurá tu obra cumpliendo con las exigencias técnicas de EPEC / ERSeP.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20armar%20un%20pilar%20para%20Luz%20de%20Obra." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Solicitar Luz de Obra
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Es la <span class="neon">conexión provisoria</span> para uso de aparatos y maquinaria de construcción.</p>
-                <p>Eso, no significa que se puede sobrepasar por alto alguna norma de seguridad. Siempre se debe de <span class="neon">cumplir con la ley</span>.</p>
-                <p>Al momento de instalarlos o cambiarlos es mejor que lo realice un <span class="neon">profesional calificado</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="Lamp"></i></div>
-                    <span>Luminaria</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="Lamp"></i></div>
+                        <span>Luminaria y Artefactos</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>Instalación de iluminación interior, exterior, spots LED y ventiladores de techo con anclaje seguro.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20instalar%20luminarias/artefactos." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar Instalación
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Se extienden por todos los ambientes brindando una <span class="neon">iluminación adecuada</span> a nuestro lugar de confort y actividad.</p>
-                <p>También deben cumplir normas, no están exentos, deben tener su <span class="neon">sello de seguridad eléctrica</span>.</p>
-                <p>Al momento de adecuarlos, mejorarlos o cambiarlos es mejor que lo realice un <span class="neon">profesional calificado</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="Layout"></i></div>
-                    <span>Plano Eléctrico</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="Layout"></i></div>
+                        <span>Plano Eléctrico</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <p>Memoria descriptiva gráfica de la instalación. Detalla el recorrido de circuitos y bocas.</p>
+                    <p><span class="neon">Fundamental</span> para futuras ampliaciones o resolución rápida de fallas.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20confeccionar%20un%20Plano%20Eléctrico." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar por Planos
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Es la <span class="neon">memoria descriptiva gráfica</span> de la instalación eléctrica. Se detalla el recorrido de los circuitos y los puntos de consumo energético.</p>
-                <p>La copia es <span class="neon">fundamental</span>, en caso de fallas o ampliación, se puede consultar y resolver problemas rápidos.</p>
-                <p>Al momento de generar el plano eléctrico, lo ideal es que lo realice un <span class="neon">profesional</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="ArrowDownToLine"></i></div>
-                    <span>Puesta a Tierra</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="ArrowDownToLine"></i></div>
+                        <span>Puesta a Tierra (Jabalina)</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">      
+                    <p>Sistema encargado de disipar fugas de corriente al suelo. Actúa junto al diferencial para <span class="neon">salvar vidas</span>.</p>
+                    <p>Medición de resistencia y colocación de dispersores bajo normas.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20la%20Puesta%20a%20Tierra." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar Puesta a Tierra
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">      
-                <p>Se encarga de <span class="neon">disipar una fuga de corriente</span> y actuando junto al diferencial cortan el suministro automáticamente.</p>
-                <p>Lo extraordinario del sistema es su automatismo. ¡Cumplir con sus exigencias técnico-legales <span class="neon">salvan vidas</span>!</p>
-                <p>Cuando se elijan cual poner o diagnosticarlos, pedí por un <span class="neon">asesor profesional electricista</span>.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="ToggleRight"></i></div>
-                    <span>Termomagnéticas</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="ToggleRight"></i></div>
+                        <span>Tableros y Termomagnéticas</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">       
+                    <p>Armado, normalización y mantenimiento de tableros eléctricos. Protecciones contra <span class="neon">cortocircuitos y sobrecargas</span>.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20tengo%20un%20problema%20en%20el%20tablero/termomagnética." target="_blank" class="btn-micro-wa">
+                        <i class="fab fa-whatsapp"></i> Consultar Tableros
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">       
-                <p>Cortan la energía automáticamente por falla de <span class="neon">sobrecalentamiento o cortocircuito</span>. Protegen el sistema eléctrico.</p>
-                <p>Una mala elección de termomagnética, puede causar <span class="neon">graves daños</span> a la propiedad.</p>
-                <p>Siempre pide por un <span class="neon">profesional</span> para verificarlas y diagnosticarlas.</p>
-            </div>
-        </details>
+            </details>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="PlugZap"></i></div>
-                    <span>Tomacorrientes</span>
+            <details name="servicios">
+                <summary>
+                    <div class="summary-title">
+                        <div class="icon-box"><i data-lucide="HardHat"></i></div>
+                        <span>Más Soluciones...</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </summary>
+                <div class="gnc-content">
+                    <ul style="list-style-type: none; padding-left: 0; font-size: 0.85rem; line-height: 1.8;">
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Visita de inspección y diagnóstico</li>
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Búsqueda de fugas de corriente</li>
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Canalización externa (cablecanal)</li>
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Sensores de movimiento / fotocontroles</li>
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Porteros eléctricos y cerraduras</li>
+                        <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Empalmes subterráneos</li>
+                    </ul>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Están por todos los ambientes, alimentando nuestros aparatos. Son la <span class="neon">parte visible</span>.</p>
-                <p>Elegir e instalarlos conforme a las <span class="neon">buenas prácticas técnico-legales</span> es de suma importancia.</p>
-                <p>Nos vinculan con la energía. Por ello lo debe realizar un <span class="neon">idóneo en la profesión</span>.</p>
-            </div>
-        </details>
+            </details>
+        </div>
 
-        <details name="servicios">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="HardHat"></i></div>
-                    <span>Más Servicios</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p><span class="neon">Visita de inspección técnica y diagnóstico</span><br>Documentación, certificación y servicio de medición<br><span class="neon">Acometidas y tableros</span><br>Canalización embutida, externa, cablecanal<br><span class="neon">Recableado de vivienda pre-existente</span><br>Colocación de protección y comando<br>Tablero de comando de motores<br>Mantenimiento de tableros eléctricos<br><span class="neon">Sensores de movimiento y/o presencia</span><br>Revisión de fugas de corriente<br>Portero eléctrico unifamiliar<br>Cerradura eléctrica<br>Extractor de aire en baño y cocina<br><span class="neon">Armado de pilar de obra</span> Monofásico y Trifásico<br>Colocación de elementos dispersor (Pat) MTS<br>Empalme de cable subterráneo.<br>Ventilador de techo<br>Luz de emergencia<br>Spot Led<br>Más servicios eléctricos ...</p>
-            </div>
-        </details>
-
-        <div class="gnc-form-container">
+        <!-- FORMULARIO DE CONTACTO -->
+        <div class="gnc-form-container" id="formulario-contacto">
             <div class="form-header">
                 <div class="form-title">
-                    <div class="icon-box"><i data-lucide="Send"></i></div>
-                    <span>¿Presupuesto? Consulta aquí</span>
+                    <div class="icon-box"><i data-lucide="mail"></i></div>
+                    <span>Formulario de Consulta</span>
                 </div>
             </div>
             
             <div class="form-body">
+                <p style="font-size: 0.8rem; margin-bottom: 15px; text-align: center;">Completá los datos y te responderé a la brevedad con el asesoramiento necesario.</p>
                 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
                 
                 <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
                     <div class="field-group">
-                        <label>Nombre</label>
-                        <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
+                        <label>Nombre y Apellido</label>
+                        <input type="text" name="entry.1265296596" placeholder="¿Cómo te llamas?" required>
                     </div>
                     <div class="field-group">
-                        <label>WhatsApp</label>
+                        <label>Número de WhatsApp</label>
                         <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
                     </div>
                     <div class="field-group">
-                        <label>Consulta</label>
-                        <textarea name="entry.615194603" placeholder="Describe aquí el trabajo o problema..." rows="3" required></textarea> </div>
-                    <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
+                        <label>Detalle del trabajo o problema</label>
+                        <textarea name="entry.615194603" placeholder="Contame qué necesitas o qué falla presenta la instalación..." rows="3" required></textarea> 
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnSubmit">
+                        <i data-lucide="send" style="width: 16px; margin-right: 5px;"></i> Enviar Consulta
+                    </button>
                 </form>
 
                 <div id="success-message">
-                    <div style="color: var(--gnc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.1rem;">✓ CONSULTA ENVIADA</div>
-                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;">Sergio se pondrá en contacto pronto.</p>
-                    <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
+                    <div style="color: var(--gnc-success); font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; letter-spacing: 1px;">
+                        <i class="fa-solid fa-circle-check"></i> CONSULTA ENVIADA
+                    </div>
+                    <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: white;">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
+                    <button onclick="resetForm()" class="gnc-btn-outline" style="width: 100%;">Enviar otra consulta</button>
                 </div>
             </div>
         </div>
-                <!-- BLOQUE FOOTER: Redes Sociales -->
-        <div class="footer-gnc-compact">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social">
-                <i class="far fa-envelope"></i>
-            </a>
-            <a href="https://instagram.com/villaserelectricista?igshid=OGQ5ZDc2ODk2ZA==" target="_blank" class="btn-social">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="javascript:void(0)" onclick="compartirWeb()" class="btn-social btn-share">
-    <i class="fa-solid fa-share-nodes"></i>
-</a>
 
-            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse">
-                <i class="fab fa-whatsapp"></i>
-            </a>
+        <!-- FOOTER REDES SOCIALES -->
+        <div class="footer-gnc-compact">
+            <a href="mailto:contacto@villaser.com.ar" class="btn-social"><i class="far fa-envelope"></i></a>
+            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social"><i class="fab fa-facebook-f"></i></a>
+            <a href="javascript:void(0)" onclick="compartirWeb()" class="btn-social btn-share"><i class="fa-solid fa-share-nodes"></i></a>
+            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse"><i class="fab fa-whatsapp"></i></a>
         </div>
         
     </div>
 
-    <!-- Vinculación al archivo JS de servicios -->
+    <!-- JS -->
     <script src="script.js"></script>
 </body>
-  </html>
+    </html>
+    
