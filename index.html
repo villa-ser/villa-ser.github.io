@@ -20,7 +20,7 @@
     
     <link rel="icon" type="image/png" href="img/perfil-logo.png">
     
-    <!-- LIBRERÍA DE ÍCONOS ACTUALIZADA A LA VERSIÓN 6.5.1 -->
+    <!-- LIBRERÍA DE ÍCONOS ACTUALIZADA -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -69,26 +69,25 @@
             </div>
         </div>
 
-        <!-- 3. SERVICIOS RÁPIDOS (AHORA SON ENLACES INTERACTIVOS) -->
+        <!-- 3. SERVICIOS RÁPIDOS (AHORA ABREN NUBE FLOTANTE) -->
         <div class="separador-bloque">
             <div class="ngc-quick-services">
-                <a href="servicios/index.html" class="quick-item">
+                <button onclick="abrirModalServicio('apto')" class="quick-item">
                     <i class="fa-solid fa-file-signature"></i>
                     <span>Apto Eléctrico</span>
-                </a>
-                <!-- Este botón va directo a WhatsApp para urgencias -->
-                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20tengo%20un%20problema%20urgente%20de%20fugas/cortocircuito%20en%20mi%20instalación." target="_blank" class="quick-item">
-                    <i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d;"></i>
+                </button>
+                <button onclick="abrirModalServicio('fugas')" class="quick-item">
+                    <i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d; box-shadow: 0 0 8px rgba(255,77,77,0.4);"></i>
                     <span>Fugas y Cortos</span>
-                </a>
-                <a href="servicios/index.html" class="quick-item">
+                </button>
+                <button onclick="abrirModalServicio('tableros')" class="quick-item">
                     <i class="fa-solid fa-charging-station"></i>
                     <span>Tableros</span>
-                </a>
-                <a href="servicios/index.html" class="quick-item">
+                </button>
+                <button onclick="abrirModalServicio('obra')" class="quick-item">
                     <i class="fa-solid fa-helmet-safety"></i>
                     <span>Luz de Obra</span>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -158,6 +157,20 @@
 
     </div>
 
+    <!-- 8. NUBE FLOTANTE (MODAL DE SERVICIOS RÁPIDOS) -->
+    <div id="modalServicio" class="ngc-modal-overlay oculto">
+        <div class="ngc-modal-card">
+            <button class="btn-cerrar-modal" onclick="cerrarModalServicio()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="modal-icono" class="modal-icono"></div>
+            <h3 id="modal-titulo" class="modal-titulo">Título</h3>
+            <p id="modal-desc" class="modal-desc">Descripción</p>
+            <a href="#" id="modal-wsp" target="_blank" class="hero-cta-whatsapp" style="margin-top: 15px;">
+                <i class="fab fa-whatsapp"></i> Consultar Servicio
+            </a>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
