@@ -16,7 +16,7 @@
 body {
     margin: 0;
     padding: 80px 4px 4px 4px;
-    background: url('img/1000136911.png') no-repeat center center fixed; /* Asegúrate de que el nombre del fondo sea este */
+    background: url('img/fondo.png') no-repeat center center fixed; /* Asegúrate de que el nombre del fondo sea este */
     background-size: cover;
     width: 100%;
     min-height: 100vh;
