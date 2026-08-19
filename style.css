@@ -57,7 +57,7 @@ body {
     border: var(--ngc-border-glass); border-radius: 12px; border-left: 4px solid var(--ngc-neon);
     color: #ffffff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase;
     letter-spacing: 1px; font-weight: 600; transition: all 0.3s ease; text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); outline: none; cursor: pointer;
 }
 
 .ngc-btn i { color: var(--ngc-neon); font-size: 1rem; }
@@ -73,8 +73,9 @@ body {
 }
 
 .quick-item {
+    background: transparent; border: none; font-family: inherit; outline: none;
     display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
-    text-decoration: none; transition: transform 0.2s ease; cursor: pointer;
+    text-decoration: none; transition: transform 0.2s ease; cursor: pointer; padding: 0;
 }
 .quick-item:hover { transform: translateY(-3px); }
 .quick-item i {
@@ -143,6 +144,39 @@ body {
     stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
 }
 
+/* --- NUBE FLOTANTE (MODAL DE SERVICIOS) --- */
+.ngc-modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.ngc-modal-overlay.activo { opacity: 1; visibility: visible; }
+
+.ngc-modal-card {
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); border-radius: 16px;
+    border-left: 4px solid var(--ngc-neon); padding: 30px 20px;
+    text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    width: 90%; max-width: 350px; position: relative;
+    transform: scale(0.8); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.ngc-modal-overlay.activo .ngc-modal-card { transform: scale(1); }
+
+.btn-cerrar-modal {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; width: 32px; height: 32px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: 0.3s; font-size: 1.1rem;
+}
+.btn-cerrar-modal:hover { background: var(--ngc-neon); color: black; box-shadow: 0 0 10px var(--ngc-neon); }
+
+.modal-icono { font-size: 3rem; margin-bottom: 12px; filter: drop-shadow(0 0 8px rgba(0,212,255,0.5)); }
+.modal-titulo { color: white; font-size: 1.25rem; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 1px; }
+.modal-desc { color: rgba(255,255,255,0.85); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px; }
+.oculto { display: none !important; }
+
 /* --- MENÚ OCULTO / VISIBLE --- */
 .menu-oculto { display: none; }
 .menu-visible { display: block; animation: fadeInMenu 0.4s ease forwards; }
@@ -167,4 +201,4 @@ body {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
-                
+    
