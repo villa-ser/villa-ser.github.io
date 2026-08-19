@@ -4,31 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Precios de mano de obra - Electricista Habilitado Categoria III en Córdoba Capital | Villaser</title>
+    <title>Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III</title>
+    <meta name="description" content="Consultá nuestro buscador de costos referenciales de mano de obra para instalaciones eléctricas en Córdoba. Valores estimativos del sector.">
+    <meta name="keywords" content="precios electricista, mano de obra, costos instalacion electrica, cordoba capital, presupuesto electrico, pilar de obra, apto electrico">
+    <meta name="author" content="Sergio Adrian Villagra">
 
-<!-- Descripción de la página (El texto que aparece debajo del título en los resultados de búsqueda) -->
-<!-- Máximo recomendado: 155-160 caracteres -->
-<meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
-
-<!-- Palabras clave (Ayudan a contextualizar la página para distintos motores de búsqueda) -->
-<meta name="keywords" content="electricista matriculado, instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
-
-<!-- Autor de la página -->
-<meta name="author" content="Sergio Adrian Villagra">
-
-<!-- Etiquetas Open Graph (Optimizan cómo se ve el enlace cuando lo compartís por WhatsApp, Facebook, etc.) -->
-<meta property="og:title" content="Villaser Electricista | Instalaciones Eléctricas Seguras">
-<meta property="og:description" content="Electricista matriculado Categoría III habilitado por ERSeP. Brindamos soluciones y seguridad eléctrica en Córdoba Capital.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="es_AR">
-<!-- Recordá reemplazar estos valores con tus enlaces reales -->
-<meta property="og:url" content="https://villaser.com.ar">
-<meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
-    
-    
     <link rel="icon" type="image/png" href="../img/perfil-logo.png">
     
-    <!-- Librerías de Iconos y SheetJS -->
+    <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -37,60 +20,82 @@
 </head>
 <body>
 
-<!-- LOGO FLOTANTE PARA SUBPÁGINAS -->
+    <!-- LOGO FLOTANTE -->
     <div class="hero-logo-icon">
-        <!-- Ojo al ../ antes de img -->
         <img src="../img/logo.png" alt="Villaser Logo">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
     </div>
 
-    
     <div class="main-wrapper">
-        <!-- BOTÓN DE VOLVER (Estilo NGC) -->
+        
+        <!-- BOTÓN DE VOLVER -->
         <div class="separador-bloque">
             <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
-    Volver al Inicio
-</a>
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
+            </a>
         </div>
-<div class="ngc-card">
-            <h2 class="ngc-card-title" style="text-align: center; margin-bottom: 15px;">Buscador de Costos</h2>
-            
-            <!-- AVISO EXTENDIDO SOBRE PRECIOS REFERENCIALES -->
-            <div class="info-banner">
-                <div class="banner-title">
-                    <i data-lucide="shield-alert" style="width: 16px; height: 16px;"></i>
-                    Valores Referenciales
-                </div>
-                <div class="banner-text">
-                    Los precios aquí mostrados son <strong>estrictamente estimativos y de carácter orientativo</strong>. Son una recopilación de diversas entidades del sector eléctrico.<br><br>
-                    <strong>Aclaración:</strong> Estos valores no incluyen materiales, traslados, ni contemplan la complejidad o riesgos específicos de cada obra.
-                </div>
-            </div>
 
-            <div id="status-message" class="status-msg">
-                <i class="fas fa-spinner fa-spin"></i> Sincronizando base de datos...
+        <!-- TÍTULO PRINCIPAL -->
+        <h2 class="gnc-main-title">Buscador de Costos</h2>
+        <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-muted); margin-top: -5px; margin-bottom: 15px;">
+            Exclusivo Mano de Obra
+        </p>
+        
+        <!-- AVISO LEGAL/REFERENCIAL -->
+        <div class="info-banner">
+            <div class="banner-title">
+                <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
             </div>
+            <div class="banner-text">
+                Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
+                <span style="color: white; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni contemplan riesgos o complejidades específicas de obra.</span>
+            </div>
+        </div>
 
-            <!-- CAJA DE BÚSQUEDA -->
-            <div class="input-section">
-                <div class="input-group">
-                    <label>Buscar Concepto de Mano de Obra</label>
-                    <div class="search-box-row">
-                        <input type="text" id="searchInput" placeholder="Ej: pilar trifasico..." disabled>
-                        <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
+        <div id="status-message" class="status-msg">
+            <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
+        </div>
+
+        <!-- CAJA DE BÚSQUEDA Y TAGS -->
+        <div class="input-section">
+            <div class="input-group">
+                <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué trabajo necesitás cotizar?</label>
+                <div class="search-box-row">
+                    <input type="text" id="searchInput" placeholder="Ej: pilar trifásico, tablero, apto..." disabled>
+                    <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
+                </div>
+                
+                <!-- NUEVO: BÚSQUEDA RÁPIDA -->
+                <div class="quick-tags-container">
+                    <span class="quick-tag-label">Búsquedas rápidas:</span>
+                    <div class="quick-tags">
+                        <span class="tag" onclick="busquedaRapida('Apto electrico')">Apto Eléctrico</span>
+                        <span class="tag" onclick="busquedaRapida('Pilar')">Armado de Pilar</span>
+                        <span class="tag" onclick="busquedaRapida('Tablero')">Tableros</span>
+                        <span class="tag" onclick="busquedaRapida('Boca')">Bocas y Tomas</span>
                     </div>
-                    <span style="font-size: 0.65rem; color: var(--ngc-text-muted); margin-top: 6px; display: block;">
-                        * Ingresa hasta 5 palabras clave (Ej: <em>durlock caja boca</em>).
-                    </span>
                 </div>
             </div>
+        </div>
 
-            <!-- CONTENEDOR DE RESULTADOS -->
-            <div id="resultsContainer" class="results-wrapper"></div>
-</div>
+        <!-- CONTENEDOR DE RESULTADOS -->
+        <div id="resultsContainer" class="results-wrapper"></div>
+
+        <!-- CTA ALTERNATIVO SI NO ENCUENTRA O QUIERE ALGO EXACTO -->
+        <div class="separador-bloque" style="margin-top: 20px;">
+            <div class="ngc-custom-quote">
+                <div class="quote-content">
+                    <h3>¿Presupuesto exacto?</h3>
+                    <p>Contactame por WhatsApp, enviame detalles o fotos del trabajo y te armo una cotización precisa y a medida.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20viendo%20tu%20buscador%20y%20necesito%20un%20presupuesto%20a%20medida." target="_blank" class="btn-submit">
+                        <i class="fab fa-whatsapp" style="font-size: 1.1rem; margin-right: 5px;"></i> Presupuesto Personalizado
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- FOOTER COMPACTO -->
         <div class="footer-gnc-compact">
             <a href="mailto:contacto@villaser.com.ar" class="btn-social"><i class="far fa-envelope"></i></a>
@@ -101,7 +106,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons();</script>
     <script src="script.js"></script>
 </body>
 </html>
