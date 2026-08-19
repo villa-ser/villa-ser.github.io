@@ -1,17 +1,20 @@
 let allData = [];
 
-// 1. DICCIONARIO DE SINÓNIMOS (Puedes agregar los que necesites)
+// 1. DICCIONARIO DE SINÓNIMOS
 const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "llave", "breaker"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
-    ["tomacorriente", "toma", "enchufe", "modulo"],
-    ["conductor", "cable", "alambre", "linea"],
-    ["jabalina", "electrodo", "tierra"],
-    ["luminaria", "lampara", "foco", "artefacto", "luz"],
-    ["instalacion", "montaje", "colocacion", "implementacion", "implantacion", "establecimiento", "puesta en marcha", "conexion", "cambio"],
+    ["tomacorriente", "toma", "enchufe", "modulo", "boca"],
+    ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
+    ["jabalina", "electrodo", "tierra", "pat", "puesta a tierra"],
+    ["luminaria", "lampara", "foco", "artefacto", "luz", "aplique"],
+    ["instalacion", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
+    ["pilar", "acometida", "monofasico", "trifasico"],
+    ["apto", "certificado", "epec", "ersep"]
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+    lucide.createIcons();
     cargarExcel();
 
     const searchInput = document.getElementById("searchInput");
@@ -21,14 +24,32 @@ document.addEventListener("DOMContentLoaded", () => {
         btnBuscar.disabled = searchInput.value.trim().length === 0;
     });
 
-    btnBuscar.addEventListener("click", ejecutarBusqueda);
+    btnBuscar.addEventListener("click", () => {
+        // Efecto visual de carga
+        const textoOriginal = btnBuscar.innerHTML;
+        btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+        setTimeout(() => {
+            ejecutarBusqueda();
+            btnBuscar.innerHTML = textoOriginal;
+        }, 200);
+    });
 
     searchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && !btnBuscar.disabled) {
-            ejecutarBusqueda();
+            btnBuscar.click();
         }
     });
 });
+
+// FUNCIÓN: Búsqueda rápida por Tags
+function busquedaRapida(termino) {
+    const searchInput = document.getElementById("searchInput");
+    const btnBuscar = document.getElementById("btnBuscar");
+    
+    searchInput.value = termino;
+    btnBuscar.disabled = false;
+    btnBuscar.click();
+}
 
 async function cargarExcel() {
     const statusMsg = document.getElementById("status-message");
@@ -65,25 +86,18 @@ async function cargarExcel() {
         
         statusMsg.style.display = "none";
         searchInput.disabled = false;
-        searchInput.placeholder = "Ej: armado pilar trifásico...";
 
     } catch (error) {
-        statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error al leer archivo.xlsx';
+        statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error de conexión con la base de datos.';
         statusMsg.style.color = "var(--error-red)";
         console.error(error);
     }
 }
 
-// 2. FUNCIÓN PARA LIMPIAR TEXTO (Quita acentos, símbolos y pasa a minúsculas)
 function normalizarTexto(texto) {
-    return texto
-        .normalize("NFD") // Descompone caracteres con acentos
-        .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, ""); // Elimina cualquier símbolo, dejando solo letras, números y espacios
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
 }
 
-// 3. EXPANDIR BÚSQUEDA CON SINÓNIMOS
 function obtenerSinonimos(palabra) {
     let opciones = [palabra];
     for (const grupo of gruposSinonimos) {
@@ -94,7 +108,6 @@ function obtenerSinonimos(palabra) {
     return opciones;
 }
 
-// 4. ALGORITMO DE LEVENSHTEIN (Calcula qué tan diferentes son dos palabras)
 function distanciaLevenshtein(a, b) {
     const matriz = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
     for (let i = 0; i <= a.length; i++) matriz[i][0] = i;
@@ -103,31 +116,18 @@ function distanciaLevenshtein(a, b) {
     for (let i = 1; i <= a.length; i++) {
         for (let j = 1; j <= b.length; j++) {
             const costo = a[i - 1] === b[j - 1] ? 0 : 1;
-            matriz[i][j] = Math.min(
-                matriz[i - 1][j] + 1,      // Eliminación
-                matriz[i][j - 1] + 1,      // Inserción
-                matriz[i - 1][j - 1] + costo // Sustitución
-            );
+            matriz[i][j] = Math.min(matriz[i - 1][j] + 1, matriz[i][j - 1] + 1, matriz[i - 1][j - 1] + costo);
         }
     }
     return matriz[a.length][b.length];
 }
 
-// 5. EVALUAR SIMILITUD (Tolera errores según el largo de la palabra)
 function sonSimilares(buscada, objetivo) {
     if (buscada === objetivo) return true;
-    
-    // Si la palabra buscada está contenida dentro del objetivo (Ej: "termi" en "termomagnetica")
-    // Se exige un mínimo de 3 letras para no hacer match falso con letras sueltas ("a", "el")
     if (buscada.length >= 3 && objetivo.includes(buscada)) return true;
-
-    // Calculamos el margen de error permitido (1 error cada 4 letras)
     const maxErrores = Math.floor(buscada.length / 4);
-    if (maxErrores === 0) return false; // Palabras muy cortas deben coincidir exacto o por 'includes'
-
-    // Si la diferencia de tamaño es muy grande, ni siquiera calculamos Levenshtein
+    if (maxErrores === 0) return false;
     if (Math.abs(buscada.length - objetivo.length) > maxErrores + 1) return false;
-
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
@@ -139,7 +139,6 @@ function ejecutarBusqueda() {
 
     if (queryNormalizada.trim() === "") return;
 
-    // Extraer hasta 5 palabras clave (ya limpias de acentos y símbolos)
     const palabrasBusqueda = queryNormalizada.split(/\s+/).filter(p => p.length > 0).slice(0, 5);
     const coincidencias = [];
 
@@ -147,12 +146,8 @@ function ejecutarBusqueda() {
         const conceptoNormalizado = normalizarTexto(item.concepto);
         const palabrasDelConcepto = conceptoNormalizado.split(/\s+/);
         
-        // La fila debe cumplir con TODAS las palabras ingresadas
         const cumpleTodas = palabrasBusqueda.every(palabraBuscada => {
-            // Expandimos la palabra ingresada por el usuario para buscar también sus sinónimos
             const opcionesBuscadas = obtenerSinonimos(palabraBuscada);
-
-            // Verificamos si alguna de las opciones (o sinónimos) coincide con alguna palabra del excel
             return opcionesBuscadas.some(opcion => {
                 return palabrasDelConcepto.some(palabraConcepto => sonSimilares(opcion, palabraConcepto));
             });
@@ -160,12 +155,12 @@ function ejecutarBusqueda() {
 
         if (cumpleTodas) {
             coincidencias.push(item);
-            if (coincidencias.length >= 5) break; // Límite de 5 resultados
+            if (coincidencias.length >= 10) break; 
         }
     }
 
     if (coincidencias.length === 0) {
-        resultsContainer.innerHTML = `<div class="no-results">No se encontraron resultados para su búsqueda.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted);">Intenta usar palabras clave más generales. (Ej: "pilar" en vez de "armado de pilar completo")</span></div>`;
+        resultsContainer.innerHTML = `<div class="no-results">No se encontraron precios referenciales.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Intentá usar palabras más cortas o generales. (Ej: "tablero", "boca", "jabalina")</span></div>`;
         return;
     }
 
@@ -181,30 +176,34 @@ function ejecutarBusqueda() {
         const card = document.createElement("div");
         card.className = "result-card";
 
-        const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial es de ${precioFormat}.`);
+        const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
+        // CORRECCIÓN: Ahora dice "Solo Mano de Obra"
         card.innerHTML = `
             <div class="result-header">
                 <span class="result-concept">${item.concepto}</span>
-                <span class="result-price">${precioFormat}</span>
+                <div class="price-container">
+                    <span class="result-price">${precioFormat}</span>
+                    <span class="price-note">Solo Mano de Obra</span>
+                </div>
             </div>
             <div class="result-obs">
-                <i data-lucide="info" style="width: 14px; height: 14px; display:inline-block; vertical-align: middle;"></i> 
-                ${item.observaciones ? item.observaciones : "Sin observaciones adicionales."}
+                <i data-lucide="info" style="width: 14px; height: 14px; display:inline-block; vertical-align: middle; color: var(--ngc-neon);"></i> 
+                ${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación."}
+                <span style="display:block; font-size:0.7rem; color:var(--warning-amber); margin-top:4px;">Toca para ver detalles</span>
             </div>
             <div class="result-details">
                 <div class="detail-row">
-                    <span class="detail-label">Organización / Entidad:</span><br> ${item.organizacion}
+                    <span class="detail-label">Entidad Referencia:</span><br> ${item.organizacion}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Tema General:</span><br> ${item.tema}
+                    <span class="detail-label">Categoría:</span><br> ${item.tema}
                 </div>
                 
                 <div class="wsp-section">
-                    <span class="wsp-leyenda">¿Querés un presupuesto completo y a la medida?</span>
                     <a href="${urlWp}" target="_blank" class="btn-whatsapp">
-                        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Solicitar Presupuesto
+                        <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar Viabilidad
                     </a>
                 </div>
             </div>
@@ -218,25 +217,17 @@ function ejecutarBusqueda() {
         resultsContainer.appendChild(card);
     });
     
-    // Renderizar iconos lucide
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-                        }
-                        
-// Función para el botón de compartir del footer
+    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+}
+
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
-      title: 'Villaser - Electricista Habilitado',
-      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
-      url: 'https://villaser.com.ar'
-    })
-    .then(() => console.log('Compartido con éxito'))
-    .catch((error) => console.log('Error al compartir', error));
+      title: 'Villaser - Buscador de Precios',
+      text: 'Buscador de precios referenciales para trabajos eléctricos en Córdoba:',
+      url: 'https://villaser.com.ar/buscadorinteligente'
+    }).catch(console.error);
   } else {
-    // Plan B: Si está en PC, abre WhatsApp Web
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
-    window.open(whatsappUrl, '_blank');
+    window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-      }
+}
