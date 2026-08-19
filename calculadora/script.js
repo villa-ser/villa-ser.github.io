@@ -1,11 +1,26 @@
+            
 // Inicializar icono de flecha "Volver"
 lucide.createIcons();
 
 let listado = [];
 
+// Listeners para los Sliders (Actualizan el texto al moverlos)
+document.addEventListener("DOMContentLoaded", () => {
+    const sliderHoras = document.getElementById("horas");
+    const labelHoras = document.getElementById("horas-val");
+    sliderHoras.addEventListener("input", (e) => {
+        labelHoras.innerText = e.target.value + " hs";
+    });
+
+    const sliderDias = document.getElementById("dias");
+    const labelDias = document.getElementById("dias-val");
+    sliderDias.addEventListener("input", (e) => {
+        labelDias.innerText = e.target.value + " días";
+    });
+});
+
 // Funciones del menú desplegable personalizado
 function toggleDropdown(listId, displayId) {
-    // Si el evento existe, detenemos la propagación para evitar cierres accidentales
     if (window.event) {
         window.event.stopPropagation();
     }
@@ -39,20 +54,20 @@ function closeAllDropdowns() {
     if (display) display.classList.remove('select-arrow-active');
 }
 
-// CORRECCIÓN: Usamos closest() para que los toques en móviles no fallen
+// Cerrar dropdown al tocar fuera
 document.addEventListener("click", function(event) {
     if (!event.target.closest('.custom-select')) {
         closeAllDropdowns();
     }
 });
 
-// Lógica de cálculo 
+// Lógica de cálculo básico por aparato
 function actualizarWatts() {
     const val = document.getElementById('aparato').value;
     if(val == "0") {
-        document.getElementById('watts_display').innerText = "0 Watts (Aprox)";
+        document.getElementById('watts_display').innerText = "0 Watts de potencia";
     } else {
-        document.getElementById('watts_display').innerText = val + " Watts (Aprox)";
+        document.getElementById('watts_display').innerText = val + " Watts de potencia";
     }
 }
 
@@ -61,8 +76,15 @@ function resetAll() {
     const inputObj = document.getElementById('aparato');
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
-    document.getElementById('display-aparato').innerText = "Seleccionar...";
-    document.getElementById('watts_display').innerText = "0 Watts (Aprox)";
+    document.getElementById('display-aparato').innerText = "Seleccionar artefacto...";
+    document.getElementById('watts_display').innerText = "0 Watts de potencia";
+    
+    // Resetear sliders
+    document.getElementById("horas").value = 4;
+    document.getElementById("horas-val").innerText = "4 hs";
+    document.getElementById("dias").value = 7;
+    document.getElementById("dias-val").innerText = "7 días";
+    
     render();
 }
 
@@ -72,8 +94,11 @@ function agregarItem() {
     
     const nombre = inputObj.getAttribute('data-text'); 
     const w = parseFloat(inputObj.value);
-    const h = parseFloat(document.querySelector('input[name="horas"]:checked').value);
-    const d = parseFloat(document.querySelector('input[name="dias"]:checked').value);
+    
+    // Ahora tomamos los valores desde los sliders
+    const h = parseFloat(document.getElementById('horas').value);
+    const d = parseFloat(document.getElementById('dias').value);
+    
     const kwhMensual = (w * h * (d/7) * 30) / 1000;
     
     listado.push({ id: Date.now(), nombre, kwhMensual });
@@ -81,8 +106,8 @@ function agregarItem() {
     // Reseteamos el selector visualmente tras agregar
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
-    document.getElementById('display-aparato').innerText = "Seleccionar...";
-    document.getElementById('watts_display').innerText = "0 Watts (Aprox)";
+    document.getElementById('display-aparato').innerText = "Seleccionar artefacto...";
+    document.getElementById('watts_display').innerText = "0 Watts de potencia";
     
     render();
 }
@@ -98,17 +123,25 @@ function render() {
     listado.forEach(item => {
         const div = document.createElement('div');
         div.className = 'item-row';
-        div.innerHTML = `<div class="item-info"><strong>${item.nombre}</strong><span>${item.kwhMensual.toFixed(1)} kWh/mes</span></div><button class="btn-delete" onclick="eliminar(${item.id})">🗑️</button>`;
+        div.innerHTML = `
+            <div class="item-info">
+                <strong>${item.nombre}</strong>
+                <span><i class="fa-solid fa-bolt" style="font-size:0.6rem;"></i> ${item.kwhMensual.toFixed(1)} kWh agregados al mes</span>
+            </div>
+            <button class="btn-delete" onclick="eliminar(${item.id})">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        `;
         lista.appendChild(div);
     });
     recalcularTotal();
 }
 
-// LÓGICA DE TARIFAS SEGMENTADAS ESCALONADAS
+// LÓGICA DE TARIFAS SEGMENTADAS ESCALONADAS EPEC
 function recalcularTotal() {
     const totalKwh = listado.reduce((sum, i) => sum + i.kwhMensual, 0);
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
-    if (!tarifaRadio) return; // Prevención de errores
+    if (!tarifaRadio) return; 
     
     const tipoTarifa = tarifaRadio.value;
     let costoEnergiaPura = 0;
@@ -121,7 +154,7 @@ function recalcularTotal() {
             } else if (totalKwh <= 500) {
                 let bloque1 = 120 * 147.82742;
                 let excedente120 = totalKwh - 120;
-                let bloque2 = Math.min(excedente120, 180) * 191.10731; // Cubre hasta 300
+                let bloque2 = Math.min(excedente120, 180) * 191.10731; 
                 let excedente300 = Math.max(0, totalKwh - 300);
                 let bloque3 = excedente300 * 278.37436;
                 costoEnergiaPura = bloque1 + bloque2 + bloque3;
@@ -175,15 +208,14 @@ function recalcularTotal() {
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
-      title: 'Villaser - Electricista Habilitado',
-      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
-      url: 'https://villaser.com.ar'
+      title: 'Villaser - Calculadora de Consumo',
+      text: 'Evaluá el gasto de tus electrodomésticos con la calculadora de Sergio Villagra:',
+      url: 'https://villaser.com.ar/calculadora'
     })
-    .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
-    // Plan B: Si está en PC, abre WhatsApp Web
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
+    // Plan B: WhatsApp Web
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
 }
