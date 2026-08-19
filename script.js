@@ -1,32 +1,36 @@
 // villaser.github.io - Lógica JS
-// Inicialización del entorno web
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Villaser Gestión: Interfaz cargada correctamente.");
     
-    // --- Lógica para el menú desplegable "Explorar Navegación" ---
+    // Lógica para el menú desplegable "Explorar"
     const btnExplorar = document.getElementById('btn-explorar');
     const menuBotones = document.getElementById('menu-botones');
     const iconoMenu = document.getElementById('icono-menu');
 
-    // Verificamos que los elementos existan en la página antes de agregar el evento
     if (btnExplorar && menuBotones && iconoMenu) {
         btnExplorar.addEventListener('click', () => {
-            // Comprobamos si el menú está oculto actualmente
             const estaOculto = menuBotones.classList.contains('menu-oculto');
             
             if (estaOculto) {
-                // Si está oculto, lo mostramos y rotamos la flecha
                 menuBotones.classList.remove('menu-oculto');
                 menuBotones.classList.add('menu-visible');
                 iconoMenu.classList.add('icono-rotado');
             } else {
-                // Si está visible, lo ocultamos y devolvemos la flecha a su posición original
                 menuBotones.classList.remove('menu-visible');
                 menuBotones.classList.add('menu-oculto');
                 iconoMenu.classList.remove('icono-rotado');
             }
         });
+    }
+
+    // Lógica para mantener el menú abierto si vuelve atrás
+    if (sessionStorage.getItem('abrirMenu') === 'true') {
+        if (menuBotones && iconoMenu) {
+            menuBotones.classList.remove('menu-oculto');
+            menuBotones.classList.add('menu-visible');
+            iconoMenu.classList.add('icono-rotado'); 
+        }
+        sessionStorage.removeItem('abrirMenu');
     }
 });
 
@@ -46,26 +50,3 @@ function compartirWeb() {
     window.open(whatsappUrl, '_blank');
   }
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Revisamos si el usuario viene de tocar el botón "Volver"
-    if (sessionStorage.getItem('abrirMenu') === 'true') {
-        
-        const menuBotones = document.getElementById('menu-botones');
-        const iconoMenu = document.getElementById('icono-menu');
-        
-        if (menuBotones) {
-            // Le quitamos la clase que lo oculta para que aparezca desplegado
-            menuBotones.classList.remove('menu-oculto');
-            
-            // Opcional: Cambiamos el icono de flecha hacia arriba (si tu CSS lo maneja así)
-            if (iconoMenu) {
-                iconoMenu.classList.remove('fa-chevron-down');
-                iconoMenu.classList.add('fa-chevron-up'); 
-            }
-        }
-
-        // Limpiamos la memoria para que si entra otro día, el menú empiece cerrado
-        sessionStorage.removeItem('abrirMenu');
-    }
-});
