@@ -9,13 +9,20 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+    background-color: #121212; /* Pinta el fondo base de gris oscuro/negro */
+    overscroll-behavior-y: none; /* Elimina el rebote blanco al llegar al final en celulares */
+}
+
 body {
     margin: 0; padding: 80px 4px 4px 4px;
-    background: url('img/fondo.png') no-repeat center center fixed;
+    /* Agregamos el #121212 antes de la url de la imagen por si la imagen tarda en cargar */
+    background: #121212 url('img/fondo.png') no-repeat center center fixed;
     background-size: cover; width: 100%; min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden; display: flex; justify-content: center; 
 }
+
 
 .main-wrapper {
     width: 100%; max-width: 500px; padding: 15px;
