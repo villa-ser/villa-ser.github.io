@@ -1,21 +1,21 @@
 /* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC APLICADO) --- */
 :root {
     --gnc-neon: #00d4ff; 
-    --gnc-glass: rgba(0, 0, 0, 0.4); /* Cristal oscuro del diseño original */
-    --gnc-blur: blur(10px); /* Desenfoque más intenso */
-    --gnc-border: 1px solid rgba(0, 212, 255, 0.3); /* Borde cian sutil */
+    --gnc-glass: rgba(0, 0, 0, 0.4); 
+    --gnc-blur: blur(10px); 
+    --gnc-border: 1px solid rgba(0, 212, 255, 0.3); 
     --gnc-text: #ffffff;
-    --gnc-text-muted: rgba(255, 255, 255, 0.7); /* Para textos secundarios */
-    --gnc-bg-input: rgba(0, 0, 0, 0.6); /* Fondo de input más oscuro para contraste */
-    --gnc-success: #28a745; /* VERDE RESPETADO */
+    --gnc-text-muted: rgba(255, 255, 255, 0.8); 
+    --gnc-bg-input: rgba(0, 0, 0, 0.6); 
+    --gnc-success: #28a745; 
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     margin: 0;
-    padding: 80px 15px 15px 15px; /* Padding superior para mantener estructura de PC/Móvil */
-    background: url('../img/fondo.png') no-repeat center center fixed;
+    padding: 80px 15px 15px 15px; 
+    background: url('../img/fondo.png') no-repeat center center fixed; /* Asegura el mismo fondo oscuro de red */
     background-size: cover; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--gnc-text);
@@ -31,82 +31,73 @@ body {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 500px; /* Mantiene la proporción de tarjeta en PC */
+    max-width: 500px; 
     margin: 0;
     padding: 0;
 }
 
-/* --- ESTILO DEL TÍTULO PRINCIPAL --- */
+/* --- TÍTULO PRINCIPAL --- */
 .gnc-main-title {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--gnc-neon);
     text-align: center;
-    margin: 10px 0 15px 0;
-    line-height: 1.1;
+    margin: 5px 0 10px 0;
     text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
     animation: fadeIn 0.6s ease;
 }
 
-/* --- CONTENEDORES (Banners, Acordeones y Formularios) CON ESTILO NGC --- */
+/* --- CONTENEDORES GLASS --- */
 .gnc-banner, details, .gnc-form-container {
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
-    border-radius: 16px; /* Ajustado a 16px como la tarjeta original */
-    border-left: 4px solid var(--gnc-neon); /* Franja neón lateral */
+    border-radius: 16px; 
+    border-left: 4px solid var(--gnc-neon); 
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05); /* Sombra 3D */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 212, 255, 0.05); 
 }
 
-/* Excluimos el icono de whatsapp del hover global para no pisar su verde */
-.gnc-banner:hover i:not(.fa-whatsapp), details:hover i, .gnc-form-container:hover i {
-    filter: drop-shadow(0 0 5px var(--gnc-neon));
-    transition: filter 0.3s ease;
+/* El contenedor de servicios agrupa los acordeones para darles espacio */
+.servicios-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Efecto focus al abrir un acordeón */
+details[open] {
+    border-color: var(--gnc-neon);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 25px rgba(0, 212, 255, 0.15);
 }
 
 .gnc-banner {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
 }
 
-.gnc-banner p { margin: 0; }
-
-.gnc-banner span {
-    display: block;
-    font-size: 0.90rem;
-    line-height: 1.3;
-}
-
-.gnc-banner span:first-child {
-    color: var(--gnc-neon);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-}
-
-/* --- ESTILOS DE ACORDEÓN (details/summary) Y FORMULARIOS --- */
+/* --- ESTILOS DE ACORDEÓN (details/summary) --- */
 summary, .form-header {
-    padding: 15px 20px; 
+    padding: 16px 20px; 
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    font-size: 0.9rem;
-    min-height: 45px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
 }
-
-summary { cursor: pointer; list-style: none; }
 summary::-webkit-details-marker { display: none; }
 
 .summary-title, .form-title {
@@ -115,23 +106,102 @@ summary::-webkit-details-marker { display: none; }
     gap: 12px;
     color: var(--gnc-neon);
     text-shadow: 0 0 5px rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
 .gnc-content, .form-body {
     padding: 5px 20px 20px 20px;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    line-height: 1.6;
     color: var(--gnc-text-muted);
     animation: fadeIn 0.4s ease;
 }
 
-/* --- CAMPOS DE ENTRADA (Inputs) --- */
-.field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 15px;
+.gnc-content p {
+    margin-bottom: 12px;
 }
+
+/* --- BOTONES Y CTAS --- */
+
+/* Botón Outline para el banner y formularios */
+.gnc-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--gnc-neon);
+    border-radius: 12px;
+    color: var(--gnc-neon);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.gnc-btn-outline:hover {
+    background: rgba(0, 212, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+}
+
+/* Mini botón de WhatsApp dentro de los servicios */
+.btn-micro-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: rgba(37, 211, 102, 0.15);
+    border: 1px solid #25D366;
+    border-radius: 8px;
+    color: #25D366;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-micro-wa:hover {
+    background: #25D366;
+    color: white;
+    box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
+}
+
+/* Botón Submit del form */
+.btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 10px;
+    background: var(--gnc-glass);
+    border: var(--gnc-border);
+    border-radius: 12px;
+    border-left: 4px solid var(--gnc-neon);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--gnc-neon);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    color: var(--gnc-neon);
+}
+
+/* --- FORMULARIOS (Inputs) --- */
+.field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
 
 label {
     font-size: 0.75rem;
@@ -143,12 +213,13 @@ label {
 
 input, textarea {
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 14px;
     background: var(--gnc-bg-input);
     border: 1px solid rgba(0, 212, 255, 0.2);
     border-radius: 12px;
     color: white;
     font-family: inherit;
+    font-size: 0.9rem;
     outline: none;
     transition: 0.3s;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
@@ -160,63 +231,10 @@ input:focus, textarea:focus {
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
-/* --- BOTÓN SUBMIT (Igualado a los botones del menú NGC) --- */
-.btn-submit {
-    position: relative;
-    width: 100%;
-    padding: 14px 10px;
-    background: var(--gnc-glass);
-    backdrop-filter: var(--gnc-blur);
-    -webkit-backdrop-filter: var(--gnc-blur);
-    border: var(--gnc-border);
-    border-radius: 12px;
-    border-left: 4px solid var(--gnc-neon);
-    color: #ffffff;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    overflow: hidden;
-    margin-top: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.btn-submit:hover {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
-    color: var(--gnc-neon);
-    transform: translateY(-2px);
-}
-
-.btn-submit.loading {
-    color: transparent;
-    pointer-events: none;
-}
-
-.btn-submit.loading::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    top: 50%;
-    left: 50%;
-    margin: -10px 0 0 -10px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top-color: var(--gnc-neon);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-/* MENSAJE DE ÉXITO (Mantiene su verde original adaptado al cristal) */
 #success-message {
     display: none;
     text-align: center;
-    padding: 15px;
-    color: var(--gnc-success);
-    font-weight: bold;
+    padding: 20px;
     background: rgba(40, 167, 69, 0.1);
     border: 1px solid var(--gnc-success);
     border-radius: 12px;
@@ -225,20 +243,14 @@ input:focus, textarea:focus {
 }
 
 /* --- CLASES DE UTILIDAD E ICONOS --- */
-.neon {
-    color: var(--gnc-neon) !important;
-    text-shadow: 0 0 5px rgba(0, 212, 255, 0.4);
-    font-weight: 600;
-}
-
+.neon { color: var(--gnc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(0, 212, 255, 0.3); }
 .icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); }
 
-@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- BOTÓN VOLVER AL INICIO --- */
+/* --- BOTÓN VOLVER --- */
 .gnc-btn-back {
     display: inline-flex;
     align-items: center;
@@ -246,7 +258,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     padding: 10px 16px;
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
-    -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border);
     border-radius: 12px;
     color: var(--gnc-neon);
@@ -257,14 +268,12 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
     letter-spacing: 1px;
     transition: all 0.3s ease;
     align-self: flex-start;
-    margin-bottom: 10px;
-    animation: fadeIn 0.4s ease;
+    margin-bottom: 5px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .gnc-btn-back:hover {
     background: rgba(0, 212, 255, 0.15);
-    border-color: var(--gnc-neon);
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
     color: var(--gnc-text);
     transform: translateX(-5px); 
@@ -272,113 +281,25 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 
 /* --- FOOTER REDES SOCIALES --- */
 .footer-gnc-compact {
-    width: 100%; 
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 12px 0; 
-    background: var(--gnc-glass);
-    backdrop-filter: var(--gnc-blur);
-    -webkit-backdrop-filter: var(--gnc-blur);
-    border: var(--gnc-border);
-    border-radius: 16px;
-    margin-top: auto; 
+    width: 100%; display: flex; justify-content: space-around; align-items: center;
+    padding: 12px 0; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
+    border: var(--gnc-border); border-radius: 16px; margin-top: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .btn-social {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.8); 
-    font-size: 26px; 
-    transition: all 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
+    text-decoration: none; color: rgba(255, 255, 255, 0.8); font-size: 26px; 
+    transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
+    width: 45px; height: 45px;
 }
+.btn-social:hover { color: var(--gnc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6)); }
+.whatsapp-pulse { color: var(--gnc-success); animation: beat 0.7s infinite alternate; }
+@keyframes beat { 0% { transform: scale(0.95); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(40, 167, 69, 0.8)); } }
 
-.btn-social i {
-    width: auto;
-    height: auto;
-}
-
-.btn-share {
-    color: rgba(255, 255, 255, 0.5); 
-}
-
-.btn-social:hover {
-    color: var(--gnc-neon); 
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
-}
-
-/* --- WHATSAPP (VERDE RESPETADO EXACTAMENTE IGUAL) --- */
-.whatsapp-pulse {
-    color: var(--gnc-success);
-    animation: intense-beat 0.7s infinite alternate;
-}
-
-.whatsapp-pulse:hover {
-    color: #34d058;
-    filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8));
-}
-
-@keyframes intense-beat {
-    0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
-    100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
-}
-
-/* =========================================
-   LOGO FLOTANTE (ARRIBA A LA DERECHA)
-   ========================================= */
-
-.hero-logo-icon {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 9999;
-    width: 70px;
-    height: 70px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.4); /* Fondo cristal oscuro */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-.hero-logo-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-/* Animación del borde neón del logo flotante */
-.hero-neon-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.hero-neon-rect {
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: #00d4ff; /* Color celeste neón */
-    stroke-width: 3px;
-    vector-effect: non-scaling-stroke;
-    filter: drop-shadow(0 0 4px #00d4ff);
-    stroke-dasharray: 100% 300%; 
-    animation: run-border 3s linear infinite;
-}
-
-@keyframes run-border {
-    from { stroke-dashoffset: 0%; }
-    to { stroke-dashoffset: -400%; }
-}
+/* --- LOGO FLOTANTE --- */
+.hero-logo-icon { position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px; border-radius: 8px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 5px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
+.hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-neon-rect { width: 100%; height: 100%; fill: none; stroke: var(--gnc-neon); stroke-width: 3px; stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite; }
+@keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
+                              
