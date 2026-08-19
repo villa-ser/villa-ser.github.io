@@ -149,11 +149,19 @@ body {
 }
 
 .quick-item {
+.quick-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 8px;
+    text-decoration: none; /* Quita el subrayado de los enlaces */
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.quick-item:hover {
+    transform: translateY(-3px); /* Pequeño salto al pasar el dedo/mouse */
 }
 
 .quick-item i {
@@ -163,6 +171,12 @@ body {
     padding: 12px;
     border-radius: 50%;
     border: 1px solid rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.quick-item:hover i {
+    background: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
 }
 
 .quick-item span {
