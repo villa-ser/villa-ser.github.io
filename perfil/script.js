@@ -1,19 +1,39 @@
-// Inicializar los iconos de Lucide
-lucide.createIcons();
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Inicializar los iconos de Lucide
+    lucide.createIcons();
 
-// Función para el botón de compartir del footer
+    // 2. LÓGICA DE UX: Auto-cierre de Acordeones (Historia)
+    // Evita que la pantalla se vuelva excesivamente larga en celulares
+    const accordions = document.querySelectorAll('details[name="historia"]');
+    
+    accordions.forEach(accordion => {
+        accordion.addEventListener('click', (e) => {
+            // Si el acordeón está cerrado y va a abrirse...
+            if (!accordion.open) {
+                // Cerramos todos los demás
+                accordions.forEach(otherAccordion => {
+                    if (otherAccordion !== accordion) {
+                        otherAccordion.removeAttribute('open');
+                    }
+                });
+            }
+        });
+    });
+});
+
+// 3. Función para el botón de compartir
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
-      title: 'Villaser - Electricista Habilitado',
-      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
-      url: 'https://villaser.com.ar'
+      title: 'CV - Sergio Villagra Electricista',
+      text: 'Te comparto el currículum y certificaciones de Sergio Villagra, Electricista Cat III:',
+      url: 'https://villaser.com.ar/perfil'
     })
-    .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
-    // Plan B: Si está en PC, abre WhatsApp Web
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
+    // Plan B: WhatsApp Web
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto el CV de Sergio Villagra, Electricista Cat III en Córdoba: https://villaser.com.ar/perfil");
     window.open(whatsappUrl, '_blank');
   }
 }
+
