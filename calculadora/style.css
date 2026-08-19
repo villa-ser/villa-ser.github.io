@@ -15,19 +15,29 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Agregamos el color oscuro al fondo base y quitamos el rebote */
+html {
+    background-color: #121212; 
+    overscroll-behavior-y: none; 
+}
+
 body {
     margin: 0;
-    padding: 80px 15px 15px 15px; 
-    background: url('../img/fondo.png') no-repeat center center fixed, #121212;
+    padding: 80px 15px 15px 15px; /* Este es el padding que usan tus subpáginas */
+    
+    /* Agregamos el #121212 antes de la url y mantenemos el ../ */
+    background: #121212 url('../img/fondo.png') no-repeat center center fixed; 
+    
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
+    color: var(--gnc-text);
     width: 100%;
     min-height: 100vh;
     overflow-x: hidden;
     display: flex;
     justify-content: center;
 }
+
 
 .gnc-main-wrapper {
     display: flex;
