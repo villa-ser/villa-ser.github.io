@@ -1,7 +1,4 @@
-// villaser.github.io - Lógica JS
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Villaser Gestión: Interfaz cargada correctamente.");
-    
     // Lógica para el menú desplegable "Explorar"
     const btnExplorar = document.getElementById('btn-explorar');
     const menuBotones = document.getElementById('menu-botones');
@@ -23,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Lógica para mantener el menú abierto si vuelve atrás
+    // Lógica para mantener el menú abierto si vuelve atrás desde una subpágina
     if (sessionStorage.getItem('abrirMenu') === 'true') {
         if (menuBotones && iconoMenu) {
             menuBotones.classList.remove('menu-oculto');
@@ -42,10 +39,9 @@ function compartirWeb() {
       text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
       url: 'https://villaser.com.ar'
     })
-    .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
-    // Plan B: Si está en PC, abre WhatsApp Web
+    // Plan B: WhatsApp Web
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
     window.open(whatsappUrl, '_blank');
   }
