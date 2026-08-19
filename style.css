@@ -425,6 +425,7 @@ body {
 }
 
 .btn-social {
+    text-decoration: none; /* Esta es la línea que quita el subrayado */
     color: rgba(255, 255, 255, 0.8); 
     font-size: 24px;
     transition: all 0.2s ease;
@@ -433,6 +434,7 @@ body {
     justify-content: center;
     width: 45px; height: 45px;
 }
+
 
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); }
 .whatsapp-pulse { color: #28a745; animation: beat 0.7s infinite alternate; }
