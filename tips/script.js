@@ -1,19 +1,33 @@
-// Inicializar los iconos de Lucide
-lucide.createIcons();
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Inicializar iconos de Lucide
+    lucide.createIcons();
 
-// Función para el botón de compartir del footer
+    // 2. LÓGICA DE UX: Auto-cierre de Acordeones
+    const accordions = document.querySelectorAll('details[name="consejo"]');
+    
+    accordions.forEach(accordion => {
+        accordion.addEventListener('click', (e) => {
+            if (!accordion.open) {
+                accordions.forEach(otherAccordion => {
+                    if (otherAccordion !== accordion) {
+                        otherAccordion.removeAttribute('open');
+                    }
+                });
+            }
+        });
+    });
+});
+
+// 3. Función para compartir
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
-      title: 'Villaser - Electricista Habilitado',
-      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
-      url: 'https://villaser.com.ar'
-    })
-    .then(() => console.log('Compartido con éxito'))
-    .catch((error) => console.log('Error al compartir', error));
+      title: 'Tips de Seguridad Eléctrica - Villaser',
+      text: 'Mirá estos consejos útiles de seguridad eléctrica para el hogar por Sergio Villagra:',
+      url: 'https://villaser.com.ar/tips'
+    }).catch(console.error);
   } else {
-    // Plan B: Si está en PC, abre WhatsApp Web
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Consejos de seguridad eléctrica para el hogar: https://villaser.com.ar/tips");
     window.open(whatsappUrl, '_blank');
   }
 }
