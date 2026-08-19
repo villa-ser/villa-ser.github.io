@@ -1,4 +1,4 @@
-/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (Basado en tu CSS Principal) --- */
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
     --ngc-neon: #00d4ff; 
     --ngc-glass: rgba(0, 0, 0, 0.4); 
@@ -11,16 +11,12 @@
     --input-bg: rgba(0, 0, 0, 0.6);
 }
 
-* { 
-    box-sizing: border-box; /* ESTA ES LA REGLA QUE EVITA QUE SE CORTE LA PANTALLA */
-    margin: 0; 
-    padding: 0; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     margin: 0;
     padding: 80px 15px 15px 15px;
-    background: url('../img/fondo.png') no-repeat center center fixed, #121212;
+    background: url('../img/fondo.png') no-repeat center center fixed, #121212; /* Fondo actualizado */
     background-size: cover;
     width: 100%;
     min-height: 100vh;
@@ -31,130 +27,112 @@ body {
     color: white;
 }
 
-/* Contenedor limitador (Idéntico a tu web) */
 .main-wrapper {
     width: 100%;
     max-width: 500px; 
-    padding: 0px;
     display: flex;
     flex-direction: column;
 }
 
-.separador-bloque {
-    width: 100%;
-    margin-bottom: 12px;
-}
+.separador-bloque { width: 100%; margin-bottom: 12px; }
 
-/* --- TARJETA CENTRAL (Vuelta invisible para que los elementos usen el 100% del ancho) --- */
-.ngc-card {
-    width: 100%;
-    margin-bottom: 20px;
-    /* Se eliminó background, bordes, sombras y padding */
-}
-
-
-
-.ngc-card-title {
-    color: var(--ngc-neon);
-    font-size: 1.35rem;
+/* TÍTULO */
+.gnc-main-title {
+    font-size: 1.5rem;
     font-weight: 800;
     text-transform: uppercase;
-    margin: 0;
     letter-spacing: 2px;
-    line-height: 1.1;
+    color: var(--ngc-neon);
+    text-align: center;
+    margin: 5px 0;
     text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
 }
 
 /* --- BANNER DE AVISO --- */
 .info-banner {
-    background: var(--ngc-glass); /* Aplica el cristal oscuro */
-    backdrop-filter: var(--ngc-blur); /* Aplica el esmerilado */
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
     -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); /* Borde cian perimetral */
-    border-left: 3px solid var(--warning-amber); /* Mantiene la franja amarilla */
-    padding: 12px;
-    border-radius: 8px;
+    border: var(--ngc-border-glass); 
+    border-left: 4px solid var(--warning-amber); 
+    padding: 15px;
+    border-radius: 12px;
     margin-bottom: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0,0,0,0.5); /* Sombra 3D */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
 }
 
 .banner-title {
     color: var(--warning-amber);
-    font-size: 0.85rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    font-weight: 800;
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 8px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
 }
 
 .banner-text {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--ngc-text-muted);
     line-height: 1.5;
 }
-.banner-text strong { color: var(--ngc-neon); font-weight: 600; }
+.banner-text strong { color: var(--warning-amber); font-weight: 600; }
 
 .status-msg {
     text-align: center;
     font-size: 0.8rem;
     color: var(--ngc-neon);
     margin-bottom: 12px;
+    font-weight: 600;
 }
 
 /* --- INPUTS Y BÚSQUEDA --- */
 .input-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
 
-/* --- INPUTS Y BÚSQUEDA --- */
 .input-group {
     display: flex;
     flex-direction: column;
-    background: var(--ngc-glass); /* Aplica el cristal oscuro */
-    backdrop-filter: var(--ngc-blur); /* Aplica el esmerilado */
-    -webkit-backdrop-filter: var(--ngc-blur);
-    padding: 12px;
+    background: var(--ngc-glass);
+    backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
+    border-top: 4px solid var(--ngc-neon);
+    padding: 15px;
     border-radius: 12px;
-    border: var(--ngc-border-glass); /* Borde cian estilo NGC */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transition: all 0.3s;
 }
 
-
-.input-group:focus-within { 
-    border-color: var(--ngc-neon); 
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(0, 212, 255, 0.2); 
-}
-
 label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     color: var(--ngc-neon);
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: 1px;
 }
 
-.search-box-row { 
-    display: flex; 
-    gap: 8px; 
-    width: 100%;
-}
+.search-box-row { display: flex; gap: 8px; width: 100%; margin-bottom: 15px; }
 
 input[type="text"] {
     flex: 1;
-    min-width: 0; /* Evita que el input rompa el contenedor en móviles pequeños */
-    background: rgba(0, 0, 0, 0.7);
+    min-width: 0; 
+    background: var(--input-bg);
     border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 8px;
     color: white;
-    padding: 10px;
+    padding: 12px 10px;
     font-size: 0.95rem;
     outline: none;
-    width: 100%;
+    transition: 0.3s;
 }
 
-input[type="text"]:focus { border-color: var(--ngc-neon); }
+input[type="text"]:focus { 
+    border-color: var(--ngc-neon); 
+    background: rgba(0,0,0,0.8);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 10px rgba(0, 212, 255, 0.3);
+}
 input:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-search {
@@ -163,57 +141,102 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     border: none;
     border-radius: 8px;
     padding: 0 15px;
-    font-weight: bold;
+    font-weight: 800;
     font-size: 0.85rem;
     text-transform: uppercase;
     cursor: pointer;
     transition: 0.2s;
-    white-space: nowrap; /* Evita que el texto del botón se rompa */
+    white-space: nowrap; 
 }
-.btn-search:hover:not(:disabled) { background: #00b4d8; box-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
+.btn-search:hover:not(:disabled) { background: #00b4d8; box-shadow: 0 0 15px rgba(0, 212, 255, 0.6); }
 .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* --- RESULTADOS --- */
-.results-wrapper { display: flex; flex-direction: column; gap: 10px; }
+/* --- NUEVO: BÚSQUEDA RÁPIDA (TAGS) --- */
+.quick-tags-container {
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    padding-top: 10px;
+}
+
+.quick-tag-label {
+    font-size: 0.65rem;
+    color: var(--ngc-text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    font-size: 0.7rem;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--ngc-neon);
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.tag:hover {
+    background: var(--ngc-neon);
+    color: black;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
 
 /* --- RESULTADOS --- */
+.results-wrapper { display: flex; flex-direction: column; gap: 12px; }
+
 .result-card {
-    background: var(--ngc-glass); /* Aplica el cristal oscuro */
-    backdrop-filter: var(--ngc-blur); /* Aplica el esmerilado */
-    -webkit-backdrop-filter: var(--ngc-blur);
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
     border: var(--ngc-border-glass);
     border-radius: 12px;
     padding: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para despegarlo del fondo */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); 
+    animation: fadeIn 0.4s ease;
 }
 
-/* Hover más intenso estilo NGC */
 .result-card:hover { 
     border-color: var(--ngc-neon); 
-    background: rgba(0, 0, 0, 0.7); 
+    background: rgba(0, 0, 0, 0.6); 
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
 }
 
-
 .result-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.result-concept { font-size: 0.9rem; font-weight: 700; color: white; line-height: 1.4; }
-.result-price { font-size: 1.1rem; font-weight: 800; color: var(--success-green); white-space: nowrap; }
+.result-concept { font-size: 0.95rem; font-weight: 700; color: white; line-height: 1.3; }
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.result-price { font-size: 1.25rem; font-weight: 800; color: var(--success-green); }
+.price-note { font-size: 0.65rem; color: var(--ngc-text-muted); text-transform: uppercase; font-weight: bold;}
 
 .result-obs {
     font-size: 0.8rem;
-    color: var(--ngc-text-muted);
-    margin-top: 8px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 10px;
     line-height: 1.4;
-    border-left: 2px solid rgba(255,255,255,0.2);
+    border-left: 2px solid var(--ngc-neon);
     padding-left: 10px;
+    background: rgba(0,0,0,0.3);
+    padding: 8px 10px;
+    border-radius: 0 8px 8px 0;
 }
 
 /* DETALLES EXPANDIBLES */
@@ -228,26 +251,12 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .result-card.active .result-details { display: block; }
 
-.detail-row { margin-bottom: 8px; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 6px; }
+.detail-row { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; }
 .detail-label { color: var(--ngc-neon); font-weight: bold; text-transform: uppercase; font-size: 0.7rem; }
 
-/* SECCIÓN PRESUPUESTO WSP */
+/* SECCIÓN PRESUPUESTO WSP DENTRO DE RESULTADO */
 .wsp-section {
-    margin-top: 18px;
-    text-align: center;
-    background: rgba(40, 167, 69, 0.1);
-    border: 1px solid rgba(40, 167, 69, 0.3);
-    padding: 15px;
-    border-radius: 10px;
-}
-
-.wsp-leyenda {
-    font-size: 0.9rem;
-    color: white;
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: block;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    margin-top: 15px;
 }
 
 .btn-whatsapp {
@@ -255,134 +264,101 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: var(--success-green);
-    color: white;
+    background: transparent;
+    border: 1px solid var(--success-green);
+    color: var(--success-green);
     text-decoration: none;
-    padding: 12px 15px;
+    padding: 10px;
     border-radius: 8px;
     font-weight: bold;
     font-size: 0.85rem;
     text-transform: uppercase;
-    transition: 0.2s;
+    transition: 0.3s;
     width: 100%;
-    box-sizing: border-box;
 }
-.btn-whatsapp:hover { background: #218838; box-shadow: 0 0 15px rgba(40, 167, 69, 0.6); }
+.btn-whatsapp:hover { background: var(--success-green); color: white; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
 
-.no-results { text-align: center; color: var(--ngc-text-muted); font-size: 0.9rem; padding: 20px; font-weight: bold;}
+.no-results { text-align: center; color: white; font-size: 0.9rem; padding: 20px; font-weight: bold; background: var(--ngc-glass); border-radius: 12px; border: var(--ngc-border-glass);}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* --- CTA FIJO AL FINAL --- */
+.ngc-custom-quote {
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0, 212, 255, 0.1) 100%);
+    backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
 
-/* --- BOTÓN VOLVER Y FOOTER REDES --- */
-.gnc-btn-back {
-    display: inline-flex;
+.quote-content h3 {
+    color: var(--ngc-neon);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.quote-content p {
+    font-size: 0.85rem;
+    color: var(--ngc-text-muted);
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Botón estilo general */
+.btn-submit {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: var(--gnc-glass);
-    backdrop-filter: var(--gnc-blur);
-    -webkit-backdrop-filter: var(--gnc-blur);
-    border: var(--gnc-border);
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    background: var(--ngc-glass);
+    border: var(--ngc-border-glass);
     border-radius: 12px;
-    color: var(--gnc-neon);
-    text-decoration: none;
-    font-size: 0.8rem;
+    border-left: 4px solid #25D366; /* Verde de whatsapp para destacar */
+    color: #ffffff;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-decoration: none;
     transition: all 0.3s ease;
-    align-self: flex-start;
-    margin-bottom: 5px;
-    animation: fadeIn 0.4s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.gnc-btn-back:hover {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
-    color: var(--text-color);
-    transform: translateX(-5px);
+.btn-submit:hover {
+    background: rgba(37, 211, 102, 0.15);
+    border-color: #25D366;
+    box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
+    color: #25D366;
 }
+
+/* --- ELEMENTOS COMUNES --- */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.gnc-btn-back {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
+    border-radius: 12px; color: var(--ngc-neon); text-decoration: none; font-size: 0.8rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
+    align-self: flex-start; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.gnc-btn-back:hover { background: rgba(0, 212, 255, 0.15); box-shadow: 0 0 15px rgba(0, 212, 255, 0.4); color: white; transform: translateX(-5px); }
+
 .footer-gnc-compact {
-    width: 100%; 
-    display: flex; justify-content: space-around; align-items: center; padding: 12px 0;
+    width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0;
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 16px; margin-top: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* AQUÍ ESTÁ LA CORRECCIÓN: text-decoration: none; agregado */
-.btn-social { 
-    text-decoration: none; 
-    color: rgba(255,255,255,0.8); 
-    font-size: 26px; 
-    transition: 0.2s; 
-    width: 45px; 
-    height: 45px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-
-.btn-share { color: rgba(255,255,255,0.5); font-size: 20px;}
+.btn-social { text-decoration: none; color: rgba(255,255,255,0.8); font-size: 26px; transition: 0.2s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));}
 .whatsapp-pulse { color: #28a745; animation: intense-beat 0.7s infinite alternate;}
-.whatsapp-pulse:hover { color: #34d058; filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8));}
-@keyframes intense-beat {
-    0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); }
-    100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); }
-                }
+@keyframes intense-beat { 0% { transform: scale(0.95); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(40, 167, 69, 0.8)); } }
+
+/* LOGO FLOTANTE */
+.hero-logo-icon { position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px; border-radius: 8px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 5px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
+.hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-neon-rect { width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px; stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite; }
+@keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
     
-/* =========================================
-   LOGO FLOTANTE (ARRIBA A LA DERECHA)
-   ========================================= */
-
-.hero-logo-icon {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 9999;
-    width: 70px;
-    height: 70px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.4); /* Fondo cristal oscuro */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-.hero-logo-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-/* Animación del borde neón del logo flotante */
-.hero-neon-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.hero-neon-rect {
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: #00d4ff; /* Color celeste neón */
-    stroke-width: 3px;
-    vector-effect: non-scaling-stroke;
-    filter: drop-shadow(0 0 4px #00d4ff);
-    stroke-dasharray: 100% 300%; 
-    animation: run-border 3s linear infinite;
-}
-
-@keyframes run-border {
-    from { stroke-dashoffset: 0%; }
-    to { stroke-dashoffset: -400%; }
-}
