@@ -196,3 +196,18 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 }
 @keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
     
+/* --- CRÉDITOS DE AUTOR (SUB-FOOTER) --- */
+.ngc-site-credits {
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 15px;
+    margin-bottom: 25px; /* Da un respiro al final de la pantalla del celular */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.ngc-site-credits span {
+    color: rgba(0, 212, 255, 0.6); /* Tu color cyan con opacidad para no brillar demasiado */
+    font-weight: 700;
+}
