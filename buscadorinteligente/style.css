@@ -4,6 +4,7 @@
     --ngc-glass: rgba(0, 0, 0, 0.4); 
     --ngc-blur: blur(10px);
     --ngc-border-glass: 1px solid rgba(0, 212, 255, 0.3);
+    --ngc-text: #ffffff; /* Variable de texto blanco agregada */
     --ngc-text-muted: rgba(255, 255, 255, 0.7);
     --success-green: #28a745;
     --warning-amber: #ffcc00;
@@ -21,14 +22,11 @@ html {
 
 body {
     margin: 0;
-    padding: 80px 15px 15px 15px; /* Este es el padding que usan tus subpáginas */
-    
-    /* Agregamos el #121212 antes de la url y mantenemos el ../ */
+    padding: 80px 15px 15px 15px; 
     background: #121212 url('../img/fondo.png') no-repeat center center fixed; 
-    
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--gnc-text);
+    color: var(--gnc-text); /* Ahora sí toma el color blanco general */
     width: 100%;
     min-height: 100vh;
     overflow-x: hidden;
@@ -160,7 +158,7 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-search:hover:not(:disabled) { background: #00b4d8; box-shadow: 0 0 15px rgba(0, 212, 255, 0.6); }
 .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* --- NUEVO: BÚSQUEDA RÁPIDA (TAGS) --- */
+/* --- BÚSQUEDA RÁPIDA (TAGS) --- */
 .quick-tags-container {
     border-top: 1px dashed rgba(255,255,255,0.1);
     padding-top: 10px;
@@ -260,7 +258,14 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .result-card.active .result-details { display: block; }
 
-.detail-row { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; }
+/* FIX: Se forzó el color blanco para los datos extraídos de Excel */
+.detail-row { 
+    margin-bottom: 8px; 
+    background: rgba(0,0,0,0.5); 
+    padding: 8px; 
+    border-radius: 6px; 
+    color: #ffffff; /* Asegura que el texto se lea perfecto */
+}
 .detail-label { color: var(--ngc-neon); font-weight: bold; text-transform: uppercase; font-size: 0.7rem; }
 
 /* SECCIÓN PRESUPUESTO WSP DENTRO DE RESULTADO */
@@ -324,7 +329,7 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     background: var(--ngc-glass);
     border: var(--ngc-border-glass);
     border-radius: 12px;
-    border-left: 4px solid #25D366; /* Verde de whatsapp para destacar */
+    border-left: 4px solid #25D366; 
     color: #ffffff;
     font-size: 0.85rem;
     font-weight: 700;
