@@ -275,3 +275,18 @@ label i { margin-right: 5px; }
 @keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+/* --- CRÉDITOS DE AUTOR (SUB-FOOTER) --- */
+.ngc-site-credits {
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 15px;
+    margin-bottom: 25px; /* Da un respiro al final de la pantalla del celular */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.ngc-site-credits span {
+    color: rgba(0, 212, 255, 0.6); /* Tu color cyan con opacidad para no brillar demasiado */
+    font-weight: 700;
+}
