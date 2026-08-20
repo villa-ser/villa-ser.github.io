@@ -3,6 +3,7 @@ let allData = [];
 // 1. DICCIONARIO DE SINÓNIMOS
 const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "llave", "breaker"],
+    ["timbre", "campanilla", "zumbador", "bocina", "pitido", "soneria", "llamador"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
     ["tomacorriente", "toma", "enchufe", "modulo", "boca"],
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
