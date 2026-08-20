@@ -51,8 +51,8 @@ body {
 }
 
 .ngc-title {
-    display: block; color: var(--ngc-neon); font-size: 0.9rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 1.5px; text-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+    display: block; color: var(--ngc-neon); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.4px; text-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
 }
 
 /* --- BOTONES --- */
