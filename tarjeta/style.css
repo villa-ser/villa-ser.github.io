@@ -21,7 +21,7 @@ html {
 /* GNC STYLE - CONFIGURACIÓN BASE */
 body {
   /* Añadido #121212 para evitar el destello blanco antes de que cargue la imagen */
-  background: #121212 url('../img/fondotarjeta.png') no-repeat center center fixed !important;
+  background: #121212 url('../img/fondotarjeta.avif') no-repeat center center fixed !important;
   background-size: cover !important;
   margin: 0;
   padding: 20px;
