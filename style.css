@@ -113,7 +113,7 @@ body {
 }
 .privacy-icon { font-size: 2rem; color: #aab2bd; margin-bottom: 10px; }
 .privacy-title { color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.privacy-text { color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; line-height: 1.5; font-style: italic; }
+.privacy-text { color: rgba(255, 255, 255, 0.9); font-size: 0.8rem; line-height: 1.5; font-style: italic; }
 
 /* --- TARJETA HERO --- */
 .gnc-hero-card {
