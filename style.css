@@ -130,7 +130,7 @@ body {
 }
 .hero-name { color: #ffffff; font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: 1px; }
 .hero-subtitle { font-size: 0.95rem; margin: 5px 0 10px 0; }
-.hero-description { color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; }
+.hero-description { color: rgba(255, 255, 255, 0.9); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; }
 
 .hero-cta-whatsapp {
     display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
