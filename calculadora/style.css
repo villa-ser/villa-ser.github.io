@@ -26,7 +26,7 @@ body {
     padding: 80px 15px 15px 15px; /* Este es el padding que usan tus subpáginas */
     
     /* Agregamos el #121212 antes de la url y mantenemos el ../ */
-    background: #121212 url('../img/fondo.png') no-repeat center center fixed; 
+    background: #121212 url('../img/fondo.avif') no-repeat center center fixed; 
     
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
