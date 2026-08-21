@@ -23,7 +23,7 @@ html {
 body {
     margin: 0;
     padding: 80px 15px 15px 15px; 
-    background: #121212 url('../img/fondo.png') no-repeat center center fixed; 
+    background: #121212 url('../img/fondo.avif') no-repeat center center fixed; 
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--gnc-text); /* Ahora sí toma el color blanco general */
