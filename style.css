@@ -226,3 +226,12 @@ body {
     color: rgba(0, 212, 255, 0.6); /* Tu color cyan con opacidad para no brillar demasiado */
     font-weight: 700;
 }
+
+button.btn-share {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff; /* Asegura que el ícono sea blanco como los demás */
+    cursor: pointer;
+    padding: 0;
+}
