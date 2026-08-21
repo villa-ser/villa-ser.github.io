@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electricista Habilitado Categoría III en Córdoba Capital | Villaser</title>
     
-    <!-- 1. PRIMERO LAS HOJAS DE ESTILO (Para que la pantalla cargue rápido) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 1. PRECONEXIÓN (Acelera la conexión con el servidor de los íconos) -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- 2. TU CSS PRINCIPAL (Debe cargar de inmediato) -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- 2. SEGUNDO EL PRELOAD (Fondo cargando en segundo plano) -->
+    <!-- 3. CARGA ASÍNCRONA DE FONT AWESOME (El secreto para bajar el FCP) -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+
+    <!-- 4. PRELOAD DEL FONDO -->
     <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
 
-    <!-- 3. METADATOS Y SEO -->
+    <!-- 5. METADATOS Y SEO -->
     <meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
     <meta name="keywords" content="electricista matriculado, instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
     <meta name="author" content="Sergio Adrian Villagra">
@@ -26,6 +33,7 @@
     
     <link rel="icon" type="image/png" href="img/perfil-logo.avif">
 </head>
+
 
 <body>
     <!-- Icono Flotante Superior -->
