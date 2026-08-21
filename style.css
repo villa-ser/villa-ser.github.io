@@ -231,7 +231,7 @@ button.btn-share {
     background-color: transparent;
     border: none;
     outline: none;
-    color: #ffffff; /* Asegura que el ícono sea blanco como los demás */
+    color: rgba(255, 255, 255, 0.8); /* Asegura que el ícono sea blanco como los demás */
     cursor: pointer;
     padding: 0;
 }
