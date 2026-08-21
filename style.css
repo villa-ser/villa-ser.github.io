@@ -134,9 +134,11 @@ body {
 
 .hero-cta-whatsapp {
     display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-    background: #25D366; color: white; padding: 14px; border-radius: 12px; text-decoration: none;
+    background: #128C7E; /* <-- Acá está el cambio del color verde */
+    color: white; padding: 14px; border-radius: 12px; text-decoration: none;
     font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
 }
+
 .hero-cta-whatsapp:hover { background: #1ebe57; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);}
 
 /* --- LOGO FLOTANTE --- */
