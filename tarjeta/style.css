@@ -341,4 +341,10 @@ input:focus, textarea:focus {
   20% { box-shadow: 0 0 0 14px rgba(0, 212, 255, 0), 0 0 4px rgba(0, 212, 255, 0); }
   100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
   }
+button.btn-share {
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
 
