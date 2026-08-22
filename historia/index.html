@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <!-- 4. PRELOAD DEL FONDO -->
-    <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
+    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -36,132 +36,148 @@
     </div>
 
     <main class="gnc-wrapper">
-        
-        <!-- BOTÓN DE VOLVER -->
-        <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-        </a>
-
-        <h1 class="gnc-main-title">Historia</h1>
-
-        <div class="gnc-banner">
-           <p>Debido a los aumentos en incidentes eléctricos y siendo muchos con lamentables finales trágicos, es que se acelera la sanción de la <b class="text-neon">Ley Nro. 10.281 de Seguridad Eléctrica de la Provincia de Córdoba</b>.</p>
-           <p>Esta ley busca garantizar la seguridad de las instalaciones eléctricas en toda la provincia.</p>
-        </div>
-
-        <!-- ACORDEONES (Sin atributo 'name' para compatibilidad total con el JS) -->
-        <details class="gnc-accordion">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="sparkles"></i></div>
-                    <span>Puntos clave</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-               <p><b>Normas claras:</b> Establece reglas para la instalación y mantenimiento de sistemas eléctricos.</p>
-               <p><b>Prevención de accidentes:</b> Reduce el riesgo de incendios y otros problemas eléctricos.</p>
-               <p><b>Control y sanciones:</b> Supervisa el cumplimiento de la ley y aplica multas a quienes no la respeten.</p>
-               <p><b>Mejora de la calidad:</b> Promueve el uso de materiales y equipos de calidad.</p>
-            </div>
-        </details>
-
-        <details class="gnc-accordion">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="fingerprint"></i></div>
-                    <span>¿Qué implica para vos?</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Si tenés una instalación eléctrica en Córdoba, deberás asegurarte de que cumpla con lo establecido en esta ley. Esto puede incluir:</p>
-                <p>• <b>Revisar tu instalación:</b> Un profesional debe verificar que todo esté en orden.</p>
-                <p>• <b>Utilizar materiales aprobados:</b> Adquirí productos que cumplan con las normas.</p>
-                <p>• <b>Mantener tu instalación:</b> Realizá inspecciones periódicas y reparaciones si es necesario.</p>
-            </div>
-        </details>
-
-        <details class="gnc-accordion">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="shield-check"></i></div>
-                    <span>¿Por qué es importante?</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>La seguridad eléctrica es fundamental para <b>proteger</b> tu hogar o negocio y evitar accidentes.</p>
-                <p>Además, contribuye a un uso más eficiente de la energía.</p>
-            </div>
-        </details>
-
-        <details class="gnc-accordion">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="search-code"></i></div>
-                    <span>¿Dónde encontrar más información?</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-               <p>• <b>Entidades reguladoras:</b> Consultá al Ente Regulador de los Servicios Públicos de Córdoba <b>(ERSeP)</b>.</p>
-               <p>• <b>Electricistas habilitados:</b> Buscá profesionales capacitados para asesorarte.</p>
-            </div>
-        </details>
-
-        <div class="gnc-banner" style="border-left-color: var(--gnc-success);">
-            <p>La Ley 10.281 es una herramienta para garantizar la seguridad eléctrica en Córdoba.</p>
-            <p><b class="text-neon">¡Cumplirla es esencial para tu tranquilidad!</b></p>
-        </div>
-
-        <!-- FORMULARIO DE CONSULTA -->
-        <div class="gnc-form-container">
-            <div class="form-header">
-                <div class="form-title">
-                    <div class="icon-box"><i data-lucide="send"></i></div>
-                    <span>Envíame tu consulta</span>
-                </div>
-            </div>
+        <div class="layout-desktop">
             
-            <div class="form-body">
-                <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-                
-                <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
-                    <div class="field-group">
-                        <label>Nombre</label>
-                        <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
-                    </div>
-                    <div class="field-group">
-                        <label>WhatsApp</label>
-                        <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
-                    </div>
-                    <div class="field-group">
-                        <label>Consulta</label>
-                        <textarea name="entry.615194603" placeholder="Describe aquí el trabajo, duda o problema..." rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
-                </form>
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Fija en PC)             -->
+            <!-- ========================================== -->
+            <div class="col-izquierda">
+                <!-- BOTÓN DE VOLVER -->
+                <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
+                    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
+                </a>
 
-                <div id="success-message">
-                    <div style="color: var(--gnc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.2rem;">✓ CONSULTA ENVIADA</div>
-                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;">Sergio se pondrá en contacto pronto.</p>
-                    <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
+                <h1 class="gnc-main-title">Historia</h1>
+
+                <div class="gnc-banner">
+                   <p>Debido a los aumentos en incidentes eléctricos y siendo muchos con lamentables finales trágicos, es que se acelera la sanción de la <b class="text-neon">Ley Nro. 10.281 de Seguridad Eléctrica de la Provincia de Córdoba</b>.</p>
+                   <p>Esta ley busca garantizar la seguridad de las instalaciones eléctricas en toda la provincia.</p>
+                </div>
+
+                <!-- FORMULARIO DE CONSULTA -->
+                <div class="gnc-form-container">
+                    <div class="form-header">
+                        <div class="form-title">
+                            <div class="icon-box"><i data-lucide="send"></i></div>
+                            <span>Envíame tu consulta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-body">
+                        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+                        
+                        <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
+                            <div class="field-group">
+                                <label>Nombre</label>
+                                <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="field-group">
+                                <label>WhatsApp</label>
+                                <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
+                            </div>
+                            <div class="field-group">
+                                <label>Consulta</label>
+                                <textarea name="entry.615194603" placeholder="Describe aquí el trabajo, duda o problema..." rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
+                        </form>
+
+                        <div id="success-message">
+                            <div style="color: var(--gnc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.2rem;">✓ CONSULTA ENVIADA</div>
+                            <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;">Sergio se pondrá en contacto pronto.</p>
+                            <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- FOOTER: Redes Sociales -->
-        <div class="footer-gnc-compact">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
-            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
-            <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
-            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-<!-- NUEVO: CRÉDITOS DE AUTOR Y AÑO -->
-        <div class="ngc-site-credits">
-            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Scrolleable)              -->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                <!-- ACORDEONES -->
+                <details class="gnc-accordion">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="sparkles"></i></div>
+                            <span>Puntos clave</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                       <p><b>Normas claras:</b> Establece reglas para la instalación y mantenimiento de sistemas eléctricos.</p>
+                       <p><b>Prevención de accidentes:</b> Reduce el riesgo de incendios y otros problemas eléctricos.</p>
+                       <p><b>Control y sanciones:</b> Supervisa el cumplimiento de la ley y aplica multas a quienes no la respeten.</p>
+                       <p><b>Mejora de la calidad:</b> Promueve el uso de materiales y equipos de calidad.</p>
+                    </div>
+                </details>
+
+                <details class="gnc-accordion">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="fingerprint"></i></div>
+                            <span>¿Qué implica para vos?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Si tenés una instalación eléctrica en Córdoba, deberás asegurarte de que cumpla con lo establecido en esta ley. Esto puede incluir:</p>
+                        <p>• <b>Revisar tu instalación:</b> Un profesional debe verificar que todo esté en orden.</p>
+                        <p>• <b>Utilizar materiales aprobados:</b> Adquirí productos que cumplan con las normas.</p>
+                        <p>• <b>Mantener tu instalación:</b> Realizá inspecciones periódicas y reparaciones si es necesario.</p>
+                    </div>
+                </details>
+
+                <details class="gnc-accordion">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="shield-check"></i></div>
+                            <span>¿Por qué es importante?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>La seguridad eléctrica es fundamental para <b>proteger</b> tu hogar o negocio y evitar accidentes.</p>
+                        <p>Además, contribuye a un uso más eficiente de la energía.</p>
+                    </div>
+                </details>
+
+                <details class="gnc-accordion">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="search-code"></i></div>
+                            <span>¿Dónde encontrar más información?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                       <p>• <b>Entidades reguladoras:</b> Consultá al Ente Regulador de los Servicios Públicos de Córdoba <b>(ERSeP)</b>.</p>
+                       <p>• <b>Electricistas habilitados:</b> Buscá profesionales capacitados para asesorarte.</p>
+                    </div>
+                </details>
+
+                <!-- BANNER DE CIERRE -->
+                <div class="gnc-banner" style="border-left-color: var(--gnc-success);">
+                    <p>La Ley 10.281 es una herramienta para garantizar la seguridad eléctrica en Córdoba.</p>
+                    <p><b class="text-neon">¡Cumplirla es esencial para tu tranquilidad!</b></p>
+                </div>
+
+                <!-- FOOTER Y CRÉDITOS -->
+                <div class="footer-wrapper">
+                    <div class="footer-gnc-compact">
+                        <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
+                        <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
+                        <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    
+                    <div class="ngc-site-credits">
+                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                    </div>
+                </div>
+
+            </div>
         </div>
     </main>
 
