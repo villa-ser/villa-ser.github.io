@@ -17,7 +17,7 @@ html {
 body {
     margin: 0; padding: 80px 4px 4px 4px;
     /* Agregamos el #121212 antes de la url de la imagen por si la imagen tarda en cargar */
-    background: #121212 url('img/fondo.avif') no-repeat center center fixed;
+    background: #121212 url('../img/fondo.avif') no-repeat center center fixed;
     background-size: cover; width: 100%; min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden; display: flex; justify-content: center; 
