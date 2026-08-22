@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Revisar si se debe abrir el menú automáticamente (navegación interna)
     if (sessionStorage.getItem('abrirMenu') === 'true') {
         if (menuBotones && iconoMenu) {
             menuBotones.classList.remove('menu-oculto');
@@ -34,33 +33,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE
+    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
+    const imgLogoPrincipal = document.getElementById('img-logo-principal');
+    
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
         
-        // Cargar preferencia guardada
+        // Cargar preferencia guardada al entrar a la web
         const temaGuardado = localStorage.getItem('temaVillaser');
         if (temaGuardado === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
             iconTema.classList.replace('fa-sun', 'fa-moon');
+            if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logoclaro.avif';
         }
 
-        // Alternar tema al hacer click
+        // Alternar tema y logo al hacer click
         btnTema.addEventListener('click', () => {
             const temaActual = document.documentElement.getAttribute('data-theme');
             
             if (temaActual === 'light') {
-                // Cambiar a Modo Oscuro
+                // Volver a Modo Oscuro
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
                 iconTema.classList.replace('fa-moon', 'fa-sun');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logo.avif';
             } else {
                 // Cambiar a Modo Día
                 document.documentElement.setAttribute('data-theme', 'light'); 
                 localStorage.setItem('temaVillaser', 'light');
                 iconTema.classList.replace('fa-sun', 'fa-moon');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logoclaro.avif';
             }
         });
     }
@@ -148,5 +152,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
     window.open(whatsappUrl, '_blank');
   }
-}
-
+                                           }
+                                          
