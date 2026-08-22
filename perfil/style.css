@@ -1,4 +1,4 @@
-/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC APLICADO) --- */
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
     --gnc-neon: #00d4ff; 
     --gnc-glass: rgba(0, 0, 0, 0.4); 
@@ -12,38 +12,26 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Agregamos el color oscuro al fondo base y quitamos el rebote */
 html {
     background-color: #121212; 
     overscroll-behavior-y: none; 
 }
 
 body {
-    margin: 0;
-    padding: 80px 15px 15px 15px; /* Este es el padding que usan tus subpáginas */
-    
-    /* Agregamos el #121212 antes de la url y mantenemos el ../ */
+    margin: 0; padding: 80px 15px 15px 15px; 
     background: #121212 url('../img/fondo.avif') no-repeat center center fixed; 
-    
-    background-size: cover;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--gnc-text);
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
-    display: flex;
-    justify-content: center;
+    background-size: cover; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--gnc-text); width: 100%; min-height: 100vh; overflow-x: hidden;
+    display: flex; justify-content: center;
 }
 
-
 .gnc-main-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; 
-    width: 100%;
-    max-width: 500px; 
-    padding: 0;
-    margin: 0;
+    display: flex; flex-direction: column; width: 100%; max-width: 500px; 
+    padding: 0; margin: 0;
+}
+
+.layout-desktop {
+    display: flex; flex-direction: column; width: 100%; gap: 15px;
 }
 
 /* --- BOTÓN VOLVER --- */
@@ -57,19 +45,20 @@ body {
 }
 .gnc-btn-back:hover { background: rgba(0, 212, 255, 0.15); border-color: var(--gnc-neon); box-shadow: 0 0 15px rgba(0, 212, 255, 0.4); color: var(--gnc-text); transform: translateX(-5px); }
 
-/* --- TÍTULO PRINCIPAL --- */
+/* --- TÍTULOS --- */
 .gnc-main-title {
     font-size: 1.35rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
     color: var(--gnc-neon); text-align: center; margin: 5px 0 10px 0; line-height: 1.1;
     text-shadow: 0 0 8px rgba(0, 212, 255, 0.4); animation: fadeIn 0.6s ease;
 }
+.hidden-mobile { display: block; } /* Solo para ajustes si fuera necesario */
 
 /* --- TARJETA PRINCIPAL (CV) --- */
 .ngc-full-container {
     width: 100%; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border); border-radius: 16px; padding: 25px 20px;
     border-left: 4px solid var(--gnc-neon); display: flex; flex-direction: column; gap: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.05); margin-bottom: 15px;
 }
 
 /* --- FOTO LUZ PERIMETRAL --- */
@@ -137,7 +126,7 @@ body {
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border); border-radius: 16px; border-left: 4px solid var(--gnc-neon);
     overflow: hidden; transition: all 0.3s ease; width: 100%;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 15px;
 }
 
 details[open] { border-color: var(--gnc-neon); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 212, 255, 0.1); }
@@ -162,7 +151,9 @@ summary::-webkit-details-marker { display: none; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); filter: drop-shadow(0 0 5px var(--gnc-neon)); }
 
-/* --- FOOTER REDES SOCIALES --- */
+/* --- FOOTER Y CRÉDITOS --- */
+.footer-wrapper { margin-top: auto; padding-top: 10px; }
+
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0;
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); border: var(--gnc-border);
@@ -175,37 +166,65 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .whatsapp-pulse { color: var(--gnc-success); animation: intense-beat 0.7s infinite alternate; }
 .whatsapp-pulse:hover { color: #34d058; filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.8)); }
 
-@keyframes intense-beat { 0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    
-/* LOGO FLOTANTE */
+.ngc-site-credits {
+    text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); margin-top: 15px; 
+    margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1.5px;
+}
+.ngc-site-credits span { color: rgba(0, 212, 255, 0.6); font-weight: 700; }
+button.btn-share { background-color: transparent; border: none; outline: none; cursor: pointer; padding: 0; }
+
+/* --- LOGO FLOTANTE --- */
 .hero-logo-icon { position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px; border-radius: 8px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 5px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
 .hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
 .hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero-neon-rect { width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px; stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite; }
+.hero-neon-rect { width: 100%; height: 100%; fill: none; stroke: var(--gnc-neon); stroke-width: 3px; stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite; }
+
+/* --- ANIMACIONES --- */
+@keyframes intense-beat { 0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
+
+/* ======================================================= */
+/*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
+/* ======================================================= */
+
+@media (min-width: 768px) {
+    .gnc-main-wrapper { max-width: 720px; padding: 25px; }
+    .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
+}
+
+@media (min-width: 1024px) {
+    body { padding-top: 40px; align-items: flex-start; }
     
-/* --- CRÉDITOS DE AUTOR (SUB-FOOTER) --- */
-.ngc-site-credits {
-    text-align: center;
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin-top: 15px;
-    margin-bottom: 25px; /* Da un respiro al final de la pantalla del celular */
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
+    .gnc-main-wrapper { max-width: 1050px; }
+    
+    .layout-desktop {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
 
-.ngc-site-credits span {
-    color: rgba(0, 212, 255, 0.6); /* Tu color cyan con opacidad para no brillar demasiado */
-    font-weight: 700;
-}
+    .col-izquierda {
+        position: sticky;
+        top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        padding-right: 5px; 
+    }
+    
+    .col-izquierda::-webkit-scrollbar { width: 0px; }
 
-button.btn-share {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8); /* Asegura que el ícono sea blanco como los demás */
-    cursor: pointer;
-    padding: 0;
-}
+    .col-derecha {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 80px);
+    }
+    
+    /* En PC alineamos el H1 a la izquierda para mejor jerarquía */
+    .gnc-main-title { text-align: left; }
+    }
+    
