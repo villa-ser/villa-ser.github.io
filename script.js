@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Lógica para el menú desplegable "Explorar"
     const btnExplorar = document.getElementById('btn-explorar');
     const menuBotones = document.getElementById('menu-botones');
     const iconoMenu = document.getElementById('icono-menu');
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 2. Mantener el menú abierto si vuelve atrás desde una subpágina
     if (sessionStorage.getItem('abrirMenu') === 'true') {
         if (menuBotones && iconoMenu) {
             menuBotones.classList.remove('menu-oculto');
@@ -30,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem('abrirMenu');
     }
 
-    // 3. Lógica para cerrar la Nube Flotante tocando la pantalla oscura
     const modalOverlay = document.getElementById('modalServicio');
     if(modalOverlay) {
         modalOverlay.addEventListener('click', function(e) {
@@ -41,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// --- LÓGICA DE LA NUBE FLOTANTE DE SERVICIOS --- //
 const serviciosInfo = {
     'apto': {
         icono: '<i class="fa-solid fa-file-signature" style="color: var(--ngc-neon);"></i>',
@@ -94,7 +90,6 @@ function cerrarModalServicio() {
     }, 300); 
 }
 
-// --- FUNCIÓN PARA COMPARTIR --- //
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
