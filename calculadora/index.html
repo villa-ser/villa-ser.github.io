@@ -26,12 +26,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">
+        <!-- 1. Botón Volver (Flotante Izquierda) -->
+    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- 2. Botón Desplegable de Secciones -->
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion" aria-label="Secciones">
+            <i class="fas fa-th-large"></i>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- 3. Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- LOGO FLOTANTE -->
+    <!-- 4. Logo Flotante -->
     <div class="hero-logo-icon">
         <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
@@ -39,14 +60,12 @@
         </svg>
     </div>
 
+
 <main class="gnc-main-wrapper">
     <div class="layout-desktop">
         
         <!-- COLUMNA IZQUIERDA (Controles) -->
         <div class="col-izquierda">
-            <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-            </a>
 
             <div class="gnc-card">
                 <div class="header-row">
