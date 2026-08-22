@@ -1,21 +1,71 @@
+// ==========================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// ==========================================
+const temaGuardado = localStorage.getItem('temaVillaser');
+if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
 // Inicializar icono de flecha "Volver"
 lucide.createIcons();
 
 let listado = [];
 
-// Listeners para los Sliders (Actualizan el texto al moverlos)
 document.addEventListener("DOMContentLoaded", () => {
+    
+    // ==========================================
+    // LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // ==========================================
+    const btnTema = document.getElementById('btn-tema');
+    const imgLogoPrincipal = document.getElementById('img-logo-principal');
+    
+    if (btnTema) {
+        const iconTema = btnTema.querySelector('i');
+        
+        // Sincronizar iconos según el tema actual guardado
+        if (temaGuardado === 'light') {
+            iconTema.classList.replace('fa-sun', 'fa-moon');
+            if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+        }
+
+        // Alternar tema y logo al hacer click
+        btnTema.addEventListener('click', () => {
+            const temaActual = document.documentElement.getAttribute('data-theme');
+            
+            if (temaActual === 'light') {
+                // Volver a Modo Oscuro
+                document.documentElement.removeAttribute('data-theme'); 
+                localStorage.setItem('temaVillaser', 'dark');
+                iconTema.classList.replace('fa-moon', 'fa-sun');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
+            } else {
+                // Cambiar a Modo Día
+                document.documentElement.setAttribute('data-theme', 'light'); 
+                localStorage.setItem('temaVillaser', 'light');
+                iconTema.classList.replace('fa-sun', 'fa-moon');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+            }
+        });
+    }
+
+    // ==========================================
+    // LÓGICA DE LOS SLIDERS
+    // ==========================================
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
-    sliderHoras.addEventListener("input", (e) => {
-        labelHoras.innerText = e.target.value + " hs";
-    });
+    if(sliderHoras) {
+        sliderHoras.addEventListener("input", (e) => {
+            labelHoras.innerText = e.target.value + " hs";
+        });
+    }
 
     const sliderDias = document.getElementById("dias");
     const labelDias = document.getElementById("dias-val");
-    sliderDias.addEventListener("input", (e) => {
-        labelDias.innerText = e.target.value + " días";
-    });
+    if(sliderDias) {
+        sliderDias.addEventListener("input", (e) => {
+            labelDias.innerText = e.target.value + " días";
+        });
+    }
 });
 
 // Funciones del menú desplegable personalizado
@@ -147,7 +197,6 @@ function recalcularTotal() {
 
     if (totalKwh > 0) {
         if (tipoTarifa === "con_subsidio") {
-            // SEF (Con Subsidio Energético Focalizado)
             if (totalKwh <= 120) {
                 costoEnergiaPura = totalKwh * 121.84597;
             } else if (totalKwh <= 500) {
@@ -164,7 +213,7 @@ function recalcularTotal() {
                 let excedente300 = Math.max(0, totalKwh - 300);
                 let bloque3 = excedente300 * 306.50373;
                 costoEnergiaPura = bloque1 + bloque2 + bloque3;
-            } else { // Más de 700 kWh/mes
+            } else { 
                 let bloque1 = 120 * 195.45331;
                 let excedente120 = totalKwh - 120;
                 let bloque2 = Math.min(excedente120, 180) * 246.34965;
@@ -173,7 +222,6 @@ function recalcularTotal() {
                 costoEnergiaPura = bloque1 + bloque2 + bloque3;
             }
         } else {
-            // SIN SEF (Sin Subsidio)
             if (totalKwh <= 120) {
                 costoEnergiaPura = totalKwh * 217.91977;
             } else if (totalKwh <= 500) {
@@ -186,7 +234,7 @@ function recalcularTotal() {
                 let excedente120 = totalKwh - 120;
                 let bloque2 = excedente120 * 327.75950;
                 costoEnergiaPura = bloque1 + bloque2;
-            } else { // Más de 700 kWh/mes
+            } else { 
                 let bloque1 = 120 * 300.93601;
                 let excedente120 = totalKwh - 120;
                 let bloque2 = excedente120 * 358.33820;
@@ -195,7 +243,6 @@ function recalcularTotal() {
         }
     }
 
-    // MULTIPLICADOR DE IMPUESTOS (21% IVA + 15% Tasas Municipales/Provinciales)
     const FACTOR_IMPUESTOS = 1.36; 
     const totalPesos = Math.round(costoEnergiaPura * FACTOR_IMPUESTOS);
 
@@ -203,7 +250,6 @@ function recalcularTotal() {
     document.getElementById('total-pesos').innerText = "$ " + totalPesos.toLocaleString('es-AR');
 }
 
-// Función para el botón de compartir del footer
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
@@ -213,8 +259,8 @@ function compartirWeb() {
     })
     .catch((error) => console.log('Error al compartir', error));
   } else {
-    // Plan B: WhatsApp Web
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-}
+                    }
+                    
