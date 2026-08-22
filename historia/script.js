@@ -53,4 +53,3 @@ function compartirWeb() {
     window.open(whatsappUrl, '_blank');
   }
 }
-
