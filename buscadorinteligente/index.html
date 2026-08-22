@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- 4. PRELOAD DEL FONDO -->
-    <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
+    <!-- PRELOAD DEL FONDO -->
+    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III</title>
@@ -31,87 +31,105 @@
     </div>
 
     <main class="main-wrapper">
-        
-        <!-- BOTÓN DE VOLVER -->
-        <div class="separador-bloque">
-            <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-            </a>
-        </div>
-
-        <!-- TÍTULO PRINCIPAL -->
-        <h2 class="gnc-main-title">Buscador de Costos</h2>
-        <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-muted); margin-top: -5px; margin-bottom: 15px;">
-            Exclusivo Mano de Obra
-        </p>
-        
-        <!-- AVISO LEGAL/REFERENCIAL -->
-        <div class="info-banner">
-            <div class="banner-title">
-                <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
-            </div>
-            <div class="banner-text">
-                Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
-                <span style="color: white; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni contemplan riesgos o complejidades específicas de obra.</span>
-            </div>
-        </div>
-
-        <div id="status-message" class="status-msg">
-            <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
-        </div>
-
-        <!-- CAJA DE BÚSQUEDA Y TAGS -->
-        <div class="input-section">
-            <div class="input-group">
-                <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué trabajo necesitás cotizar?</label>
-                <div class="search-box-row">
-                    <input type="text" id="searchInput" placeholder="Ej: pilar trifásico, tablero, apto..." disabled>
-                    <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
+        <div class="layout-desktop">
+            
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Controles - Fija en PC) -->
+            <!-- ========================================== -->
+            <div class="col-izquierda">
+                <!-- BOTÓN DE VOLVER -->
+                <div class="separador-bloque">
+                    <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
+                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
+                    </a>
                 </div>
+
+                <!-- TÍTULO PRINCIPAL -->
+                <h2 class="gnc-main-title">Buscador de Costos</h2>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-muted); margin-top: -5px; margin-bottom: 15px;">
+                    Exclusivo Mano de Obra
+                </p>
                 
-                <!-- NUEVO: BÚSQUEDA RÁPIDA -->
-                <div class="quick-tags-container">
-                    <span class="quick-tag-label">Búsquedas rápidas:</span>
-                    <div class="quick-tags">
-                        <span class="tag" onclick="busquedaRapida('Apto electrico')">Apto Eléctrico</span>
-                        <span class="tag" onclick="busquedaRapida('Pilar')">Armado de Pilar</span>
-                        <span class="tag" onclick="busquedaRapida('Tablero')">Tableros</span>
-                        <span class="tag" onclick="busquedaRapida('Boca')">Bocas y Tomas</span>
+                <!-- AVISO LEGAL/REFERENCIAL -->
+                <div class="info-banner separador-bloque">
+                    <div class="banner-title">
+                        <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
+                    </div>
+                    <div class="banner-text">
+                        Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
+                        <span style="color: white; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
+                    </div>
+                </div>
+
+                <!-- CAJA DE BÚSQUEDA Y TAGS -->
+                <div class="input-section separador-bloque">
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué necesitás cotizar?</label>
+                        <div class="search-box-row">
+                            <input type="text" id="searchInput" placeholder="Ej: pilar trifásico, tablero..." disabled>
+                            <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
+                        </div>
+                        
+                        <!-- BÚSQUEDA RÁPIDA -->
+                        <div class="quick-tags-container">
+                            <span class="quick-tag-label">Búsquedas rápidas:</span>
+                            <div class="quick-tags">
+                                <span class="tag" onclick="busquedaRapida('Apto electrico')">Apto Eléctrico</span>
+                                <span class="tag" onclick="busquedaRapida('Pilar')">Armado de Pilar</span>
+                                <span class="tag" onclick="busquedaRapida('Tablero')">Tableros</span>
+                                <span class="tag" onclick="busquedaRapida('Boca')">Bocas y Tomas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA ALTERNATIVO -->
+                <div class="separador-bloque cta-escritorio">
+                    <div class="ngc-custom-quote">
+                        <div class="quote-content">
+                            <h3>¿Presupuesto exacto?</h3>
+                            <p>Contactame por WhatsApp, enviame detalles o fotos y te armo una cotización a medida.</p>
+                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20viendo%20tu%20buscador%20y%20necesito%20un%20presupuesto%20a%20medida." target="_blank" class="btn-submit">
+                                <i class="fab fa-whatsapp" style="font-size: 1.1rem; margin-right: 5px;"></i> Presupuesto Personalizado
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- CONTENEDOR DE RESULTADOS -->
-        <div id="resultsContainer" class="results-wrapper"></div>
-
-        <!-- CTA ALTERNATIVO SI NO ENCUENTRA O QUIERE ALGO EXACTO -->
-        <div class="separador-bloque" style="margin-top: 20px;">
-            <div class="ngc-custom-quote">
-                <div class="quote-content">
-                    <h3>¿Presupuesto exacto?</h3>
-                    <p>Contactame por WhatsApp, enviame detalles o fotos del trabajo y te armo una cotización precisa y a medida.</p>
-                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20viendo%20tu%20buscador%20y%20necesito%20un%20presupuesto%20a%20medida." target="_blank" class="btn-submit">
-                        <i class="fab fa-whatsapp" style="font-size: 1.1rem; margin-right: 5px;"></i> Presupuesto Personalizado
-                    </a>
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Resultados - Scrolleable) -->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                
+                <!-- MENSAJE DE ESTADO -->
+                <div id="status-message" class="status-msg separador-bloque">
+                    <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
                 </div>
-            </div>
-        </div>
 
-        <!-- FOOTER COMPACTO -->
-        <div class="footer-gnc-compact">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
-            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
-            <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
-            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-        <!-- NUEVO: CRÉDITOS DE AUTOR Y AÑO -->
-        <div class="ngc-site-credits">
-            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                <!-- CONTENEDOR DE RESULTADOS -->
+                <div id="resultsContainer" class="results-wrapper separador-bloque"></div>
+
+                <!-- FOOTER Y CRÉDITOS (Acomodados debajo de los resultados) -->
+                <div class="footer-wrapper">
+                    <div class="footer-gnc-compact">
+                        <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
+                        <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
+                        <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    
+                    <div class="ngc-site-credits">
+                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                    </div>
+                </div>
+
+            </div>
         </div>
     </main>
 
     <script src="script.js"></script>
 </body>
-</html>
+                        </html>
+
