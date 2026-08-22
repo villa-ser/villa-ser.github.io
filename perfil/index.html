@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="preload" as="image" href="img/fondo.avif">
+    <link rel="preload" as="image" href="../img/fondo.avif">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil y Currículum - Sergio Villagra | Electricista Categoría III</title>
@@ -36,135 +36,151 @@
     </div>
 
     <main class="gnc-main-wrapper">
-        
-        <!-- BOTÓN DE VOLVER -->
-        <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-        </a>
-
-        <h1 class="gnc-main-title">Currículum</h1>
-        
-        <!-- TARJETA CV -->
-        <div class="ngc-full-container">
+        <div class="layout-desktop">
             
-            <!-- Foto con luz perimetral -->
-            <div class="ngc-photo-landscape">
-                <img src="../img/perfil.jpg" alt="Sergio Adrian Villagra">
-            </div>
-            
-            <!-- Datos Personales -->
-            <div class="ngc-content-area" style="text-align: center;">
-                <span class="ngc-user-name active-cyan" style="font-size: 1.4rem;">Sergio A. Villagra</span>
-                <div class="cv-personal-info">
-                    <span><i class="fa-regular fa-id-card"></i> DNI 29.029.389</span>
-                    <span><i class="fa-solid fa-cake-candles"></i> 44 Años</span>
-                    <span><i class="fa-solid fa-location-dot"></i> Córdoba Capital</span>
-                </div>
-            </div>
-            
-            <!-- Formación y Matrículas -->
-            <div class="ngc-content-area">
-                <div class="cv-section-title"><i class="fa-solid fa-certificate"></i> Credenciales y Formación</div>
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (CV - Fija en PC)        -->
+            <!-- ========================================== -->
+            <div class="col-izquierda">
                 
-                <div class="cv-item">
-                    <i class="fa-solid fa-check-circle cv-icon"></i>
-                    <div class="cv-item-text">
-                        <strong>Electricista Habilitado Categoría III</strong>
-                        <span>Registro ERSeP Córdoba</span>
-                    </div>
-                </div>
+                <!-- BOTÓN DE VOLVER -->
+                <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
+                    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
+                </a>
 
-                <div class="cv-item">
-                    <i class="fa-solid fa-check-circle cv-icon"></i>
-                    <div class="cv-item-text">
-                        <strong>Electricista Domiciliario</strong>
-                        <span>Instituto Celsius</span>
+                <h1 class="gnc-main-title">Currículum</h1>
+                
+                <!-- TARJETA CV -->
+                <div class="ngc-full-container">
+                    
+                    <!-- Foto con luz perimetral -->
+                    <div class="ngc-photo-landscape">
+                        <img src="../img/perfil.jpg" alt="Sergio Adrian Villagra">
                     </div>
-                </div>
+                    
+                    <!-- Datos Personales -->
+                    <div class="ngc-content-area" style="text-align: center;">
+                        <span class="ngc-user-name active-cyan" style="font-size: 1.4rem;">Sergio A. Villagra</span>
+                        <div class="cv-personal-info">
+                            <span><i class="fa-regular fa-id-card"></i> DNI 29.029.389</span>
+                            <span><i class="fa-solid fa-cake-candles"></i> 44 Años</span>
+                            <span><i class="fa-solid fa-location-dot"></i> Córdoba Capital</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Formación y Matrículas -->
+                    <div class="ngc-content-area">
+                        <div class="cv-section-title"><i class="fa-solid fa-certificate"></i> Credenciales y Formación</div>
+                        
+                        <div class="cv-item">
+                            <i class="fa-solid fa-check-circle cv-icon"></i>
+                            <div class="cv-item-text">
+                                <strong>Electricista Habilitado Categoría III</strong>
+                                <span>Registro ERSeP Córdoba</span>
+                            </div>
+                        </div>
 
-                <div class="cv-item">
-                    <i class="fa-solid fa-check-circle cv-icon"></i>
-                    <div class="cv-item-text">
-                        <strong>Auxiliar Electricista Industrial</strong>
-                        <span>Instituto Especializado</span>
-                    </div>
-                </div>
+                        <div class="cv-item">
+                            <i class="fa-solid fa-check-circle cv-icon"></i>
+                            <div class="cv-item-text">
+                                <strong>Electricista Domiciliario</strong>
+                                <span>Instituto Celsius</span>
+                            </div>
+                        </div>
 
-                <div class="cv-item">
-                    <i class="fa-solid fa-check-circle cv-icon"></i>
-                    <div class="cv-item-text">
-                        <strong>Seminario en Seguridad Eléctrica (2025)</strong>
-                        <span>Secretaría de Extensión Universitaria UTN</span>
+                        <div class="cv-item">
+                            <i class="fa-solid fa-check-circle cv-icon"></i>
+                            <div class="cv-item-text">
+                                <strong>Auxiliar Electricista Industrial</strong>
+                                <span>Instituto Especializado</span>
+                            </div>
+                        </div>
+
+                        <div class="cv-item">
+                            <i class="fa-solid fa-check-circle cv-icon"></i>
+                            <div class="cv-item-text">
+                                <strong>Seminario en Seguridad Eléctrica (2025)</strong>
+                                <span>Secretaría de Extensión Universitaria UTN</span>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- CTA Formal -->
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estoy%20viendo%20tu%20CV%20y%20me%20gustaría%20solicitarte%20un%20presupuesto/credenciales." target="_blank" class="btn-cta-formal">
+                        <i class="fa-regular fa-file-lines"></i> Solicitar Presupuesto Formal
+                    </a>
                 </div>
             </div>
 
-            <!-- CTA Formal -->
-            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estoy%20viendo%20tu%20CV%20y%20me%20gustaría%20solicitarte%20un%20presupuesto/credenciales." target="_blank" class="btn-cta-formal">
-                <i class="fa-regular fa-file-lines"></i> Solicitar Presupuesto Formal
-            </a>
-        </div>
-
-        <h1 class="gnc-main-title" style="margin-top: 10px;">Trayectoria</h1>
-        
-        <div class="gnc-banner">
-            <span style="display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-timeline" style="color: var(--gnc-neon);"></i> Experiencia
-            </span>
-            <p>Desde mis inicios, busco la excelencia en cada conexión, priorizando la seguridad y el rigor técnico bajo la normativa vigente en cada obra.</p>
-        </div>
-
-        <!-- ACORDEONES CON NAME PARA AUTO-CIERRE -->
-        <details name="historia">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="history"></i></div>
-                    <span>Orígenes</span>
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Trayectoria - Scrolleable)-->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                
+                <h1 class="gnc-main-title hidden-mobile" style="margin-top: 10px;">Trayectoria</h1>
+                
+                <div class="gnc-banner">
+                    <span style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-timeline" style="color: var(--gnc-neon);"></i> Experiencia
+                    </span>
+                    <p>Desde mis inicios, busco la excelencia en cada conexión, priorizando la seguridad y el rigor técnico bajo la normativa vigente en cada obra.</p>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Comencé en el sector eléctrico con una visión clara: elevar los estándares de calidad en instalaciones domiciliarias y comerciales en la provincia de Córdoba.</p>
-            </div>
-        </details>
 
-        <details name="historia">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="award"></i></div>
-                    <span>Crecimiento</span>
+                <!-- ACORDEONES -->
+                <details name="historia">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="history"></i></div>
+                            <span>Orígenes</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Comencé en el sector eléctrico con una visión clara: elevar los estándares de calidad en instalaciones domiciliarias y comerciales en la provincia de Córdoba.</p>
+                    </div>
+                </details>
+
+                <details name="historia">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="award"></i></div>
+                            <span>Crecimiento</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>A lo largo de los años, la capacitación constante me ha permitido obtener la <strong>habilitación Categoría III</strong>, garantizando seguridad técnica y legal absoluta a mis clientes.</p>
+                    </div>
+                </details>
+
+                <details name="historia" open> <!-- Abierto por defecto para invitar a la lectura -->
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="shield-check"></i></div>
+                            <span>Actualidad</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Hoy opero principalmente en Córdoba Capital y B° Los Álamos, enfocándome en modernizar instalaciones antiguas y certificar nuevas obras bajo la estricta <strong>Ley de Seguridad Eléctrica (Ley 10.281)</strong>.</p>
+                    </div>
+                </details>
+
+                <!-- FOOTER Y CRÉDITOS -->
+                <div class="footer-wrapper">
+                    <div class="footer-gnc-compact">
+                        <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
+                        <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
+                        <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    
+                    <div class="ngc-site-credits">
+                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                    </div>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>A lo largo de los años, la capacitación constante me ha permitido obtener la <strong>habilitación Categoría III</strong>, garantizando seguridad técnica y legal absoluta a mis clientes.</p>
             </div>
-        </details>
-
-        <details name="historia">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="shield-check"></i></div>
-                    <span>Actualidad</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Hoy opero principalmente en Córdoba Capital y B° Los Álamos, enfocándome en modernizar instalaciones antiguas y certificar nuevas obras bajo la estricta <strong>Ley de Seguridad Eléctrica (Ley 10.281)</strong>.</p>
-            </div>
-        </details>
-
-        <!-- FOOTER: Redes Sociales -->
-        <div class="footer-gnc-compact">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
-            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
-            <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
-            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-<!-- NUEVO: CRÉDITOS DE AUTOR Y AÑO -->
-        <div class="ngc-site-credits">
-            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
         </div>
     </main>
 
