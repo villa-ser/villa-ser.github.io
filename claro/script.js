@@ -215,3 +215,29 @@ body.light-theme .btn-cerrar-modal {
 body.light-theme .ngc-site-credits {
     color: rgba(0, 0, 0, 0.5);
 }
+
+// --- LÓGICA DEL MODO DÍA/NOCHE --- //
+const themeBtn = document.getElementById('theme-toggle-btn');
+
+if (themeBtn) {
+    const themeIcon = themeBtn.querySelector('i');
+    
+    // Revisar si el usuario ya tenía guardado el modo claro
+    if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.classList.replace('fa-sun', 'fa-moon'); // Cambia el icono a luna
+    }
+    
+    // Evento al hacer click en el botón
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        
+        if (document.body.classList.contains('light-theme')) {
+            localStorage.setItem('theme', 'light');
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+        } else {
+            localStorage.setItem('theme', 'dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+    });
+}
