@@ -10,23 +10,25 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-    background-color: #121212; /* Pinta el fondo base de gris oscuro/negro */
-    overscroll-behavior-y: none; /* Elimina el rebote blanco al llegar al final en celulares */
+    background-color: #121212;
+    overscroll-behavior-y: none;
 }
 
 body {
     margin: 0; padding: 80px 4px 4px 4px;
-    /* Agregamos el #121212 antes de la url de la imagen por si la imagen tarda en cargar */
     background: #121212 url('img/fondo.avif') no-repeat center center fixed;
     background-size: cover; width: 100%; min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden; display: flex; justify-content: center; 
 }
 
-
 .main-wrapper {
     width: 100%; max-width: 500px; padding: 15px;
     display: flex; flex-direction: column;
+}
+
+.layout-desktop {
+    display: flex; flex-direction: column; width: 100%; gap: 15px;
 }
 
 .separador-bloque { width: 100%; margin-bottom: 12px; }
@@ -132,13 +134,13 @@ body {
 .hero-subtitle { font-size: 0.95rem; margin: 5px 0 10px 0; }
 .hero-description { color: rgba(255, 255, 255, 0.9); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; }
 
+/* Botón WSP ajustado a las especificaciones originales */
 .hero-cta-whatsapp {
     display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-    background: #128C7E; /* <-- Acá está el cambio del color verde */
+    background: #25D366; 
     color: white; padding: 14px; border-radius: 12px; text-decoration: none;
     font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
 }
-
 .hero-cta-whatsapp:hover { background: #1ebe57; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);}
 
 /* --- LOGO FLOTANTE --- */
@@ -153,7 +155,7 @@ body {
     stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
 }
 
-/* --- NUBE FLOTANTE (MODAL DE SERVICIOS) --- */
+/* --- NUBE FLOTANTE (MODAL) --- */
 .ngc-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -204,34 +206,82 @@ body {
 }
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));}
 .whatsapp-pulse { color: #28a745; animation: beat 0.7s infinite alternate; }
+    
+/* --- CRÉDITOS --- */
+.ngc-site-credits {
+    text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4);
+    margin-top: 15px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1.5px;
+}
+.ngc-site-credits span { color: rgba(0, 212, 255, 0.6); font-weight: 700; }
+button.btn-share { background-color: transparent; border: none; outline: none; color: rgba(255, 255, 255, 0.8); cursor: pointer; padding: 0; }
 
 /* --- ANIMACIONES --- */
 @keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
+
+/* ======================================================= */
+/*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
+/* ======================================================= */
+
+/* TABLET (Más de 768px de ancho) */
+@media (min-width: 768px) {
+    .main-wrapper { max-width: 720px; padding: 25px; }
     
-/* --- CRÉDITOS DE AUTOR (SUB-FOOTER) --- */
-.ngc-site-credits {
-    text-align: center;
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin-top: 15px;
-    margin-bottom: 25px; /* Da un respiro al final de la pantalla del celular */
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
+    
+    .gnc-hero-card { padding: 35px 30px; }
+    .hero-profile-container { width: 180px; height: 180px; }
+    .hero-name { font-size: 1.8rem; }
+    
+    .ngc-btn { font-size: 0.95rem; padding: 16px 12px; }
+    
+    .quick-item i { font-size: 1.8rem; padding: 15px; }
+    .quick-item span { font-size: 0.75rem; }
 }
 
-.ngc-site-credits span {
-    color: rgba(0, 212, 255, 0.6); /* Tu color cyan con opacidad para no brillar demasiado */
-    font-weight: 700;
-}
+/* ESCRITORIO / PC (Más de 1024px de ancho) */
+@media (min-width: 1024px) {
+    /* Ampliamos el contenedor principal y centramos verticalmente un poco más */
+    body { padding-top: 40px; align-items: center; }
+    
+    .main-wrapper { max-width: 1050px; }
+    
+    /* Activamos el sistema de 2 columnas */
+    .layout-desktop {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 30px;
+        align-items: start; /* Permite que cada columna tome la altura que necesite */
+    }
 
-button.btn-share {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8); /* Asegura que el ícono sea blanco como los demás */
-    cursor: pointer;
-    padding: 0;
-}
+    /* Fijamos la columna izquierda al scrollear (efecto App) */
+    .col-izquierda {
+        position: sticky;
+        top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .col-derecha {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Reemplaza visualmente el margen de los .separador-bloque */
+    }
+    
+    .separador-bloque { margin-bottom: 0; } /* Reseteamos margen porque el Grid maneja el espaciado */
+
+    /* Ajustes visuales extra para aprovechar la pantalla grande */
+    .hero-description { font-size: 0.9rem; margin-bottom: 30px; }
+    .ngc-privacy-card { margin-bottom: 0; }
+    
+    .ngc-quick-services { padding: 25px 15px; }
+    .quick-item span { font-size: 0.8rem; }
+    
+    .cta-icon { font-size: 2.5rem; }
+    .cta-text h3 { font-size: 1.2rem; }
+    .cta-text p { font-size: 0.9rem; }
+    }
+    
