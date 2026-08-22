@@ -1,3 +1,11 @@
+// ==========================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// ==========================================
+const temaGuardado = localStorage.getItem('temaVillaser');
+if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
 let allData = [];
 
 // 1. DICCIONARIO DE SINÓNIMOS
@@ -18,6 +26,44 @@ document.addEventListener("DOMContentLoaded", () => {
     lucide.createIcons();
     cargarExcel();
 
+    // ==========================================
+    // LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // ==========================================
+    const btnTema = document.getElementById('btn-tema');
+    const imgLogoPrincipal = document.getElementById('img-logo-principal');
+    
+    if (btnTema) {
+        const iconTema = btnTema.querySelector('i');
+        
+        // Sincronizar iconos según el tema actual guardado
+        if (temaGuardado === 'light') {
+            iconTema.classList.replace('fa-sun', 'fa-moon');
+            if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+        }
+
+        // Alternar tema y logo al hacer click
+        btnTema.addEventListener('click', () => {
+            const temaActual = document.documentElement.getAttribute('data-theme');
+            
+            if (temaActual === 'light') {
+                // Volver a Modo Oscuro
+                document.documentElement.removeAttribute('data-theme'); 
+                localStorage.setItem('temaVillaser', 'dark');
+                iconTema.classList.replace('fa-moon', 'fa-sun');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
+            } else {
+                // Cambiar a Modo Día
+                document.documentElement.setAttribute('data-theme', 'light'); 
+                localStorage.setItem('temaVillaser', 'light');
+                iconTema.classList.replace('fa-sun', 'fa-moon');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+            }
+        });
+    }
+
+    // ==========================================
+    // LÓGICA DEL BUSCADOR
+    // ==========================================
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
 
@@ -228,4 +274,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-                  }
+                          }
+        
