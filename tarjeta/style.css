@@ -326,7 +326,7 @@ input:focus, textarea:focus {
 }
 
 .ngc-site-credits span {
-    color: rgba(0, 212, 255, 0.6); 
+    color: rgba(0, 212, 255, 0.75); 
     font-weight: 700;
 }
 
