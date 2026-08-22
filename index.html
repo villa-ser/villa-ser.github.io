@@ -5,21 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electricista Habilitado Categoría III en Córdoba Capital | Villaser</title>
     
-    <!-- 1. PRECONEXIÓN (Acelera la conexión con el servidor de los íconos) -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-
-    <!-- 2. TU CSS PRINCIPAL (Debe cargar de inmediato) -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- 3. CARGA ASÍNCRONA DE FONT AWESOME (El secreto para bajar el FCP) -->
+    
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
-    <!-- 4. PRELOAD DEL FONDO -->
     <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
 
-    <!-- 5. METADATOS Y SEO -->
     <meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
     <meta name="keywords" content="electricista matriculado, instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
     <meta name="author" content="Sergio Adrian Villagra">
@@ -34,7 +28,6 @@
     <link rel="icon" type="image/png" href="img/perfil-logo.avif">
 </head>
 
-
 <body>
     <!-- Icono Flotante Superior -->
     <div class="hero-logo-icon">
@@ -46,135 +39,143 @@
 
     <!-- Contenedor principal -->
     <main class="main-wrapper">
+        <div class="layout-desktop">
+            
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Perfil - Fija en PC)    -->
+            <!-- ========================================== -->
+            <div class="col-izquierda">
+                <!-- 1. TARJETA DE AUTORIDAD (HERO) -->
+                <div class="gnc-hero-card">
+                    <div class="hero-header-row">
+                        <div class="hero-profile-container">
+                            <img src="img/perfil.avif" alt="Sergio Villagra" class="hero-photo">
+                            <div class="hero-badge">
+                                <i class="fa-solid fa-check-circle" style="color: #28a745;"></i> Cat. III ERSeP
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- 1. TARJETA DE AUTORIDAD (HERO) -->
-        <div class="gnc-hero-card">
-            <div class="hero-header-row">
-                <div class="hero-profile-container">
-                    <img src="img/perfil.avif" alt="Sergio Villagra" class="hero-photo">
-                    <div class="hero-badge">
-                        <i class="fa-solid fa-check-circle" style="color: #28a745;"></i> Cat. III ERSeP
+                    <h1 class="hero-name">Sergio Villagra</h1>
+                    <h2 class="ngc-card-title hero-subtitle">Asesor e instalador eléctrico</h2>
+                    <div class="ngc-footer-badge">Registro ERSeP: 29029389 - 14027</div>
+                    
+                    <p class="hero-description">
+                        Garantizo la seguridad de tu hogar o comercio aplicando normativas vigentes (Ley 10.281). 
+                        Soluciones rápidas, prolijas y certificadas en Córdoba Capital.
+                    </p>
+                    
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estoy%20en%20tu%20web%20y%20necesito%20hacerte%20una%20consulta." target="_blank" class="hero-cta-whatsapp">
+                        <i class="fab fa-whatsapp"></i> SOLICITAR ASESORAMIENTO
+                    </a>
+                </div>
+
+                <!-- COMPROMISO DE PRIVACIDAD -->
+                <div class="separador-bloque">
+                    <div class="ngc-privacy-card">
+                        <i class="fa-solid fa-shield-halved privacy-icon"></i>
+                        <h3 class="privacy-title">Compromiso de Privacidad</h3>
+                        <p class="privacy-text">
+                            Respeto absoluto por la intimidad de tu hogar y familia. No publico fotografías de los interiores de mis clientes para garantizar su total privacidad y seguridad.
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <h1 class="hero-name">Sergio Villagra</h1>
-            <h2 class="ngc-card-title hero-subtitle">Asesor e instalador eléctrico</h2>
-            <div class="ngc-footer-badge">Registro ERSeP: 29029389 - 14027</div>
-            
-            <p class="hero-description">
-                Garantizo la seguridad de tu hogar o comercio aplicando normativas vigentes (Ley 10.281). 
-                Soluciones rápidas, prolijas y certificadas en Córdoba Capital.
-            </p>
-            
-            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estoy%20en%20tu%20web%20y%20necesito%20hacerte%20una%20consulta." target="_blank" class="hero-cta-whatsapp">
-                <i class="fab fa-whatsapp"></i> SOLICITAR ASESORAMIENTO
-            </a>
-        </div>
-
-        <!-- 2. BOTONES CRÍTICOS -->
-        <div class="separador-bloque">
-            <div class="ngc-button-grid">
-                <a href="servicios/index.html" class="ngc-btn"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-                <a href="buscadorinteligente/index.html" class="ngc-btn"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            </div>
-        </div>
-
-        <!-- 3. SERVICIOS RÁPIDOS (AHORA ABREN NUBE FLOTANTE) -->
-        <div class="separador-bloque">
-            <div class="ngc-quick-services">
-                <button onclick="abrirModalServicio('apto')" class="quick-item">
-                    <i class="fa-solid fa-file-signature"></i>
-                    <span>Apto Eléctrico</span>
-                </button>
-                <button onclick="abrirModalServicio('fugas')" class="quick-item">
-                    <i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d; box-shadow: 0 0 8px rgba(255,77,77,0.4);"></i>
-                    <span>Fugas y Cortos</span>
-                </button>
-                <button onclick="abrirModalServicio('tableros')" class="quick-item">
-                    <i class="fa-solid fa-charging-station"></i>
-                    <span>Tableros</span>
-                </button>
-                <button onclick="abrirModalServicio('obra')" class="quick-item">
-                    <i class="fa-solid fa-helmet-safety"></i>
-                    <span>Luz de Obra</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- 4. CTA CALCULADORA -->
-        <a href="calculadora/index.html" class="ngc-cta-banner">
-            <div class="cta-banner-content">
-                <i class="fa-solid fa-calculator cta-icon"></i>
-                <div class="cta-text">
-                    <h3>Calculadora de Consumo</h3>
-                    <p>Evaluá el consumo de tu hogar gratis</p>
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Acciones - Scrolleable)   -->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                <!-- 2. BOTONES CRÍTICOS -->
+                <div class="separador-bloque">
+                    <div class="ngc-button-grid">
+                        <a href="servicios/index.html" class="ngc-btn"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+                        <a href="buscadorinteligente/index.html" class="ngc-btn"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+                    </div>
                 </div>
-                <i class="fa-solid fa-chevron-right cta-arrow"></i>
-            </div>
-        </a>
 
-        <!-- 5. COMPROMISO DE PRIVACIDAD -->
-        <div class="separador-bloque">
-            <div class="ngc-privacy-card">
-                <i class="fa-solid fa-shield-halved privacy-icon"></i>
-                <h3 class="privacy-title">Compromiso de Privacidad</h3>
-                <p class="privacy-text">
-                    Respeto absoluto por la intimidad de tu hogar y familia. No publico fotografías de los interiores de mis clientes para garantizar su total privacidad y seguridad.
-                </p>
-            </div>
-        </div>
-        
-        <!-- 6. MENÚ EXPLORAR -->
-        <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
-            Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
-        </button>
-        
-        <div id="menu-botones" class="separador-bloque menu-oculto">
-            <div class="ngc-button-grid">
-                <a href="tips/index.html" class="ngc-btn"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-                <a href="perfil/index.html" class="ngc-btn"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-                <a href="historia/index.html" class="ngc-btn"><i class="fa-solid fa-book-open"></i> Historia</a>
-                <a href="webs/index.html" class="ngc-btn"><i class="fa-solid fa-globe"></i> Web's</a>
-            </div>
-        </div>
+                <!-- 3. SERVICIOS RÁPIDOS -->
+                <div class="separador-bloque">
+                    <div class="ngc-quick-services">
+                        <button onclick="abrirModalServicio('apto')" class="quick-item">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span>Apto Eléctrico</span>
+                        </button>
+                        <button onclick="abrirModalServicio('fugas')" class="quick-item">
+                            <i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d; box-shadow: 0 0 8px rgba(255,77,77,0.4);"></i>
+                            <span>Fugas y Cortos</span>
+                        </button>
+                        <button onclick="abrirModalServicio('tableros')" class="quick-item">
+                            <i class="fa-solid fa-charging-station"></i>
+                            <span>Tableros</span>
+                        </button>
+                        <button onclick="abrirModalServicio('obra')" class="quick-item">
+                            <i class="fa-solid fa-helmet-safety"></i>
+                            <span>Luz de Obra</span>
+                        </button>
+                    </div>
+                </div>
 
-        <!-- 7. FOOTER LEMA Y REDES -->
-        <div class="separador-bloque">
-            <div class="ngc-full-container" style="padding: 15px;">
-                <div class="ngc-content-area" style="text-align: center;">
-                    <span class="ngc-title" style="margin:0;">Electricidad segura, hogar tranquilo.</span>
+                <!-- 4. CTA CALCULADORA -->
+                <a href="calculadora/index.html" class="ngc-cta-banner separador-bloque">
+                    <div class="cta-banner-content">
+                        <i class="fa-solid fa-calculator cta-icon"></i>
+                        <div class="cta-text">
+                            <h3>Calculadora de Consumo</h3>
+                            <p>Evaluá el consumo de tu hogar gratis</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right cta-arrow"></i>
+                    </div>
+                </a>
+
+                <!-- 5. MENÚ EXPLORAR -->
+                <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
+                    Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
+                </button>
+                
+                <div id="menu-botones" class="separador-bloque menu-oculto">
+                    <div class="ngc-button-grid">
+                        <a href="tips/index.html" class="ngc-btn"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+                        <a href="perfil/index.html" class="ngc-btn"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+                        <a href="historia/index.html" class="ngc-btn"><i class="fa-solid fa-book-open"></i> Historia</a>
+                        <a href="webs/index.html" class="ngc-btn"><i class="fa-solid fa-globe"></i> Web's</a>
+                    </div>
+                </div>
+
+                <!-- 6. FOOTER LEMA Y REDES -->
+                <div class="separador-bloque">
+                    <div class="ngc-full-container" style="padding: 15px;">
+                        <div class="ngc-content-area" style="text-align: center;">
+                            <span class="ngc-title" style="margin:0;">Electricidad segura, hogar tranquilo.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-gnc-compact">
+                    <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
+                        <i class="far fa-envelope"></i>
+                    </a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
+                         <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+
+                <!-- CRÉDITOS DE AUTOR -->
+                <div class="ngc-site-credits">
+                    &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
                 </div>
             </div>
         </div>
-
-<div class="footer-gnc-compact">
-    <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
-        <i class="far fa-envelope"></i>
-    </a>
-    
-    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
-        <i class="fab fa-instagram"></i>
-    </a>
-    
-    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
-        <i class="fab fa-facebook-f"></i>
-    </a>
-    
-    <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
-         <i class="fa-solid fa-share-nodes"></i>
-    </button>
-    
-    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-</div>
-        <!-- NUEVO: CRÉDITOS DE AUTOR Y AÑO -->
-        <div class="ngc-site-credits">
-            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
-        </div>
-
-    </div>
+    </main>
 
     <!-- 8. NUBE FLOTANTE (MODAL DE SERVICIOS RÁPIDOS) -->
     <div id="modalServicio" class="ngc-modal-overlay oculto">
@@ -187,9 +188,8 @@
                 <i class="fab fa-whatsapp"></i> Consultar Servicio
             </a>
         </div>
-    </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
-    </html>
-    
+</html>
