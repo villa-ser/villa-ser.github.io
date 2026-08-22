@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Inicializar los iconos de Lucide
     lucide.createIcons();
 
-    // 2. LÓGICA DE UX: Auto-cierre de Acordeones (Historia)
+    // 2. LÓGICA DE UX: Auto-cierre de Acordeones (Historia/Trayectoria)
     // Evita que la pantalla se vuelva excesivamente larga en celulares
     const accordions = document.querySelectorAll('details[name="historia"]');
     
@@ -36,4 +36,3 @@ function compartirWeb() {
     window.open(whatsappUrl, '_blank');
   }
 }
-
