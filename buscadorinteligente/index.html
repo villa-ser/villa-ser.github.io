@@ -22,9 +22,14 @@
 </head>
 <body>
 
+    <!-- Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">
+        <i class="fas fa-sun"></i>
+    </button>
+
     <!-- LOGO FLOTANTE -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo">
+        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
@@ -33,9 +38,7 @@
     <main class="main-wrapper">
         <div class="layout-desktop">
             
-            <!-- ========================================== -->
-            <!-- COLUMNA IZQUIERDA (Controles - Fija en PC) -->
-            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Controles) -->
             <div class="col-izquierda">
                 <!-- BOTÓN DE VOLVER -->
                 <div class="separador-bloque">
@@ -57,7 +60,7 @@
                     </div>
                     <div class="banner-text">
                         Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
-                        <span style="color: white; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
+                        <span style="color: var(--ngc-text); font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
                     </div>
                 </div>
 
@@ -97,9 +100,7 @@
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- COLUMNA DERECHA (Resultados - Scrolleable) -->
-            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Resultados) -->
             <div class="col-derecha">
                 
                 <!-- MENSAJE DE ESTADO -->
@@ -110,7 +111,7 @@
                 <!-- CONTENEDOR DE RESULTADOS -->
                 <div id="resultsContainer" class="results-wrapper separador-bloque"></div>
 
-                <!-- FOOTER Y CRÉDITOS (Acomodados debajo de los resultados) -->
+                <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-wrapper">
                     <div class="footer-gnc-compact">
                         <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
@@ -131,5 +132,4 @@
 
     <script src="script.js"></script>
 </body>
-                        </html>
-
+</html>
