@@ -26,9 +26,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">
+        <i class="fas fa-sun"></i>
+    </button>
+
     <!-- LOGO FLOTANTE -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo">
+        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
@@ -37,16 +42,12 @@
 <main class="gnc-main-wrapper">
     <div class="layout-desktop">
         
-        <!-- ========================================== -->
-        <!-- COLUMNA IZQUIERDA (Controles - Fija en PC) -->
-        <!-- ========================================== -->
+        <!-- COLUMNA IZQUIERDA (Controles) -->
         <div class="col-izquierda">
-            <!-- BOTÓN VOLVER -->
             <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
                 <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
             </a>
 
-            <!-- TARJETA DE INGRESO -->
             <div class="gnc-card">
                 <div class="header-row">
                     <h2>Calculadora de Consumo</h2>
@@ -57,14 +58,12 @@
 
                 <div class="form-section">
                     
-                    <!-- TARIFA -->
                     <label><i class="fa-solid fa-file-invoice-dollar"></i> Segmentación de Tarifa</label>
                     <div class="option-grid segment-grid">
                         <label class="opt-box"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()">SIN SUBSIDIO<br><span style="font-size:0.55rem; opacity:0.8;">(Sin SEF)</span></label>
                         <label class="opt-box"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()">CON SUBSIDIO<br><span style="font-size:0.55rem; opacity:0.8;">(SEF)</span></label>
                     </div>
 
-                    <!-- APARATO -->
                     <label style="margin-top: 5px;"><i class="fa-solid fa-plug"></i> Aparato Eléctrico</label>
                     <div class="custom-select">
                         <div class="select-selected" id="display-aparato" onclick="toggleDropdown('list-aparato', 'display-aparato')">Seleccionar artefacto...</div>
@@ -118,7 +117,6 @@
 
                     <div id="watts_display" class="readonly-box">0 Watts de potencia</div>
 
-                    <!-- SLIDERS DE USO -->
                     <div class="sliders-container">
                         <div class="slider-group">
                             <div class="slider-header">
@@ -144,22 +142,17 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- COLUMNA DERECHA (Resultados - Scrolleable) -->
-        <!-- ========================================== -->
+        <!-- COLUMNA DERECHA (Resultados) -->
         <div class="col-derecha">
-            <!-- TARJETA RESULTADOS Y LISTA -->
             <div class="gnc-card">
                 <h3 class="panel-title" style="color: var(--primary-accent); margin-bottom: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-list-check"></i> Detalle de Consumo</h3>
                 
-                <!-- LISTA DE ITEMS -->
                 <div id="lista-items"></div>
 
-                <!-- RESULTADOS -->
                 <div class="summary-panel">
                     <div>
                         <span class="res-label">CONSUMO ESTIMADO</span>
-                        <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: white;">kWh/mes</span></span>
+                        <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--text-color);">kWh/mes</span></span>
                     </div>
                     <div>
                         <span class="res-label">TOTAL FACTURA (Aprox)</span>
@@ -167,7 +160,6 @@
                     </div>
                 </div>
                 
-                <!-- CTA COMERCIAL -->
                 <div class="cta-optimizar">
                     <span class="cta-title">¿Tu consumo es muy elevado?</span>
                     <p>Un electricista matriculado puede detectar fugas invisibles que encarecen tu factura.</p>
@@ -177,7 +169,6 @@
                 </div>
             </div>
 
-            <!-- LEYENDA TÉCNICA -->
             <div class="ngc-tech-legend">
                 <span class="legend-title"><i class="fa-solid fa-circle-info"></i> Información Técnica Tarifaria</span>
                 
@@ -197,7 +188,6 @@
                 <div class="legend-footer">CÓRDOBA, ARGENTINA</div>
             </div>
 
-            <!-- FOOTER -->
             <div class="footer-wrapper">
                 <div class="footer-gnc-compact">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
@@ -207,7 +197,6 @@
                     <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
                 </div>
                 
-                <!-- CRÉDITOS DE AUTOR -->
                 <div class="ngc-site-credits">
                     &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
                 </div>
@@ -219,5 +208,4 @@
 
 <script src="script.js"></script>
 </body>
-    </html>
-    
+</html>
