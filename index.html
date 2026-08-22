@@ -36,7 +36,7 @@
 
     <!-- Icono Flotante Superior -->
     <div class="hero-logo-icon">
-        <img src="img/logo.avif" alt="Villaser Logo">
+        <img src="img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
@@ -46,11 +46,8 @@
     <main class="main-wrapper">
         <div class="layout-desktop">
             
-            <!-- ========================================== -->
-            <!-- COLUMNA IZQUIERDA (Perfil - Fija en PC)    -->
-            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA -->
             <div class="col-izquierda">
-                <!-- 1. TARJETA DE AUTORIDAD (HERO) -->
                 <div class="gnc-hero-card">
                     <div class="hero-header-row">
                         <div class="hero-profile-container">
@@ -75,7 +72,6 @@
                     </a>
                 </div>
 
-                <!-- COMPROMISO DE PRIVACIDAD -->
                 <div class="separador-bloque">
                     <div class="ngc-privacy-card">
                         <i class="fa-solid fa-shield-halved privacy-icon"></i>
@@ -87,11 +83,8 @@
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- COLUMNA DERECHA (Acciones - Scrolleable)   -->
-            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA -->
             <div class="col-derecha">
-                <!-- 2. BOTONES CRÍTICOS -->
                 <div class="separador-bloque">
                     <div class="ngc-button-grid">
                         <a href="servicios/index.html" class="ngc-btn"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
@@ -99,7 +92,6 @@
                     </div>
                 </div>
 
-                <!-- 3. SERVICIOS RÁPIDOS -->
                 <div class="separador-bloque">
                     <div class="ngc-quick-services">
                         <button onclick="abrirModalServicio('apto')" class="quick-item">
@@ -121,7 +113,6 @@
                     </div>
                 </div>
 
-                <!-- 4. CTA CALCULADORA -->
                 <a href="calculadora/index.html" class="ngc-cta-banner separador-bloque">
                     <div class="cta-banner-content">
                         <i class="fa-solid fa-calculator cta-icon"></i>
@@ -133,7 +124,6 @@
                     </div>
                 </a>
 
-                <!-- 5. MENÚ EXPLORAR -->
                 <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
                     Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
                 </button>
@@ -147,7 +137,6 @@
                     </div>
                 </div>
 
-                <!-- 6. FOOTER LEMA Y REDES -->
                 <div class="separador-bloque">
                     <div class="ngc-full-container" style="padding: 15px;">
                         <div class="ngc-content-area" style="text-align: center;">
@@ -174,7 +163,6 @@
                     </a>
                 </div>
 
-                <!-- CRÉDITOS DE AUTOR -->
                 <div class="ngc-site-credits">
                     &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
                 </div>
@@ -182,7 +170,7 @@
         </div>
     </main>
 
-    <!-- 8. NUBE FLOTANTE (MODAL DE SERVICIOS RÁPIDOS) -->
+    <!-- MODAL DE SERVICIOS -->
     <div id="modalServicio" class="ngc-modal-overlay oculto">
         <div class="ngc-modal-card">
             <button class="btn-cerrar-modal" onclick="cerrarModalServicio()"><i class="fa-solid fa-xmark"></i></button>
@@ -197,4 +185,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+                             </html>
+                             
