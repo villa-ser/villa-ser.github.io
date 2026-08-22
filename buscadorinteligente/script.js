@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     btnBuscar.addEventListener("click", () => {
-        // Efecto visual de carga
         const textoOriginal = btnBuscar.innerHTML;
         btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
         setTimeout(() => {
@@ -42,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// FUNCIÓN: Búsqueda rápida por Tags
 function busquedaRapida(termino) {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
@@ -180,7 +178,6 @@ function ejecutarBusqueda() {
         const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
-        // CORRECCIÓN: Ahora dice "Solo Mano de Obra"
         card.innerHTML = `
             <div class="result-header">
                 <span class="result-concept">${item.concepto}</span>
@@ -231,4 +228,4 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-}
+                  }
