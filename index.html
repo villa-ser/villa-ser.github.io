@@ -29,12 +29,34 @@
 </head>
 
 <body>
-    <!-- Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
+    <!-- 1. Botón Volver / Menú principal -->
+    <a href="#btn-explorar" class="btn-flotante-accion" id="btn-ir-menu" aria-label="Ir al menú">
+        <i class="fas fa-bars"></i>
+    </a>
+
+    <!-- 2. Botón Desplegable de Secciones -->
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion" aria-label="Secciones">
+            <i class="fas fa-th-large"></i>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+            <a href="servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- 3. Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- Icono Flotante Superior -->
+    <!-- 4. Logo Flotante Superior -->
     <div class="hero-logo-icon">
         <img src="img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
@@ -46,7 +68,6 @@
     <main class="main-wrapper">
         <div class="layout-desktop">
             
-            <!-- COLUMNA IZQUIERDA -->
             <div class="col-izquierda">
                 <div class="gnc-hero-card">
                     <div class="hero-header-row">
@@ -83,7 +104,6 @@
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA -->
             <div class="col-derecha">
                 <div class="separador-bloque">
                     <div class="ngc-button-grid">
@@ -185,5 +205,5 @@
 
     <script src="script.js"></script>
 </body>
-                             </html>
-                             
+                        </html>
+                                
