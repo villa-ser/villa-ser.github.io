@@ -1,4 +1,3 @@
-            
 // Inicializar icono de flecha "Volver"
 lucide.createIcons();
 
