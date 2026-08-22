@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="preload" as="image" href="img/fondo.avif">
+    <!-- 4. PRELOAD DEL FONDO -->
+    <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,9 +17,9 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_AR">
     <meta property="og:url" content="https://villaser.com.ar/historia">
-    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
-    <link rel="icon" type="image/png" href="../img/perfil-logo.png">
+    <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -28,7 +29,7 @@
 <body>
     <!-- LOGO FLOTANTE PARA SUBPÁGINAS -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.png" alt="Villaser Logo">
+        <img src="../img/logo.avif" alt="Villaser Logo">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
