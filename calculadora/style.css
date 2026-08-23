@@ -17,7 +17,6 @@
     
     /* Variables de Layout y Componentes Calculadora */
     --bg-body: #121212;
-    --bg-image: url('../img/fondo.avif');
     --card-shadow: rgba(0, 0, 0, 0.5);
     
     /* Inputs y Fondos internos (Oscuro) */
@@ -45,7 +44,6 @@
     
     /* Fondo del body ligeramente gris para que las tarjetas blancas resalten */
     --bg-body: #d6dbe0;
-    --bg-image: url('../img/fondoclaro.avif');
     --card-shadow: rgba(0, 0, 0, 0.15);
     
     /* Entradas y botones internos un poco grises (Oscurecidos) */
@@ -58,24 +56,53 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* TRANSICIÓN DE FONDO FLUIDA */
 html {
     background-color: var(--bg-body);
     overscroll-behavior-y: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.4s ease;
 }
+
+html::before, html::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center center;
+    z-index: -1;
+    transition: opacity 0.5s ease-in-out;
+    will-change: opacity;
+}
+
+html::before {
+    background-image: url('../img/fondo.avif');
+    opacity: 1;
+}
+
+html::after {
+    background-image: url('../img/fondoclaro.avif');
+    opacity: 0;
+}
+
+[data-theme="light"]::before { opacity: 0; }
+[data-theme="light"]::after { opacity: 1; }
 
 body {
     margin: 0; padding: 80px 4px 4px 4px;
-    background: var(--bg-body) var(--bg-image) no-repeat center center fixed;
-    background-size: cover; width: 100%; min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--gnc-text);
+    width: 100%; min-height: 100vh;
     overflow-x: hidden; display: flex; justify-content: center; 
-    transition: background 0.3s ease;
 }
 
 /* CLASE CRÍTICA PARA EL MENÚ Y ELEMENTOS OCULTOS */
 .oculto { display: none !important; }
+
+/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+.gpu-accel {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
 
 /* ANCHOS ESTANDARIZADOS COMO LA RAÍZ */
 .main-wrapper { 
@@ -90,13 +117,24 @@ body {
 /* --- BOTONES FLOTANTES Y MENÚ DESPLEGABLE      --- */
 /* ================================================= */
 
-/* Logo Flotante Neón Mejorado */
+/* Logo Flotante Neón Mejorado (Transición CSS) */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); padding: 5px;
     box-shadow: 0 4px 15px var(--card-shadow);
 }
-.hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; transition: opacity 0.3s ease; position: relative; z-index: 2;}
+.logo-oscuro, .logo-claro {
+    position: absolute; 
+    top: 5px; left: 5px; 
+    width: calc(100% - 10px); height: calc(100% - 10px);
+    object-fit: contain; border-radius: 4px;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 2;
+}
+.logo-claro { opacity: 0; }
+[data-theme="light"] .logo-oscuro { opacity: 0; }
+[data-theme="light"] .logo-claro { opacity: 1; }
+
 .hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;}
 .hero-neon-rect {
     fill: none; stroke: var(--gnc-neon); stroke-width: 4px;
@@ -409,5 +447,5 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     
     .gnc-card { padding: 25px; margin-bottom: 20px;}
     #lista-items { max-height: 300px; }
-    }
-    
+                                  }
+
