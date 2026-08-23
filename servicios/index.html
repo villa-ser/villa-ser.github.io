@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- 4. PRELOAD DEL FONDO -->
+    <!-- PRELOAD DEL FONDO -->
     <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,11 +29,39 @@
 </head>
 
 <body>
-    <!-- LOGO FLOTANTE -->
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
+
+    <!-- 1. Botón Volver (Flotante Izquierda) -->
+    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+            <i class="fas fa-bars"></i> <span>Explorar</span>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- 3. Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <!-- 4. Logo Flotante Animado -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo">
-        <svg class="hero-neon-svg" preserveAspectRatio="none">
-            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
+        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
     </div>
 
@@ -44,12 +72,7 @@
             <!-- COLUMNA IZQUIERDA (Intro y Form - Fija PC) -->
             <!-- ========================================== -->
             <div class="col-izquierda">
-                <!-- BOTÓN DE VOLVER -->
-                <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-                    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> 
-                    Volver al Inicio
-                </a>
-
+                
                 <h1 class="gnc-main-title">Mis Servicios</h1>
 
                 <!-- BANNER INTRODUCTORIO -->
@@ -102,7 +125,7 @@
                             <div style="color: var(--gnc-success); font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; letter-spacing: 1px;">
                                 <i class="fa-solid fa-circle-check"></i> CONSULTA ENVIADA
                             </div>
-                            <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: white;">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
+                            <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: var(--gnc-text);">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
                             <button onclick="resetForm()" class="gnc-btn-outline" style="width: 100%;">Enviar otra consulta</button>
                         </div>
                     </div>
@@ -118,7 +141,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="FileCheck"></i></div>
+                                <div class="icon-box"><i data-lucide="file-check"></i></div>
                                 <span>Apto Eléctrico</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -135,7 +158,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="Cable"></i></div>
+                                <div class="icon-box"><i data-lucide="cable"></i></div>
                                 <span>Cableado y Recableado</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -152,7 +175,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="ZapOff"></i></div>
+                                <div class="icon-box"><i data-lucide="zap-off"></i></div>
                                 <span>Diferenciales (Disyuntores)</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -169,7 +192,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="Construction"></i></div>
+                                <div class="icon-box"><i data-lucide="hard-hat"></i></div>
                                 <span>Luz de Obra</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -186,7 +209,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="Lamp"></i></div>
+                                <div class="icon-box"><i data-lucide="lamp"></i></div>
                                 <span>Luminaria y Artefactos</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -202,7 +225,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="Layout"></i></div>
+                                <div class="icon-box"><i data-lucide="layout"></i></div>
                                 <span>Plano Eléctrico</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -219,7 +242,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="ArrowDownToLine"></i></div>
+                                <div class="icon-box"><i data-lucide="arrow-down-to-line"></i></div>
                                 <span>Puesta a Tierra (Jabalina)</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -236,7 +259,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="ToggleRight"></i></div>
+                                <div class="icon-box"><i data-lucide="toggle-right"></i></div>
                                 <span>Tableros y Termomagnéticas</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -252,7 +275,7 @@
                     <details name="servicios">
                         <summary>
                             <div class="summary-title">
-                                <div class="icon-box"><i data-lucide="HardHat"></i></div>
+                                <div class="icon-box"><i data-lucide="list-checks"></i></div>
                                 <span>Más Soluciones...</span>
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
@@ -281,7 +304,7 @@
                     </div>
                     
                     <div class="ngc-site-credits">
-                        &copy; 2026 Villaser. Designed by <span>Sergio Villagra</span>.
+                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
                     </div>
                 </div>
 
@@ -292,5 +315,4 @@
     <!-- JS -->
     <script src="script.js"></script>
 </body>
-    </html>
-                                
+</html>
