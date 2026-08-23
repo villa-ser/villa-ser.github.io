@@ -11,15 +11,18 @@ let allData = [];
 // 1. DICCIONARIO DE SINÓNIMOS
 const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "llave", "breaker"],
-    ["timbre", "campanilla", "zumbador", "bocina", "pitido", "soneria", "llamador"],
+    ["timbre", "campanilla", "zumbador", "bocina", "pitido", "soneria", "portero", "llamador"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
     ["tomacorriente", "toma", "enchufe", "modulo", "boca"],
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
     ["jabalina", "electrodo", "tierra", "pat", "puesta a tierra"],
-    ["luminaria", "lampara", "foco", "artefacto", "luz", "aplique"],
+    ["luminaria", "lampara", "foco", "artefacto", "luz", "lus", "luces", "lamparita", "aplique"],
     ["instalacion", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
     ["pilar", "acometida", "monofasico", "trifasico"],
-    ["apto", "certificado", "epec", "ersep"]
+    ["fexible", "corrugado", "manguera"],
+    ["caño", "cañeria", "tubo"],
+    ["cable canal", "cablecanal"],
+    ["apto", "certificado", "epec", "alta", "ersep"]
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
