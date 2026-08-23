@@ -1,15 +1,78 @@
+// ==========================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// ==========================================
+const temaGuardado = localStorage.getItem('temaVillaser');
+if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Inicializar iconos de Lucide
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
-    // 2. LÓGICA DE UX: Auto-cierre de Acordeones (Blindado para todos los navegadores)
+    // ==========================================
+    // 2. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
+    // ==========================================
+    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
+    const dropdownFlotante = document.getElementById('dropdown-flotante');
+
+    if (btnMenuFlotante && dropdownFlotante) {
+        btnMenuFlotante.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownFlotante.classList.toggle('oculto');
+        });
+
+        // Cerrar menú flotante al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
+                dropdownFlotante.classList.add('oculto');
+            }
+        });
+    }
+
+    // ==========================================
+    // 3. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // ==========================================
+    const btnTema = document.getElementById('btn-tema');
+    const imgLogoPrincipal = document.getElementById('img-logo-principal');
+    
+    if (btnTema) {
+        const iconTema = btnTema.querySelector('i');
+        
+        // Sincronizar iconos según el tema actual guardado
+        if (temaGuardado === 'light') {
+            iconTema.classList.replace('fa-sun', 'fa-moon');
+            if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+        }
+
+        // Alternar tema y logo al hacer click
+        btnTema.addEventListener('click', () => {
+            const temaActual = document.documentElement.getAttribute('data-theme');
+            
+            if (temaActual === 'light') {
+                document.documentElement.removeAttribute('data-theme'); 
+                localStorage.setItem('temaVillaser', 'dark');
+                iconTema.classList.replace('fa-moon', 'fa-sun');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light'); 
+                localStorage.setItem('temaVillaser', 'light');
+                iconTema.classList.replace('fa-sun', 'fa-moon');
+                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
+            }
+        });
+    }
+
+    // ==========================================
+    // 4. LÓGICA DE UX: Auto-cierre de Acordeones
+    // ==========================================
     const accordions = document.querySelectorAll('details.gnc-accordion');
     
     accordions.forEach(accordion => {
         accordion.addEventListener('click', (e) => {
-            // Si el acordeón sobre el que se hace clic no está abierto
             if (!accordion.hasAttribute('open')) {
-                // Cerramos todos los demás
                 accordions.forEach(otherAccordion => {
                     if (otherAccordion !== accordion) {
                         otherAccordion.removeAttribute('open');
@@ -20,7 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// 3. Función para simular el envío y mostrar mensaje de éxito del Formulario
+// ==========================================
+// 5. FUNCIONES DEL FORMULARIO Y COMPARTIR
+// ==========================================
+
 function handleSubmit() {
     const btn = document.getElementById('btnSubmit');
     btn.classList.add('loading');
@@ -29,17 +95,15 @@ function handleSubmit() {
         document.getElementById('consultForm').style.display = 'none';
         document.getElementById('success-message').style.display = 'block';
         btn.classList.remove('loading');
-    }, 1500); // Simula el tiempo de envío al Google Forms
+    }, 1500); 
 }
 
-// 4. Función para resetear el formulario si quieren enviar otro mensaje
 function resetForm() {
     document.getElementById('consultForm').reset();
     document.getElementById('consultForm').style.display = 'block';
     document.getElementById('success-message').style.display = 'none';
 }
 
-// 5. Función para compartir (API Nativa o WhatsApp)
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
@@ -48,7 +112,6 @@ function compartirWeb() {
       url: 'https://villaser.com.ar/historia'
     }).catch(console.error);
   } else {
-    // Si están en PC y no tienen función de compartir nativa
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Conocé los detalles de la Ley de Seguridad Eléctrica en Córdoba: https://villaser.com.ar/historia");
     window.open(whatsappUrl, '_blank');
   }
