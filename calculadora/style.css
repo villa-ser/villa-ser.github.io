@@ -75,8 +75,17 @@ body {
     transition: background 0.3s ease;
 }
 
-.gnc-main-wrapper { display: flex; flex-direction: column; width: 100%; max-width: 500px; }
-.layout-desktop { display: flex; flex-direction: column; width: 100%; gap: 15px; }
+/* UTILIDAD (CRÍTICO PARA QUE SE OCULTE EL MENÚ) */
+.oculto { display: none !important; }
+
+/* ANCHOS ESTANDARIZADOS COMO LA RAÍZ */
+.main-wrapper { 
+    width: 100%; max-width: 500px; padding: 15px; 
+    display: flex; flex-direction: column; 
+}
+.layout-desktop { 
+    display: flex; flex-direction: column; width: 100%; gap: 15px; 
+}
 
 /* ================================================= */
 /* --- BOTONES FLOTANTES Y MENÚ DESPLEGABLE      --- */
@@ -305,7 +314,7 @@ label i { margin-right: 5px; }
 
 /* --- LEYENDA TÉCNICA --- */
 .ngc-tech-legend {
-    background: var(--gnc-glass); backdrop-filter: var(--ngc-blur); border: var(--gnc-border);
+    background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); border: var(--gnc-border);
     border-radius: 16px; padding: 18px; color: var(--gnc-text-muted);
     box-shadow: 0 10px 30px var(--card-shadow); margin-bottom: 15px;
 }
@@ -342,7 +351,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
 /* ======================================================= */
 
 @media (min-width: 768px) {
-    .gnc-main-wrapper { max-width: 720px; padding: 25px; }
+    .main-wrapper { max-width: 720px; padding: 25px; }
     
     #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
     .menu-flotante-container { top: 25px; left: 105px; }
@@ -358,11 +367,11 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
 @media (min-width: 1024px) {
     body { padding-top: 40px; align-items: flex-start; }
     
-    .gnc-main-wrapper { max-width: 1050px; }
+    .main-wrapper { max-width: 1050px; }
     
     .layout-desktop {
         display: grid;
-        grid-template-columns: 450px 1fr;
+        grid-template-columns: 420px 1fr;
         gap: 30px;
         align-items: start;
     }
@@ -375,6 +384,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         gap: 0;
         max-height: calc(100vh - 80px);
         overflow-y: auto;
+        padding-right: 5px;
     }
     
     .col-izquierda::-webkit-scrollbar { width: 0px; }
@@ -387,4 +397,5 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     
     .gnc-card { padding: 25px; margin-bottom: 20px;}
     #lista-items { max-height: 300px; }
-}
+    }
+    
