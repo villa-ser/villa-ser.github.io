@@ -6,15 +6,37 @@ if (temaGuardado === 'light') {
     document.documentElement.setAttribute('data-theme', 'light');
 }
 
-// Inicializar icono de flecha "Volver"
-lucide.createIcons();
+// Inicializar iconos de Lucide (si se usan)
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
 
 let listado = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
-    // LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // 1. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
+    // ==========================================
+    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
+    const dropdownFlotante = document.getElementById('dropdown-flotante');
+
+    if (btnMenuFlotante && dropdownFlotante) {
+        btnMenuFlotante.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownFlotante.classList.toggle('oculto');
+        });
+
+        // Cerrar menú flotante al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!dropdownFlotante.contains(e.target) && e.target !== btnMenuFlotante) {
+                dropdownFlotante.classList.add('oculto');
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
     const imgLogoPrincipal = document.getElementById('img-logo-principal');
@@ -49,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // LÓGICA DE LOS SLIDERS
+    // 3. LÓGICA DE LOS SLIDERS
     // ==========================================
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
@@ -68,7 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Funciones del menú desplegable personalizado
+// ==========================================
+// 4. FUNCIONES DEL SELECTOR Y CALCULADORA
+// ==========================================
+
 function toggleDropdown(listId, displayId) {
     if (window.event) {
         window.event.stopPropagation();
@@ -110,7 +135,6 @@ document.addEventListener("click", function(event) {
     }
 });
 
-// Lógica de cálculo básico por aparato
 function actualizarWatts() {
     const val = document.getElementById('aparato').value;
     if(val == "0") {
@@ -144,7 +168,6 @@ function agregarItem() {
     const nombre = inputObj.getAttribute('data-text'); 
     const w = parseFloat(inputObj.value);
     
-    // Ahora tomamos los valores desde los sliders
     const h = parseFloat(document.getElementById('horas').value);
     const d = parseFloat(document.getElementById('dias').value);
     
@@ -262,5 +285,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                    }
-                    
+                                         }
+            
