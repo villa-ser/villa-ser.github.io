@@ -33,10 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
-    const imgLogoPrincipal = document.getElementById('img-logo-principal');
     
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
@@ -44,10 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sincronizar iconos según el tema actual guardado
         if (temaGuardado === 'light') {
             iconTema.classList.replace('fa-sun', 'fa-moon');
-            if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
         }
 
-        // Alternar tema y logo al hacer click
+        // Alternar tema 
         btnTema.addEventListener('click', () => {
             const temaActual = document.documentElement.getAttribute('data-theme');
             
@@ -55,12 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
                 iconTema.classList.replace('fa-moon', 'fa-sun');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
             } else {
                 document.documentElement.setAttribute('data-theme', 'light'); 
                 localStorage.setItem('temaVillaser', 'light');
                 iconTema.classList.replace('fa-sun', 'fa-moon');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
             }
         });
     }
@@ -82,6 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// ==========================================
+// 4. FUNCIONES DEL FORMULARIO Y COMPARTIR
+// ==========================================
 
 // Función para simular el envío y mostrar mensaje de éxito del Formulario
 function handleSubmit() {
@@ -121,5 +121,4 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Conocé los servicios eléctricos de Sergio Villagra en Córdoba: https://villaser.com.ar/servicios");
     window.open(whatsappUrl, '_blank');
   }
-        }
-
+}
