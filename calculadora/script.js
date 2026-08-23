@@ -23,17 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (btnMenuFlotante && dropdownFlotante) {
         btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Evita que el clic se propague al document
             dropdownFlotante.classList.toggle('oculto');
         });
+    }
 
-        // Cerrar menú flotante al hacer clic fuera (Lógica mejorada)
-        document.addEventListener('click', (e) => {
+    // Cerrar menú flotante al hacer clic fuera (Lógica Segura)
+    document.addEventListener('click', (e) => {
+        if (btnMenuFlotante && dropdownFlotante) {
+            // Si el clic NO fue en el botón Explorar, ni en su contenido, lo cerramos
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
             }
-        });
-    }
+        }
+    });
 
     // ==========================================
     // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
@@ -75,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
-    if(sliderHoras) {
+    if(sliderHoras && labelHoras) {
         sliderHoras.addEventListener("input", (e) => {
             labelHoras.innerText = e.target.value + " hs";
         });
@@ -83,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sliderDias = document.getElementById("dias");
     const labelDias = document.getElementById("dias-val");
-    if(sliderDias) {
+    if(sliderDias && labelDias) {
         sliderDias.addEventListener("input", (e) => {
             labelDias.innerText = e.target.value + " días";
         });
@@ -94,15 +97,19 @@ document.addEventListener("DOMContentLoaded", () => {
 // 4. FUNCIONES DEL SELECTOR Y CALCULADORA
 // ==========================================
 
-function toggleDropdown(listId, displayId) {
-    if (window.event) {
+function toggleDropdown(listId, displayId, event) {
+    // Seguridad para navegadores antiguos y nuevos
+    if (event) {
+        event.stopPropagation();
+    } else if (window.event) {
         window.event.stopPropagation();
     }
     
     const list = document.getElementById(listId);
     const display = document.getElementById(displayId);
-    const isShowing = list.classList.contains('show');
+    if(!list || !display) return;
     
+    const isShowing = list.classList.contains('show');
     closeAllDropdowns();
     
     if (!isShowing) { 
@@ -112,13 +119,17 @@ function toggleDropdown(listId, displayId) {
 }
 
 function selectOption(val, text) {
-    document.getElementById('display-aparato').innerText = text;
+    const displayAparato = document.getElementById('display-aparato');
     const hiddenInput = document.getElementById('aparato');
-    hiddenInput.value = val;
-    hiddenInput.setAttribute('data-text', text);
     
-    closeAllDropdowns();
-    actualizarWatts();
+    if (displayAparato && hiddenInput) {
+        displayAparato.innerText = text;
+        hiddenInput.value = val;
+        hiddenInput.setAttribute('data-text', text);
+        
+        closeAllDropdowns();
+        actualizarWatts();
+    }
 }
 
 function closeAllDropdowns() {
@@ -128,48 +139,70 @@ function closeAllDropdowns() {
     if (display) display.classList.remove('select-arrow-active');
 }
 
-// Cerrar dropdown de aparatos al tocar fuera
+// Cerrar dropdown de aparatos al tocar fuera de él
 document.addEventListener("click", function(event) {
-    if (!event.target.closest('.custom-select')) {
+    const customSelect = event.target.closest('.custom-select');
+    if (!customSelect) {
         closeAllDropdowns();
     }
 });
 
 function actualizarWatts() {
-    const val = document.getElementById('aparato').value;
+    const valObj = document.getElementById('aparato');
+    const wattsDisplay = document.getElementById('watts_display');
+    if(!valObj || !wattsDisplay) return;
+
+    const val = valObj.value;
     if(val == "0") {
-        document.getElementById('watts_display').innerText = "0 Watts de potencia";
+        wattsDisplay.innerText = "0 Watts de potencia";
     } else {
-        document.getElementById('watts_display').innerText = val + " Watts de potencia";
+        wattsDisplay.innerText = val + " Watts de potencia";
     }
 }
 
 function resetAll() {
     listado = [];
     const inputObj = document.getElementById('aparato');
-    inputObj.value = "0";
-    inputObj.setAttribute('data-text', "");
-    document.getElementById('display-aparato').innerText = "Seleccionar artefacto...";
-    document.getElementById('watts_display').innerText = "0 Watts de potencia";
+    const displayObj = document.getElementById('display-aparato');
+    const wattsDisplay = document.getElementById('watts_display');
+    const sliderHoras = document.getElementById("horas");
+    const labelHoras = document.getElementById("horas-val");
+    const sliderDias = document.getElementById("dias");
+    const labelDias = document.getElementById("dias-val");
+
+    if(inputObj && displayObj && wattsDisplay) {
+        inputObj.value = "0";
+        inputObj.setAttribute('data-text', "");
+        displayObj.innerText = "Seleccionar artefacto...";
+        wattsDisplay.innerText = "0 Watts de potencia";
+    }
     
-    // Resetear sliders
-    document.getElementById("horas").value = 4;
-    document.getElementById("horas-val").innerText = "4 hs";
-    document.getElementById("dias").value = 7;
-    document.getElementById("dias-val").innerText = "7 días";
+    // Resetear sliders si existen
+    if(sliderHoras && labelHoras) {
+        sliderHoras.value = 4;
+        labelHoras.innerText = "4 hs";
+    }
+    if(sliderDias && labelDias) {
+        sliderDias.value = 7;
+        labelDias.innerText = "7 días";
+    }
     
     render();
 }
 
 function agregarItem() {
     const inputObj = document.getElementById('aparato');
+    const horasObj = document.getElementById('horas');
+    const diasObj = document.getElementById('dias');
+    
+    if (!inputObj || !horasObj || !diasObj) return;
     if (inputObj.value == "0") return;
     
     const nombre = inputObj.getAttribute('data-text'); 
     const w = parseFloat(inputObj.value);
     
-    const h = parseFloat(document.getElementById('horas').value);
-    const d = parseFloat(document.getElementById('dias').value);
+    const h = parseFloat(horasObj.value);
+    const d = parseFloat(diasObj.value);
     
     const kwhMensual = (w * h * (d/7) * 30) / 1000;
     
@@ -178,8 +211,11 @@ function agregarItem() {
     // Reseteamos el selector visualmente tras agregar
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
-    document.getElementById('display-aparato').innerText = "Seleccionar artefacto...";
-    document.getElementById('watts_display').innerText = "0 Watts de potencia";
+    
+    const displayObj = document.getElementById('display-aparato');
+    const wattsDisplay = document.getElementById('watts_display');
+    if(displayObj) displayObj.innerText = "Seleccionar artefacto...";
+    if(wattsDisplay) wattsDisplay.innerText = "0 Watts de potencia";
     
     render();
 }
@@ -191,6 +227,8 @@ function eliminar(id) {
 
 function render() {
     const lista = document.getElementById('lista-items');
+    if(!lista) return;
+
     lista.innerHTML = '';
     listado.forEach(item => {
         const div = document.createElement('div');
@@ -269,8 +307,11 @@ function recalcularTotal() {
     const FACTOR_IMPUESTOS = 1.36; 
     const totalPesos = Math.round(costoEnergiaPura * FACTOR_IMPUESTOS);
 
-    document.getElementById('total-kwh').innerText = totalKwh.toFixed(2);
-    document.getElementById('total-pesos').innerText = "$ " + totalPesos.toLocaleString('es-AR');
+    const kwhUI = document.getElementById('total-kwh');
+    const pesosUI = document.getElementById('total-pesos');
+    
+    if(kwhUI) kwhUI.innerText = totalKwh.toFixed(2);
+    if(pesosUI) pesosUI.innerText = "$ " + totalPesos.toLocaleString('es-AR');
 }
 
 function compartirWeb() {
@@ -285,4 +326,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-        }
+}
+    
