@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- PRELOAD DEL FONDO -->
+    <!-- PRELOAD OPTIMIZADO PARA AMBOS FONDOS Y LOGOS -->
     <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
+    <link rel="preload" as="image" href="../img/fondoclaro.avif" fetchpriority="low">
+    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="low">
 
     <title>Calculadora de consumo eléctrico en Córdoba Capital | Villaser</title>
     <link rel="canonical" href="https://villaser.com.ar/calculadora/" />
     
-
     <meta name="description" content="Calculá el consumo eléctrico de tu hogar según la tarifa de EPEC en Córdoba. Herramienta gratuita por Sergio Villagra, Electricista Categoría III.">
     <meta name="keywords" content="calculadora consumo electrico, EPEC, subsidio SEF, electricista matriculado, Córdoba capital, ERSeP, ahorrar energia, fugas electricas">
     <meta name="author" content="Sergio Adrian Villagra">
@@ -33,16 +34,16 @@
     <!-- CONTROLES FLOTANTES SUPERIORES -->
 
     <!-- 1. Botón Volver (Flotante Izquierda) -->
-    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
     <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
     <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
             <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
             <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
             <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
@@ -54,13 +55,14 @@
     </div>
 
     <!-- 3. Botón Modo Día/Noche (Flotante Derecha) -->
-    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 4. Logo Flotante Animado (Extremo Derecho) -->
-    <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+    <!-- 4. Logo Flotante Animado (Transición CSS) -->
+    <div class="hero-logo-icon gpu-accel">
+        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
         <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
             <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
@@ -72,7 +74,7 @@
             
             <!-- COLUMNA IZQUIERDA (Controles) -->
             <div class="col-izquierda">
-                <div class="gnc-card">
+                <div class="gnc-card gpu-accel">
                     <div class="header-row">
                         <h2>Calculadora de Consumo</h2>
                         <button class="btn-reset" onclick="resetAll()">
@@ -168,7 +170,7 @@
 
             <!-- COLUMNA DERECHA (Resultados) -->
             <div class="col-derecha">
-                <div class="gnc-card">
+                <div class="gnc-card gpu-accel">
                     <h3 class="panel-title" style="color: var(--gnc-neon); margin-bottom: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-list-check"></i> Detalle de Consumo</h3>
                     
                     <div id="lista-items"></div>
@@ -193,7 +195,7 @@
                     </div>
                 </div>
 
-                <div class="ngc-tech-legend">
+                <div class="ngc-tech-legend gpu-accel">
                     <span class="legend-title"><i class="fa-solid fa-circle-info"></i> Información Técnica Tarifaria</span>
                     
                     <div class="legend-section">
@@ -213,7 +215,7 @@
                 </div>
 
                 <div class="footer-wrapper">
-                    <div class="footer-gnc-compact">
+                    <div class="footer-gnc-compact gpu-accel">
                         <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
                         <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -229,7 +231,8 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <!-- Script en modo defer para no bloquear renderizado visual -->
+    <script src="script.js" defer></script>
 </body>
-                                </html>
-    
+                            </html>
+                            
