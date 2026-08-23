@@ -13,7 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
+    <!-- Precarga de imágenes optimizada para ambos modos -->
     <link rel="preload" as="image" href="img/fondo.avif" fetchpriority="high">
+    <link rel="preload" as="image" href="img/fondoclaro.avif" fetchpriority="low">
+    <link rel="preload" as="image" href="img/logoclaro.avif" fetchpriority="low">
 
     <meta name="description" content="Servicios de instalaciones eléctricas residenciales y comerciales en Córdoba Capital. Electricista Habilitado Categoría III (ERSeP). Trabajos bajo Ley 10.281.">
     <meta name="keywords" content="electricista matriculado, instalaciones eléctricas, Córdoba capital, ERSeP, Categoría III, Sergio Adrian Villagra, Villaser Gestión, certificación eléctrica, Ley de Seguridad Eléctrica, planos eléctricos, tableros eléctricos, apto electrico, apto epec, luz de obra">
@@ -32,14 +35,15 @@
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
 
-    <!-- 1. Botón Modo Día/Noche (Movido a la Izquierda para equilibrio visual) -->
+    <!-- 1. Botón Modo Día/Noche -->
     <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 2. Logo Flotante Superior (Extremo Derecho) -->
+    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
     <div class="hero-logo-icon">
-        <img src="img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+        <img src="img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
+        <img src="img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
             <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
@@ -53,7 +57,7 @@
             <!-- COLUMNA IZQUIERDA (Perfil - Fija en PC)    -->
             <!-- ========================================== -->
             <div class="col-izquierda">
-                <div class="gnc-hero-card">
+                <div class="gnc-hero-card gpu-accel">
                     <div class="hero-header-row">
                         <div class="hero-profile-container">
                             <img src="img/perfil.avif" alt="Sergio Villagra" class="hero-photo">
@@ -78,7 +82,7 @@
                 </div>
 
                 <div class="separador-bloque">
-                    <div class="ngc-privacy-card">
+                    <div class="ngc-privacy-card gpu-accel">
                         <i class="fa-solid fa-shield-halved privacy-icon"></i>
                         <h3 class="privacy-title">Compromiso de Privacidad</h3>
                         <p class="privacy-text">
@@ -99,9 +103,9 @@
                     </div>
                 </div>
 
-                <!-- SERVICIOS RÁPIDOS (Gatillan la Nube Flotante/Modal) -->
+                <!-- SERVICIOS RÁPIDOS -->
                 <div class="separador-bloque">
-                    <div class="ngc-quick-services">
+                    <div class="ngc-quick-services gpu-accel">
                         <button onclick="abrirModalServicio('apto')" class="quick-item">
                             <i class="fa-solid fa-file-signature"></i>
                             <span>Apto Eléctrico</span>
@@ -122,7 +126,7 @@
                 </div>
 
                 <!-- CTA CALCULADORA -->
-                <a href="calculadora/index.html" class="ngc-cta-banner separador-bloque">
+                <a href="calculadora/index.html" class="ngc-cta-banner separador-bloque gpu-accel">
                     <div class="cta-banner-content">
                         <i class="fa-solid fa-calculator cta-icon"></i>
                         <div class="cta-text">
@@ -133,8 +137,8 @@
                     </div>
                 </a>
 
-                <!-- MENÚ CLÁSICO DESPLEGABLE DE EXPLORAR -->
-                <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
+                <!-- MENÚ CLÁSICO DESPLEGABLE -->
+                <button id="btn-explorar" class="ngc-btn gpu-accel" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
                     Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
                 </button>
                 
@@ -148,14 +152,14 @@
                 </div>
 
                 <div class="separador-bloque">
-                    <div class="ngc-full-container" style="padding: 15px;">
+                    <div class="ngc-full-container gpu-accel" style="padding: 15px;">
                         <div class="ngc-content-area" style="text-align: center;">
                             <span class="ngc-title" style="margin:0;">Electricidad segura, hogar tranquilo.</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="footer-gnc-compact">
+                <div class="footer-gnc-compact gpu-accel">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
                         <i class="far fa-envelope"></i>
                     </a>
@@ -182,7 +186,7 @@
 
     <!-- NUBE FLOTANTE / MODAL DE SERVICIOS -->
     <div id="modalServicio" class="ngc-modal-overlay oculto">
-        <div class="ngc-modal-card">
+        <div class="ngc-modal-card gpu-accel">
             <button class="btn-cerrar-modal" onclick="cerrarModalServicio()"><i class="fa-solid fa-xmark"></i></button>
             <div id="modal-icono" class="modal-icono"></div>
             <h3 id="modal-titulo" class="modal-titulo">Título</h3>
@@ -193,6 +197,8 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Script en modo defer para no bloquear renderizado visual -->
+    <script src="script.js" defer></script>
 </body>
-</html>
+                </html>
+                        
