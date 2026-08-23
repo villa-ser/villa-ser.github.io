@@ -1,3 +1,11 @@
+// ==========================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// ==========================================
+const temaGuardado = localStorage.getItem('temaVillaser');
+if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
@@ -21,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MENÚ DESPLEGABLE "EXPLORAR" (Página principal)
+    // 2. LÓGICA DEL MENÚ DESPLEGABLE "EXPLORAR" (Botón clásico)
     // ==========================================
     const btnExplorar = document.getElementById('btn-explorar');
     const menuBotones = document.getElementById('menu-botones');
@@ -65,9 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
         
-        const temaGuardado = localStorage.getItem('temaVillaser');
+        // Sincronizar iconos si el tema ya fue aplicado al principio
         if (temaGuardado === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
             iconTema.classList.replace('fa-sun', 'fa-moon');
             if (imgLogoPrincipal) imgLogoPrincipal.src = prefijoRuta + 'img/logoclaro.avif';
         }
@@ -88,4 +95,88 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // ==========================================
+    // 4. CERRAR MODAL DE SERVICIOS AL HACER CLICK AFUERA
+    // ==========================================
+    const modalOverlay = document.getElementById('modalServicio');
+    if(modalOverlay) {
+        modalOverlay.addEventListener('click', function(e) {
+            if(e.target === this) {
+                cerrarModalServicio();
+            }
+        });
+    }
 });
+
+// ==========================================
+// 5. DATOS Y FUNCIONES DEL MODAL DE SERVICIOS RÁPIDOS
+// ==========================================
+const serviciosInfo = {
+    'apto': {
+        icono: '<i class="fa-solid fa-file-signature" style="color: var(--ngc-neon);"></i>',
+        titulo: 'Apto Eléctrico',
+        desc: 'Certificación oficial obligatoria bajo Ley 10.281 (ERSeP) para solicitar nuevos medidores o rehabilitaciones ante EPEC.',
+        msg: 'Hola Sergio, necesito realizar un certificado de Apto Eléctrico.'
+    },
+    'fugas': {
+        icono: '<i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d;"></i>',
+        titulo: 'Fugas y Cortos',
+        desc: 'Detección precisa mediante instrumental y reparación urgente de fallas eléctricas, saltos de disyuntor y cortocircuitos.',
+        msg: 'Hola Sergio, tengo un problema urgente de fugas/cortocircuito en mi instalación.'
+    },
+    'tableros': {
+        icono: '<i class="fa-solid fa-charging-station" style="color: var(--ngc-neon);"></i>',
+        titulo: 'Tableros',
+        desc: 'Armado, normalización y modernización de tableros eléctricos principales y seccionales garantizando protecciones adecuadas.',
+        msg: 'Hola Sergio, necesito revisar o normalizar un tablero eléctrico.'
+    },
+    'obra': {
+        icono: '<i class="fa-solid fa-helmet-safety" style="color: var(--ngc-neon);"></i>',
+        titulo: 'Luz de Obra',
+        desc: 'Instalación de pilares provisorios y definitivos reglamentarios para el inicio seguro de obras y construcciones.',
+        msg: 'Hola Sergio, necesito instalar un pilar de Luz de Obra.'
+    }
+};
+
+function abrirModalServicio(tipo) {
+    const modal = document.getElementById('modalServicio');
+    const data = serviciosInfo[tipo];
+    
+    document.getElementById('modal-icono').innerHTML = data.icono;
+    document.getElementById('modal-titulo').innerText = data.titulo;
+    document.getElementById('modal-desc').innerText = data.desc;
+    
+    const wspLink = "https://wa.me/543513559347?text=" + encodeURIComponent(data.msg);
+    document.getElementById('modal-wsp').href = wspLink;
+    
+    modal.classList.remove('oculto');
+    setTimeout(() => {
+        modal.classList.add('activo');
+    }, 10); 
+}
+
+function cerrarModalServicio() {
+    const modal = document.getElementById('modalServicio');
+    modal.classList.remove('activo');
+    setTimeout(() => {
+        modal.classList.add('oculto');
+    }, 300); 
+}
+
+// ==========================================
+// 6. FUNCIÓN COMPARTIR WEB
+// ==========================================
+function compartirWeb() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Villaser - Electricista Habilitado',
+      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
+      url: 'https://villaser.com.ar'
+    })
+    .catch((error) => console.log('Error al compartir', error));
+  } else {
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
+    window.open(whatsappUrl, '_blank');
+  }
+}
