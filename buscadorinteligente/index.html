@@ -2,13 +2,16 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- PRELOAD DEL FONDO -->
-    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III</title>
     <link rel="canonical" href="https://villaser.com.ar/buscadorinteligente/" />
     
+    <!-- PRELOAD OPTIMIZADO PARA AMBOS FONDOS Y LOGOS -->
+    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
+    <link rel="preload" as="image" href="../img/fondoclaro.avif" fetchpriority="low">
+    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="low">
+
     <meta name="description" content="Consultá nuestro buscador de costos referenciales de mano de obra para instalaciones eléctricas en Córdoba. Valores estimativos del sector.">
     <meta name="keywords" content="precios electricista, mano de obra, costos instalacion electrica, cordoba capital, presupuesto electrico, pilar de obra, apto electrico">
     <meta name="author" content="Sergio Adrian Villagra">
@@ -25,16 +28,16 @@
 <body>
 
     <!-- 1. Botón Volver (Flotante Izquierda) -->
-    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
     <!-- 2. Botón Desplegable de Secciones (Ahora Rectangular) -->
     <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
             <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
             <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
             <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
@@ -46,14 +49,14 @@
     </div>
 
     <!-- 3. Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 4. Logo Flotante -->
-    <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
-        <!-- SVG ajustado para que la animación gire correctamente -->
+    <!-- 4. Logo Flotante (Transición CSS) -->
+    <div class="hero-logo-icon gpu-accel">
+        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
         <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
             <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
@@ -72,7 +75,7 @@
                 </p>
                 
                 <!-- AVISO LEGAL/REFERENCIAL -->
-                <div class="info-banner separador-bloque">
+                <div class="info-banner separador-bloque gpu-accel">
                     <div class="banner-title">
                         <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
                     </div>
@@ -84,7 +87,7 @@
 
                 <!-- CAJA DE BÚSQUEDA Y TAGS -->
                 <div class="input-section separador-bloque">
-                    <div class="input-group">
+                    <div class="input-group gpu-accel">
                         <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué necesitás cotizar?</label>
                         <div class="search-box-row">
                             <input type="text" id="searchInput" placeholder="Ej: pilar trifásico, tablero..." disabled>
@@ -106,7 +109,7 @@
 
                 <!-- CTA ALTERNATIVO -->
                 <div class="separador-bloque cta-escritorio">
-                    <div class="ngc-custom-quote">
+                    <div class="ngc-custom-quote gpu-accel">
                         <div class="quote-content">
                             <h3>¿Presupuesto exacto?</h3>
                             <p>Contactame por WhatsApp, enviame detalles o fotos y te armo una cotización a medida.</p>
@@ -131,7 +134,7 @@
 
                 <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-wrapper">
-                    <div class="footer-gnc-compact">
+                    <div class="footer-gnc-compact gpu-accel">
                         <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
                         <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -148,6 +151,7 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <!-- Script con defer activado -->
+    <script src="script.js" defer></script>
 </body>
 </html>
