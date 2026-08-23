@@ -27,9 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera
+        // Cerrar menú flotante al hacer clic fuera (Lógica mejorada)
         document.addEventListener('click', (e) => {
-            if (!dropdownFlotante.contains(e.target) && e.target !== btnMenuFlotante) {
+            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
             }
         });
@@ -128,7 +128,7 @@ function closeAllDropdowns() {
     if (display) display.classList.remove('select-arrow-active');
 }
 
-// Cerrar dropdown al tocar fuera
+// Cerrar dropdown de aparatos al tocar fuera
 document.addEventListener("click", function(event) {
     if (!event.target.closest('.custom-select')) {
         closeAllDropdowns();
@@ -285,5 +285,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                                         }
-            
+            }
+        
