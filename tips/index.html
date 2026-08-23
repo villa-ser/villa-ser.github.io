@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="preload" as="image" href="img/fondo.avif">
+    <link rel="preload" as="image" href="../img/fondo.avif">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -15,9 +15,9 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_AR">
     <meta property="og:url" content="https://villaser.com.ar/tips">
-    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
-    <link rel="icon" type="image/png" href="../img/perfil-logo.png">
+    <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -25,134 +25,175 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- LOGO FLOTANTE -->
+    
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
+
+    <!-- 1. Botón Volver (Flotante Izquierda) -->
+    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+            <i class="fas fa-bars"></i> <span>Explorar</span>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- 3. Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <!-- 4. Logo Flotante Animado -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.png" alt="Villaser Logo">
-        <svg class="hero-neon-svg" preserveAspectRatio="none">
-            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
+        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
     </div>
 
     <main class="gnc-wrapper">
-        
-        <!-- BOTÓN DE VOLVER -->
-        <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-        </a>
+        <div class="layout-desktop">
+            
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Fija en PC)             -->
+            <!-- ========================================== -->
+            <div class="col-izquierda">
+                
+                <h1 class="gnc-main-title">Tips de Seguridad</h1>
 
-        <h1 class="gnc-main-title">Tips de Seguridad</h1>
-
-        <!-- BANNER INFORMATIVO -->
-        <div class="gnc-banner-tips">
-            <span style="color: var(--gnc-success); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; margin-bottom: 2px;">
-                <i class="fa-solid fa-shield-halved"></i> Prevención Activa
-            </span>
-            <span>La prevención es la mejor herramienta. Un sistema eléctrico saludable protege tu patrimonio y a tu familia.</span>
-        </div>
-
-        <div class="gnc-section-label">Uso Diario y Seguridad</div>
-
-        <!-- ACORDEONES CON NAME PARA AUTO-CIERRE -->
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="shield-alert"></i></div>
-                    <span>El Test del Diferencial</span>
+                <!-- BANNER INFORMATIVO -->
+                <div class="gnc-banner-tips">
+                    <span style="color: var(--gnc-success); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; margin-bottom: 2px;">
+                        <i class="fa-solid fa-shield-halved"></i> Prevención Activa
+                    </span>
+                    <span>La prevención es la mejor herramienta. Un sistema eléctrico saludable protege tu patrimonio y a tu familia.</span>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Presioná el botón de <b>"TEST"</b> en tu Interruptor Diferencial al menos una vez al mes. Si no corta la luz de forma inmediata, debe cambiarse de urgencia.</p>
-            </div>
-        </details>
 
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="zap-off"></i></div>
-                    <span>Evitá los "Triples" y Adaptadores</span>
+                <!-- CTA COMERCIAL -->
+                <div class="ngc-tips-cta">
+                    <h3>¿Detectaste alguna anomalía?</h3>
+                    <p>No esperes a que se convierta en un riesgo mayor para tu hogar.</p>
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20leyendo%20los%20tips%20y%20necesito%20una%20revisión%20técnica." target="_blank" class="btn-cta-wa">
+                        <i class="fab fa-whatsapp"></i> Solicitar Revisión Técnica
+                    </a>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>No sobrecargues los tomacorrientes con adaptadores precarios. Generan <b>puntos calientes por resistencia</b> que pueden derivar en incendios estructurales.</p>
             </div>
-        </details>
 
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="thermometer-snowflake"></i></div>
-                    <span>Climatización Segura (AA)</span>
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Tips Scrolleables)        -->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                
+                <div class="gnc-section-label">Uso Diario y Seguridad</div>
+
+                <!-- ACORDEONES CON NAME PARA AUTO-CIERRE -->
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="shield-alert"></i></div>
+                            <span>El Test del Diferencial</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Presioná el botón de <b>"TEST"</b> en tu Interruptor Diferencial al menos una vez al mes. Si no corta la luz de forma inmediata, debe cambiarse de urgencia.</p>
+                    </div>
+                </details>
+
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="zap-off"></i></div>
+                            <span>Evitá los "Triples" y Adaptadores</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>No sobrecargues los tomacorrientes con adaptadores precarios. Generan <b>puntos calientes por resistencia</b> que pueden derivar en incendios estructurales.</p>
+                    </div>
+                </details>
+
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="thermometer-snowflake"></i></div>
+                            <span>Climatización Segura (AA)</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Los aires acondicionados de gran potencia exigen un <b>circuito eléctrico exclusivo</b>. Jamás los conectes a un toma común compartido o con alargue.</p>
+                    </div>
+                </details>
+                
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="ghost"></i></div>
+                            <span>El "Consumo Vampiro"</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Los aparatos en modo <i>standby</i> (con la pequeña luz testigo encendida) <b>siguen consumiendo energía silenciosamente</b> las 24 horas. Desenchufalos si no los usás.</p>
+                    </div>
+                </details>
+
+                <div class="gnc-section-label" style="margin-top: 15px;">Mantenimiento Preventivo</div>
+
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="eye"></i></div>
+                            <span>Ruidos, Chispas y Olores</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>Si escuchás un leve zumbido o <b>chisporroteo</b> al encender una luz, o percibís olor a plástico tibio, interrumpí la energía del sector y llamá a un técnico.</p>
+                    </div>
+                </details>
+
+                <details name="consejo">
+                    <summary>
+                        <div class="summary-title">
+                            <div class="icon-box"><i data-lucide="search-check"></i></div>
+                            <span>Antigüedad de la Instalación</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </summary>
+                    <div class="gnc-content">
+                        <p>En viviendas con más de 15 años, los aislamientos de los cables suelen resecarse y agrietarse. Realizá una <b>inspección técnica profesional</b> preventiva.</p>
+                    </div>
+                </details>
+
+                <!-- FOOTER Y CRÉDITOS -->
+                <div class="footer-wrapper">
+                    <div class="footer-gnc-compact">
+                        <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
+                        <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
+                        <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    
+                    <div class="ngc-site-credits">
+                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                    </div>
                 </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Los aires acondicionados de gran potencia exigen un <b>circuito eléctrico exclusivo</b>. Jamás los conectes a un toma común compartido o con alargue.</p>
+
             </div>
-        </details>
-        
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="ghost"></i></div>
-                    <span>El "Consumo Vampiro"</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Los aparatos en modo <i>standby</i> (con la pequeña luz testigo encendida) <b>siguen consumiendo energía silenciosamente</b> las 24 horas. Desenchufalos si no los usás.</p>
-            </div>
-        </details>
-
-        <div class="gnc-section-label">Mantenimiento Preventivo</div>
-
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="eye"></i></div>
-                    <span>Ruidos, Chispas y Olores</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>Si escuchás un leve zumbido o <b>chisporroteo</b> al encender una luz, o percibís olor a plástico tibio, interrumpí la energía del sector y llamá a un técnico.</p>
-            </div>
-        </details>
-
-        <details name="consejo">
-            <summary>
-                <div class="summary-title">
-                    <div class="icon-box"><i data-lucide="search-check"></i></div>
-                    <span>Antigüedad de la Instalación</span>
-                </div>
-                <i data-lucide="chevron-down" class="chevron"></i>
-            </summary>
-            <div class="gnc-content">
-                <p>En viviendas con más de 15 años, los aislamientos de los cables suelen resecarse y agrietarse. Realizá una <b>inspección técnica profesional</b> preventiva.</p>
-            </div>
-        </details>
-
-        <!-- CTA COMERCIAL -->
-        <div class="ngc-tips-cta">
-            <h3>¿Detectaste alguna anomalía?</h3>
-            <p>No esperes a que se convierta en un riesgo mayor para tu hogar.</p>
-            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20leyendo%20los%20tips%20y%20necesito%20una%20revisión%20técnica." target="_blank" class="btn-cta-wa">
-                <i class="fab fa-whatsapp"></i> Solicitar Revisión Técnica
-            </a>
-        </div>
-
-        <!-- FOOTER: Redes Sociales -->
-        <div class="footer-gnc-compact">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
-            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
-            <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
-            <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-<!-- NUEVO: CRÉDITOS DE AUTOR Y AÑO -->
-        <div class="ngc-site-credits">
-            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
         </div>
     </main>
 
@@ -160,5 +201,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
