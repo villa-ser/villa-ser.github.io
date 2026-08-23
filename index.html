@@ -30,12 +30,8 @@
 
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
-    <!-- 1. Botón Volver / Menú principal -->
-    <a href="#btn-explorar" class="btn-flotante-accion" id="btn-ir-menu" aria-label="Ir al menú">
-        <i class="fas fa-bars"></i>
-    </a>
-
-    <!-- 2. Botón Desplegable de Secciones -->
+    
+    <!-- 1. Botón Desplegable de Secciones (A la Izquierda) -->
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion" aria-label="Secciones">
             <i class="fas fa-th-large"></i>
@@ -51,12 +47,12 @@
         </div>
     </div>
 
-    <!-- 3. Botón Modo Día/Noche -->
+    <!-- 2. Botón Modo Día/Noche (A la Derecha, junto al logo) -->
     <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 4. Logo Flotante Superior -->
+    <!-- 3. Logo Flotante Superior (Extremo Derecho) -->
     <div class="hero-logo-icon">
         <img src="img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
@@ -144,6 +140,7 @@
                     </div>
                 </a>
 
+                <!-- El menú clásico en cascada sigue estando para quienes scrollean -->
                 <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
                     Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
                 </button>
@@ -205,5 +202,4 @@
 
     <script src="script.js"></script>
 </body>
-                        </html>
-                                
+</html>
