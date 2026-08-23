@@ -176,10 +176,10 @@ body {
     background: #25D366; color: white; padding: 14px; border-radius: 12px; text-decoration: none;
     font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
 }
-.hero-cta-whatsapp:hover { background: #1ebe57; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);}
+.hero-cta-whatsapp:hover { background: #1ebe57; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); color: white;}
 
 /* ================================================= */
-/* --- BOTONES FLOTANTES Y MENÚ DESPLEGABLE      --- */
+/* --- BOTONES FLOTANTES                         --- */
 /* ================================================= */
 
 /* 1. Logo Flotante (Derecha Extrema) */
@@ -195,9 +195,9 @@ body {
     stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
 }
 
-/* 2. Botones de Acción Globales */
+/* 2. Botón Tema (Izquierda) */
 .btn-flotante-accion {
-    position: fixed; top: 15px; z-index: 9999;
+    position: fixed; top: 15px; left: 15px; z-index: 9999;
     width: 60px; height: 60px; border-radius: 8px;
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); color: var(--ngc-text-main);
@@ -209,31 +209,6 @@ body {
     color: var(--ngc-neon); border-color: var(--ngc-neon);
     box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); transform: translateY(-2px);
 }
-
-/* 3. Posicionamiento Específico de Botones */
-/* El contenedor del menú desplegable va a la Izquierda */
-.menu-flotante-container { position: fixed; top: 15px; left: 15px; z-index: 9999; }
-.menu-flotante-container .btn-flotante-accion { position: static; }
-
-/* El botón de Modo Día/Noche va a la Derecha, justo antes del logo */
-#btn-tema { right: 85px; }
-
-/* 4. Contenido del Menú Desplegable */
-.dropdown-flotante-content {
-    position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
-    backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    border-radius: 12px; width: 200px; box-shadow: 0 10px 25px var(--card-shadow);
-    display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
-}
-.dropdown-flotante-content a {
-    /* CORRECCIÓN: Usa --ngc-text-main para asegurar lectura en ambos modos */
-    color: var(--ngc-text-main); 
-    text-decoration: none; padding: 10px 12px;
-    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
-    border-radius: 8px; display: flex; align-items: center; gap: 8px; transition: 0.2s;
-}
-.dropdown-flotante-content a i { color: var(--ngc-neon); }
-.dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
 
 /* --- NUBE FLOTANTE (MODAL SERVICIOS RÁPIDOS) --- */
@@ -249,7 +224,7 @@ body {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px;
     border-left: 4px solid var(--ngc-neon); padding: 30px 20px;
-    text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
+    text-align: center; box-shadow: 0 15px 40px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
     width: 90%; max-width: 350px; position: relative;
     transform: scale(0.8); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -310,11 +285,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .main-wrapper { max-width: 720px; padding: 25px; }
     
     .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
-    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
-    
-    .menu-flotante-container { top: 25px; left: 25px; }
-    .menu-flotante-container .btn-flotante-accion { width: 70px; height: 70px; font-size: 1.8rem; }
-    .dropdown-flotante-content { top: 80px; width: 220px; }
+    .btn-flotante-accion { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
     
     .gnc-hero-card { padding: 35px 30px; }
     .hero-profile-container { width: 180px; height: 180px; }
