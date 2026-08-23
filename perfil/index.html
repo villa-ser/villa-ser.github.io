@@ -15,9 +15,9 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_AR">
     <meta property="og:url" content="https://villaser.com.ar/perfil">
-    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.png">
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
-    <link rel="icon" type="image/png" href="../img/perfil-logo.png">
+    <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -27,11 +27,40 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- LOGO FLOTANTE PARA SUBPÁGINAS -->
+    
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
+
+    <!-- 1. Botón Volver (Flotante Izquierda) -->
+    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+            <i class="fas fa-bars"></i> <span>Explorar</span>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- 3. Botón Modo Día/Noche -->
+    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+        <i class="fas fa-sun"></i>
+    </button>
+
+    <!-- 4. Logo Flotante Animado -->
     <div class="hero-logo-icon">
-        <img src="../img/logo.png" alt="Villaser Logo">
-        <svg class="hero-neon-svg" preserveAspectRatio="none">
-            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
+        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
     </div>
 
@@ -42,11 +71,6 @@
             <!-- COLUMNA IZQUIERDA (CV - Fija en PC)        -->
             <!-- ========================================== -->
             <div class="col-izquierda">
-                
-                <!-- BOTÓN DE VOLVER -->
-                <a href="../index.html" class="gnc-btn-back" onclick="sessionStorage.setItem('abrirMenu', 'true');">
-                    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Volver al Inicio
-                </a>
 
                 <h1 class="gnc-main-title">Currículum</h1>
                 
@@ -153,7 +177,7 @@
                     </div>
                 </details>
 
-                <details name="historia" open> <!-- Abierto por defecto para invitar a la lectura -->
+                <details name="historia" open> 
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="shield-check"></i></div>
@@ -187,4 +211,5 @@
     <!-- JS -->
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
