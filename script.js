@@ -14,10 +14,9 @@ if (typeof lucide !== 'undefined') {
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
-    // 1. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // 1. LÓGICA DEL MODO DÍA / MODO NOCHE
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
-    const imgLogoPrincipal = document.getElementById('img-logo-principal');
     
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
@@ -25,10 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sincronizar iconos según el tema actual guardado
         if (temaGuardado === 'light') {
             iconTema.classList.replace('fa-sun', 'fa-moon');
-            if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logoclaro.avif';
         }
 
-        // Alternar tema y logo al hacer click
+        // Alternar tema
         btnTema.addEventListener('click', () => {
             const temaActual = document.documentElement.getAttribute('data-theme');
             
@@ -37,13 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
                 iconTema.classList.replace('fa-moon', 'fa-sun');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logo.avif';
             } else {
                 // Cambiar a Modo Día
                 document.documentElement.setAttribute('data-theme', 'light'); 
                 localStorage.setItem('temaVillaser', 'light');
                 iconTema.classList.replace('fa-sun', 'fa-moon');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = 'img/logoclaro.avif';
             }
         });
     }
@@ -165,5 +161,4 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
     window.open(whatsappUrl, '_blank');
   }
-        }
-
+}
