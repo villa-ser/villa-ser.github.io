@@ -34,7 +34,7 @@ const palabrasVacias = new Set([
     "muy", "mucho", "poco", "bastante", "demasiado", "mas", "menos", "tan", "tanto",
     "apenas", "casi", "medio", "tambien", "cierto", "claro", "exacto", "obvio",
     "no", "tampoco", "quiza", "quizas", "acaso",
-    // Adjetivos genéricos (evitamos filtrar términos técnicos como alta, baja, corto, largo)
+    // Adjetivos genéricos 
     "bueno", "malo", "mejor", "peor", "mayor", "menor", "grande", "pequeno", "nuevo", "viejo",
     "facil", "dificil", "bonito", "feo", "rapido", "lento", "solo", "solamente"
 ]);
@@ -48,13 +48,13 @@ const gruposSinonimos = [
     ["diferencial", "disyuntor", "salvavita", "salva"],
     ["tomacorriente", "toma", "enchufe", "modulo", "boca"],
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
-    ["jabalina", "electrodo", "tierra", "pat", "puestaatierra"], // Modificado a un solo término
+    ["jabalina", "electrodo", "tierra", "pat", "puestaatierra"],
     ["luminaria", "lampara", "foco", "artefacto", "luz", "lus", "luces", "lamparita", "aplique"],
     ["instalacion", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
     ["pilar", "acometida", "monofasico", "trifasico"],
     ["fexible", "corrugado", "manguera"],
     ["cano", "caneria", "tubo"],
-    ["cablecanal"], // Queda uno solo porque la función normalizarTexto unirá el espacio
+    ["cablecanal", "canaleta", "cableducto", "moldura"], 
     ["apto", "certificado", "epec", "alta", "ersep"]
 ];
 
@@ -195,14 +195,23 @@ async function cargarExcel() {
     }
 }
 
-function normalizarTexto(texto) {
+// NUEVA FUNCIÓN: Divide el texto y fusiona palabras compuestas de forma segura
+function obtenerPalabrasClave(texto) {
     let txt = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
+    let palabras = txt.split(/\s+/).filter(p => p.length > 0);
     
-    // Fusión de términos compuestos conocidos ANTES de separar por espacios
-    txt = txt.replace(/\bcable canal\b/g, "cablecanal");
-    txt = txt.replace(/\bpuesta a tierra\b/g, "puestaatierra");
-    
-    return txt;
+    for (let i = 0; i < palabras.length; i++) {
+        if (palabras[i] === "cable" && palabras[i+1] === "canal") {
+            palabras[i] = "cablecanal";
+            palabras.splice(i+1, 1);
+            i--; // Retrocedemos el índice para evitar saltarnos palabras
+        } else if (palabras[i] === "puesta" && palabras[i+1] === "a" && palabras[i+2] === "tierra") {
+            palabras[i] = "puestaatierra";
+            palabras.splice(i+1, 2);
+            i--; 
+        }
+    }
+    return palabras;
 }
 
 function obtenerSinonimos(palabra) {
@@ -240,19 +249,16 @@ function sonSimilares(buscada, objetivo) {
 
 function ejecutarBusqueda() {
     const rawQuery = document.getElementById("searchInput").value;
-    const queryNormalizada = normalizarTexto(rawQuery);
     const resultsContainer = document.getElementById("resultsContainer");
     resultsContainer.innerHTML = "";
 
-    if (queryNormalizada.trim() === "") return;
+    if (rawQuery.trim() === "") return;
 
-    // FILTRO DE PALABRAS: Se descartan las que estén en el Set palabrasVacias
-    const palabrasBusqueda = queryNormalizada
-        .split(/\s+/)
-        .filter(p => p.length > 0 && !palabrasVacias.has(p))
+    // Se obtienen las palabras ya fusionadas (ej: "cablecanal") y se filtran las palabras vacías
+    const palabrasBusqueda = obtenerPalabrasClave(rawQuery)
+        .filter(p => !palabrasVacias.has(p))
         .slice(0, 5);
 
-    // Si el usuario ingresó únicamente palabras vacías (ej: "de un", "para el")
     if (palabrasBusqueda.length === 0) {
         resultsContainer.innerHTML = `<div class="no-results">Por favor ingresá términos técnicos más específicos.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Ej: "tablero", "boca", "jabalina"</span></div>`;
         return;
@@ -261,8 +267,7 @@ function ejecutarBusqueda() {
     const coincidencias = [];
 
     for (const item of allData) {
-        const conceptoNormalizado = normalizarTexto(item.concepto);
-        const palabrasDelConcepto = conceptoNormalizado.split(/\s+/);
+        const palabrasDelConcepto = obtenerPalabrasClave(item.concepto);
         
         const cumpleTodas = palabrasBusqueda.every(palabraBuscada => {
             const opcionesBuscadas = obtenerSinonimos(palabraBuscada);
@@ -351,5 +356,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-}
-    
+    }
+     
