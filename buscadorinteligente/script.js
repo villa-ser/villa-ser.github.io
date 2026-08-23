@@ -23,11 +23,33 @@ const gruposSinonimos = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
     cargarExcel();
 
     // ==========================================
-    // LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // 1. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
+    // ==========================================
+    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
+    const dropdownFlotante = document.getElementById('dropdown-flotante');
+
+    if (btnMenuFlotante && dropdownFlotante) {
+        btnMenuFlotante.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownFlotante.classList.toggle('oculto');
+        });
+
+        // Cerrar menú flotante al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
+                dropdownFlotante.classList.add('oculto');
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
     const imgLogoPrincipal = document.getElementById('img-logo-principal');
@@ -62,38 +84,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // LÓGICA DEL BUSCADOR
+    // 3. LÓGICA DEL BUSCADOR
     // ==========================================
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
 
-    searchInput.addEventListener("input", () => {
-        btnBuscar.disabled = searchInput.value.trim().length === 0;
-    });
+    if(searchInput && btnBuscar) {
+        searchInput.addEventListener("input", () => {
+            btnBuscar.disabled = searchInput.value.trim().length === 0;
+        });
 
-    btnBuscar.addEventListener("click", () => {
-        const textoOriginal = btnBuscar.innerHTML;
-        btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-        setTimeout(() => {
-            ejecutarBusqueda();
-            btnBuscar.innerHTML = textoOriginal;
-        }, 200);
-    });
+        btnBuscar.addEventListener("click", () => {
+            const textoOriginal = btnBuscar.innerHTML;
+            btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            setTimeout(() => {
+                ejecutarBusqueda();
+                btnBuscar.innerHTML = textoOriginal;
+            }, 200);
+        });
 
-    searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter" && !btnBuscar.disabled) {
-            btnBuscar.click();
-        }
-    });
+        searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" && !btnBuscar.disabled) {
+                btnBuscar.click();
+            }
+        });
+    }
 });
 
 function busquedaRapida(termino) {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
     
-    searchInput.value = termino;
-    btnBuscar.disabled = false;
-    btnBuscar.click();
+    if(searchInput && btnBuscar) {
+        searchInput.value = termino;
+        btnBuscar.disabled = false;
+        btnBuscar.click();
+    }
 }
 
 async function cargarExcel() {
@@ -129,12 +155,14 @@ async function cargarExcel() {
             });
         }
         
-        statusMsg.style.display = "none";
-        searchInput.disabled = false;
+        if(statusMsg) statusMsg.style.display = "none";
+        if(searchInput) searchInput.disabled = false;
 
     } catch (error) {
-        statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error de conexión con la base de datos.';
-        statusMsg.style.color = "var(--error-red)";
+        if(statusMsg) {
+            statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error de conexión con la base de datos.';
+            statusMsg.style.color = "var(--error-red)";
+        }
         console.error(error);
     }
 }
@@ -274,5 +302,4 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-                          }
-        
+}
