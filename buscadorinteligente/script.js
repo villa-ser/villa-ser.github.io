@@ -8,20 +8,53 @@ if (temaGuardado === 'light') {
 
 let allData = [];
 
+// ==========================================
+// 0.5. PALABRAS VACÍAS (STOPWORDS)
+// ==========================================
+// Se ignorarán pronombres, conectores, artículos, adverbios y adjetivos no técnicos
+const palabrasVacias = new Set([
+    // Artículos y Preposiciones
+    "el", "la", "los", "las", "un", "una", "unos", "unas",
+    "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
+    "en", "entre", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "so", "sobre", "tras",
+    // Conjunciones
+    "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que",
+    // Pronombres
+    "yo", "tu", "el", "ella", "ello", "nosotros", "nosotras", "vosotros", "vosotras",
+    "ellos", "ellas", "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les",
+    "mi", "ti", "conmigo", "contigo", "consigo",
+    "este", "ese", "aquel", "esta", "esa", "aquella", "estos", "esos", "aquellos",
+    "estas", "esas", "aquellas", "esto", "eso", "aquello",
+    "mio", "tuyo", "suyo", "nuestro", "vuestro",
+    "alguien", "nadie", "algo", "nada", "cualquiera", "alguno", "ninguno", "quien", "cual", "cuales",
+    // Adverbios
+    "aqui", "ahi", "alli", "aca", "alla", "cerca", "lejos", "arriba", "abajo", "delante", "detras",
+    "dentro", "fuera", "hoy", "ayer", "manana", "ahora", "antes", "despues", "luego", "tarde", "temprano",
+    "pronto", "siempre", "nunca", "jamas", "ya", "todavia", "aun", "asi", "bien", "mal", "despacio", "deprisa",
+    "muy", "mucho", "poco", "bastante", "demasiado", "mas", "menos", "tan", "tanto",
+    "apenas", "casi", "medio", "tambien", "cierto", "claro", "exacto", "obvio",
+    "no", "tampoco", "quiza", "quizas", "acaso",
+    // Adjetivos genéricos (evitamos filtrar términos técnicos como alta, baja, corto, largo)
+    "bueno", "malo", "mejor", "peor", "mayor", "menor", "grande", "pequeno", "nuevo", "viejo",
+    "facil", "dificil", "bonito", "feo", "rapido", "lento", "solo", "solamente"
+]);
+
+// ==========================================
 // 1. DICCIONARIO DE SINÓNIMOS
+// ==========================================
 const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "llave", "breaker"],
     ["timbre", "campanilla", "zumbador", "bocina", "pitido", "soneria", "portero", "llamador"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
     ["tomacorriente", "toma", "enchufe", "modulo", "boca"],
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
-    ["jabalina", "electrodo", "tierra", "pat", "puesta a tierra"],
+    ["jabalina", "electrodo", "tierra", "pat", "puestaatierra"], // Modificado a un solo término
     ["luminaria", "lampara", "foco", "artefacto", "luz", "lus", "luces", "lamparita", "aplique"],
     ["instalacion", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
     ["pilar", "acometida", "monofasico", "trifasico"],
     ["fexible", "corrugado", "manguera"],
-    ["caño", "cañeria", "tubo"],
-    ["cable canal", "cablecanal"],
+    ["cano", "caneria", "tubo"],
+    ["cablecanal"], // Queda uno solo porque la función normalizarTexto unirá el espacio
     ["apto", "certificado", "epec", "alta", "ersep"]
 ];
 
@@ -43,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera (Lógica mejorada)
+        // Cerrar menú flotante al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
@@ -163,7 +196,13 @@ async function cargarExcel() {
 }
 
 function normalizarTexto(texto) {
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
+    let txt = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
+    
+    // Fusión de términos compuestos conocidos ANTES de separar por espacios
+    txt = txt.replace(/\bcable canal\b/g, "cablecanal");
+    txt = txt.replace(/\bpuesta a tierra\b/g, "puestaatierra");
+    
+    return txt;
 }
 
 function obtenerSinonimos(palabra) {
@@ -207,7 +246,18 @@ function ejecutarBusqueda() {
 
     if (queryNormalizada.trim() === "") return;
 
-    const palabrasBusqueda = queryNormalizada.split(/\s+/).filter(p => p.length > 0).slice(0, 5);
+    // FILTRO DE PALABRAS: Se descartan las que estén en el Set palabrasVacias
+    const palabrasBusqueda = queryNormalizada
+        .split(/\s+/)
+        .filter(p => p.length > 0 && !palabrasVacias.has(p))
+        .slice(0, 5);
+
+    // Si el usuario ingresó únicamente palabras vacías (ej: "de un", "para el")
+    if (palabrasBusqueda.length === 0) {
+        resultsContainer.innerHTML = `<div class="no-results">Por favor ingresá términos técnicos más específicos.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Ej: "tablero", "boca", "jabalina"</span></div>`;
+        return;
+    }
+
     const coincidencias = [];
 
     for (const item of allData) {
@@ -242,12 +292,11 @@ function ejecutarBusqueda() {
         }
 
         const card = document.createElement("div");
-        card.className = "result-card gpu-accel"; // <-- Optimizada por hardware
+        card.className = "result-card gpu-accel"; 
 
         const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
-        /* OBSERVACIONES AHORA SE ENCUENTRAN DENTRO DE RESULT-DETAILS */
         card.innerHTML = `
             <div class="result-header">
                 <span class="result-concept">${item.concepto}</span>
@@ -302,5 +351,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-                                   }
-                                         
+}
+    
