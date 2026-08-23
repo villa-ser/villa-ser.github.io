@@ -5,10 +5,19 @@
     --ngc-blur: blur(10px);
     --ngc-glass: rgba(0, 0, 0, 0.4); 
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
-    --ngc-text: #ffffff; 
+    
+    /* Variables de Texto Originales */
+    --ngc-text-main: #ffffff; 
+    --ngc-text-desc: rgba(255, 255, 255, 0.9);
     --ngc-text-muted: rgba(255, 255, 255, 0.7);
+    --ngc-text-faded: rgba(255, 255, 255, 0.4);
+    
     --bg-body: #121212;
-    --bg-image: url('img/fondo.avif'); /* Ajustar a '../img/fondo.avif' en subcarpetas */
+    --bg-image: url('img/fondo.avif');
+    --ngc-privacy-border: rgba(255, 255, 255, 0.1);
+    --ngc-badge-bg: #111;
+    --ngc-modal-overlay: rgba(0, 0, 0, 0.75);
+    --ngc-cta-banner: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
     --card-shadow: rgba(0, 0, 0, 0.5);
 }
 
@@ -17,10 +26,19 @@
     --ngc-neon-rgb: 0, 143, 179;
     --ngc-glass: rgba(235, 238, 242, 0.85); 
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
-    --ngc-text: #1a1a1a; 
+    
+    /* Textos invertidos para modo día */
+    --ngc-text-main: #1a1a1a; 
+    --ngc-text-desc: #333333;
     --ngc-text-muted: #555555;
+    --ngc-text-faded: #888888;
+    
     --bg-body: #d6dbe0;
-    --bg-image: url('img/fondoclaro.avif'); /* Ajustar a '../img/fondoclaro.avif' en subcarpetas */
+    --bg-image: url('img/fondoclaro.avif');
+    --ngc-privacy-border: rgba(0, 0, 0, 0.15);
+    --ngc-badge-bg: #e2e6ea;
+    --ngc-modal-overlay: rgba(225, 230, 235, 0.9);
+    --ngc-cta-banner: linear-gradient(135deg, rgba(235, 238, 242, 0.95) 0%, rgba(var(--ngc-neon-rgb), 0.25) 100%);
     --card-shadow: rgba(0, 0, 0, 0.15);
 }
 
@@ -57,7 +75,7 @@ body {
     width: 100%; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px; display: flex;
     flex-direction: column; gap: 15px; margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
 }
 
 .ngc-card-title {
@@ -76,7 +94,7 @@ body {
     letter-spacing: 1.4px; text-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.3);
 }
 
-/* --- BOTONES --- */
+/* --- BOTONES DE LA GRILLA --- */
 .ngc-button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
 
 .ngc-btn {
@@ -85,7 +103,7 @@ body {
     border: var(--ngc-border-glass); border-radius: 12px; border-left: 4px solid var(--ngc-neon);
     color: var(--ngc-text-main); text-decoration: none; font-size: 0.8rem; text-transform: uppercase;
     letter-spacing: 1px; font-weight: 600; transition: all 0.3s ease; text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); outline: none; cursor: pointer;
+    box-shadow: 0 4px 15px var(--card-shadow); outline: none; cursor: pointer;
 }
 
 .ngc-btn i { color: var(--ngc-neon); font-size: 1rem; }
@@ -130,7 +148,7 @@ body {
 /* --- TARJETA PRIVACIDAD --- */
 .ngc-privacy-card {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: 1px solid var(--ngc-privacy-border);
-    border-left: 4px solid #6c757d; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid #6c757d; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 10px 30px var(--card-shadow);
 }
 .privacy-icon { font-size: 2rem; color: #aab2bd; margin-bottom: 10px; }
 .privacy-title { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
@@ -140,7 +158,7 @@ body {
 .gnc-hero-card {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 16px; border-left: 4px solid var(--ngc-neon); padding: 25px 20px; text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); margin-bottom: 20px; animation: fadeIn 0.8s ease;
+    box-shadow: 0 10px 30px var(--card-shadow); margin-bottom: 20px; animation: fadeIn 0.8s ease;
 }
 .hero-header-row { display: flex; justify-content: center; width: 100%; margin-bottom: 15px; }
 .hero-profile-container { position: relative; width: 160px; height: 160px; }
@@ -160,7 +178,11 @@ body {
 }
 .hero-cta-whatsapp:hover { background: #1ebe57; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);}
 
-/* --- BOTONES FLOTANTES SUPERIORES --- */
+/* ================================================= */
+/* --- BOTONES FLOTANTES Y MENÚ DESPLEGABLE      --- */
+/* ================================================= */
+
+/* 1. Logo Flotante (Derecha Extrema) */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
@@ -173,11 +195,12 @@ body {
     stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
 }
 
+/* 2. Botones de Acción Globales */
 .btn-flotante-accion {
     position: fixed; top: 15px; z-index: 9999;
     width: 60px; height: 60px; border-radius: 8px;
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); color: var(--ngc-text);
+    border: var(--ngc-border-glass); color: var(--ngc-text-main);
     display: flex; justify-content: center; align-items: center;
     font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow); outline: none; text-decoration: none;
@@ -187,15 +210,15 @@ body {
     box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); transform: translateY(-2px);
 }
 
-/* Posicionamiento de los botones de izquierda a derecha (Lado izquierdo de la pantalla) */
-#btn-ir-menu { left: 15px; }
-.menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
+/* 3. Posicionamiento Específico de Botones */
+/* El contenedor del menú desplegable va a la Izquierda */
+.menu-flotante-container { position: fixed; top: 15px; left: 15px; z-index: 9999; }
 .menu-flotante-container .btn-flotante-accion { position: static; }
 
-/* Posicionamiento del botón de tema a la izquierda del logo */
+/* El botón de Modo Día/Noche va a la Derecha, justo antes del logo */
 #btn-tema { right: 85px; }
 
-/* --- MENÚ DESPLEGABLE FLOTANTE --- */
+/* 4. Contenido del Menú Desplegable */
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
@@ -203,30 +226,17 @@ body {
     display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
-    color: var(--ngc-text); text-decoration: none; padding: 10px 12px;
+    /* CORRECCIÓN: Usa --ngc-text-main para asegurar lectura en ambos modos */
+    color: var(--ngc-text-main); 
+    text-decoration: none; padding: 10px 12px;
     font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
     border-radius: 8px; display: flex; align-items: center; gap: 8px; transition: 0.2s;
 }
 .dropdown-flotante-content a i { color: var(--ngc-neon); }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
-/* --- RESPONSIVE TABLET / PC --- */
-@media (min-width: 768px) {
-    .main-wrapper { max-width: 720px; padding: 25px; }
-    .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
-    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
-    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
-    .menu-flotante-container { top: 25px; left: 105px; }
-    .menu-flotante-container .btn-flotante-accion { width: 70px; height: 70px; font-size: 1.8rem; }
-    .dropdown-flotante-content { top: 80px; width: 220px; }
-}
 
-@media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: center; }
-    .main-wrapper { max-width: 1050px; }
-    }
-
-/* --- NUBE FLOTANTE (MODAL) --- */
+/* --- NUBE FLOTANTE (MODAL SERVICIOS RÁPIDOS) --- */
 .ngc-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: var(--ngc-modal-overlay); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -259,7 +269,7 @@ body {
 .modal-desc { color: var(--ngc-text-desc); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px; }
 .oculto { display: none !important; }
 
-/* --- MENÚ OCULTO / VISIBLE --- */
+/* --- MENÚ CLÁSICO (BOTÓN EXPLORAR) --- */
 .menu-oculto { display: none; }
 .menu-visible { display: block; animation: fadeInMenu 0.4s ease forwards; }
 #icono-menu { transition: transform 0.3s ease; }
@@ -300,7 +310,11 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .main-wrapper { max-width: 720px; padding: 25px; }
     
     .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
-    .btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
+    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
+    
+    .menu-flotante-container { top: 25px; left: 25px; }
+    .menu-flotante-container .btn-flotante-accion { width: 70px; height: 70px; font-size: 1.8rem; }
+    .dropdown-flotante-content { top: 80px; width: 220px; }
     
     .gnc-hero-card { padding: 35px 30px; }
     .hero-profile-container { width: 180px; height: 180px; }
