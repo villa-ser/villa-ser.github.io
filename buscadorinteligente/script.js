@@ -49,17 +49,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE Y LOGO
+    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
-    const imgLogoPrincipal = document.getElementById('img-logo-principal');
     
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
         
         if (temaGuardado === 'light') {
             iconTema.classList.replace('fa-sun', 'fa-moon');
-            if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
         }
 
         btnTema.addEventListener('click', () => {
@@ -69,12 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
                 iconTema.classList.replace('fa-moon', 'fa-sun');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
             } else {
                 document.documentElement.setAttribute('data-theme', 'light'); 
                 localStorage.setItem('temaVillaser', 'light');
                 iconTema.classList.replace('fa-sun', 'fa-moon');
-                if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
             }
         });
     }
@@ -243,7 +239,7 @@ function ejecutarBusqueda() {
         }
 
         const card = document.createElement("div");
-        card.className = "result-card";
+        card.className = "result-card gpu-accel"; // <-- Optimizada por hardware
 
         const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
@@ -303,5 +299,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-                }
-                    
+                                   }
+                                         
