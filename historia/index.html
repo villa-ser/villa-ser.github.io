@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- PRELOAD DEL FONDO -->
-    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PRELOAD OPTIMIZADO PARA AMBOS FONDOS Y LOGOS -->
+    <link rel="preload" as="image" href="../img/fondo.avif" fetchpriority="high">
+    <link rel="preload" as="image" href="../img/fondoclaro.avif" fetchpriority="low">
+    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="low">
 
     <title>Historia - Ley 10.281 - Electricista Habilitado Categoría III | Villaser</title>
     <link rel="canonical" href="https://villaser.com.ar/historia/" />
@@ -32,16 +35,16 @@
     <!-- CONTROLES FLOTANTES SUPERIORES -->
 
     <!-- 1. Botón Volver (Flotante Izquierda) -->
-    <a href="../index.html" class="btn-flotante-accion" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
     <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
     <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar" aria-label="Secciones">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
             <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
             <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
             <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
@@ -53,13 +56,14 @@
     </div>
 
     <!-- 3. Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
+    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 4. Logo Flotante Animado -->
-    <div class="hero-logo-icon">
-        <img src="../img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
+    <!-- 4. Logo Flotante Animado (Transición CSS) -->
+    <div class="hero-logo-icon gpu-accel">
+        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
         <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
             <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
         </svg>
@@ -75,13 +79,13 @@
 
                 <h1 class="gnc-main-title">Historia</h1>
 
-                <div class="gnc-banner">
+                <div class="gnc-banner gpu-accel">
                    <p>Debido a los aumentos en incidentes eléctricos y siendo muchos con lamentables finales trágicos, es que se acelera la sanción de la <b class="text-neon">Ley Nro. 10.281 de Seguridad Eléctrica de la Provincia de Córdoba</b>.</p>
                    <p>Esta ley busca garantizar la seguridad de las instalaciones eléctricas en toda la provincia.</p>
                 </div>
 
                 <!-- FORMULARIO DE CONSULTA -->
-                <div class="gnc-form-container">
+                <div class="gnc-form-container gpu-accel">
                     <div class="form-header">
                         <div class="form-title">
                             <div class="icon-box"><i data-lucide="send"></i></div>
@@ -122,7 +126,7 @@
             <!-- ========================================== -->
             <div class="col-derecha">
                 <!-- ACORDEONES -->
-                <details class="gnc-accordion">
+                <details class="gnc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="sparkles"></i></div>
@@ -138,7 +142,7 @@
                     </div>
                 </details>
 
-                <details class="gnc-accordion">
+                <details class="gnc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="fingerprint"></i></div>
@@ -154,7 +158,7 @@
                     </div>
                 </details>
 
-                <details class="gnc-accordion">
+                <details class="gnc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="shield-check"></i></div>
@@ -168,7 +172,7 @@
                     </div>
                 </details>
 
-                <details class="gnc-accordion">
+                <details class="gnc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="search-code"></i></div>
@@ -183,14 +187,14 @@
                 </details>
 
                 <!-- BANNER DE CIERRE -->
-                <div class="gnc-banner" style="border-left-color: var(--gnc-success);">
+                <div class="gnc-banner gpu-accel" style="border-left-color: var(--gnc-success);">
                     <p>La Ley 10.281 es una herramienta para garantizar la seguridad eléctrica en Córdoba.</p>
                     <p><b class="text-neon">¡Cumplirla es esencial para tu tranquilidad!</b></p>
                 </div>
 
                 <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-wrapper">
-                    <div class="footer-gnc-compact">
+                    <div class="footer-gnc-compact gpu-accel">
                         <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
                         <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -207,8 +211,7 @@
         </div>
     </main>
 
-    <!-- JS -->
-    <script src="script.js"></script>
+    <!-- Script con defer activado -->
+    <script src="script.js" defer></script>
 </body>
-    </html>
-    
+</html>
