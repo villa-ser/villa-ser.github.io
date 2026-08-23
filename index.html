@@ -30,29 +30,13 @@
 
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
-    
-    <!-- 1. Botón Desplegable de Secciones (A la Izquierda) -->
-    <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion" aria-label="Secciones">
-            <i class="fas fa-th-large"></i>
-        </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto">
-            <a href="servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-            <a href="buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            <a href="calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
-            <a href="tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-            <a href="perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-            <a href="historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
-            <a href="webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
-        </div>
-    </div>
 
-    <!-- 2. Botón Modo Día/Noche (A la Derecha, junto al logo) -->
+    <!-- 1. Botón Modo Día/Noche (Movido a la Izquierda para equilibrio visual) -->
     <button id="btn-tema" class="btn-flotante-accion" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 3. Logo Flotante Superior (Extremo Derecho) -->
+    <!-- 2. Logo Flotante Superior (Extremo Derecho) -->
     <div class="hero-logo-icon">
         <img src="img/logo.avif" alt="Villaser Logo" id="img-logo-principal">
         <svg class="hero-neon-svg" preserveAspectRatio="none">
@@ -64,6 +48,9 @@
     <main class="main-wrapper">
         <div class="layout-desktop">
             
+            <!-- ========================================== -->
+            <!-- COLUMNA IZQUIERDA (Perfil - Fija en PC)    -->
+            <!-- ========================================== -->
             <div class="col-izquierda">
                 <div class="gnc-hero-card">
                     <div class="hero-header-row">
@@ -100,6 +87,9 @@
                 </div>
             </div>
 
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Acciones - Scrolleable)   -->
+            <!-- ========================================== -->
             <div class="col-derecha">
                 <div class="separador-bloque">
                     <div class="ngc-button-grid">
@@ -108,6 +98,7 @@
                     </div>
                 </div>
 
+                <!-- SERVICIOS RÁPIDOS (Gatillan la Nube Flotante/Modal) -->
                 <div class="separador-bloque">
                     <div class="ngc-quick-services">
                         <button onclick="abrirModalServicio('apto')" class="quick-item">
@@ -129,6 +120,7 @@
                     </div>
                 </div>
 
+                <!-- CTA CALCULADORA -->
                 <a href="calculadora/index.html" class="ngc-cta-banner separador-bloque">
                     <div class="cta-banner-content">
                         <i class="fa-solid fa-calculator cta-icon"></i>
@@ -140,7 +132,7 @@
                     </div>
                 </a>
 
-                <!-- El menú clásico en cascada sigue estando para quienes scrollean -->
+                <!-- MENÚ CLÁSICO DESPLEGABLE DE EXPLORAR -->
                 <button id="btn-explorar" class="ngc-btn" style="width: 100%; margin-bottom: 15px; font-size: 1.1rem; justify-content: center; gap: 10px; cursor: pointer;">
                     Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu"></i>
                 </button>
@@ -187,7 +179,7 @@
         </div>
     </main>
 
-    <!-- MODAL DE SERVICIOS -->
+    <!-- NUBE FLOTANTE / MODAL DE SERVICIOS -->
     <div id="modalServicio" class="ngc-modal-overlay oculto">
         <div class="ngc-modal-card">
             <button class="btn-cerrar-modal" onclick="cerrarModalServicio()"><i class="fa-solid fa-xmark"></i></button>
