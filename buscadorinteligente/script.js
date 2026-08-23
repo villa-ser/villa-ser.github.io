@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera
+        // Cerrar menú flotante al hacer clic fuera (Lógica mejorada)
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
@@ -57,24 +57,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
         
-        // Sincronizar iconos según el tema actual guardado
         if (temaGuardado === 'light') {
             iconTema.classList.replace('fa-sun', 'fa-moon');
             if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logoclaro.avif';
         }
 
-        // Alternar tema y logo al hacer click
         btnTema.addEventListener('click', () => {
             const temaActual = document.documentElement.getAttribute('data-theme');
             
             if (temaActual === 'light') {
-                // Volver a Modo Oscuro
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
                 iconTema.classList.replace('fa-moon', 'fa-sun');
                 if (imgLogoPrincipal) imgLogoPrincipal.src = '../img/logo.avif';
             } else {
-                // Cambiar a Modo Día
                 document.documentElement.setAttribute('data-theme', 'light'); 
                 localStorage.setItem('temaVillaser', 'light');
                 iconTema.classList.replace('fa-sun', 'fa-moon');
@@ -252,6 +248,7 @@ function ejecutarBusqueda() {
         const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
+        /* OBSERVACIONES AHORA SE ENCUENTRAN DENTRO DE RESULT-DETAILS */
         card.innerHTML = `
             <div class="result-header">
                 <span class="result-concept">${item.concepto}</span>
@@ -260,12 +257,16 @@ function ejecutarBusqueda() {
                     <span class="price-note">Solo Mano de Obra</span>
                 </div>
             </div>
-            <div class="result-obs">
-                <i data-lucide="info" style="width: 14px; height: 14px; display:inline-block; vertical-align: middle; color: var(--ngc-neon);"></i> 
-                ${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación."}
-                <span style="display:block; font-size:0.7rem; color:var(--warning-amber); margin-top:4px;">Toca para ver detalles</span>
+            
+            <div class="result-obs-preview">
+                <span class="click-to-expand"><i class="fa-solid fa-chevron-down"></i> Toca para ver detalles</span>
             </div>
+            
             <div class="result-details">
+                <div class="detail-row obs-row">
+                    <span class="detail-label">Observaciones:</span><br> 
+                    ${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación. No incluye materiales."}
+                </div>
                 <div class="detail-row">
                     <span class="detail-label">Entidad Referencia:</span><br> ${item.organizacion}
                 </div>
@@ -302,4 +303,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-}
+                }
+                    
