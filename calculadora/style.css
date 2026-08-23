@@ -1,5 +1,6 @@
 /* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
+    /* MODO OSCURO (Default) */
     --ngc-neon: #00d4ff; 
     --ngc-neon-rgb: 0, 212, 255;
     --ngc-blur: blur(10px);
@@ -10,7 +11,7 @@
     --gnc-border: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
     
-    /* Variables de Texto para el Modo Oscuro */
+    /* Variables de Texto */
     --ngc-text-main: #ffffff;
     --text-color: #ffffff;
     --primary-accent: #00d4ff;
@@ -22,6 +23,8 @@
     --bg-body: #121212;
     --bg-image: url('../img/fondo.avif');
     --card-shadow: rgba(0, 0, 0, 0.5);
+    
+    /* Inputs y Fondos internos (Oscuro) */
     --input-bg: rgba(0, 0, 0, 0.6);
     --item-row-bg: rgba(0, 0, 0, 0.5);
     --select-bg: rgba(20, 20, 20, 0.95);
@@ -29,33 +32,36 @@
     --summary-bg: rgba(0, 0, 0, 0.6);
 }
 
+/* --- VARIABLES MODO DÍA --- */
 [data-theme="light"] {
-    --ngc-neon: #008fb3; 
-    --ngc-neon-rgb: 0, 143, 179;
+    --ngc-neon: #007a99; /* Neón más oscuro para contrastar en fondo blanco */
+    --ngc-neon-rgb: 0, 122, 153;
     
-    /* Variables de contenedores y bordes (Día) */
-    --gnc-glass: rgba(235, 238, 242, 0.85); 
-    --ngc-glass: rgba(235, 238, 242, 0.85);
-    --gnc-border: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
-    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
+    /* Tarjetas blancas y brillantes para mejor contraste */
+    --gnc-glass: rgba(255, 255, 255, 0.95); 
+    --ngc-glass: rgba(255, 255, 255, 0.95);
+    --gnc-border: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
     
-    /* Variables de Texto para el Modo Día */
-    --ngc-text-main: #1a1a1a;
-    --text-color: #1a1a1a;
-    --primary-accent: #008fb3;
+    /* Textos más oscuros para lectura perfecta */
+    --ngc-text-main: #111111;
+    --text-color: #111111;
+    --primary-accent: #007a99;
     --success-accent: #1e7e34;
     --danger-accent: #d93025;
-    --gnc-text-muted: #555555;
+    --gnc-text-muted: #444444;
     
-    /* Variables de Layout y Componentes Calculadora (Día) */
+    /* Fondo del body ligeramente gris para que las tarjetas blancas resalten */
     --bg-body: #d6dbe0;
     --bg-image: url('../img/fondoclaro.avif');
     --card-shadow: rgba(0, 0, 0, 0.15);
-    --input-bg: rgba(255, 255, 255, 0.7);
-    --item-row-bg: rgba(255, 255, 255, 0.6);
-    --select-bg: rgba(235, 238, 242, 0.98);
-    --opt-group-bg: rgba(0, 143, 179, 0.15);
-    --summary-bg: rgba(255, 255, 255, 0.7);
+    
+    /* Entradas y botones internos un poco grises (Oscurecidos) */
+    --input-bg: rgba(0, 0, 0, 0.06);
+    --item-row-bg: rgba(0, 0, 0, 0.04);
+    --select-bg: rgba(255, 255, 255, 0.98);
+    --opt-group-bg: rgba(0, 122, 153, 0.1);
+    --summary-bg: rgba(240, 243, 245, 0.95);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,11 +77,12 @@ body {
     background: var(--bg-body) var(--bg-image) no-repeat center center fixed;
     background-size: cover; width: 100%; min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
     overflow-x: hidden; display: flex; justify-content: center; 
     transition: background 0.3s ease;
 }
 
-/* UTILIDAD (CRÍTICO PARA QUE SE OCULTE EL MENÚ) */
+/* CLASE CRÍTICA PARA EL MENÚ Y ELEMENTOS OCULTOS */
 .oculto { display: none !important; }
 
 /* ANCHOS ESTANDARIZADOS COMO LA RAÍZ */
@@ -91,22 +98,25 @@ body {
 /* --- BOTONES FLOTANTES Y MENÚ DESPLEGABLE      --- */
 /* ================================================= */
 
-/* 1. Logo Flotante (Derecha Extrema) */
+/* Logo Flotante Neón Mejorado */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--gnc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
     box-shadow: 0 4px 15px var(--card-shadow);
 }
-.hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; transition: opacity 0.3s ease; }
-.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; transition: opacity 0.3s ease; position: relative; z-index: 2;}
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;}
 .hero-neon-rect {
-    width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
-    stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
+    fill: none; stroke: var(--ngc-neon); stroke-width: 4px;
+    stroke-dasharray: 60 140; /* Crea el espacio del segmento */
+    vector-effect: non-scaling-stroke;
+    animation: run-border 3s linear infinite;
 }
+@keyframes run-border { to { stroke-dashoffset: -200; } }
 
-/* 2. Botones de Acción Globales */
+/* Botones de Acción Globales */
 .btn-flotante-accion {
-    position: fixed; top: 15px; z-index: 9999; width: 60px; height: 60px; border-radius: 8px;
+    position: fixed; top: 15px; z-index: 9999; height: 60px; border-radius: 8px;
     background: var(--gnc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--gnc-border); color: var(--ngc-text-main);
     display: flex; justify-content: center; align-items: center;
@@ -118,17 +128,27 @@ body {
     box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); transform: translateY(-2px);
 }
 
-/* 3. Posicionamiento Específico de Botones */
-#btn-ir-menu { left: 15px; } /* Botón Volver */
+/* Botones redondos/cuadrados específicos */
+#btn-ir-menu, #btn-tema { width: 60px; }
+
+/* Botón Rectangular "Explorar" */
+.btn-explorar {
+    width: auto !important; padding: 0 20px; gap: 8px;
+    font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+}
+.btn-explorar span { display: inline-block; }
+
+/* Posicionamiento Específico de Botones */
+#btn-ir-menu { left: 15px; } 
 .menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
 .menu-flotante-container .btn-flotante-accion { position: static; }
-#btn-tema { right: 85px; } /* Botón Tema */
+#btn-tema { right: 85px; } 
 
-/* 4. Contenido del Menú Desplegable */
+/* Contenido del Menú Desplegable */
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    border-radius: 12px; width: 200px; box-shadow: 0 10px 25px var(--card-shadow);
+    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow);
     display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
@@ -192,7 +212,7 @@ label i { margin-right: 5px; }
     color: var(--text-color);
 }
 .opt-box input { display: none; }
-.opt-box:hover { background: rgba(var(--ngc-neon-rgb), 0.05); }
+.opt-box:hover { background: rgba(var(--ngc-neon-rgb), 0.1); }
 .opt-box:has(input:checked) {
     background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--primary-accent);
     color: var(--primary-accent); box-shadow: 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
@@ -226,7 +246,7 @@ label i { margin-right: 5px; }
 .select-selected {
     background: var(--input-bg); border: 1px solid rgba(var(--ngc-neon-rgb), 0.3); border-radius: 10px; 
     padding: 12px 14px; color: var(--text-color); font-size: 0.9rem; cursor: pointer; display: flex; 
-    justify-content: space-between; align-items: center; user-select: none; transition: 0.3s;
+    justify-content: space-between; align-items: center; user-select: none; transition: 0.3s; font-weight: 500;
 }
 .select-selected:focus, .select-arrow-active {
     border-color: var(--primary-accent); background: var(--item-row-bg);
@@ -320,7 +340,7 @@ label i { margin-right: 5px; }
 }
 .legend-title { display: block; color: var(--primary-accent); font-size: 0.8rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
 .legend-section { margin-bottom: 15px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 12px; }
-.legend-subtitle { font-size: 0.75rem; margin-bottom: 8px; color: var(--text-color); }
+.legend-subtitle { font-size: 0.75rem; margin-bottom: 8px; color: var(--text-color); font-weight: 600;}
 .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.75rem; }
 .legend-box { background: var(--item-row-bg); padding: 8px; border-radius: 6px; border-left: 3px solid var(--success-accent); color: var(--text-color); }
 .legend-list { font-size: 0.8rem; list-style: none; line-height: 1.5; }
@@ -342,7 +362,6 @@ label i { margin-right: 5px; }
 .ngc-site-credits span { color: var(--ngc-neon); font-weight: 700; opacity: 0.8; }
 button.btn-share { background-color: transparent; border: none; outline: none; color: var(--gnc-text-muted); cursor: pointer; padding: 0; }
 
-@keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -353,13 +372,14 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
 @media (min-width: 768px) {
     .main-wrapper { max-width: 720px; padding: 25px; }
     
-    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
-    .menu-flotante-container { top: 25px; left: 105px; }
-    .menu-flotante-container .btn-flotante-accion { width: 70px; height: 70px; font-size: 1.8rem; }
-    .dropdown-flotante-content { top: 80px; width: 220px; }
-
-    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
     .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
+    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
+    
+    .menu-flotante-container { top: 25px; left: 105px; }
+    .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
+    .dropdown-flotante-content { top: 80px; width: 250px; }
+    
+    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
     
     .gnc-card { padding: 30px; }
 }
