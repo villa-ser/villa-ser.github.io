@@ -50,7 +50,7 @@ const gruposSinonimos = [
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
     ["jabalina", "electrodo", "tierra", "pat", "puestaatierra"],
     ["luminaria", "lampara", "foco", "artefacto", "luz", "lus", "luces", "lamparita", "aplique"],
-    ["instalacion", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
+    ["instalacion", "instalar", "montaje", "colocacion", "implementacion", "conexion", "cambio", "armado"],
     ["pilar", "acometida", "monofasico", "trifasico"],
     ["fexible", "corrugado", "manguera"],
     ["cano", "caneria", "tubo"],
