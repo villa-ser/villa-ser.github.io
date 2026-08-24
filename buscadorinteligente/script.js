@@ -37,10 +37,11 @@ const palabrasVacias = new Set([
 // 1. DICCIONARIO DE SINÓNIMOS
 // ==========================================
 const gruposSinonimos = [
-    ["termomagnetica", "termica", "fusible", "llave", "breaker"],
+    ["termomagnetica", "termica", "fusible", "breaker"],
+    ["interruptor", "llave", "perilla", "apagador"],
     ["timbre", "campanilla", "zumbador", "bocina", "pitido", "soneria", "portero", "llamador"],
     ["diferencial", "disyuntor", "salvavita", "salva"],
-    ["tomacorriente", "toma", "enchufe", "modulo", "enchufes", "boca"],
+    ["tomacorriente", "toma", "enchufe", "modulo", "enchufes"],
     ["conductor", "cable", "alambre", "linea", "recableado", "cableado"],
     ["jabalina", "electrodo", "tierra", "pat", "puestaatierra"],
     ["luminaria", "lampara", "foco", "artefacto", "luz", "lus", "luces", "lamparita", "aplique"],
