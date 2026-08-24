@@ -55,8 +55,10 @@ const gruposSinonimos = [
     ["fexible", "corrugado", "manguera"],
     ["cano", "caneria", "tubo"],
     ["motor", "motores"],
+    ["exterior", "externo", "interperie", "afuera"],
+    ["interior", "interno", "dentro", "adentro"],
     ["mono", "monofásico", "monofásica"],
-    ["cablecanal", "canaleta", "cableducto", "moldura"], 
+    ["cablecanal", "canaleta", "cableducto", "canal", "moldura"], 
     ["apto", "certificado", "epec", "alta", "ersep"]
 ];
 
