@@ -54,6 +54,8 @@ const gruposSinonimos = [
     ["pilar", "acometida", "monofasico", "trifasico"],
     ["fexible", "corrugado", "manguera"],
     ["cano", "caneria", "tubo"],
+    ["motor", "motores"],
+    ["mono", "monofásico", "monofásica"],
     ["cablecanal", "canaleta", "cableducto", "moldura"], 
     ["apto", "certificado", "epec", "alta", "ersep"]
 ];
