@@ -251,6 +251,7 @@ function sonSimilares(buscada, objetivo) {
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
+// FUNCIÓN DE BÚSQUEDA ACTUALIZADA CON SISTEMA DE PUNTUACIÓN (SCORING)
 function ejecutarBusqueda() {
     const rawQuery = document.getElementById("searchInput").value;
     const resultsContainer = document.getElementById("resultsContainer");
@@ -258,7 +259,7 @@ function ejecutarBusqueda() {
 
     if (rawQuery.trim() === "") return;
 
-    // Se obtienen las palabras ya fusionadas (ej: "cablecanal") y se filtran las palabras vacías
+    // Se obtienen las palabras ya fusionadas y limitadas a 5
     const palabrasBusqueda = obtenerPalabrasClave(rawQuery)
         .filter(p => !palabrasVacias.has(p))
         .slice(0, 5);
@@ -270,28 +271,70 @@ function ejecutarBusqueda() {
 
     const coincidencias = [];
 
+    // Normalizamos la búsqueda completa para buscar frases exactas
+    const busquedaCompleta = rawQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
     for (const item of allData) {
+        let score = 0; // Puntaje inicial
+        const conceptoNormalizado = item.concepto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const palabrasDelConcepto = obtenerPalabrasClave(item.concepto);
         
-        const cumpleTodas = palabrasBusqueda.every(palabraBuscada => {
+        // 1. Bono enorme si la frase buscada está exactamente en el concepto
+        if (conceptoNormalizado.includes(busquedaCompleta)) {
+            score += 100;
+            // Bono extra si es exactamente igual (ej: buscó "boca" y el concepto es solo "boca")
+            if (conceptoNormalizado === busquedaCompleta) score += 50; 
+        }
+
+        // 2. Revisión palabra por palabra
+        let cumpleTodas = true;
+
+        for (const palabraBuscada of palabrasBusqueda) {
             const opcionesBuscadas = obtenerSinonimos(palabraBuscada);
-            return opcionesBuscadas.some(opcion => {
-                return palabrasDelConcepto.some(palabraConcepto => sonSimilares(opcion, palabraConcepto));
-            });
-        });
+            let mejorPuntajePalabra = 0;
+            let palabraEncontrada = false;
+
+            for (const opcion of opcionesBuscadas) {
+                for (const palabraConcepto of palabrasDelConcepto) {
+                    if (opcion === palabraConcepto) {
+                        palabraEncontrada = true;
+                        // Si es la palabra exacta, da 10 pts. Si es un sinónimo, da 7 pts.
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 10 : 7);
+                    } else if (sonSimilares(opcion, palabraConcepto)) {
+                        palabraEncontrada = true;
+                        // Si coincide por error ortográfico (Levenshtein), da 4 pts.
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 4);
+                    }
+                }
+            }
+
+            if (!palabraEncontrada) {
+                cumpleTodas = false;
+                break; // Si falta una palabra, se descarta este item
+            }
+            score += mejorPuntajePalabra;
+        }
 
         if (cumpleTodas) {
-            coincidencias.push(item);
-            if (coincidencias.length >= 10) break; 
+            // Guardamos el item junto con el puntaje que obtuvo
+            coincidencias.push({ item: item, score: score });
         }
     }
 
-    if (coincidencias.length === 0) {
+    // --- ORDENAMIENTO POR RELEVANCIA ---
+    // Ordenamos de mayor puntaje a menor puntaje
+    coincidencias.sort((a, b) => b.score - a.score);
+
+    // Tomamos solo los primeros 10 mejores resultados después de ordenar
+    const mejoresResultados = coincidencias.slice(0, 10).map(c => c.item);
+
+    if (mejoresResultados.length === 0) {
         resultsContainer.innerHTML = `<div class="no-results">No se encontraron precios referenciales.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Intentá usar palabras más cortas o generales. (Ej: "tablero", "boca", "jabalina")</span></div>`;
         return;
     }
 
-    coincidencias.forEach(item => {
+    // --- RENDERIZADO DE RESULTADOS ---
+    mejoresResultados.forEach(item => {
         let precioFormat = "$ Consultar";
         let priceNum = Number(item.precio);
         if (!isNaN(priceNum) && item.precio !== "") {
@@ -360,5 +403,4 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-    }
-     
+            }
