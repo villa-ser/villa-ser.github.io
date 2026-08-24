@@ -11,15 +11,11 @@ let allData = [];
 // ==========================================
 // 0.5. PALABRAS VACÍAS (STOPWORDS)
 // ==========================================
-// Se ignorarán pronombres, conectores, artículos, adverbios y adjetivos no técnicos
 const palabrasVacias = new Set([
-    // Artículos y Preposiciones
     "el", "la", "los", "las", "un", "una", "unos", "unas",
     "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
     "en", "entre", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "so", "sobre", "tras",
-    // Conjunciones
     "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que",
-    // Pronombres
     "yo", "tu", "el", "ella", "ello", "nosotros", "nosotras", "vosotros", "vosotras",
     "ellos", "ellas", "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les",
     "mi", "ti", "conmigo", "contigo", "consigo",
@@ -27,14 +23,12 @@ const palabrasVacias = new Set([
     "estas", "esas", "aquellas", "esto", "eso", "aquello",
     "mio", "tuyo", "suyo", "nuestro", "vuestro",
     "alguien", "nadie", "algo", "nada", "cualquiera", "alguno", "ninguno", "quien", "cual", "cuales",
-    // Adverbios
     "aqui", "ahi", "alli", "aca", "alla", "cerca", "lejos", "arriba", "abajo", "delante", "detras",
     "dentro", "fuera", "hoy", "ayer", "manana", "ahora", "antes", "despues", "luego", "tarde", "temprano",
     "pronto", "siempre", "nunca", "jamas", "ya", "todavia", "aun", "asi", "bien", "mal", "despacio", "deprisa",
     "muy", "mucho", "poco", "bastante", "demasiado", "mas", "menos", "tan", "tanto",
     "apenas", "casi", "medio", "tambien", "cierto", "claro", "exacto", "obvio",
     "no", "tampoco", "quiza", "quizas", "acaso",
-    // Adjetivos genéricos 
     "bueno", "malo", "mejor", "peor", "mayor", "menor", "grande", "pequeno", "nuevo", "viejo",
     "facil", "dificil", "bonito", "feo", "rapido", "lento", "solo", "solamente"
 ]);
@@ -63,13 +57,11 @@ const gruposSinonimos = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     cargarExcel();
 
     // ==========================================
-    // 1. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
+    // LÓGICA DEL MENÚ FLOTANTE SUPERIOR
     // ==========================================
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
@@ -80,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
@@ -89,20 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE
+    // LÓGICA DEL MODO DÍA / MODO NOCHE
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
-    
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
-        
-        if (temaGuardado === 'light') {
-            iconTema.classList.replace('fa-sun', 'fa-moon');
-        }
+        if (temaGuardado === 'light') iconTema.classList.replace('fa-sun', 'fa-moon');
 
         btnTema.addEventListener('click', () => {
             const temaActual = document.documentElement.getAttribute('data-theme');
-            
             if (temaActual === 'light') {
                 document.documentElement.removeAttribute('data-theme'); 
                 localStorage.setItem('temaVillaser', 'dark');
@@ -116,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 3. LÓGICA DEL BUSCADOR
+    // LÓGICA DEL BUSCADOR
     // ==========================================
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
@@ -146,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function busquedaRapida(termino) {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
-    
     if(searchInput && btnBuscar) {
         searchInput.value = termino;
         btnBuscar.disabled = false;
@@ -157,7 +142,6 @@ function busquedaRapida(termino) {
 async function cargarExcel() {
     const statusMsg = document.getElementById("status-message");
     const searchInput = document.getElementById("searchInput");
-    
     try {
         const response = await fetch('archivo.xlsx');
         if (!response.ok) throw new Error("No se pudo cargar archivo.xlsx");
@@ -189,7 +173,6 @@ async function cargarExcel() {
         
         if(statusMsg) statusMsg.style.display = "none";
         if(searchInput) searchInput.disabled = false;
-
     } catch (error) {
         if(statusMsg) {
             statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error de conexión con la base de datos.';
@@ -199,8 +182,35 @@ async function cargarExcel() {
     }
 }
 
-// NUEVA FUNCIÓN: Divide el texto y fusiona palabras compuestas de forma segura
+// --------------------------------------------------------------------
+// NUEVA FUNCIÓN MAESTRA: Normaliza Fonética, Plurales y Letras Confusas
+// --------------------------------------------------------------------
+function normalizarFoneticaYPlural(texto) {
+    return texto.split(/\s+/).map(p => {
+        // 1. Reemplazos fonéticos típicos para errores ortográficos
+        p = p.replace(/ll/g, "y");       // ll -> y (llave -> yave)
+        p = p.replace(/y/g, "i");        // y -> i (yave -> iave)
+        p = p.replace(/v/g, "b");        // v -> b (cable -> cable, vaca -> baca)
+        p = p.replace(/z/g, "s");        // z -> s (luz -> lus)
+        p = p.replace(/ce/g, "se");      // ce -> se (centro -> sentro)
+        p = p.replace(/ci/g, "si");      // ci -> si (cinta -> sinta)
+        p = p.replace(/ch/g, "x");       // Protegemos la 'ch' temporalmente
+        p = p.replace(/h/g, "");         // h muda desaparece (hilo -> ilo)
+        p = p.replace(/x/g, "ch");       // Restauramos la 'ch'
+        
+        // 2. Control de Plurales/Singulares (Quita 's' o 'es' final)
+        if (p.length > 4 && p.endsWith("es")) {
+            p = p.slice(0, -2);
+        } else if (p.length > 3 && p.endsWith("s")) {
+            p = p.slice(0, -1);
+        }
+        
+        return p;
+    }).join(" ");
+}
+
 function obtenerPalabrasClave(texto) {
+    // Aquí el texto ya unifica la 'ñ' con la 'n' gracias a NFD
     let txt = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
     let palabras = txt.split(/\s+/).filter(p => p.length > 0);
     
@@ -208,7 +218,7 @@ function obtenerPalabrasClave(texto) {
         if (palabras[i] === "cable" && palabras[i+1] === "canal") {
             palabras[i] = "cablecanal";
             palabras.splice(i+1, 1);
-            i--; // Retrocedemos el índice para evitar saltarnos palabras
+            i--; 
         } else if (palabras[i] === "puesta" && palabras[i+1] === "a" && palabras[i+2] === "tierra") {
             palabras[i] = "puestaatierra";
             palabras.splice(i+1, 2);
@@ -251,7 +261,9 @@ function sonSimilares(buscada, objetivo) {
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
-// FUNCIÓN DE BÚSQUEDA ACTUALIZADA CON SISTEMA DE PUNTUACIÓN (SCORING)
+// --------------------------------------------------------------------
+// MOTOR DE BÚSQUEDA Y SCORING
+// --------------------------------------------------------------------
 function ejecutarBusqueda() {
     const rawQuery = document.getElementById("searchInput").value;
     const resultsContainer = document.getElementById("resultsContainer");
@@ -259,7 +271,6 @@ function ejecutarBusqueda() {
 
     if (rawQuery.trim() === "") return;
 
-    // Se obtienen las palabras ya fusionadas y limitadas a 5
     const palabrasBusqueda = obtenerPalabrasClave(rawQuery)
         .filter(p => !palabrasVacias.has(p))
         .slice(0, 5);
@@ -271,22 +282,29 @@ function ejecutarBusqueda() {
 
     const coincidencias = [];
 
-    // Normalizamos la búsqueda completa para buscar frases exactas
+    // Bases para match de frase completa
     const busquedaCompleta = rawQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    const busquedaCompletaNorm = normalizarFoneticaYPlural(busquedaCompleta);
 
     for (const item of allData) {
-        let score = 0; // Puntaje inicial
+        let score = 0; 
+        
         const conceptoNormalizado = item.concepto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const conceptoNormalizadoFonetico = normalizarFoneticaYPlural(conceptoNormalizado);
         const palabrasDelConcepto = obtenerPalabrasClave(item.concepto);
         
-        // 1. Bono enorme si la frase buscada está exactamente en el concepto
+        // 1. MATCH EXACTO DE FRASE
         if (conceptoNormalizado.includes(busquedaCompleta)) {
             score += 100;
-            // Bono extra si es exactamente igual (ej: buscó "boca" y el concepto es solo "boca")
             if (conceptoNormalizado === busquedaCompleta) score += 50; 
+        } 
+        // 1.5 MATCH DE FRASE (Tolerando errores fonéticos y plurales)
+        else if (conceptoNormalizadoFonetico.includes(busquedaCompletaNorm)) {
+            score += 80;
+            if (conceptoNormalizadoFonetico === busquedaCompletaNorm) score += 40; 
         }
 
-        // 2. Revisión palabra por palabra
+        // 2. REVISIÓN PALABRA POR PALABRA
         let cumpleTodas = true;
 
         for (const palabraBuscada of palabrasBusqueda) {
@@ -295,37 +313,48 @@ function ejecutarBusqueda() {
             let palabraEncontrada = false;
 
             for (const opcion of opcionesBuscadas) {
+                const opcionFonetica = normalizarFoneticaYPlural(opcion);
+
                 for (const palabraConcepto of palabrasDelConcepto) {
+                    const conceptoFonetico = normalizarFoneticaYPlural(palabraConcepto);
+
+                    // Nivel A: Es idéntica
                     if (opcion === palabraConcepto) {
                         palabraEncontrada = true;
-                        // Si es la palabra exacta, da 10 pts. Si es un sinónimo, da 7 pts.
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 10 : 7);
-                    } else if (sonSimilares(opcion, palabraConcepto)) {
+                    } 
+                    // Nivel B: Coincide si le perdonamos errores ortográficos fonéticos y plurales
+                    else if (opcionFonetica === conceptoFonetico) {
                         palabraEncontrada = true;
-                        // Si coincide por error ortográfico (Levenshtein), da 4 pts.
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 9 : 6);
+                    }
+                    // Nivel C: Coincidencia por distancia de Levenshtein (typos raros)
+                    else if (sonSimilares(opcion, palabraConcepto)) {
+                        palabraEncontrada = true;
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 4);
+                    }
+                    // Nivel D: Levenshtein pero sobre la palabra fonéticamente normalizada
+                    else if (sonSimilares(opcionFonetica, conceptoFonetico)) {
+                        palabraEncontrada = true;
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 3);
                     }
                 }
             }
 
             if (!palabraEncontrada) {
                 cumpleTodas = false;
-                break; // Si falta una palabra, se descarta este item
+                break; // Si no encuentra al menos una variación de la palabra, descarta el resultado
             }
             score += mejorPuntajePalabra;
         }
 
         if (cumpleTodas) {
-            // Guardamos el item junto con el puntaje que obtuvo
             coincidencias.push({ item: item, score: score });
         }
     }
 
     // --- ORDENAMIENTO POR RELEVANCIA ---
-    // Ordenamos de mayor puntaje a menor puntaje
     coincidencias.sort((a, b) => b.score - a.score);
-
-    // Tomamos solo los primeros 10 mejores resultados después de ordenar
     const mejoresResultados = coincidencias.slice(0, 10).map(c => c.item);
 
     if (mejoresResultados.length === 0) {
@@ -333,7 +362,7 @@ function ejecutarBusqueda() {
         return;
     }
 
-    // --- RENDERIZADO DE RESULTADOS ---
+    // --- RENDERIZADO ---
     mejoresResultados.forEach(item => {
         let precioFormat = "$ Consultar";
         let priceNum = Number(item.precio);
@@ -403,4 +432,5 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-            }
+                                   }
+                
