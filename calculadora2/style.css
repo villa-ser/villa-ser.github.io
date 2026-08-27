@@ -308,12 +308,28 @@ label i { margin-right: 5px; }
 
 /* --- BOTÓN AGREGAR E ITEMS --- */
 .btn-add {
-    width: 100%; background: transparent; border: 1px solid var(--gnc-neon);
-    color: var(--gnc-neon); padding: 12px; border-radius: 10px; cursor: pointer;
-    font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;
-    transition: all 0.3s ease; margin-top: 5px;
+    width: 100%; 
+    background: var(--gnc-neon); /* Fondo sólido con tu color neón principal */
+    border: 1px solid var(--gnc-neon);
+    color: #121212; /* Texto oscuro para contraste perfecto sobre el neón */
+    padding: 14px; 
+    border-radius: 10px; 
+    cursor: pointer;
+    font-weight: 800; 
+    text-transform: uppercase; 
+    font-size: 0.9rem; 
+    letter-spacing: 1px;
+    transition: all 0.3s ease; 
+    margin-top: 5px;
+    box-shadow: 0 4px 15px rgba(var(--gnc-neon-rgb), 0.4); /* Sombra de luz para destacarlo */
 }
-.btn-add:hover { background: rgba(var(--gnc-neon-rgb), 0.15); box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4); }
+
+.btn-add:hover { 
+    background: transparent; 
+    color: var(--gnc-neon); 
+    box-shadow: 0 0 20px rgba(var(--gnc-neon-rgb), 0.7); 
+    transform: translateY(-2px);
+}
 
 #lista-items { margin: 5px 0; max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;}
 
