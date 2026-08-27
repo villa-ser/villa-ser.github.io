@@ -73,17 +73,6 @@
                 <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-muted); margin-top: -5px; margin-bottom: 15px;">
                     Exclusivo Mano de Obra
                 </p>
-                
-                <!-- AVISO LEGAL/REFERENCIAL -->
-                <div class="info-banner separador-bloque gpu-accel">
-                    <div class="banner-title">
-                        <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
-                    </div>
-                    <div class="banner-text">
-                        Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
-                        <span style="color: var(--ngc-text); font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
-                    </div>
-                </div>
 
                 <!-- CAJA DE BÚSQUEDA Y TAGS -->
                 <div class="input-section separador-bloque">
@@ -110,8 +99,20 @@
                         </div>
                     </div>
                 </div>
+            <!-- MENSAJE DE ESTADO -->
+                <div id="status-message" class="status-msg separador-bloque">
+                    <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
+                </div>
 
-                <!-- CTA ALTERNATIVO -->
+                <!-- CONTENEDOR DE RESULTADOS -->
+                <div id="resultsContainer" class="results-wrapper separador-bloque"></div>
+                
+            </div>
+
+            <!-- COLUMNA DERECHA (Resultados) -->
+
+            <div class="col-derecha">
+        <!-- CTA ALTERNATIVO -->
                 <div class="separador-bloque cta-escritorio">
                     <div class="ngc-custom-quote gpu-accel">
                         <div class="quote-content">
@@ -123,18 +124,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- COLUMNA DERECHA (Resultados) -->
-            <div class="col-derecha">
-                
-                <!-- MENSAJE DE ESTADO -->
-                <div id="status-message" class="status-msg separador-bloque">
-                    <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
+                <!-- AVISO LEGAL/REFERENCIAL -->
+            <div class="info-banner separador-bloque gpu-accel">
+                    <div class="banner-title">
+                        <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
+                    </div>
+                    <div class="banner-text">
+                        Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
+                        <span style="color: var(--ngc-text); font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
+                    </div>
                 </div>
-
-                <!-- CONTENEDOR DE RESULTADOS -->
-                <div id="resultsContainer" class="results-wrapper separador-bloque"></div>
 
                 <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-wrapper">
