@@ -8,6 +8,7 @@ if (temaGuardado === 'light') {
 
 let allData = [];
 let diccionarioSugerencias = []; // Almacenará las palabras únicas para autocompletar
+let seleccionPendiente = false;  // Controla cuándo se debe seleccionar todo el texto
 
 // ==========================================
 // 0.5. PALABRAS VACÍAS (STOPWORDS)
@@ -118,17 +119,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if(searchInput && btnBuscar) {
-        // --- NUEVO: SELECCIÓN AUTOMÁTICA AL TOCAR EL INPUT ---
+        
+        // --- SELECCIÓN AUTOMÁTICA SOLO DESPUÉS DE BUSCAR ---
         searchInput.addEventListener("focus", function() {
-            this.select();
+            if (seleccionPendiente) {
+                this.select();
+                seleccionPendiente = false; // Se resetea para que no vuelva a seleccionar al seguir escribiendo
+            }
         });
-        // Soporte adicional para navegadores móviles donde focus falla a veces
+        
         searchInput.addEventListener("click", function() {
-            this.select();
+            if (seleccionPendiente) {
+                this.select();
+                seleccionPendiente = false;
+            }
         });
 
         // Escucha al escribir
         searchInput.addEventListener("input", () => {
+            seleccionPendiente = false; // Si se pone a escribir, cancelamos cualquier selección pendiente
             btnBuscar.disabled = searchInput.value.trim().length === 0;
 
             const text = searchInput.value;
@@ -146,6 +155,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const textoOriginal = btnBuscar.innerHTML;
             btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
             suggestionsList.classList.add("oculto"); // Cierra al buscar
+            
+            // Al hacer una búsqueda, marcamos que el próximo toque a la caja debe seleccionar todo
+            seleccionPendiente = true;
+
             setTimeout(() => {
                 ejecutarBusqueda();
                 btnBuscar.innerHTML = textoOriginal;
@@ -160,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // --- NUEVO: LÓGICA CLON FLOTANTE CTA ---
+    // --- LÓGICA CLON FLOTANTE CTA ---
     // ==========================================
     const ctaOriginal = document.querySelector('.cta-escritorio');
     const colDerecha = document.querySelector('.col-derecha');
@@ -214,65 +227,50 @@ function mostrarSugerencias(lastWord, allWords) {
         const pNorm = palabraCorrecta.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const pFon = normalizarFoneticaYPlural(pNorm);
         
-        // 1. Coincidencia normal (ej: escribo "toma", coincide con "tomacorriente")
         if (pNorm.includes(lastWordNorm)) return true;
-        
-        // 2. Coincidencia fonética (ej: escribo "lus", coincide con "luz" o "yav" con "llave")
         if (pFon.includes(lastWordFonetica)) return true;
         
-        // 3. Coincidencia por error de tipeo (calcula cuán parecidas son)
         const prefijo = pNorm.substring(0, lastWordNorm.length);
-        const maxErrores = Math.floor(lastWordNorm.length / 3) + 1; // Permite 1 o 2 letras mal
+        const maxErrores = Math.floor(lastWordNorm.length / 3) + 1;
         if (distanciaLevenshtein(lastWordNorm, prefijo) <= maxErrores) return true;
         
         return false;
     };
 
-    // 1. Evaluar contra las palabras reales de la base de datos
     diccionarioSugerencias.forEach(palabra => {
         if (checkMatchSugerencia(palabra)) {
-            matches.add(palabra); // Agrega la palabra corregida / original
-            
-            // SI ENCUENTRA LA PALABRA, TAMBIÉN SUGIERE SUS SINÓNIMOS AUTOMÁTICAMENTE
+            matches.add(palabra); 
             const sinonimos = obtenerSinonimos(palabra);
             sinonimos.forEach(s => matches.add(s));
         }
     });
 
-    // 2. Evaluar contra todos los sinónimos (Por si empieza escribiendo un sinónimo)
     gruposSinonimos.forEach(grupo => {
         grupo.forEach(sinonimo => {
             if (checkMatchSugerencia(sinonimo)) {
                 matches.add(sinonimo);
-                // Si escribió la mitad de un sinónimo, sugiere ese grupo completo
                 grupo.forEach(s => matches.add(s));
             }
         });
     });
 
-    // Convertir de Set a Array para ordenar
     let matchesArray = Array.from(matches);
     
-    // Ordenar los resultados para priorizar los más lógicos arriba
     matchesArray.sort((a, b) => {
         const aNorm = a.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const bNorm = b.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const aFon = normalizarFoneticaYPlural(aNorm);
         const bFon = normalizarFoneticaYPlural(bNorm);
         
-        // Dar prioridad a las que Empiezan con lo que el usuario escribió (fonético o real)
         const aStarts = (aNorm.startsWith(lastWordNorm) || aFon.startsWith(lastWordFonetica)) ? -1 : 1;
         const bStarts = (bNorm.startsWith(lastWordNorm) || bFon.startsWith(lastWordFonetica)) ? -1 : 1;
         
         if (aStarts !== bStarts) return aStarts - bStarts;
-        
-        // Si hay empate, poner la palabra más corta primero
         if (a.length !== b.length) return a.length - b.length;
         
         return a.localeCompare(b);
     });
 
-    // Limitar máximo 6 sugerencias para no saturar la pantalla
     matchesArray = matchesArray.slice(0, 6);
 
     if (matchesArray.length === 0) {
@@ -280,21 +278,24 @@ function mostrarSugerencias(lastWord, allWords) {
         return;
     }
 
-    // Renderizar la lista
     suggestionsList.innerHTML = '';
     matchesArray.forEach(match => {
         const li = document.createElement('li');
-        li.textContent = match; // Mostrar la sugerencia corregida o el sinónimo
+        li.textContent = match; 
         
         li.addEventListener('click', () => {
-            // Reemplaza la última palabra (errónea o incompleta) por la correcta seleccionada
+            // Reemplaza la última palabra por la correcta seleccionada y agrega espacio
             allWords[allWords.length - 1] = match;
             searchInput.value = allWords.join(' ') + ' ';
             suggestionsList.classList.add("oculto");
-            searchInput.focus();
             
             // Habilitamos el botón buscar
             document.getElementById("btnBuscar").disabled = false;
+
+            // Focuseamos y aseguramos que el cursor quede al final (para seguir escribiendo)
+            searchInput.focus();
+            const len = searchInput.value.length;
+            searchInput.setSelectionRange(len, len);
         });
         suggestionsList.appendChild(li);
     });
@@ -305,7 +306,6 @@ function mostrarSugerencias(lastWord, allWords) {
 function construirDiccionarioSugerencias() {
     let palabras = new Set();
     allData.forEach(item => {
-        // Limpiamos los signos y guardamos palabras puras
         let textoLimpio = item.concepto.replace(/[^\wáéíóúüñÁÉÍÓÚÜÑ]/g, ' ');
         let tokens = textoLimpio.split(/\s+/);
         
@@ -352,7 +352,7 @@ async function cargarExcel() {
             });
         }
 
-        construirDiccionarioSugerencias(); // Armamos la lista para sugerir autocompletado
+        construirDiccionarioSugerencias(); 
         
         if(statusMsg) statusMsg.style.display = "none";
         if(searchInput) searchInput.disabled = false;
@@ -442,7 +442,7 @@ function sonSimilares(buscada, objetivo) {
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
-// --------------------------------------------------------------------
+ // --------------------------------------------------------------------
 // MOTOR DE BÚSQUEDA (SE EJECUTA AL DAR CLICK EN "BUSCAR")
 // --------------------------------------------------------------------
 function ejecutarBusqueda() {
@@ -603,4 +603,4 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-    }
+}
