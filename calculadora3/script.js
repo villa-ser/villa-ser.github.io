@@ -191,23 +191,22 @@ function render() {
 
     lista.innerHTML = '';
     
-    // Al recorrer 'listado' en su orden natural e insertarlos con prepend()
-    // Los primeros aparatos quedan abajo (vaso llenándose) y los últimos arriba.
+    // Generación de tarjeta unificada de aparato
     listado.forEach(item => {
         const div = document.createElement('div');
         div.className = 'item-row gpu-accel'; 
         div.innerHTML = `
-            <div class="item-info">
-                <strong>${item.nombre}</strong>
-                <span style="display:block; opacity:0.8;"><i class="fa-solid fa-bolt" style="font-size:0.6rem;"></i> ${item.kwhMensual.toFixed(1)} kWh agregados</span>
-                <div class="item-desglose" id="item-desglose-${item.id}"></div>
-            </div>
-            <div class="item-actions">
-                <div class="item-costo-container" id="item-costo-container-${item.id}"></div>
+            <div class="item-header">
+                <div class="item-info">
+                    <strong>${item.nombre}</strong>
+                    <span style="display:block; opacity:0.8;"><i class="fa-solid fa-bolt" style="font-size:0.6rem;"></i> ${item.kwhMensual.toFixed(1)} kWh agregados</span>
+                </div>
                 <button class="btn-delete" onclick="eliminar(${item.id})">
                     <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
+            <!-- Contenedor general que va a incluir las filas de desglose -->
+            <div class="item-desglose" id="item-desglose-${item.id}"></div>
         `;
         lista.prepend(div); 
     });
@@ -223,7 +222,6 @@ function recalcularTotal() {
     let kwhAcumulados = 0;
     let costoEnergiaPuraTotal = 0;
 
-    // Precios purgados directamente desde la captura de EPEC (para los 4 bloques)
     let tarifasRangos = [];
     if (tipoTarifa === "con_subsidio") {
         tarifasRangos = [121.84597, 191.10731, 219.23668, 333.61670]; 
@@ -231,7 +229,6 @@ function recalcularTotal() {
         tarifasRangos = [217.91977, 296.03448, 327.75950, 358.33820];
     }
 
-    // Procesamos cada ítem acumulativamente para saber en qué bloque/s cae
     const resultadosCalculados = listado.map(item => {
         let kwhRestantes = item.kwhMensual;
         let costoItem = 0;
@@ -275,7 +272,7 @@ function recalcularTotal() {
 
             desgloseLineas.push({
                 texto: `${kwhEnEsteEscalon.toFixed(1)} kWh - ${nombreEscalon}`,
-                subtotal: Math.round(costoParcial * 1.36), // Con 36% de impuestos
+                subtotal: Math.round(costoParcial * 1.36), 
                 clase: claseColor
             });
         }
@@ -294,32 +291,28 @@ function recalcularTotal() {
     if(kwhUI) kwhUI.innerText = totalKwh.toFixed(2);
     if(pesosUI) pesosUI.innerText = "$ " + totalPesos.toLocaleString('es-AR');
 
-    // Inyectamos las líneas generadas en el DOM
+    // Inyectamos las líneas generadas en el DOM usando la fila unificada
     resultadosCalculados.forEach(res => {
         const contenedorDesglose = document.getElementById(`item-desglose-${res.id}`);
-        const contenedorCosto = document.getElementById(`item-costo-container-${res.id}`);
         
-        if (contenedorDesglose && contenedorCosto) {
+        if (contenedorDesglose) {
             contenedorDesglose.innerHTML = '';
-            contenedorCosto.innerHTML = '';
 
             res.desglose.forEach(linea => {
-                // Info kWh lado izquierdo
-                const spanLinea = document.createElement('span');
-                spanLinea.className = `linea-escalon ${linea.clase}`;
-                spanLinea.innerHTML = `<i class="fa-solid fa-layer-group" style="font-size:0.55rem;"></i> ${linea.texto}`;
-                contenedorDesglose.prepend(spanLinea); // Prepend apila el escalón más caro arriba
-
-                // Costo lado derecho (Al lado del tarrito)
-                const spanSub = document.createElement('span');
-                spanSub.className = `item-costo ${linea.clase}`;
-                spanSub.innerText = `$ ${linea.subtotal.toLocaleString('es-AR')}`;
-                contenedorCosto.prepend(spanSub);
+                // Creamos la fila que contiene ambas informaciones
+                const divRow = document.createElement('div');
+                divRow.className = 'desglose-line-row';
+                
+                divRow.innerHTML = `
+                    <span class="linea-escalon ${linea.clase}"><i class="fa-solid fa-layer-group" style="font-size:0.55rem;"></i> ${linea.texto}</span>
+                    <span class="item-costo ${linea.clase}">$ ${linea.subtotal.toLocaleString('es-AR')}</span>
+                `;
+                
+                contenedorDesglose.prepend(divRow);
             });
         }
     });
 
-    // Actualizar insignia final de tarifa
     const tierUI = document.getElementById('tier-indicator');
     if (totalKwh > 0) {
         let textoEscalon = "";
@@ -368,5 +361,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                                               }
-                
+                          }
+        
