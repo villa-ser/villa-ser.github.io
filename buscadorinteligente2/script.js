@@ -118,6 +118,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if(searchInput && btnBuscar) {
+        // --- NUEVO: SELECCIÓN AUTOMÁTICA AL TOCAR EL INPUT ---
+        searchInput.addEventListener("focus", function() {
+            this.select();
+        });
+        // Soporte adicional para navegadores móviles donde focus falla a veces
+        searchInput.addEventListener("click", function() {
+            this.select();
+        });
+
         // Escucha al escribir
         searchInput.addEventListener("input", () => {
             btnBuscar.disabled = searchInput.value.trim().length === 0;
@@ -148,6 +157,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnBuscar.click();
             }
         });
+    }
+
+    // ==========================================
+    // --- NUEVO: LÓGICA CLON FLOTANTE CTA ---
+    // ==========================================
+    const ctaOriginal = document.querySelector('.cta-escritorio');
+    const colDerecha = document.querySelector('.col-derecha');
+    
+    if (ctaOriginal && colDerecha) {
+        // Clonamos el CTA Original y le cambiamos su comportamiento
+        const ctaClone = ctaOriginal.cloneNode(true);
+        ctaClone.classList.add('cta-flotante-clone');
+        ctaClone.classList.remove('separador-bloque'); // Quitamos margenes extra
+        document.body.appendChild(ctaClone);
+
+        let isColDerechaVisible = false;
+        
+        // El Observer se da cuenta cuando llegamos al fondo original
+        const observer = new IntersectionObserver((entries) => {
+            isColDerechaVisible = entries[0].isIntersecting;
+            actualizarCtaFlotante();
+        }, { threshold: 0.05 }); // Con que se vea apenas el 5% de la caja real, frena
+        
+        observer.observe(colDerecha);
+        window.addEventListener('scroll', actualizarCtaFlotante, { passive: true });
+
+        function actualizarCtaFlotante() {
+            // Se inactiva en PC (pantallas grandes) porque la columna siempre está al lado
+            if (window.innerWidth >= 1024) return;
+            
+            // Aparece si el usuario scrolleó bastante (ej. leyendo resultados) Y aún no llegó abajo
+            if (window.scrollY > 300 && !isColDerechaVisible) {
+                ctaClone.classList.add('visible');
+            } else {
+                ctaClone.classList.remove('visible'); // Se oculta suave para no tapar los demás elementos
+            }
+        }
     }
 });
 
@@ -557,4 +603,4 @@ function compartirWeb() {
   } else {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
-}
+    }
