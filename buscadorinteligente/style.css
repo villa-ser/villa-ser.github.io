@@ -50,6 +50,7 @@
     --detail-bg: rgba(0, 0, 0, 0.04);
     --result-hover-bg: rgba(240, 243, 245, 0.95);
     --quote-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    --bg-suggestions-light: rgba(235, 235, 235, 0.98); 
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
