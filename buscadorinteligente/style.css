@@ -150,6 +150,8 @@ body {
 .input-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
 
 .input-group {
+    position: relative; /* NUEVO: Forzamos el contexto de apilamiento */
+    z-index: 999;       /* NUEVO: Lo elevamos por encima de los resultados */
     display: flex; flex-direction: column; background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-top: 4px solid var(--ngc-neon); padding: 15px;
@@ -460,4 +462,4 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .result-card { padding: 20px; }
     .result-concept { font-size: 1.1rem; }
     }
-                                          
+                                  
