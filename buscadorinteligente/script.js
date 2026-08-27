@@ -605,3 +605,17 @@ function compartirWeb() {
     window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
   }
 }
+
+// ==========================================
+// BÚSQUEDA RÁPIDA
+// ==========================================
+function busquedaRapida(termino) {
+    const searchInput = document.getElementById("searchInput");
+    const btnBuscar = document.getElementById("btnBuscar");
+    if(searchInput && btnBuscar) {
+        searchInput.value = termino;
+        btnBuscar.disabled = false;
+        seleccionPendiente = true; // Permite que se seleccione todo el texto si tocan la caja
+        btnBuscar.click();
+    }
+}
