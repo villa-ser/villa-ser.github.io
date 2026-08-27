@@ -151,47 +151,103 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Función para mostrar las sugerencias en la lista HTML
+// ==========================================
+// FUNCIONES DE AUTOCOMPLETADO Y SUGERENCIAS
+// ==========================================
 function mostrarSugerencias(lastWord, allWords) {
     const suggestionsList = document.getElementById('suggestionsList');
     const searchInput = document.getElementById("searchInput");
+    
     const lastWordNorm = lastWord.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const lastWordFonetica = normalizarFoneticaYPlural(lastWordNorm);
     
-    // Filtrar y ordenar
-    let matches = diccionarioSugerencias.filter(w => {
-        const wNorm = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        return wNorm.includes(lastWordNorm);
+    let matches = new Set(); // Evita palabras duplicadas automáticamente
+    
+    // Motor de detección para sugerencias (evalúa typos y fonética)
+    const checkMatchSugerencia = (palabraCorrecta) => {
+        const pNorm = palabraCorrecta.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const pFon = normalizarFoneticaYPlural(pNorm);
+        
+        // 1. Coincidencia normal (ej: escribo "toma", coincide con "tomacorriente")
+        if (pNorm.includes(lastWordNorm)) return true;
+        
+        // 2. Coincidencia fonética (ej: escribo "lus", coincide con "luz" o "yav" con "llave")
+        if (pFon.includes(lastWordFonetica)) return true;
+        
+        // 3. Coincidencia por error de tipeo (calcula cuán parecidas son)
+        const prefijo = pNorm.substring(0, lastWordNorm.length);
+        const maxErrores = Math.floor(lastWordNorm.length / 3) + 1; // Permite 1 o 2 letras mal
+        if (distanciaLevenshtein(lastWordNorm, prefijo) <= maxErrores) return true;
+        
+        return false;
+    };
+
+    // 1. Evaluar contra las palabras reales de la base de datos
+    diccionarioSugerencias.forEach(palabra => {
+        if (checkMatchSugerencia(palabra)) {
+            matches.add(palabra); // Agrega la palabra corregida / original
+            
+            // SI ENCUENTRA LA PALABRA, TAMBIÉN SUGIERE SUS SINÓNIMOS AUTOMÁTICAMENTE
+            const sinonimos = obtenerSinonimos(palabra);
+            sinonimos.forEach(s => matches.add(s));
+        }
     });
+
+    // 2. Evaluar contra todos los sinónimos (Por si empieza escribiendo un sinónimo)
+    gruposSinonimos.forEach(grupo => {
+        grupo.forEach(sinonimo => {
+            if (checkMatchSugerencia(sinonimo)) {
+                matches.add(sinonimo);
+                // Si escribió la mitad de un sinónimo, sugiere ese grupo completo
+                grupo.forEach(s => matches.add(s));
+            }
+        });
+    });
+
+    // Convertir de Set a Array para ordenar
+    let matchesArray = Array.from(matches);
     
-    // Priorizar palabras que empiezan por lo ingresado
-    matches.sort((a, b) => {
+    // Ordenar los resultados para priorizar los más lógicos arriba
+    matchesArray.sort((a, b) => {
         const aNorm = a.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const bNorm = b.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        const aStarts = aNorm.startsWith(lastWordNorm) ? -1 : 1;
-        const bStarts = bNorm.startsWith(lastWordNorm) ? -1 : 1;
+        const aFon = normalizarFoneticaYPlural(aNorm);
+        const bFon = normalizarFoneticaYPlural(bNorm);
+        
+        // Dar prioridad a las que Empiezan con lo que el usuario escribió (fonético o real)
+        const aStarts = (aNorm.startsWith(lastWordNorm) || aFon.startsWith(lastWordFonetica)) ? -1 : 1;
+        const bStarts = (bNorm.startsWith(lastWordNorm) || bFon.startsWith(lastWordFonetica)) ? -1 : 1;
+        
         if (aStarts !== bStarts) return aStarts - bStarts;
+        
+        // Si hay empate, poner la palabra más corta primero
+        if (a.length !== b.length) return a.length - b.length;
+        
         return a.localeCompare(b);
     });
 
-    matches = matches.slice(0, 5); // Máximo 5 sugerencias
+    // Limitar máximo 6 sugerencias para no saturar la pantalla
+    matchesArray = matchesArray.slice(0, 6);
 
-    if (matches.length === 0) {
+    if (matchesArray.length === 0) {
         suggestionsList.classList.add("oculto");
         return;
     }
 
+    // Renderizar la lista
     suggestionsList.innerHTML = '';
-    matches.forEach(match => {
+    matchesArray.forEach(match => {
         const li = document.createElement('li');
-        li.textContent = match; // Mostrar la palabra sugerida
+        li.textContent = match; // Mostrar la sugerencia corregida o el sinónimo
+        
         li.addEventListener('click', () => {
-            // Reemplaza la última palabra escrita por la seleccionada y agrega un espacio
+            // Reemplaza la última palabra (errónea o incompleta) por la correcta seleccionada
             allWords[allWords.length - 1] = match;
             searchInput.value = allWords.join(' ') + ' ';
             suggestionsList.classList.add("oculto");
             searchInput.focus();
             
-            // Habilitamos el botón buscar por si era su primera palabra
+            // Habilitamos el botón buscar
             document.getElementById("btnBuscar").disabled = false;
         });
         suggestionsList.appendChild(li);
@@ -199,11 +255,11 @@ function mostrarSugerencias(lastWord, allWords) {
     suggestionsList.classList.remove('oculto');
 }
 
-// Función que extrae las palabras únicas del Excel para el autocompletado
+// Función que extrae las palabras únicas del Excel para el diccionario
 function construirDiccionarioSugerencias() {
     let palabras = new Set();
     allData.forEach(item => {
-        // Reemplazar signos y dividir por espacios
+        // Limpiamos los signos y guardamos palabras puras
         let textoLimpio = item.concepto.replace(/[^\wáéíóúüñÁÉÍÓÚÜÑ]/g, ' ');
         let tokens = textoLimpio.split(/\s+/);
         
@@ -217,6 +273,7 @@ function construirDiccionarioSugerencias() {
     diccionarioSugerencias = Array.from(palabras);
 }
 
+// Carga Inicial del Excel
 async function cargarExcel() {
     const statusMsg = document.getElementById("status-message");
     const searchInput = document.getElementById("searchInput");
@@ -315,6 +372,7 @@ function obtenerSinonimos(palabra) {
     return opciones;
 }
 
+// LÓGICA PARA DETECTAR ERRORES DE TIPEO
 function distanciaLevenshtein(a, b) {
     const matriz = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
     for (let i = 0; i <= a.length; i++) matriz[i][0] = i;
@@ -339,7 +397,7 @@ function sonSimilares(buscada, objetivo) {
 }
 
 // --------------------------------------------------------------------
-// MOTOR DE BÚSQUEDA Y SCORING
+// MOTOR DE BÚSQUEDA (SE EJECUTA AL DAR CLICK EN "BUSCAR")
 // --------------------------------------------------------------------
 function ejecutarBusqueda() {
     const rawQuery = document.getElementById("searchInput").value;
