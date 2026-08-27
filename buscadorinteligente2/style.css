@@ -305,6 +305,30 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .btn-submit:hover { background: rgba(37, 211, 102, 0.15); border-color: #25D366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); color: #25D366; }
 
+/* --- NUEVO: CTA FLOTANTE AL HACER SCROLL EN MÓVIL --- */
+.cta-flotante-clone {
+    position: fixed;
+    bottom: -150%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 500px;
+    z-index: 990;
+    transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    opacity: 0;
+    pointer-events: none;
+    margin-bottom: 0 !important;
+}
+.cta-flotante-clone.visible {
+    bottom: 20px;
+    opacity: 1;
+    pointer-events: auto;
+}
+/* Se oculta en PC porque la columna derecha ya está siempre visible */
+@media (min-width: 1024px) {
+    .cta-flotante-clone { display: none !important; }
+}
+
 /* --- ELEMENTOS FLOTANTES SUPERIORES --- */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -435,5 +459,5 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .separador-bloque { margin-bottom: 0; }
     .result-card { padding: 20px; }
     .result-concept { font-size: 1.1rem; }
-                }
-  
+    }
+                                          
