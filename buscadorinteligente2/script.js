@@ -52,6 +52,7 @@ const gruposSinonimos = [
     ["fexible", "corrugado", "manguera"],
     ["cano", "caneria", "tubo"],
     ["motor", "motores"],
+    ["nuevo", "nueva"],
     ["exterior", "externo", "interperie", "afuera"],
     ["interior", "interno", "dentro", "adentro"],
     ["mono", "monofásico", "monofásica"],
