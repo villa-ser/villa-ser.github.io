@@ -15,7 +15,7 @@ let diccionarioSugerencias = []; // Almacenará las palabras únicas para autoco
 const palabrasVacias = new Set([
     "el", "la", "los", "las", "un", "una", "unos", "unas",
     "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
-    "en", "entre", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "so", "sobre", "tras",
+    "en", "entre", "hacia", "hasta", "mediante", "para", "por", "x", "segun", "sin", "so", "sobre", "tras",
     "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que",
     "yo", "tu", "el", "ella", "ello", "nosotros", "nosotras", "vosotros", "vosotras",
     "ellos", "ellas", "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les",
