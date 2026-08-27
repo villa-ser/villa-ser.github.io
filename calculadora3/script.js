@@ -1,5 +1,5 @@
 // ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// 0. APLICAR TEMA INSTANTÁNEAMENTE Y CARGAR TARIFAS
 // ==========================================
 const temaGuardado = localStorage.getItem('temaVillaser');
 if (temaGuardado === 'light') {
@@ -12,7 +12,27 @@ if (typeof lucide !== 'undefined') {
 
 let listado = [];
 
-document.addEventListener("DOMContentLoaded", () => {
+// VARIABLE GLOBAL PARA ALMACENAR LAS TARIFAS DEL JSON
+let tarifasGlobales = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    // --- CARGA DEL ARCHIVO JSON ---
+    try {
+        const respuesta = await fetch('tarifas.json');
+        if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
+        tarifasGlobales = await respuesta.json();
+    } catch (error) {
+        console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
+        // Salvavidas por si el archivo no carga (ej. abriendo localmente sin servidor)
+        tarifasGlobales = {
+            con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
+            sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
+            factor_impuestos: 1.36
+        };
+    }
+
+    // --- LÓGICA DEL MENÚ FLOTANTE ---
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
@@ -31,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // --- LÓGICA DEL MODO DÍA / NOCHE ---
     const btnTema = document.getElementById('btn-tema');
     if (btnTema) {
         const iconTema = btnTema.querySelector('i');
@@ -52,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- LÓGICA DE LOS SLIDERS ---
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
     if(sliderHoras && labelHoras) {
@@ -68,6 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// ==========================================
+// 4. FUNCIONES DEL SELECTOR Y CALCULADORA
+// ==========================================
 
 function toggleDropdown(listId, displayId, event) {
     if (event) {
@@ -191,7 +217,6 @@ function render() {
 
     lista.innerHTML = '';
     
-    // Generación de tarjeta unificada de aparato
     listado.forEach(item => {
         const div = document.createElement('div');
         div.className = 'item-row gpu-accel'; 
@@ -205,7 +230,6 @@ function render() {
                     <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
-            <!-- Contenedor general que va a incluir las filas de desglose -->
             <div class="item-desglose" id="item-desglose-${item.id}"></div>
         `;
         lista.prepend(div); 
@@ -216,18 +240,15 @@ function render() {
 // LÓGICA DE TARIFAS Y LLENADO ACUMULATIVO POR ESCALONES
 function recalcularTotal() {
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
-    if (!tarifaRadio) return; 
+    if (!tarifaRadio || !tarifasGlobales) return; // Esperar a que las tarifas estén cargadas
+    
     const tipoTarifa = tarifaRadio.value;
-
     let kwhAcumulados = 0;
     let costoEnergiaPuraTotal = 0;
 
-    let tarifasRangos = [];
-    if (tipoTarifa === "con_subsidio") {
-        tarifasRangos = [121.84597, 191.10731, 219.23668, 333.61670]; 
-    } else {
-        tarifasRangos = [217.91977, 296.03448, 327.75950, 358.33820];
-    }
+    // Llamamos a los datos desde nuestro JSON
+    let tarifasRangos = tipoTarifa === "con_subsidio" ? tarifasGlobales.con_subsidio : tarifasGlobales.sin_subsidio;
+    const FACTOR_IMPUESTOS = tarifasGlobales.factor_impuestos;
 
     const resultadosCalculados = listado.map(item => {
         let kwhRestantes = item.kwhMensual;
@@ -272,7 +293,7 @@ function recalcularTotal() {
 
             desgloseLineas.push({
                 texto: `${kwhEnEsteEscalon.toFixed(1)} kWh - ${nombreEscalon}`,
-                subtotal: Math.round(costoParcial * 1.36), 
+                subtotal: Math.round(costoParcial * FACTOR_IMPUESTOS), 
                 clase: claseColor
             });
         }
@@ -282,7 +303,6 @@ function recalcularTotal() {
     });
 
     const totalKwh = listado.reduce((sum, i) => sum + i.kwhMensual, 0);
-    const FACTOR_IMPUESTOS = 1.36; 
     const totalPesos = Math.round(costoEnergiaPuraTotal * FACTOR_IMPUESTOS);
 
     const kwhUI = document.getElementById('total-kwh');
@@ -291,7 +311,6 @@ function recalcularTotal() {
     if(kwhUI) kwhUI.innerText = totalKwh.toFixed(2);
     if(pesosUI) pesosUI.innerText = "$ " + totalPesos.toLocaleString('es-AR');
 
-    // Inyectamos las líneas generadas en el DOM usando la fila unificada
     resultadosCalculados.forEach(res => {
         const contenedorDesglose = document.getElementById(`item-desglose-${res.id}`);
         
@@ -299,7 +318,6 @@ function recalcularTotal() {
             contenedorDesglose.innerHTML = '';
 
             res.desglose.forEach(linea => {
-                // Creamos la fila que contiene ambas informaciones
                 const divRow = document.createElement('div');
                 divRow.className = 'desglose-line-row';
                 
@@ -361,5 +379,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                          }
-        
+                    }
+    
