@@ -107,7 +107,8 @@ if (contenedorFoto && imgBase) {
         '../img/perfil-color.avif',
         '../img/perfil2.avif',
         '../img/perfil3.avif',
-        '../img/perfil4.avif'
+        '../img/perfil4.avif',
+        '../img/perfil5.avif'
     ];
 
     // Precarga oculta para que no haya demoras de red al cambiar
