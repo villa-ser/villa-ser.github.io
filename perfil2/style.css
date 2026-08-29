@@ -207,7 +207,6 @@ body {
 .ngc-photo-landscape img {
     width: 100%; height: auto; display: block; object-fit: cover; border-radius: 9px;
     z-index: 1; position: relative;
-  transition: opacity 0.8s ease-in-out; /* Agrega esta línea para el desvanecimiento */
 }
 @keyframes rotateNeon { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
