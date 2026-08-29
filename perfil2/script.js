@@ -97,12 +97,12 @@ function compartirWeb() {
 }
 
 // ==========================================
-// 6. ROTACIÓN DE IMÁGENES DE PERFIL (SLIDESHOW)
+// 6. ROTACIÓN DE IMÁGENES (CROSSFADE PERFECTO)
 // ==========================================
-const perfilImg = document.querySelector('.ngc-photo-landscape img');
+const contenedorFoto = document.querySelector('.ngc-photo-landscape');
+const imgBase = document.querySelector('.ngc-photo-landscape img');
 
-if (perfilImg) {
-    // Array con las rutas de tus imágenes
+if (contenedorFoto && imgBase) {
     const imagenesPerfil = [
         '../img/perfil-color.avif',
         '../img/perfil2.avif',
@@ -110,27 +110,50 @@ if (perfilImg) {
         '../img/perfil4.avif'
     ];
 
-    // Precarga de imágenes para que la transición sea fluida y sin parpadeos
-    imagenesPerfil.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+    // Precarga oculta para que no haya demoras de red al cambiar
+    imagenesPerfil.forEach(src => new Image().src = src);
+
+    // Creamos una segunda capa de imagen dinámica (sin tocar tu HTML)
+    const imgSuperpuesta = imgBase.cloneNode();
+    imgSuperpuesta.style.position = 'absolute';
+    // Respetamos los 3px de padding (inset) de tu diseño original
+    imgSuperpuesta.style.top = '3px';
+    imgSuperpuesta.style.left = '3px';
+    imgSuperpuesta.style.width = 'calc(100% - 6px)';
+    imgSuperpuesta.style.height = 'calc(100% - 6px)';
+    imgSuperpuesta.style.zIndex = '2'; // Se coloca justo por encima
+    imgSuperpuesta.style.opacity = '0'; // Comienza invisible
+    imgSuperpuesta.style.transition = 'opacity 1s ease-in-out'; // Duración del desvanecido cruzado
+
+    contenedorFoto.appendChild(imgSuperpuesta);
 
     let indexActual = 0;
 
+    // Ejecuta el cambio cada 5 segundos exactos
     setInterval(() => {
-        // 1. Desvanece la imagen actual (baja la opacidad a 0)
-        perfilImg.style.opacity = '0';
+        const indexSiguiente = (indexActual + 1) % imagenesPerfil.length;
         
-        // 2. Espera 800ms (el mismo tiempo de la transición CSS) para cambiar la foto
-        setTimeout(() => {
-            indexActual = (indexActual + 1) % imagenesPerfil.length;
-            perfilImg.src = imagenesPerfil[indexActual]; // Cambia el origen de la imagen
-            
-            // 3. Vuelve a aparecer la nueva imagen
-            perfilImg.style.opacity = '1';
-        }, 800); 
+        // 1. Cargamos la foto nueva en la capa superior invisible
+        imgSuperpuesta.src = imagenesPerfil[indexSiguiente];
         
-    }, 4000); // 4000ms = 4 segundos
-}
+        // 2. La hacemos aparecer suavemente sobre la foto vieja
+        imgSuperpuesta.style.opacity = '1';
 
+        // 3. Cuando termina la transición (1 segundo), acomodamos todo para el próximo turno
+        setTimeout(() => {
+            imgBase.src = imagenesPerfil[indexSiguiente];
+            
+            // Ocultamos la capa superior de golpe (sin transición) para que no se note
+            imgSuperpuesta.style.transition = 'none';
+            imgSuperpuesta.style.opacity = '0';
+            
+            // Le devolvemos la transición para el siguiente ciclo
+            setTimeout(() => {
+                imgSuperpuesta.style.transition = 'opacity 1s ease-in-out';
+            }, 50);
+
+            indexActual = indexSiguiente;
+        }, 1000); 
+        
+    }, 5000);
+}
