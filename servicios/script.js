@@ -77,6 +77,41 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    // ==========================================
+    // 5. LÓGICA DE VISIBILIDAD DEL FORMULARIO (MÓVIL VS PC)
+    // ==========================================
+    const btnPresupuesto = document.getElementById('btn-presupuesto');
+    const formContacto = document.getElementById('formulario-contacto');
+
+    if (btnPresupuesto && formContacto) {
+        btnPresupuesto.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // En dispositivos móviles (pantallas menores a 1024px)
+            if (window.innerWidth < 1024) {
+                // Alternar la clase que lo muestra
+                formContacto.classList.toggle('form-visible');
+                
+                // Si el formulario ahora está visible, hacemos scroll hacia él
+                if (formContacto.classList.contains('form-visible')) {
+                    setTimeout(() => {
+                        formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100); // Pequeño delay para asegurar que el DOM actualizó el display
+                }
+            } else {
+                // En PC, el formulario ya está visible de forma fija a la izquierda
+                formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Efecto visual para indicar dónde está el formulario
+                formContacto.style.transition = "box-shadow 0.3s ease";
+                formContacto.style.boxShadow = "0 0 25px var(--gnc-neon)";
+                setTimeout(() => {
+                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05)";
+                }, 1200);
+            }
+        });
+    }
 });
 
 // ==========================================
