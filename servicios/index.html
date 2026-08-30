@@ -35,13 +35,10 @@
 
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
-
-    <!-- 1. Botón Volver (Flotante Izquierda) -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
-    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
@@ -57,12 +54,10 @@
         </div>
     </div>
 
-    <!-- 3. Botón Modo Día/Noche -->
     <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
         <i class="fas fa-sun"></i>
     </button>
 
-    <!-- 4. Logo Flotante Animado (Transición CSS) -->
     <div class="hero-logo-icon gpu-accel">
         <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
         <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
@@ -81,7 +76,6 @@
                 
                 <h1 class="gnc-main-title">Mis Servicios</h1>
 
-                <!-- BANNER INTRODUCTORIO -->
                 <div class="gnc-banner gpu-accel">
                     <div style="text-align: center; margin-bottom: 5px;">
                         <i data-lucide="map-pin" style="color: var(--gnc-neon); width: 20px; height: 20px;"></i>
@@ -96,7 +90,6 @@
                     </button>
                 </div>
 
-                <!-- FORMULARIO DE CONTACTO -->
                 <div class="gnc-form-container gpu-accel" id="formulario-contacto">
                     <div class="form-header">
                         <div class="form-title">
@@ -137,13 +130,14 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ========================================== -->
+               <!-- ========================================== -->
             <!-- COLUMNA DERECHA (Lista de Servicios)       -->
             <!-- ========================================== -->
             <div class="col-derecha">
                 
                 <div class="servicios-container">
+                    
+                    <!-- 1. APTO ELÉCTRICO -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -155,12 +149,31 @@
                         <div class="gnc-content">
                             <p>Verificación de la instalación conforme a las <span class="neon">normas de seguridad</span>. Incluye memoria técnica y gráfica con fotos.</p>
                             <p>Documento obligatorio emitido exclusivamente por un <span class="neon">Electricista Habilitado (Categoría III)</span> para viviendas y comercios.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20Apto%20Eléctrico." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar por Apto
-                            </a>
+                            
+                            <!-- BOTONERA VISIBLE SIEMPRE -->
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20Apto%20Eléctrico." target="_blank" class="btn-micro-wa">
+                                    <i class="fab fa-whatsapp"></i> Consultar
+                                </a>
+                                <a href="../buscadorinteligente/index.html?servicio=apto_electrico" class="btn-micro-coti">
+                                    <i class="fas fa-tags"></i> Ver Cotizaciones
+                                </a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-apto')">
+                                    <i class="fas fa-info-circle"></i> Más Información
+                                </button>
+                            </div>
+
+                            <!-- CAJA DE INFORMACIÓN EXTRA OCULTA -->
+                            <div id="info-apto" class="extra-info-box oculto gpu-accel">
+                                <p>Según resolución del ERSeP, la Categoría III habilita a intervenir en instalaciones domiciliarias destinadas a vivienda unifamiliar y pequeñas instalaciones comerciales o industriales[span_0](start_span)[span_0](end_span).</p>
+                                <p><strong>Límites técnicos:</strong> Se permite intervenir exclusivamente en Baja Tensión y con una potencia máxima de hasta 10kW[span_1](start_span)[span_1](end_span).</p>
+                                <p><strong>Excepciones:</strong> Quedan fuera del alcance las instalaciones especiales (atmósferas explosivas, locales para usos médicos, pública concurrencia, etc.) o aquellas sometidas a influencias externas extremas[span_2](start_span)[span_2](end_span).</p>
+                                <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.7;"><i class="fas fa-book"></i> <em>Fuente: Resolución ERSeP - Competencia Cat. III.</em></p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 2. CABLEADO -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -171,13 +184,21 @@
                         </summary>
                         <div class="gnc-content">
                             <p>El sistema de venas por donde llega la energía. Materiales deficientes o mal canalizados pueden producir <span class="neon">sobrecalentamiento o incendios</span>.</p>
-                            <p>Realizamos adecuaciones y recableados completos bajo normas vigentes.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20trabajo%20de%20cableado." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Cotizar Cableado
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20trabajo%20de%20cableado." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=cableado" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-cableado')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-cableado" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Esta intervención se ejecuta bajo los estrictos lineamientos de la <strong>Ley de Seguridad Eléctrica (Ley 10.281)</strong> de Córdoba.</p>
+                                <p>Todos los procedimientos respetan las reglamentaciones vigentes de la <strong>AEA</strong> y utilizan conductores certificados bajo <strong>Normas IRAM</strong>, garantizando eficiencia y protección térmica.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 3. DIFERENCIALES -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -188,13 +209,20 @@
                         </summary>
                         <div class="gnc-content">
                             <p>Cortan el suministro si detectan una <span class="neon">fuga eléctrica</span>, siendo vitales para proteger la vida de las personas.</p>
-                            <p>Diagnóstico, prueba de salto y reemplazo seguro por profesional calificado.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20un%20disyuntor." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar Disyuntor
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20un%20disyuntor." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=diferencial" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-disyuntor')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-disyuntor" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Instalación y prueba de accionamiento de dispositivos de corriente residual según lineamientos de <strong>AEA y Ley 10.281</strong>, esenciales para prevenir contactos indirectos en Córdoba.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 4. LUZ DE OBRA -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -205,13 +233,20 @@
                         </summary>
                         <div class="gnc-content">
                             <p>Conexión provisoria segura y normalizada (monofásica o trifásica) para uso de maquinaria de construcción.</p>
-                            <p>Asegurá tu obra cumpliendo con las exigencias técnicas de EPEC / ERSeP.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20armar%20un%20pilar%20para%20Luz%20de%20Obra." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Solicitar Luz de Obra
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20armar%20un%20pilar%20para%20Luz%20de%20Obra." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=luz_obra" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-obra')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-obra" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Montaje de pilares provisorios certificados ante <strong>EPEC / ERSeP</strong>, garantizando que el obrador opere bajo condiciones de seguridad dictadas por la <strong>Ley 10.281</strong> y normativas <strong>IRAM</strong> vigentes.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 5. LUMINARIAS -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -222,12 +257,20 @@
                         </summary>
                         <div class="gnc-content">
                             <p>Instalación de iluminación interior, exterior, spots LED y ventiladores de techo con anclaje seguro.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20instalar%20luminarias/artefactos." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar Instalación
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20instalar%20luminarias." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=luminaria" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-luminaria')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-luminaria" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Se garantiza el dimensionamiento correcto de circuitos de iluminación (bocas, anclajes) respetando los consumos y parámetros lumínicos estipulados por <strong>AEA</strong> y las buenas prácticas profesionales de Córdoba.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 6. PLANOS -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -238,13 +281,20 @@
                         </summary>
                         <div class="gnc-content">
                             <p>Memoria descriptiva gráfica de la instalación. Detalla el recorrido de circuitos y bocas.</p>
-                            <p><span class="neon">Fundamental</span> para futuras ampliaciones o resolución rápida de fallas.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20confeccionar%20un%20Plano%20Eléctrico." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar por Planos
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20confeccionar%20un%20Plano%20Eléctrico." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=planos" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-planos')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-planos" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Documentación esquemática y topográfica ajustada a los estándares de representación de la <strong>Asociación Electrotécnica Argentina (AEA)</strong>, facilitando mantenimientos y adecuaciones futuras bajo <strong>Ley 10.281</strong>.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 7. PUESTA A TIERRA -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -255,13 +305,20 @@
                         </summary>
                         <div class="gnc-content">      
                             <p>Sistema encargado de disipar fugas de corriente al suelo. Actúa junto al diferencial para <span class="neon">salvar vidas</span>.</p>
-                            <p>Medición de resistencia y colocación de dispersores bajo normas.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20la%20Puesta%20a%20Tierra." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar Puesta a Tierra
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20la%20Puesta%20a%20Tierra." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=puesta_tierra" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-tierra')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-tierra" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Hincado de electrodos (jabalinas) y tendido de cable de protección PE (verde/amarillo) según normativa <strong>IRAM</strong> y <strong>AEA</strong>. Vital para cumplir con el esquema TT exigido en la provincia de Córdoba.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 8. TABLEROS -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -272,12 +329,20 @@
                         </summary>
                         <div class="gnc-content">       
                             <p>Armado, normalización y mantenimiento de tableros eléctricos. Protecciones contra <span class="neon">cortocircuitos y sobrecargas</span>.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20tengo%20un%20problema%20en%20el%20tablero/termomagnética." target="_blank" class="btn-micro-wa">
-                                <i class="fab fa-whatsapp"></i> Consultar Tableros
-                            </a>
+                            
+                            <div class="action-buttons-group">
+                                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20tengo%20un%20problema%20en%20el%20tablero." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
+                                <a href="../buscadorinteligente/index.html?servicio=tablero" class="btn-micro-coti"><i class="fas fa-tags"></i> Ver Cotizaciones</a>
+                                <button type="button" class="btn-micro-info" onclick="toggleInfo('info-tableros')"><i class="fas fa-info-circle"></i> Más Info</button>
+                            </div>
+
+                            <div id="info-tableros" class="extra-info-box oculto gpu-accel">
+                                <p><strong>Ampliación Técnica:</strong> Ensamblado y recableado interno de Tableros Principales (TP) y Seccionales (TS) de acuerdo a <strong>AEA 90364</strong>. Dimensionamiento correcto de protecciones termomagnéticas y selectividad bajo <strong>Ley 10.281</strong>.</p>
+                            </div>
                         </div>
                     </details>
 
+                    <!-- 9. MAS SOLUCIONES -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -297,9 +362,10 @@
                             </ul>
                         </div>
                     </details>
+
                 </div>
 
-                <!-- FOOTER Y CRÉDITOS -->
+               <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-wrapper">
                     <div class="footer-gnc-compact gpu-accel">
                         <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
@@ -316,9 +382,9 @@
 
             </div>
         </div>
-    </main>
+     </main>
 
     <!-- Script con defer activado -->
     <script src="script.js" defer></script>
 </body>
-</html>
+</html>      
