@@ -621,56 +621,44 @@ function busquedaRapida(termino) {
 }
 
 // ==========================================
-// AUTOBÚSQUEDA DESDE URL (PARÁMETRO ?servicio=...)
+// AUTOBÚSQUEDA AUTOMÁTICA DESDE URL (CORREGIDO)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Leemos la URL actual buscando el parámetro
     const parametrosURL = new URLSearchParams(window.location.search);
     const servicioSolicitado = parametrosURL.get('servicio');
 
     if (servicioSolicitado) {
-        // Formateamos el texto (ej: "apto_electrico" -> "apto electrico")
+        // Convierte el formato de la URL a texto (ej: apto_electrico -> apto electrico)
         const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
 
-        // 2. Función que ejecuta el filtrado
-        function aplicarFiltro() {
-            // Busca el input intentando con los IDs más comunes o el primer input de texto que encuentre
-            const inputBuscador = document.getElementById('search-input') || 
-                                  document.getElementById('inputBusqueda') || 
-                                  document.getElementById('buscador') ||
-                                  document.querySelector('input[type="text"]');
+        // Temporizador que espera a que cargarExcel() llene la variable 'allData'
+        const temporizadorCarga = setInterval(() => {
+            // Verifica si allData ya tiene los datos del Excel
+            if (typeof allData !== 'undefined' && allData.length > 0) {
+                clearInterval(temporizadorCarga); // Detenemos la comprobación
 
-            if (inputBuscador) {
-                // Rellena el valor
-                inputBuscador.value = terminoBusqueda;
-                
-                // Dispara múltiples eventos para asegurar que tu script de búsqueda lo detecte
-                inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
-                inputBuscador.dispatchEvent(new Event('change', { bubbles: true }));
-                inputBuscador.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
-                return true;
-            }
-            return false;
-        }
+                const inputBuscador = document.getElementById("searchInput");
+                const btnBuscar = document.getElementById("btnBuscar");
+                const listaSugerencias = document.getElementById("suggestionsList");
 
-        // 3. Lógica de espera (Ideal para conexiones con Google Sheets)
-        // Intentamos aplicar el filtro inmediatamente
-        aplicarFiltro();
-        
-        // Si las tarjetas tardan en cargar, intentamos cada 500ms hasta que aparezcan
-        let intentos = 0;
-        const intervalo = setInterval(() => {
-            intentos++;
-            aplicarFiltro();
-            
-            // Verifica si ya hay algún elemento que parezca una tarjeta cargada en el DOM
-            const hayTarjetas = document.querySelectorAll('.tarjeta, .card, .item, [class*="precio"]').length > 0;
-            
-            // Si ya cargaron las tarjetas o pasaron 5 segundos (10 intentos), detenemos el bucle
-            if (hayTarjetas || intentos >= 10) { 
-                clearInterval(intervalo);
-                setTimeout(aplicarFiltro, 200); // Un último intento de seguridad
+                if (inputBuscador && btnBuscar) {
+                    // 1. Insertamos el término de búsqueda
+                    inputBuscador.value = terminoBusqueda;
+                    
+                    // 2. Disparamos el evento 'input' para que tu script habilite el botón
+                    inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
+                    
+                    // 3. Forzamos el cierre de la lista de sugerencias
+                    if (listaSugerencias) {
+                        listaSugerencias.classList.add("oculto");
+                    }
+                    
+                    // 4. Ejecutamos el clic automático con un mínimo retraso para asegurar fluidez
+                    setTimeout(() => {
+                        btnBuscar.click();
+                    }, 50);
+                }
             }
-        }, 500);
+        }, 100); // Revisa cada 100 milisegundos si el Excel ya cargó
     }
 });
