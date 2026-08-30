@@ -363,3 +363,59 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .gnc-main-title { text-align: left; margin-bottom: 20px;}
     }
        
+/* ======================================================= */
+/*      NUEVOS BOTONES DE ACCIÓN EN SERVICIOS (ESTILO NGC) */
+/* ======================================================= */
+
+.action-buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+/* Modificación al botón de WhatsApp existente para que encaje mejor en el grupo */
+.btn-micro-wa { margin-top: 0 !important; }
+
+/* Botón Ver Cotizaciones */
+.btn-micro-coti {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+    background: rgba(var(--gnc-neon-rgb), 0.1); border: 1px solid var(--gnc-neon); 
+    border-radius: 8px; color: var(--gnc-neon); font-weight: 700; font-size: 0.8rem; 
+    text-decoration: none; transition: all 0.3s ease;
+}
+.btn-micro-coti:hover {
+    background: var(--gnc-neon); color: var(--bg-body); 
+    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.5);
+}
+
+/* Botón Más Información */
+.btn-micro-info {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+    background: transparent; border: 1px dashed var(--gnc-text-muted); 
+    border-radius: 8px; color: var(--gnc-text-muted); font-weight: 700; font-size: 0.8rem; 
+    cursor: pointer; transition: all 0.3s ease;
+}
+.btn-micro-info:hover {
+    border-color: var(--gnc-text); color: var(--gnc-text); 
+    background: rgba(255,255,255,0.05);
+}
+
+/* Caja oculta de Más Información */
+.extra-info-box {
+    margin-top: 15px; padding: 15px; 
+    border-left: 3px solid var(--gnc-neon);
+    background: rgba(0, 0, 0, 0.25); border-radius: 0 12px 12px 0;
+    font-size: 0.85rem; color: var(--gnc-text-muted);
+    animation: slideDownFade 0.4s ease forwards;
+}
+[data-theme="light"] .extra-info-box { background: rgba(0, 0, 0, 0.05); }
+
+.extra-info-box p { margin-bottom: 8px; line-height: 1.5; }
+.extra-info-box p:last-child { margin-bottom: 0; }
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
