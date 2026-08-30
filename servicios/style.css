@@ -362,21 +362,36 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     
     .gnc-main-title { text-align: left; margin-bottom: 20px;}
     }
-       
+
 /* ======================================================= */
 /*      NUEVOS BOTONES DE ACCIÓN EN SERVICIOS (ESTILO NGC) */
 /* ======================================================= */
 
 .action-buttons-group {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column; /* Apila los 3 botones verticalmente en móviles */
     gap: 8px;
     margin-top: 15px;
+    width: 100%;
 }
 
-/* Modificación al botón de WhatsApp existente para que encaje mejor en el grupo */
-.btn-micro-wa { margin-top: 0 !important; }
+@media (min-width: 480px) {
+    .action-buttons-group {
+        flex-direction: row; /* En tablets/PC los pone uno al lado del otro */
+        flex-wrap: wrap;
+    }
+    .btn-micro-wa, .btn-micro-coti, .btn-micro-info {
+        flex: 1; 
+        min-width: 130px;
+    }
+}
+
+/* Base uniforme para los 3 botones */
+.btn-micro-wa, .btn-micro-coti, .btn-micro-info {
+    justify-content: center; /* Centra el texto y el icono */
+    width: 100%;
+    margin-top: 0 !important;
+}
 
 /* Botón Ver Cotizaciones */
 .btn-micro-coti {
