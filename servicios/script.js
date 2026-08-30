@@ -157,3 +157,20 @@ function compartirWeb() {
     window.open(whatsappUrl, '_blank');
   }
 }
+
+// ==========================================
+// 6. LÓGICA DE LOS BOTONES "MÁS INFORMACIÓN"
+// ==========================================
+function toggleInfo(id) {
+    const infoBox = document.getElementById(id);
+    if (infoBox) {
+        // Intercala la clase 'oculto' para mostrar u ocultar el div
+        infoBox.classList.toggle('oculto');
+        
+        // Efecto visual si acaba de aparecer
+        if (!infoBox.classList.contains('oculto')) {
+            infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--gnc-neon-rgb), 0.1)";
+            setTimeout(() => { infoBox.style.boxShadow = "none"; }, 500);
+        }
+    }
+}
