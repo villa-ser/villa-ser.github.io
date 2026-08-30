@@ -624,7 +624,7 @@ function busquedaRapida(termino) {
 // AUTOBÚSQUEDA DESDE URL (PARÁMETRO ?servicio=...)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Leemos la URL actual buscando parámetros
+    // 1. Leemos la URL actual buscando el parámetro
     const parametrosURL = new URLSearchParams(window.location.search);
     const servicioSolicitado = parametrosURL.get('servicio');
 
@@ -632,19 +632,45 @@ document.addEventListener("DOMContentLoaded", () => {
         // Formateamos el texto (ej: "apto_electrico" -> "apto electrico")
         const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
 
-        // Seleccionamos el campo de texto de tu buscador (Asegúrate de que el ID coincida con tu HTML)
-        const inputBuscador = document.getElementById('search-input'); // Cambia 'search-input' por el ID real de tu input
-        
-        if (inputBuscador) {
-            // Rellenamos el input con la palabra
-            inputBuscador.value = terminoBusqueda;
+        // 2. Función que ejecuta el filtrado
+        function aplicarFiltro() {
+            // Busca el input intentando con los IDs más comunes o el primer input de texto que encuentre
+            const inputBuscador = document.getElementById('search-input') || 
+                                  document.getElementById('inputBusqueda') || 
+                                  document.getElementById('buscador') ||
+                                  document.querySelector('input[type="text"]');
 
-            // Disparamos manualmente el evento "input" o la función de búsqueda para que filtre las tarjetas
-            const evento = new Event('input', { bubbles: true });
-            inputBuscador.dispatchEvent(evento);
-            
-            // Opcional: Si tienes una función específica para buscar, puedes llamarla aquí.
-            // buscarServicio(); 
+            if (inputBuscador) {
+                // Rellena el valor
+                inputBuscador.value = terminoBusqueda;
+                
+                // Dispara múltiples eventos para asegurar que tu script de búsqueda lo detecte
+                inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
+                inputBuscador.dispatchEvent(new Event('change', { bubbles: true }));
+                inputBuscador.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, key: 'Enter' }));
+                return true;
+            }
+            return false;
         }
+
+        // 3. Lógica de espera (Ideal para conexiones con Google Sheets)
+        // Intentamos aplicar el filtro inmediatamente
+        aplicarFiltro();
+        
+        // Si las tarjetas tardan en cargar, intentamos cada 500ms hasta que aparezcan
+        let intentos = 0;
+        const intervalo = setInterval(() => {
+            intentos++;
+            aplicarFiltro();
+            
+            // Verifica si ya hay algún elemento que parezca una tarjeta cargada en el DOM
+            const hayTarjetas = document.querySelectorAll('.tarjeta, .card, .item, [class*="precio"]').length > 0;
+            
+            // Si ya cargaron las tarjetas o pasaron 5 segundos (10 intentos), detenemos el bucle
+            if (hayTarjetas || intentos >= 10) { 
+                clearInterval(intervalo);
+                setTimeout(aplicarFiltro, 200); // Un último intento de seguridad
+            }
+        }, 500);
     }
 });
