@@ -619,3 +619,32 @@ function busquedaRapida(termino) {
         btnBuscar.click();
     }
 }
+
+// ==========================================
+// AUTOBÚSQUEDA DESDE URL (PARÁMETRO ?servicio=...)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    // Leemos la URL actual buscando parámetros
+    const parametrosURL = new URLSearchParams(window.location.search);
+    const servicioSolicitado = parametrosURL.get('servicio');
+
+    if (servicioSolicitado) {
+        // Formateamos el texto (ej: "apto_electrico" -> "apto electrico")
+        const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
+
+        // Seleccionamos el campo de texto de tu buscador (Asegúrate de que el ID coincida con tu HTML)
+        const inputBuscador = document.getElementById('search-input'); // Cambia 'search-input' por el ID real de tu input
+        
+        if (inputBuscador) {
+            // Rellenamos el input con la palabra
+            inputBuscador.value = terminoBusqueda;
+
+            // Disparamos manualmente el evento "input" o la función de búsqueda para que filtre las tarjetas
+            const evento = new Event('input', { bubbles: true });
+            inputBuscador.dispatchEvent(evento);
+            
+            // Opcional: Si tienes una función específica para buscar, puedes llamarla aquí.
+            // buscarServicio(); 
+        }
+    }
+});
