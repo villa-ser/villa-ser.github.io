@@ -108,7 +108,7 @@ if (contenedorFoto && imgBase) {
         '../img/perfil2.avif',
         '../img/perfil3.avif',
         '../img/perfil4.avif',
-        '../img/perfil5.avif''
+        '../img/perfil5.avif',
         '../img/perfil6.avif'
     ];
 
