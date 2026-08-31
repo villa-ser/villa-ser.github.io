@@ -443,7 +443,7 @@ function sonSimilares(buscada, objetivo) {
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
- // --------------------------------------------------------------------
+// --------------------------------------------------------------------
 // MOTOR DE BÚSQUEDA (SE EJECUTA AL DAR CLICK EN "BUSCAR")
 // --------------------------------------------------------------------
 function ejecutarBusqueda() {
