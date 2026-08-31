@@ -326,10 +326,6 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     opacity: 1;
     pointer-events: auto;
 }
-/* Se oculta en PC porque la columna derecha ya está siempre visible */
-@media (min-width: 1024px) {
-    .cta-flotante-clone { display: none !important; }
-}
 
 /* --- ELEMENTOS FLOTANTES SUPERIORES --- */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -443,27 +439,61 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .btn-search { font-size: 1rem; padding: 0 25px; }
 }
 
+/* ======================================================= */
+/* NUEVA ADAPTACIÓN DE ESCRITORIO                          */
+/* ======================================================= */
 @media (min-width: 1024px) {
     body { padding-top: 40px; align-items: flex-start; }
-    .main-wrapper { max-width: 1050px; }
+    .main-wrapper { max-width: 1200px; width: 100%; }
     
     .layout-desktop {
-        display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
     }
 
     .col-izquierda {
-        position: sticky; top: 40px; display: flex; flex-direction: column;
-        gap: 15px; max-height: calc(100vh - 80px); overflow-y: auto; padding-right: 5px;
+        position: static;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+        width: 100%;
+        max-width: 1000px; /* Buscador centrado y más largo */
     }
-    .col-izquierda::-webkit-scrollbar { width: 0px; }
+    
+    .col-izquierda::-webkit-scrollbar { width: auto; }
 
-    .col-derecha { display: flex; flex-direction: column; gap: 15px; min-height: calc(100vh - 80px); }
+    .col-derecha {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Divide el bloque inferior a la mitad */
+        grid-template-areas:
+            "banner cta"
+            "footer cta";
+        gap: 20px 30px;
+        width: 100%;
+        max-width: 1000px;
+        min-height: auto;
+    }
+
+    /* Ubicamos los elementos mediante Grid Areas */
+    .cta-escritorio { grid-area: cta; }
+    .ngc-custom-quote { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+
+    .info-banner { grid-area: banner; margin-bottom: 0; }
+    .footer-wrapper { grid-area: footer; margin-top: 0; padding-top: 0; }
+
     .separador-bloque { margin-bottom: 0; }
     .result-card { padding: 20px; }
     .result-concept { font-size: 1.1rem; }
-    }
+    .cta-flotante-clone { display: none !important; }
+}
 
 [data-theme="light"] .suggestions-dropdown {
     background: rgba(240, 243, 245, 0.98);
-}
-
+                     }
+        
