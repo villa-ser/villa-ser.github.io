@@ -352,3 +352,30 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .gnc-main-title { text-align: left; }
     }
               
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Formulario al final)    */
+/* ======================================================= */
+@media (max-width: 1023px) {
+    /* Hacemos que las columnas actúen como contenedores "invisibles" en móvil, 
+       convirtiendo a sus elementos internos en hijos directos del layout principal */
+    .col-izquierda, .col-derecha {
+        display: contents;
+    }
+    
+    /* Movemos el formulario hacia abajo de todo */
+    .gnc-form-container {
+        order: 5;
+    }
+    
+    /* Nos aseguramos de que el pie de página (footer) quede último, debajo del formulario */
+    .footer-wrapper {
+        order: 6;
+    }
+    
+    /* El contenedor padre (.layout-desktop) ya aplica un "gap: 15px" entre elementos.
+       Al usar display:contents, desactivamos los margin-bottom individuales 
+       para evitar que los espacios se sumen y queden huecos muy grandes. */
+    .gnc-banner, details, .gnc-form-container, .gnc-main-title {
+        margin-bottom: 0 !important;
+    }
+}
