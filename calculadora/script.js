@@ -379,5 +379,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                    }
-    
+    }
+            
