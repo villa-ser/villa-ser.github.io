@@ -14,7 +14,7 @@ let seleccionPendiente = false;  // Controla cuándo se debe seleccionar todo el
 // 0.5. PALABRAS VACÍAS (STOPWORDS)
 // ==========================================
 const palabrasVacias = new Set([
-    "el", "la", "los", "las", "un", "una", "unos", "unas",
+    "electrico", "electrica", "el", "la", "los", "las", "un", "una", "unos", "unas",
     "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
     "en", "entre", "hacia", "hasta", "mediante", "para", "por", "x", "segun", "sin", "so", "sobre", "tras",
     "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que",
