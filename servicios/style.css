@@ -3,9 +3,13 @@
     /* MODO OSCURO (Default) */
     --gnc-neon: #00d4ff; 
     --gnc-neon-rgb: 0, 212, 255;
-    --gnc-glass: rgba(0, 0, 0, 0.4); 
-    --gnc-blur: blur(10px); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    
+    /* MODIFICACIONES: Desenfoque reforzado a 15px y fondo con opacidad ideal */
+    --gnc-blur: blur(15px);
+    --gnc-glass: rgba(0, 0, 0, 0.5); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3);
+    /* NUEVO: Reflejo superior/izquierdo para efecto de volumen 3D */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     --gnc-text: #ffffff;
     --gnc-text-muted: rgba(255, 255, 255, 0.8); 
@@ -24,9 +28,11 @@
     --gnc-neon: #007a99; 
     --gnc-neon-rgb: 0, 122, 153;
     
-    /* Tarjetas blancas y brillantes para mejor contraste */
-    --gnc-glass: rgba(255, 255, 255, 0.95); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    /* MODIFICACIÓN: Vidrio translúcido blanco limpio en lugar de gris opaco */
+    --gnc-glass: rgba(255, 255, 255, 0.6); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.6);
+    /* NUEVO: Borde con reflejo blanco para el modo claro */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
     /* Textos más oscuros para lectura perfecta */
     --gnc-text: #111111;
@@ -37,9 +43,9 @@
     --bg-body: #d6dbe0;
     --card-shadow: rgba(0, 0, 0, 0.15);
     
-    /* Entradas y fondos internos oscurecidos/grisáceos */
-    --gnc-bg-input: rgba(0, 0, 0, 0.06); 
-    --content-bg: rgba(0, 0, 0, 0.04);
+    /* Entradas y fondos internos translúcidos */
+    --gnc-bg-input: rgba(255, 255, 255, 0.4); 
+    --content-bg: rgba(255, 255, 255, 0.5);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -105,7 +111,7 @@ body {
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); padding: 5px;
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 .logo-oscuro, .logo-claro {
     position: absolute; 
@@ -135,11 +141,11 @@ body {
     border: var(--gnc-border-glass); color: var(--gnc-text);
     display: flex; justify-content: center; align-items: center;
     font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow); outline: none; text-decoration: none;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; text-decoration: none;
 }
 .btn-flotante-accion:hover {
     color: var(--gnc-neon); border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4); transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4), var(--ngc-glass-edge); transform: translateY(-2px);
 }
 
 /* Botones redondos/cuadrados específicos */
@@ -162,7 +168,7 @@ body {
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
-    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow);
+    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow), var(--ngc-glass-edge);
     display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
@@ -186,7 +192,7 @@ body {
     -webkit-backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
     border-radius: 16px; border-left: 4px solid var(--gnc-neon); 
     overflow: hidden; transition: all 0.3s ease; width: 100%;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05); 
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05), var(--ngc-glass-edge); 
     margin-bottom: 15px;
 }
 
@@ -194,7 +200,7 @@ body {
 
 details[open] {
     border-color: var(--gnc-neon);
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 25px rgba(var(--gnc-neon-rgb), 0.15);
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 25px rgba(var(--gnc-neon-rgb), 0.15), var(--ngc-glass-edge);
 }
 
 .gnc-banner {
@@ -242,10 +248,11 @@ summary::-webkit-details-marker { display: none; }
     background: var(--gnc-glass); border: var(--gnc-border-glass); border-radius: 12px;
     border-left: 4px solid var(--gnc-neon); color: var(--gnc-text); font-size: 0.85rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
+    box-shadow: var(--ngc-glass-edge);
 }
 .btn-submit:hover {
     background: rgba(var(--gnc-neon-rgb), 0.15); border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4); color: var(--gnc-neon);
+    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4), var(--ngc-glass-edge); color: var(--gnc-neon);
 }
 
 /* --- FORMULARIOS --- */
@@ -280,7 +287,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center;
     padding: 12px 0; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
-    border: var(--gnc-border-glass); border-radius: 16px; box-shadow: 0 10px 30px var(--card-shadow);
+    border: var(--gnc-border-glass); border-radius: 16px; box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
 }
 .btn-social { text-decoration: none; color: var(--gnc-text-muted); font-size: 26px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; }
 .btn-share { color: var(--gnc-text-muted); font-size: 20px; }
@@ -361,7 +368,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     }
     
     .gnc-main-title { text-align: left; margin-bottom: 20px;}
-    }
+}
 
 /* ======================================================= */
 /*      NUEVOS BOTONES DE ACCIÓN EN SERVICIOS (ESTILO NGC) */
@@ -433,4 +440,5 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
 @keyframes slideDownFade {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
-}
+    }
+        
