@@ -102,7 +102,7 @@ const serviciosInfo = {
         msg: 'Hola Sergio, necesito realizar un certificado de Apto Eléctrico.'
     },
     'fugas': {
-        icono: '<i class="fa-solid fa-plug-circle-exclamation" style="color: #ff4d4d;"></i>',
+        icono: '<i class="fa-solid fa-plug-circle-exclamation icon-peligro"></i>',
         titulo: 'Fugas y Cortos',
         desc: 'Detección precisa mediante instrumental y reparación urgente de fallas eléctricas, saltos de disyuntor y cortocircuitos.',
         msg: 'Hola Sergio, tengo un problema urgente de fugas/cortocircuito en mi instalación.'
