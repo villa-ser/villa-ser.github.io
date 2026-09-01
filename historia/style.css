@@ -3,9 +3,13 @@
     /* MODO OSCURO (Default) */
     --gnc-neon: #00d4ff; 
     --gnc-neon-rgb: 0, 212, 255;
-    --gnc-glass: rgba(0, 0, 0, 0.4); 
-    --gnc-blur: blur(10px); 
+    
+    /* MODIFICACIONES: Mayor desenfoque y cristal definido */
+    --gnc-blur: blur(15px); 
+    --gnc-glass: rgba(0, 0, 0, 0.5); 
     --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    /* NUEVO: Reflejo para simular borde 3D */
+    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     --gnc-text: #ffffff;
     --gnc-text-muted: rgba(255, 255, 255, 0.7); 
@@ -24,22 +28,23 @@
     --gnc-neon: #007a99; 
     --gnc-neon-rgb: 0, 122, 153;
     
-    /* Tarjetas blancas y brillantes para mejor contraste */
-    --gnc-glass: rgba(255, 255, 255, 0.95); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    /* Cristal translúcido blanco limpio */
+    --gnc-glass: rgba(255, 255, 255, 0.6); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.6); 
+    /* NUEVO: Borde con reflejo blanco para el modo claro */
+    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
-    /* Textos más oscuros para lectura perfecta */
+    /* Textos oscuros */
     --gnc-text: #111111;
     --gnc-text-muted: #444444; 
     --gnc-success: #1e7e34; 
     
-    /* Fondo del body ligeramente gris para resaltar el blanco */
     --bg-body: #d6dbe0;
     --card-shadow: rgba(0, 0, 0, 0.15);
     
-    /* Entradas y fondos internos oscurecidos/grisáceos */
-    --gnc-bg-input: rgba(0, 0, 0, 0.06); 
-    --content-bg: rgba(0, 0, 0, 0.04);
+    /* Entradas y fondos internos translúcidos (No grises opacos) */
+    --gnc-bg-input: rgba(255, 255, 255, 0.4); 
+    --content-bg: rgba(255, 255, 255, 0.5);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,7 +90,7 @@ body {
 /* CLASE CRÍTICA PARA EL MENÚ Y ELEMENTOS OCULTOS */
 .oculto { display: none !important; }
 
-/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+/* Aceleración por hardware para desenfoques */
 .gpu-accel {
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -105,7 +110,7 @@ body {
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); padding: 5px;
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--gnc-glass-edge);
 }
 .logo-oscuro, .logo-claro {
     position: absolute; 
@@ -135,11 +140,11 @@ body {
     border: var(--gnc-border-glass); color: var(--gnc-text);
     display: flex; justify-content: center; align-items: center;
     font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow); outline: none; text-decoration: none;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--gnc-glass-edge); outline: none; text-decoration: none;
 }
 .btn-flotante-accion:hover {
     color: var(--gnc-neon); border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4); transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4), var(--gnc-glass-edge); transform: translateY(-2px);
 }
 
 /* Botones redondos/cuadrados específicos */
@@ -162,7 +167,7 @@ body {
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
-    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow);
+    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow), var(--gnc-glass-edge);
     display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
@@ -181,18 +186,17 @@ body {
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
-/* ¡CORRECCIÓN APLICADA AQUÍ: margin-bottom: 15px;! */
 .gnc-banner, details, .gnc-form-container {
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border-glass); border-radius: 16px; border-left: 4px solid var(--gnc-neon); 
     overflow: hidden; transition: all 0.3s ease; width: 100%;
     margin-bottom: 15px; 
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.05);
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.05), var(--gnc-glass-edge);
 }
 
 details[open] {
     border-color: var(--gnc-neon);
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.1);
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.1), var(--gnc-glass-edge);
 }
 
 .gnc-banner:hover i:not(.fa-whatsapp), details:hover i, .gnc-form-container:hover i {
@@ -240,11 +244,11 @@ input:focus, textarea:focus {
     position: relative; width: 100%; padding: 14px 10px; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border-glass); border-left: 4px solid var(--gnc-neon); border-radius: 12px; color: var(--gnc-text);
     font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
-    transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 4px 15px var(--card-shadow);
+    transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 4px 15px var(--card-shadow), var(--gnc-glass-edge);
 }
 
 .btn-submit:hover {
-    background: rgba(var(--gnc-neon-rgb), 0.15); border-color: var(--gnc-neon); box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4);
+    background: rgba(var(--gnc-neon-rgb), 0.15); border-color: var(--gnc-neon); box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4), var(--gnc-glass-edge);
     color: var(--gnc-neon); transform: translateY(-2px);
 }
 
@@ -276,7 +280,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
-    border-radius: 16px; box-shadow: 0 10px 30px var(--card-shadow);
+    border-radius: 16px; box-shadow: 0 10px 30px var(--card-shadow), var(--gnc-glass-edge);
 }
 .btn-social { text-decoration: none; color: var(--gnc-text-muted); font-size: 26px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; }
 .btn-share { color: var(--gnc-text-muted); font-size: 20px; }
@@ -346,36 +350,29 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         min-height: calc(100vh - 80px);
     }
     
-    /* ¡CORRECCIÓN APLICADA AQUÍ: Reseteo de margen para que 'gap' de flexbox haga el trabajo solo y no haya espacio doble! */
     .gnc-banner, details, .gnc-form-container { margin-bottom: 0; }
     
     .gnc-main-title { text-align: left; }
-    }
+}
               
 /* ======================================================= */
 /*      REORDENAMIENTO EN MÓVILES (Formulario al final)    */
 /* ======================================================= */
 @media (max-width: 1023px) {
-    /* Hacemos que las columnas actúen como contenedores "invisibles" en móvil, 
-       convirtiendo a sus elementos internos en hijos directos del layout principal */
     .col-izquierda, .col-derecha {
         display: contents;
     }
     
-    /* Movemos el formulario hacia abajo de todo */
     .gnc-form-container {
         order: 5;
     }
     
-    /* Nos aseguramos de que el pie de página (footer) quede último, debajo del formulario */
     .footer-wrapper {
         order: 6;
     }
     
-    /* El contenedor padre (.layout-desktop) ya aplica un "gap: 15px" entre elementos.
-       Al usar display:contents, desactivamos los margin-bottom individuales 
-       para evitar que los espacios se sumen y queden huecos muy grandes. */
     .gnc-banner, details, .gnc-form-container, .gnc-main-title {
         margin-bottom: 0 !important;
     }
 }
+
