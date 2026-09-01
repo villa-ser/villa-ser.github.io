@@ -2,9 +2,14 @@
 :root {
     --ngc-neon: #00d4ff; 
     --ngc-neon-rgb: 0, 212, 255;
-    --ngc-blur: blur(10px);
-    --ngc-glass: rgba(0, 0, 0, 0.4); 
+    
+    /* MODIFICACIONES: Más desenfoque y un fondo un poco más opaco para separar el texto de los circuitos */
+    --ngc-blur: blur(15px);
+    --ngc-glass: rgba(0, 0, 0, 0.5); 
+    
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    /* NUEVO: Reflejo superior e izquierdo para simular grosor de cristal (3D) */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     /* Variables de Texto Originales */
     --ngc-text-main: #ffffff; 
@@ -23,8 +28,13 @@
 [data-theme="light"] {
     --ngc-neon: #008fb3; 
     --ngc-neon-rgb: 0, 143, 179;
-    --ngc-glass: rgba(235, 238, 242, 0.85); 
+    
+    /* MODIFICACIÓN: Blanco más puro para evitar que se vea como gris mate, dando aspecto real de vidrio esmerilado */
+    --ngc-glass: rgba(255, 255, 255, 0.6); 
+    
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
+    /* NUEVO: Reflejo blanco más marcado en modo claro */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
     /* Textos invertidos para modo día */
     --ngc-text-main: #1a1a1a; 
@@ -102,7 +112,8 @@ body {
     width: 100%; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px; display: flex;
     flex-direction: column; gap: 15px; margin-bottom: 20px;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
+    /* Se agrega el borde 3D (var(--ngc-glass-edge)) a la sombra */
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05), var(--ngc-glass-edge);
 }
 
 .ngc-card-title {
@@ -130,19 +141,24 @@ body {
     border: var(--ngc-border-glass); border-radius: 12px; border-left: 4px solid var(--ngc-neon);
     color: var(--ngc-text-main); text-decoration: none; font-size: 0.8rem; text-transform: uppercase;
     letter-spacing: 1px; font-weight: 600; transition: all 0.3s ease; text-align: center;
-    box-shadow: 0 4px 15px var(--card-shadow); outline: none; cursor: pointer;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; cursor: pointer;
 }
 
 .ngc-btn i { color: var(--ngc-neon); font-size: 1rem; }
 .ngc-btn:hover {
     background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon); color: var(--ngc-neon);
-    transform: translateY(-2px); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4);
+    transform: translateY(-2px); 
+    /* MODIFICACIÓN: Brillo más sutil en botones secundarios para jerarquía visual */
+    box-shadow: 0 8px 20px var(--card-shadow), inset 0 0 10px rgba(var(--ngc-neon-rgb), 0.1), var(--ngc-glass-edge);
 }
 
 /* --- SERVICIOS RÁPIDOS --- */
 .ngc-quick-services {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: var(--ngc-glass);
-    backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 10px;
+    /* MODIFICACIÓN: Grilla 2x2 para móviles en lugar de 4x1 */
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 10px; 
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); 
+    border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 10px;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
 .quick-item {
@@ -158,13 +174,28 @@ body {
 .quick-item:hover i { background: rgba(var(--ngc-neon-rgb), 0.2); box-shadow: 0 0 10px rgba(var(--ngc-neon-rgb), 0.4); }
 .quick-item span { font-size: 0.65rem; color: var(--ngc-text-desc); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 
+/* MODIFICACIÓN: Control de contraste para iconos de alerta (Ej: Fugas) en ambos modos */
+.quick-item i.icon-peligro {
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+}
+[data-theme="light"] .quick-item i.icon-peligro {
+    color: #cc0000; /* Rojo más oscuro para contraste en fondo blanco */
+    background: rgba(204, 0, 0, 0.05);
+    border: 1px solid rgba(204, 0, 0, 0.3);
+    box-shadow: none; /* Quitamos el resplandor para no ensuciar el cristal */
+}
+
 /* --- BANNER CALCULADORA --- */
 .ngc-cta-banner {
     display: block; text-decoration: none; background: var(--ngc-cta-banner);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 20px;
     margin-bottom: 20px; transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
-.ngc-cta-banner:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
+.ngc-cta-banner:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.6), var(--ngc-glass-edge); }
 .cta-banner-content { display: flex; align-items: center; justify-content: space-between; }
 .cta-icon { font-size: 2rem; color: var(--ngc-neon); }
 .cta-text { flex-grow: 1; padding: 0 15px; }
@@ -175,7 +206,8 @@ body {
 /* --- TARJETA PRIVACIDAD --- */
 .ngc-privacy-card {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: 1px solid var(--ngc-privacy-border);
-    border-left: 4px solid #6c757d; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 10px 30px var(--card-shadow);
+    border-left: 4px solid #6c757d; border-radius: 16px; padding: 20px; text-align: center; 
+    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
 }
 .privacy-icon { font-size: 2rem; color: #aab2bd; margin-bottom: 10px; }
 .privacy-title { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
@@ -185,7 +217,7 @@ body {
 .gnc-hero-card {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 16px; border-left: 4px solid var(--ngc-neon); padding: 25px 20px; text-align: center;
-    box-shadow: 0 10px 30px var(--card-shadow); margin-bottom: 20px; animation: fadeIn 0.8s ease;
+    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); margin-bottom: 20px; animation: fadeIn 0.8s ease;
 }
 .hero-header-row { display: flex; justify-content: center; width: 100%; margin-bottom: 15px; }
 .hero-profile-container { position: relative; width: 160px; height: 160px; }
@@ -213,7 +245,7 @@ body {
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 .logo-oscuro, .logo-claro {
     position: absolute; 
@@ -240,11 +272,11 @@ body {
     border: var(--ngc-border-glass); color: var(--ngc-text-main);
     display: flex; justify-content: center; align-items: center;
     font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow); outline: none; text-decoration: none;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; text-decoration: none;
 }
 .btn-flotante-accion:hover {
     color: var(--ngc-neon); border-color: var(--ngc-neon);
-    box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); transform: translateY(-2px);
 }
 
 /* --- NUBE FLOTANTE (MODAL SERVICIOS RÁPIDOS) --- */
@@ -260,7 +292,7 @@ body {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px;
     border-left: 4px solid var(--ngc-neon); padding: 30px 20px;
-    text-align: center; box-shadow: 0 15px 40px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05);
+    text-align: center; box-shadow: 0 15px 40px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05), var(--ngc-glass-edge);
     width: 90%; max-width: 350px; position: relative;
     transform: scale(0.8) translateZ(0); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -290,7 +322,7 @@ body {
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    border-radius: 16px; margin-top: auto;
+    border-radius: 16px; margin-top: auto; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 .btn-social {
     text-decoration: none; color: var(--ngc-text-desc); font-size: 24px; transition: all 0.2s ease;
@@ -329,6 +361,8 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     
     .ngc-btn { font-size: 0.95rem; padding: 16px 12px; }
     
+    /* MODIFICACIÓN: Vuelve a 4 columnas en Tablet/Escritorio */
+    .ngc-quick-services { grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .quick-item i { font-size: 1.8rem; padding: 15px; }
     .quick-item span { font-size: 0.75rem; }
 }
@@ -353,5 +387,5 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .cta-icon { font-size: 2.5rem; }
     .cta-text h3 { font-size: 1.2rem; }
     .cta-text p { font-size: 0.9rem; }
-        }
-                                        
+    }
+    
