@@ -339,7 +339,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         top: 40px;
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 15px; /* Actualizado: Gap para espaciar fluidamente */
         max-height: calc(100vh - 80px);
         overflow-y: auto;
         padding-right: 5px; 
@@ -350,9 +350,37 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .col-derecha {
         display: flex;
         flex-direction: column;
+        gap: 15px; /* Actualizado: Gap para espaciar fluidamente */
         min-height: calc(100vh - 80px);
     }
     
+    /* Reseteo de márgenes estáticos en PC */
+    .ngc-full-container, .gnc-banner, details { margin-bottom: 0; }
+    
     .gnc-main-title { text-align: left; }
+}
+
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Fusión de Columnas)     */
+/* ======================================================= */
+@media (max-width: 1023px) {
+    .col-izquierda, .col-derecha {
+        display: contents;
     }
+    
+    .footer-wrapper {
+        order: 6; /* Aseguramos que se posicione siempre al final de la página */
+    }
+    
+    /* Evita la suma duplicada del gap del layout principal y los margin de las tarjetas */
+    .ngc-full-container, .gnc-banner, details, .gnc-main-title {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Ocultamos el título "Trayectoria" en móviles porque al hacer contents,
+       todo se vuelve una sola lista bajo el título unificado "Currículum" */
+    .hidden-mobile { 
+        display: none !important; 
+    }
+        }
     
