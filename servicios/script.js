@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (formContacto.classList.contains('form-visible')) {
                     setTimeout(() => {
                         formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100); // Pequeño delay para asegurar que el DOM actualizó el display
+                    }, 100); 
                 }
             } else {
                 // En PC, el formulario ya está visible de forma fija a la izquierda
@@ -118,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // 4. FUNCIONES DEL FORMULARIO Y COMPARTIR
 // ==========================================
 
-// Función para simular el envío y mostrar mensaje de éxito del Formulario
 function handleSubmit() {
     const btn = document.getElementById('btnSubmit');
     
@@ -135,14 +134,12 @@ function handleSubmit() {
     }, 1500);
 }
 
-// Función para resetear el formulario y enviar otra consulta
 function resetForm() {
     document.getElementById('consultForm').reset();
     document.getElementById('consultForm').style.display = 'block';
     document.getElementById('success-message').style.display = 'none';
 }
 
-// Función para el botón de compartir del footer
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
@@ -164,10 +161,8 @@ function compartirWeb() {
 function toggleInfo(id) {
     const infoBox = document.getElementById(id);
     if (infoBox) {
-        // Intercala la clase 'oculto' para mostrar u ocultar el div
         infoBox.classList.toggle('oculto');
         
-        // Efecto visual si acaba de aparecer
         if (!infoBox.classList.contains('oculto')) {
             infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--gnc-neon-rgb), 0.1)";
             setTimeout(() => { infoBox.style.boxShadow = "none"; }, 500);
