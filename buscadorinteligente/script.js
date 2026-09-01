@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         searchInput.addEventListener("focus", function() {
             if (seleccionPendiente) {
                 this.select();
-                seleccionPendiente = false; // Se resetea para que no vuelva a seleccionar al seguir escribiendo
+                seleccionPendiente = false; 
             }
         });
         
@@ -138,12 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Escucha al escribir
         searchInput.addEventListener("input", () => {
-            seleccionPendiente = false; // Si se pone a escribir, cancelamos cualquier selección pendiente
+            seleccionPendiente = false; 
             btnBuscar.disabled = searchInput.value.trim().length === 0;
 
             const text = searchInput.value;
             const words = text.split(/\s+/);
-            const lastWord = words[words.length - 1]; // La palabra que el usuario está escribiendo ahora
+            const lastWord = words[words.length - 1]; 
 
             if (lastWord.length >= 3) {
                 mostrarSugerencias(lastWord, words);
@@ -155,9 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
         btnBuscar.addEventListener("click", () => {
             const textoOriginal = btnBuscar.innerHTML;
             btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-            suggestionsList.classList.add("oculto"); // Cierra al buscar
+            suggestionsList.classList.add("oculto"); 
             
-            // Al hacer una búsqueda, marcamos que el próximo toque a la caja debe seleccionar todo
             seleccionPendiente = true;
 
             setTimeout(() => {
@@ -180,32 +179,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const colDerecha = document.querySelector('.col-derecha');
     
     if (ctaOriginal && colDerecha) {
-        // Clonamos el CTA Original y le cambiamos su comportamiento
         const ctaClone = ctaOriginal.cloneNode(true);
         ctaClone.classList.add('cta-flotante-clone');
-        ctaClone.classList.remove('separador-bloque'); // Quitamos margenes extra
+        ctaClone.classList.remove('separador-bloque'); 
         document.body.appendChild(ctaClone);
 
         let isColDerechaVisible = false;
         
-        // El Observer se da cuenta cuando llegamos al fondo original
         const observer = new IntersectionObserver((entries) => {
             isColDerechaVisible = entries[0].isIntersecting;
             actualizarCtaFlotante();
-        }, { threshold: 0.05 }); // Con que se vea apenas el 5% de la caja real, frena
+        }, { threshold: 0.05 }); 
         
         observer.observe(colDerecha);
         window.addEventListener('scroll', actualizarCtaFlotante, { passive: true });
 
         function actualizarCtaFlotante() {
-            // Se inactiva en PC (pantallas grandes) porque la columna siempre está al lado
             if (window.innerWidth >= 1024) return;
             
-            // Aparece si el usuario scrolleó bastante (ej. leyendo resultados) Y aún no llegó abajo
             if (window.scrollY > 300 && !isColDerechaVisible) {
                 ctaClone.classList.add('visible');
             } else {
-                ctaClone.classList.remove('visible'); // Se oculta suave para no tapar los demás elementos
+                ctaClone.classList.remove('visible'); 
             }
         }
     }
@@ -221,9 +216,8 @@ function mostrarSugerencias(lastWord, allWords) {
     const lastWordNorm = lastWord.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const lastWordFonetica = normalizarFoneticaYPlural(lastWordNorm);
     
-    let matches = new Set(); // Evita palabras duplicadas automáticamente
+    let matches = new Set(); 
     
-    // Motor de detección para sugerencias (evalúa typos y fonética)
     const checkMatchSugerencia = (palabraCorrecta) => {
         const pNorm = palabraCorrecta.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const pFon = normalizarFoneticaYPlural(pNorm);
@@ -285,15 +279,12 @@ function mostrarSugerencias(lastWord, allWords) {
         li.textContent = match; 
         
         li.addEventListener('click', () => {
-            // Reemplaza la última palabra por la correcta seleccionada y agrega espacio
             allWords[allWords.length - 1] = match;
             searchInput.value = allWords.join(' ') + ' ';
             suggestionsList.classList.add("oculto");
             
-            // Habilitamos el botón buscar
             document.getElementById("btnBuscar").disabled = false;
 
-            // Focuseamos y aseguramos que el cursor quede al final (para seguir escribiendo)
             searchInput.focus();
             const len = searchInput.value.length;
             searchInput.setSelectionRange(len, len);
@@ -303,7 +294,6 @@ function mostrarSugerencias(lastWord, allWords) {
     suggestionsList.classList.remove('oculto');
 }
 
-// Función que extrae las palabras únicas del Excel para el diccionario
 function construirDiccionarioSugerencias() {
     let palabras = new Set();
     allData.forEach(item => {
@@ -320,7 +310,6 @@ function construirDiccionarioSugerencias() {
     diccionarioSugerencias = Array.from(palabras);
 }
 
-// Carga Inicial del Excel
 async function cargarExcel() {
     const statusMsg = document.getElementById("status-message");
     const searchInput = document.getElementById("searchInput");
@@ -366,9 +355,6 @@ async function cargarExcel() {
     }
 }
 
-// --------------------------------------------------------------------
-// NORMALIZA FONÉTICA, PLURALES Y LETRAS CONFUSAS
-// --------------------------------------------------------------------
 function normalizarFoneticaYPlural(texto) {
     return texto.split(/\s+/).map(p => {
         p = p.replace(/ll/g, "y");       
@@ -419,7 +405,6 @@ function obtenerSinonimos(palabra) {
     return opciones;
 }
 
-// LÓGICA PARA DETECTAR ERRORES DE TIPEO
 function distanciaLevenshtein(a, b) {
     const matriz = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
     for (let i = 0; i <= a.length; i++) matriz[i][0] = i;
@@ -443,9 +428,6 @@ function sonSimilares(buscada, objetivo) {
     return distanciaLevenshtein(buscada, objetivo) <= maxErrores;
 }
 
-// --------------------------------------------------------------------
-// MOTOR DE BÚSQUEDA (SE EJECUTA AL DAR CLICK EN "BUSCAR")
-// --------------------------------------------------------------------
 function ejecutarBusqueda() {
     const rawQuery = document.getElementById("searchInput").value;
     const resultsContainer = document.getElementById("resultsContainer");
@@ -606,59 +588,45 @@ function compartirWeb() {
   }
 }
 
-// ==========================================
-// BÚSQUEDA RÁPIDA
-// ==========================================
 function busquedaRapida(termino) {
     const searchInput = document.getElementById("searchInput");
     const btnBuscar = document.getElementById("btnBuscar");
     if(searchInput && btnBuscar) {
         searchInput.value = termino;
         btnBuscar.disabled = false;
-        seleccionPendiente = true; // Permite que se seleccione todo el texto si tocan la caja
+        seleccionPendiente = true; 
         btnBuscar.click();
     }
 }
 
-// ==========================================
-// AUTOBÚSQUEDA AUTOMÁTICA DESDE URL (CORREGIDO)
-// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     const parametrosURL = new URLSearchParams(window.location.search);
     const servicioSolicitado = parametrosURL.get('servicio');
 
     if (servicioSolicitado) {
-        // Convierte el formato de la URL a texto (ej: apto_electrico -> apto electrico)
         const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
 
-        // Temporizador que espera a que cargarExcel() llene la variable 'allData'
         const temporizadorCarga = setInterval(() => {
-            // Verifica si allData ya tiene los datos del Excel
             if (typeof allData !== 'undefined' && allData.length > 0) {
-                clearInterval(temporizadorCarga); // Detenemos la comprobación
+                clearInterval(temporizadorCarga); 
 
                 const inputBuscador = document.getElementById("searchInput");
                 const btnBuscar = document.getElementById("btnBuscar");
                 const listaSugerencias = document.getElementById("suggestionsList");
 
                 if (inputBuscador && btnBuscar) {
-                    // 1. Insertamos el término de búsqueda
                     inputBuscador.value = terminoBusqueda;
-                    
-                    // 2. Disparamos el evento 'input' para que tu script habilite el botón
                     inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
                     
-                    // 3. Forzamos el cierre de la lista de sugerencias
                     if (listaSugerencias) {
                         listaSugerencias.classList.add("oculto");
                     }
                     
-                    // 4. Ejecutamos el clic automático con un mínimo retraso para asegurar fluidez
                     setTimeout(() => {
                         btnBuscar.click();
                     }, 50);
                 }
             }
-        }, 100); // Revisa cada 100 milisegundos si el Excel ya cargó
+        }, 100); 
     }
 });
