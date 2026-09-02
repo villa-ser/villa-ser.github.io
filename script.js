@@ -1,9 +1,26 @@
 // ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
 // ==========================================
 const temaGuardado = localStorage.getItem('temaVillaser');
+// Detectar si el sistema operativo o navegador prefiere modo claro
+const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
+
+function aplicarTemaRaiz(esClaro) {
+    if (esClaro) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+// 1. Prioridad: Guardado por el usuario. 2. Secundario: Preferencia del Sistema
 if (temaGuardado === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
+    aplicarTemaRaiz(true);
+} else if (temaGuardado === 'dark') {
+    aplicarTemaRaiz(false);
+} else {
+    // Automático según el sistema: Si el SO es claro, aplica claro; si no, queda oscuro por defecto.
+    aplicarTemaRaiz(prefiereSistemaClaro.matches);
 }
 
 // Inicializar iconos de Lucide (si se usan en el index)
@@ -14,36 +31,28 @@ if (typeof lucide !== 'undefined') {
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
-    // 1. LÓGICA DEL MODO DÍA / MODO NOCHE
+    // 1. LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
     
     if (btnTema) {
-        const iconTema = btnTema.querySelector('i');
-        
-        // Sincronizar iconos según el tema actual guardado
-        if (temaGuardado === 'light') {
-            iconTema.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        // Alternar tema
         btnTema.addEventListener('click', () => {
-            const temaActual = document.documentElement.getAttribute('data-theme');
+            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
             
-            if (temaActual === 'light') {
-                // Volver a Modo Oscuro
-                document.documentElement.removeAttribute('data-theme'); 
+            if (esActualClaro) {
+                // Cambiar a oscuro
+                aplicarTemaRaiz(false);
                 localStorage.setItem('temaVillaser', 'dark');
-                iconTema.classList.replace('fa-moon', 'fa-sun');
             } else {
-                // Cambiar a Modo Día
-                document.documentElement.setAttribute('data-theme', 'light'); 
+                // Cambiar a claro
+                aplicarTemaRaiz(true);
                 localStorage.setItem('temaVillaser', 'light');
-                iconTema.classList.replace('fa-sun', 'fa-moon');
             }
         });
     }
 
+// (El resto de tu código a partir de "2. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR" queda intacto)
+    
     // ==========================================
     // 2. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR
     // ==========================================
