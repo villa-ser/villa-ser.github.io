@@ -265,19 +265,48 @@ body {
 }
 
 /* 2. Botón Tema (Izquierda) */
-.btn-flotante-accion {
-    position: fixed; top: 15px; left: 15px; z-index: 9999;
-    width: 60px; height: 60px; border-radius: 8px;
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); color: var(--ngc-text-main);
-    display: flex; justify-content: center; align-items: center;
-    font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; text-decoration: none;
+/* 2. Botón Tema (Llave de luz 3D - Izquierda) */
+.switch-plate {
+  position: fixed; top: 15px; left: 15px; z-index: 9999;
+  width: 42px; height: 64px;
+  background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
+  -webkit-backdrop-filter: var(--ngc-blur);
+  border: var(--ngc-border-glass); border-radius: 8px;
+  display: flex; justify-content: center; align-items: center;
+  cursor: pointer; transition: all 0.3s ease; outline: none;
+  box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
-.btn-flotante-accion:hover {
-    color: var(--ngc-neon); border-color: var(--ngc-neon);
-    box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); transform: translateY(-2px);
+.switch-plate:hover {
+  border-color: var(--ngc-neon);
+  box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge);
 }
+.switch-rocker {
+  width: 20px; height: 38px; border-radius: 4px; position: relative;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background 0.3s ease;
+  transform-origin: center;
+}
+/* ESTADO: MODO OSCURO (Apagado) */
+.switch-rocker {
+  transform: perspective(150px) rotateX(-20deg);
+  background: linear-gradient(to bottom, #4a4a4a 0%, #1a1a1a 100%);
+  box-shadow: 0 6px 4px -2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 2px rgba(0,0,0,0.8);
+  border: 1px solid #333; border-bottom: 1px solid #000;
+}
+/* ESTADO: MODO CLARO (Encendido) */
+[data-theme="light"] .switch-rocker {
+  transform: perspective(150px) rotateX(20deg);
+  background: linear-gradient(to bottom, #ffffff 0%, #d4d4d4 100%);
+  box-shadow: 0 -6px 4px -2px rgba(0,0,0,0.2), inset 0 -1px 2px rgba(255,255,255,0.8), inset 0 1px 2px rgba(0,0,0,0.1);
+  border: 1px solid #bbb; border-top: 1px solid #999;
+}
+/* Indicador LED Neón NGC */
+.switch-rocker::after {
+  content: ''; position: absolute; width: 6px; height: 2px; border-radius: 2px;
+  left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
+}
+.switch-rocker::after { top: 6px; background: rgba(var(--ngc-neon-rgb), 0.2); box-shadow: none; }
+[data-theme="light"] .switch-rocker::after { top: auto; bottom: 6px; background: var(--ngc-neon); box-shadow: 0 0 8px var(--ngc-neon); }
+
 
 /* --- NUBE FLOTANTE (MODAL SERVICIOS RÁPIDOS) --- */
 .ngc-modal-overlay {
@@ -353,7 +382,9 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .main-wrapper { max-width: 720px; padding: 25px; }
     
     .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
-    .btn-flotante-accion { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
+    .switch-plate { top: 25px; left: 25px; width: 50px; height: 74px; }
+    .switch-rocker { width: 24px; height: 44px; }
+
     
     .gnc-hero-card { padding: 35px 30px; }
     .hero-profile-container { width: 180px; height: 180px; }
