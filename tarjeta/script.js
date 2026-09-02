@@ -5,17 +5,10 @@ const userTheme = localStorage.getItem('temaVillaserTarjeta');
 const sistemaOscuro = window.matchMedia('(prefers-color-scheme: dark)');
 
 function aplicarTema(esClaro) {
-    const iconoSol = document.getElementById('icono-sol');
-    const iconoLuna = document.getElementById('icono-luna');
-
     if (esClaro) {
         document.documentElement.setAttribute('data-theme', 'light');
-        if (iconoSol) iconoSol.classList.remove('oculto');
-        if (iconoLuna) iconoLuna.classList.add('oculto');
     } else {
         document.documentElement.removeAttribute('data-theme');
-        if (iconoSol) iconoSol.classList.add('oculto');
-        if (iconoLuna) iconoLuna.classList.remove('oculto');
     }
 }
 
