@@ -1,9 +1,24 @@
 // ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
+// 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
 // ==========================================
 const temaGuardado = localStorage.getItem('temaVillaser');
+const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
+
+function aplicarTemaSeccion(esClaro) {
+    if (esClaro) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+// 1. Prioridad: Guardado por el usuario. 2. Secundario: Preferencia del Sistema
 if (temaGuardado === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
+    aplicarTemaSeccion(true);
+} else if (temaGuardado === 'dark') {
+    aplicarTemaSeccion(false);
+} else {
+    aplicarTemaSeccion(prefiereSistemaClaro.matches);
 }
 
 let allData = [];
@@ -84,23 +99,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // LÓGICA DEL MODO DÍA / MODO NOCHE
+    // LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
     // ==========================================
     const btnTema = document.getElementById('btn-tema');
     if (btnTema) {
-        const iconTema = btnTema.querySelector('i');
-        if (temaGuardado === 'light') iconTema.classList.replace('fa-sun', 'fa-moon');
-
         btnTema.addEventListener('click', () => {
-            const temaActual = document.documentElement.getAttribute('data-theme');
-            if (temaActual === 'light') {
-                document.documentElement.removeAttribute('data-theme'); 
+            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
+            if (esActualClaro) {
+                aplicarTemaSeccion(false);
                 localStorage.setItem('temaVillaser', 'dark');
-                iconTema.classList.replace('fa-moon', 'fa-sun');
             } else {
-                document.documentElement.setAttribute('data-theme', 'light'); 
+                aplicarTemaSeccion(true);
                 localStorage.setItem('temaVillaser', 'light');
-                iconTema.classList.replace('fa-sun', 'fa-moon');
             }
         });
     }
@@ -630,3 +640,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 100); 
     }
 });
+                                                       
