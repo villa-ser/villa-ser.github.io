@@ -372,7 +372,7 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); transform: translateY(-2px);
 }
 
-#btn-ir-menu, #btn-tema { width: 60px; }
+#btn-ir-menu { width: 60px; }
 
 .btn-explorar {
     width: auto !important; padding: 0 20px; gap: 8px;
@@ -380,7 +380,50 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .btn-explorar span { display: inline-block; }
 
-#btn-ir-menu { left: 15px; }
+/* --- LLAVE DE LUZ 3D (Botón Modo Día/Noche) --- */
+#btn-tema { right: 85px; top: 15px; }
+
+.switch-plate {
+  position: fixed; z-index: 9999;
+  width: 42px; height: 64px;
+  background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
+  -webkit-backdrop-filter: var(--ngc-blur);
+  border: var(--ngc-border-glass); border-radius: 8px;
+  display: flex; justify-content: center; align-items: center;
+  cursor: pointer; transition: all 0.3s ease; outline: none;
+  box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+}
+.switch-plate:hover {
+  border-color: var(--ngc-neon);
+  box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge);
+}
+.switch-rocker {
+  width: 20px; height: 38px; border-radius: 4px; position: relative;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background 0.3s ease;
+  transform-origin: center;
+}
+/* MODO OSCURO (Apagado) */
+.switch-rocker {
+  transform: perspective(150px) rotateX(-20deg);
+  background: linear-gradient(to bottom, #4a4a4a 0%, #1a1a1a 100%);
+  box-shadow: 0 6px 4px -2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 2px rgba(0,0,0,0.8);
+  border: 1px solid #333; border-bottom: 1px solid #000;
+}
+/* MODO CLARO (Encendido) */
+[data-theme="light"] .switch-rocker {
+  transform: perspective(150px) rotateX(20deg);
+  background: linear-gradient(to bottom, #ffffff 0%, #d4d4d4 100%);
+  box-shadow: 0 -6px 4px -2px rgba(0,0,0,0.2), inset 0 -1px 2px rgba(255,255,255,0.8), inset 0 1px 2px rgba(0,0,0,0.1);
+  border: 1px solid #bbb; border-top: 1px solid #999;
+}
+/* LED NEÓN */
+.switch-rocker::after {
+  content: ''; position: absolute; width: 6px; height: 2px; border-radius: 2px;
+  left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
+}
+.switch-rocker::after { top: 6px; background: rgba(var(--ngc-neon-rgb), 0.2); box-shadow: none; }
+[data-theme="light"] .switch-rocker::after { top: auto; bottom: 6px; background: var(--ngc-neon); box-shadow: 0 0 8px var(--ngc-neon); }
+
 .menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
 .menu-flotante-container .btn-flotante-accion { position: static; }
 #btn-tema { right: 85px; }
