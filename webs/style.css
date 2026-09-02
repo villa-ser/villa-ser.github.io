@@ -3,9 +3,13 @@
     /* MODO OSCURO (Default) */
     --gnc-neon: #00d4ff; 
     --gnc-neon-rgb: 0, 212, 255;
-    --gnc-glass: rgba(0, 0, 0, 0.4); 
-    --gnc-blur: blur(10px); 
+    
+    /* MODIFICACIONES: Mayor desenfoque y cristal definido */
+    --gnc-blur: blur(15px); 
+    --gnc-glass: rgba(0, 0, 0, 0.5); 
     --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    /* NUEVO: Reflejo para simular borde 3D */
+    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     --gnc-text: #ffffff;
     --gnc-text-muted: rgba(255, 255, 255, 0.7); 
@@ -25,22 +29,23 @@
     --gnc-neon: #007a99; 
     --gnc-neon-rgb: 0, 122, 153;
     
-    /* Tarjetas blancas y brillantes para mejor contraste */
-    --gnc-glass: rgba(255, 255, 255, 0.95); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
+    /* Cristal translúcido blanco limpio */
+    --gnc-glass: rgba(255, 255, 255, 0.6); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.6); 
+    /* NUEVO: Borde con reflejo blanco para el modo claro */
+    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
-    /* Textos más oscuros para lectura perfecta */
+    /* Textos oscuros */
     --gnc-text: #111111;
     --gnc-text-muted: #444444; 
     --gnc-success: #1e7e34; 
     
-    /* Fondo del body ligeramente gris para resaltar el blanco */
     --bg-body: #d6dbe0;
     --card-shadow: rgba(0, 0, 0, 0.15);
     
-    /* Fondos internos y gradientes oscurecidos/grisáceos */
-    --content-bg: rgba(0, 0, 0, 0.04);
-    --cta-gradient: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(0, 122, 153, 0.15) 100%);
+    /* Fondos internos y gradientes translúcidos (No grises opacos) */
+    --content-bg: rgba(255, 255, 255, 0.5);
+    --cta-gradient: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(0, 122, 153, 0.15) 100%);
     --link-bg: rgba(0, 122, 153, 0.08);
 }
 
@@ -108,7 +113,7 @@ body {
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); padding: 5px;
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--gnc-glass-edge);
 }
 .logo-oscuro, .logo-claro {
     position: absolute; 
@@ -138,11 +143,11 @@ body {
     border: var(--gnc-border-glass); color: var(--gnc-text);
     display: flex; justify-content: center; align-items: center;
     font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow); outline: none; text-decoration: none;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--gnc-glass-edge); outline: none; text-decoration: none;
 }
 .btn-flotante-accion:hover {
     color: var(--gnc-neon); border-color: var(--gnc-neon);
-    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4); transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.4), var(--gnc-glass-edge); transform: translateY(-2px);
 }
 
 /* Botones específicos */
@@ -165,7 +170,7 @@ body {
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
-    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow);
+    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow), var(--gnc-glass-edge);
     display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
@@ -194,10 +199,10 @@ body {
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); -webkit-backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border-glass); border-left: 4px solid var(--gnc-neon); border-radius: 16px;
     width: 100%; margin-bottom: 12px; transition: all 0.3s ease;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.05);
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.05), var(--gnc-glass-edge);
 }
 
-details[open] { border-color: var(--gnc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.1); }
+details[open] { border-color: var(--gnc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--gnc-neon-rgb), 0.1), var(--gnc-glass-edge); }
 details:hover i { filter: drop-shadow(0 0 5px var(--gnc-neon)); transition: filter 0.3s ease; }
 
 /* BANNER DE INTRO */
@@ -237,7 +242,8 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .ngc-webs-cta {
     background: var(--cta-gradient); backdrop-filter: var(--gnc-blur);
     border: var(--gnc-border-glass); border-radius: 16px; padding: 20px;
-    text-align: center; box-shadow: 0 10px 30px var(--card-shadow); margin-top: 5px;
+    text-align: center; margin-top: 5px; margin-bottom: 15px;
+    box-shadow: 0 10px 30px var(--card-shadow), var(--gnc-glass-edge);
 }
 .ngc-webs-cta h3 { color: var(--gnc-neon); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
 .ngc-webs-cta p { font-size: 0.8rem; color: var(--gnc-text-muted); margin-bottom: 15px; }
@@ -256,7 +262,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
-    border-radius: 16px; margin-top: auto; box-shadow: 0 10px 30px var(--card-shadow);
+    border-radius: 16px; margin-top: auto; box-shadow: 0 10px 30px var(--card-shadow), var(--gnc-glass-edge);
 }
 .btn-social { text-decoration: none; color: var(--gnc-text-muted); font-size: 26px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; }
 .btn-share { color: var(--gnc-text-muted); font-size: 20px; }
@@ -310,7 +316,7 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         top: 40px;
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 15px; /* Establece el gap de separación limpio */
         max-height: calc(100vh - 80px);
         overflow-y: auto;
         padding-right: 5px; 
@@ -321,9 +327,31 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .col-derecha {
         display: flex;
         flex-direction: column;
+        gap: 15px; /* Establece el gap de separación limpio */
         min-height: calc(100vh - 80px);
     }
     
-    .gnc-main-title { text-align: left; margin-bottom: 15px;}
+    /* Reseteo de márgenes duplicados en PC */
+    .gnc-banner, details, .ngc-webs-cta { margin-bottom: 0; }
+    .gnc-main-title { text-align: left; margin-bottom: 0; }
+    .gnc-section-label { margin-top: 5px; margin-bottom: 0; }
 }
 
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Fusión de Columnas)     */
+/* ======================================================= */
+@media (max-width: 1023px) {
+    .col-izquierda, .col-derecha {
+        display: contents; /* Integra las 2 columnas al flujo principal de Flexbox */
+    }
+    
+    .footer-wrapper {
+        order: 6; /* Asegura el footer siempre abajo de todo */
+    }
+    
+    /* Eliminamos todos los margin-bottom para que gap:15px de .layout-desktop sea el único espaciador */
+    .gnc-banner, details, .ngc-webs-cta, .gnc-main-title, .gnc-section-label {
+        margin-bottom: 0 !important;
+    }
+        }
+              
