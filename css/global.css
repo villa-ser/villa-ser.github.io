@@ -91,12 +91,6 @@ body {
     display: flex; justify-content: center;
 }
 
-/* Aceleración por hardware para desenfoques (Mejora el scroll) */
-.gpu-accel {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
 .ngc-wrapper {
     display: flex; flex-direction: column; width: 100%; max-width: 500px; padding: 15px;
 }
