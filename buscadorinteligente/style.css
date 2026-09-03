@@ -385,7 +385,7 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .switch-plate {
   position: fixed; z-index: 9999;
-  width: 42px; height: 64px;
+  width: 40px; height: 60px;
   background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
   -webkit-backdrop-filter: var(--ngc-blur);
   border: var(--ngc-border-glass); border-radius: 8px;
