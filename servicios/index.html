@@ -29,8 +29,11 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    <!-- CSS GLOBAL DE LA RAÍZ (Estructura base, fondos, footer) -->
+    <link rel="stylesheet" href="../style.css">
+    
+    <!-- CSS ESPECÍFICO DE ESTA SUBPÁGINA -->
+    <link rel="stylesheet" href="servicios-spec.css">
 </head>
 
 <body>
@@ -337,7 +340,7 @@
                             </div>
 
                             <div id="info-tableros" class="extra-info-box oculto gpu-accel">
-                                <p><strong>Ampliación Técnica:</strong> Ensamblado y recableado interno de Tableros Principales (TP) y Seccionales (TS) de acuerdo a <strong>AEA 90364</strong>. Dimensionamiento correcto de protecciones termomagnéticas y selectividad bajo <strong>Ley 10.281</strong>.</p>
+                                <p><strong>Ampliación Técnica:</strong> Ensamblado y recableado interno de Tableros Principales (TP) y Seccionales (TS) de acuerdo al reglamento <strong>AEA 90364</strong>. Dimensionamiento correcto de protecciones termomagnéticas y selectividad bajo <strong>Ley 10.281</strong>.</p>
                             </div>
                         </div>
                     </details>
@@ -384,7 +387,8 @@
         </div>
     </main>
 
-    <!-- Script con defer activado -->
-    <script src="script.js" defer></script>
+    <!-- SCRIPT GLOBAL (Raíz) y ESPECÍFICO (Servicios) -->
+    <script src="../script.js" defer></script>
+    <script src="servicios-spec.js" defer></script>
   </body>
 </html>
