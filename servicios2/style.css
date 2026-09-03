@@ -2,27 +2,6 @@
 /* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
 .oculto { display: none !important; }
 
-body {
-    margin: 0; padding: 80px 4px 4px 4px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--gnc-text); /* TEXTO BLANCO POR DEFECTO APLICADO */
-    width: 100%; min-height: 100vh; overflow-x: hidden;
-    display: flex; justify-content: center;
-}
-
-/* Aceleración por hardware para desenfoques (Mejora el scroll) */
-.gpu-accel {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.gnc-wrapper {
-    display: flex; flex-direction: column; width: 100%; max-width: 500px; padding: 15px;
-}
-.layout-desktop {
-    display: flex; flex-direction: column; width: 100%; gap: 15px;
-}
-
 /* --- LOGO Y BOTONES FLOTANTES SUPERIORES --- */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
