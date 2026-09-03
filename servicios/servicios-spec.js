@@ -4,7 +4,6 @@
 const temaGuardado = localStorage.getItem('temaVillaser');
 const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
 
-// Prioridad: 1° Elección del usuario, 2° Configuración del Sistema Operativo
 if (temaGuardado === 'light') {
     document.documentElement.setAttribute('data-theme', 'light');
 } else if (temaGuardado === 'dark') {
@@ -74,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 formContacto.style.transition = "box-shadow 0.3s ease";
                 formContacto.style.boxShadow = "0 0 25px var(--gnc-neon)";
                 setTimeout(() => {
-                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05)";
+                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.05)";
                 }, 1200);
             }
         });
@@ -106,6 +105,7 @@ function resetForm() {
     document.getElementById('success-message').style.display = 'none';
 }
 
+/* FUNCIÓN RESTAURADA PARA DESPLEGAR "MÁS INFORMACIÓN" */
 function toggleInfo(id) {
     const infoBox = document.getElementById(id);
     if (infoBox) {
