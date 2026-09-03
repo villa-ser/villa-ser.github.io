@@ -1,3 +1,106 @@
+/* ======================================================= */
+/*      CSS COMPLETO E INDEPENDIENTE: SECCIÓN SERVICIOS    */
+/* ======================================================= */
+
+:root {
+    /* MODO OSCURO (Default) */
+    --gnc-neon: #00d4ff; 
+    --gnc-neon-rgb: 0, 212, 255;
+    
+    --gnc-blur: blur(15px);
+    --gnc-glass: rgba(0, 0, 0, 0.5); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3);
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
+    
+    /* COLORES DE TEXTO CORREGIDOS PARA MODO OSCURO */
+    --gnc-text: #ffffff;
+    --gnc-text-muted: rgba(255, 255, 255, 0.85); 
+    --gnc-success: #28a745; 
+    
+    --bg-body: #121212;
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    
+    --gnc-bg-input: rgba(0, 0, 0, 0.6); 
+    --content-bg: transparent;
+}
+
+[data-theme="light"] {
+    /* MODO CLARO */
+    --gnc-neon: #007a99; 
+    --gnc-neon-rgb: 0, 122, 153;
+    
+    --gnc-glass: rgba(255, 255, 255, 0.6); 
+    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.6);
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+    
+    /* COLORES DE TEXTO PARA MODO CLARO */
+    --gnc-text: #111111;
+    --gnc-text-muted: #333333; 
+    --gnc-success: #1e7e34; 
+    
+    --bg-body: #d6dbe0;
+    --card-shadow: rgba(0, 0, 0, 0.15);
+    
+    --gnc-bg-input: rgba(255, 255, 255, 0.4); 
+    --content-bg: rgba(255, 255, 255, 0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
+.oculto { display: none !important; }
+
+/* TRANSICIÓN DE FONDO FLUIDA */
+html {
+    background-color: var(--bg-body); 
+    overscroll-behavior-y: none; 
+    transition: background-color 0.4s ease;
+}
+
+html::before, html::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center center;
+    z-index: -1;
+    transition: opacity 0.5s ease-in-out;
+    will-change: opacity;
+}
+
+html::before {
+    background-image: url('../img/fondo.avif');
+    opacity: 1;
+}
+
+html::after {
+    background-image: url('../img/fondoclaro.avif');
+    opacity: 0;
+}
+
+[data-theme="light"]::before { opacity: 0; }
+[data-theme="light"]::after { opacity: 1; }
+
+body {
+    margin: 0; padding: 80px 4px 4px 4px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--gnc-text); /* TEXTO BLANCO POR DEFECTO APLICADO */
+    width: 100%; min-height: 100vh; overflow-x: hidden;
+    display: flex; justify-content: center;
+}
+
+/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+.gpu-accel {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.gnc-wrapper {
+    display: flex; flex-direction: column; width: 100%; max-width: 500px; padding: 15px;
+}
+.layout-desktop {
+    display: flex; flex-direction: column; width: 100%; gap: 15px;
+}
 
 /* --- LOGO Y BOTONES FLOTANTES SUPERIORES --- */
 .hero-logo-icon {
