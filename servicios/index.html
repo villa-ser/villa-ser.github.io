@@ -29,7 +29,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS -->
+    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -54,8 +54,9 @@
         </div>
     </div>
 
-    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
-        <i class="fas fa-sun"></i>
+    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
+        <div class="switch-rocker"></div>
     </button>
 
     <div class="hero-logo-icon gpu-accel">
@@ -130,7 +131,8 @@
                     </div>
                 </div>
             </div>
-                <!-- ========================================== -->
+
+            <!-- ========================================== -->
             <!-- COLUMNA DERECHA (Lista de Servicios)       -->
             <!-- ========================================== -->
             <div class="col-derecha">
@@ -270,7 +272,7 @@
                         </div>
                     </details>
 
-                    <!-- 6. PLANOS -->
+                   <!-- 6. PLANOS -->
                     <details name="servicios" class="gpu-accel">
                         <summary>
                             <div class="summary-title">
@@ -337,7 +339,7 @@
                             </div>
 
                             <div id="info-tableros" class="extra-info-box oculto gpu-accel">
-                                <p><strong>Ampliación Técnica:</strong> Ensamblado y recableado interno de Tableros Principales (TP) y Seccionales (TS) de acuerdo a <strong>AEA 90364</strong>. Dimensionamiento correcto de protecciones termomagnéticas y selectividad bajo <strong>Ley 10.281</strong>.</p>
+                                <p><strong>Ampliación Técnica:</strong> Ensamblado y recableado interno de Tableros Principales (TP) y Seccionales (TS) de acuerdo al reglamento <strong>AEA 90364</strong>. Dimensionamiento correcto de protecciones termomagnéticas y selectividad bajo <strong>Ley 10.281</strong>.</p>
                             </div>
                         </div>
                     </details>
@@ -384,7 +386,7 @@
         </div>
     </main>
 
-    <!-- Script con defer activado -->
+    <!-- SCRIPT 100% INDEPENDIENTE DE ESTA CARPETA -->
     <script src="script.js" defer></script>
-  </body>
-                                                                                                                                                                                             </html>
+</body>
+</html>
