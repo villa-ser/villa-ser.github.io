@@ -29,7 +29,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS GLOBAL DE LA RAÍZ (Estructura base, fondos, footer) -->
+    <!-- CSS GLOBAL DE LA RAÍZ (Estructura base, llave 3D, fondos, footer) -->
     <link rel="stylesheet" href="../style.css">
     
     <!-- CSS ESPECÍFICO DE ESTA SUBPÁGINA -->
@@ -57,8 +57,9 @@
         </div>
     </div>
 
-    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
-        <i class="fas fa-sun"></i>
+    <!-- Llave 3D heredada del CSS Global, ajustada en posición -->
+    <button id="btn-tema" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
+        <div class="switch-rocker"></div>
     </button>
 
     <div class="hero-logo-icon gpu-accel">
@@ -391,4 +392,4 @@
     <script src="../script.js" defer></script>
     <script src="servicios-spec.js" defer></script>
   </body>
-</html>
+    </html>
