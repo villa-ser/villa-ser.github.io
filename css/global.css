@@ -173,24 +173,3 @@ body {
     color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0;
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
 
-/* --- FOOTER REDES --- */
-.footer-gnc-compact {
-    width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    border-radius: 16px; margin-top: auto; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
-}
-.btn-social {
-    text-decoration: none; color: var(--ngc-text-desc); font-size: 24px; transition: all 0.2s ease;
-    display: flex; align-items: center; justify-content: center; width: 45px; height: 45px;
-}
-.btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--ngc-neon-rgb), 0.6));}
-.whatsapp-pulse { color: #28a745; animation: beat 0.7s infinite alternate; }
-    
-/* --- CRÉDITOS --- */
-.ngc-site-credits {
-    text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded);
-    margin-top: 15px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1.5px;
-}
-.ngc-site-credits span { color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700; }
-button.btn-share { background-color: transparent; border: none; outline: none; color: var(--ngc-text-desc); cursor: pointer; padding: 0; }
-
