@@ -71,12 +71,12 @@ html::before, html::after {
 }
 
 html::before {
-    background-image: url('img/fondo.avif');
+    background-image: url('../img/fondo.avif');
     opacity: 1;
 }
 
 html::after {
-    background-image: url('img/fondoclaro.avif');
+    background-image: url('../img/fondoclaro.avif');
     opacity: 0;
 }
 
