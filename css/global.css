@@ -1,3 +1,112 @@
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
+:root {
+    --ngc-neon: #00d4ff; 
+    --ngc-neon-rgb: 0, 212, 255;
+    
+    /* MODIFICACIONES: Más desenfoque y un fondo un poco más opaco para separar el texto de los circuitos */
+    --ngc-blur: blur(15px);
+    --ngc-glass: rgba(0, 0, 0, 0.5); 
+    
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    /* NUEVO: Reflejo superior e izquierdo para simular grosor de cristal (3D) */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
+    
+    /* Variables de Texto Originales */
+    --ngc-text-main: #ffffff; 
+    --ngc-text-desc: rgba(255, 255, 255, 0.9);
+    --ngc-text-muted: rgba(255, 255, 255, 0.7);
+    --ngc-text-faded: rgba(255, 255, 255, 0.4);
+    
+    --bg-body: #121212;
+    --ngc-privacy-border: rgba(255, 255, 255, 0.1);
+    --ngc-badge-bg: #111;
+    --ngc-modal-overlay: rgba(0, 0, 0, 0.75);
+    --ngc-cta-banner: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] {
+    --ngc-neon: #008fb3; 
+    --ngc-neon-rgb: 0, 143, 179;
+    
+    /* MODIFICACIÓN: Blanco más puro para evitar que se vea como gris mate, dando aspecto real de vidrio esmerilado */
+    --ngc-glass: rgba(255, 255, 255, 0.6); 
+    
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
+    /* NUEVO: Reflejo blanco más marcado en modo claro */
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+    
+    /* Textos invertidos para modo día */
+    --ngc-text-main: #1a1a1a; 
+    --ngc-text-desc: #333333;
+    --ngc-text-muted: #555555;
+    --ngc-text-faded: #888888;
+    
+    --bg-body: #d6dbe0;
+    --ngc-privacy-border: rgba(0, 0, 0, 0.15);
+    --ngc-badge-bg: #e2e6ea;
+    --ngc-modal-overlay: rgba(225, 230, 235, 0.9);
+    --ngc-cta-banner: linear-gradient(135deg, rgba(235, 238, 242, 0.95) 0%, rgba(var(--ngc-neon-rgb), 0.25) 100%);
+    --card-shadow: rgba(0, 0, 0, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* TRANSICIÓN DE FONDO FLUIDA */
+html {
+    background-color: var(--bg-body);
+    overscroll-behavior-y: none;
+    transition: background-color 0.4s ease;
+}
+
+html::before, html::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center center;
+    z-index: -1;
+    transition: opacity 0.5s ease-in-out;
+    will-change: opacity;
+}
+
+html::before {
+    background-image: url('img/fondo.avif');
+    opacity: 1;
+}
+
+html::after {
+    background-image: url('img/fondoclaro.avif');
+    opacity: 0;
+}
+
+[data-theme="light"]::before { opacity: 0; }
+[data-theme="light"]::after { opacity: 1; }
+
+body {
+    margin: 0; padding: 80px 4px 4px 4px;
+    width: 100%; min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden; display: flex; justify-content: center; 
+}
+
+.main-wrapper {
+    width: 100%; max-width: 500px; padding: 15px;
+    display: flex; flex-direction: column;
+}
+
+.layout-desktop {
+    display: flex; flex-direction: column; width: 100%; gap: 15px;
+}
+
+.separador-bloque { width: 100%; margin-bottom: 12px; }
+
+/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+.gpu-accel {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
 /* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
 #btn-tema-servicios.switch-plate {
     position: fixed;
