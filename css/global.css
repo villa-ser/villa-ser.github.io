@@ -180,10 +180,8 @@ body {
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
 
 /* --- FOOTER REDES --- */
-    
 .footer-wrapper { margin-top: auto; padding-top: 10px; padding-bottom: 5px; 
 }
-
 .footer-ngc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
