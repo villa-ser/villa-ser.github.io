@@ -165,7 +165,7 @@ body {
 /* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
 #btn-tema-servicios.switch-plate {
     position: fixed;
-    top: 21px; 
+    top: 15px; 
     right: 85px; /* Separación a la izquierda del logo */
     z-index: 9999;
     width: 40px;
