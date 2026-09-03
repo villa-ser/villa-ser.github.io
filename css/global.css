@@ -104,6 +104,15 @@ body {
     display: flex; flex-direction: column; width: 100%; gap: 15px;
 }
 
+.ngc-banner, details, .ngc-form-container {
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
+    border-radius: 16px; border-left: 4px solid var(--ngc-neon); 
+    overflow: hidden; transition: all 0.3s ease; width: 100%;
+    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05), var(--ngc-glass-edge); 
+    margin-bottom: 15px;
+}
+
 /* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
 #btn-tema-servicios.switch-plate {
     position: fixed;
