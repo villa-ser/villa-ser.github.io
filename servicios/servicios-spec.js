@@ -1,20 +1,29 @@
-// ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
-// ==========================================
+// =========================================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
+// =========================================================
 const temaGuardado = localStorage.getItem('temaVillaser');
+const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
+
+// Prioridad: 1° Elección del usuario, 2° Configuración del Sistema Operativo
 if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+} else if (temaGuardado === 'dark') {
+    document.documentElement.removeAttribute('data-theme');
+} else if (prefiereSistemaClaro.matches) {
     document.documentElement.setAttribute('data-theme', 'light');
 }
 
+
+// =========================================================
+// LÓGICA ESPECÍFICA DE LA PÁGINA DE SERVICIOS
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Inicializar los iconos de Lucide
+    // 1. Inicializar los iconos de Lucide
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
-    // ==========================================
-    // 1. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
-    // ==========================================
+    // 2. Lógica del Menú Flotante Superior (Exclusivo de esta página)
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
@@ -24,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
@@ -32,40 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ==========================================
-    // 2. LÓGICA DEL MODO DÍA / MODO NOCHE
-    // ==========================================
-    const btnTema = document.getElementById('btn-tema');
-    
-    if (btnTema) {
-        const iconTema = btnTema.querySelector('i');
-        
-        // Sincronizar iconos según el tema actual guardado
-        if (temaGuardado === 'light') {
-            iconTema.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        // Alternar tema 
-        btnTema.addEventListener('click', () => {
-            const temaActual = document.documentElement.getAttribute('data-theme');
-            
-            if (temaActual === 'light') {
-                document.documentElement.removeAttribute('data-theme'); 
-                localStorage.setItem('temaVillaser', 'dark');
-                iconTema.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light'); 
-                localStorage.setItem('temaVillaser', 'light');
-                iconTema.classList.replace('fa-sun', 'fa-moon');
-            }
-        });
-    }
-
-    // ==========================================
-    // 3. LÓGICA DE UX: Auto-cierre de Acordeones
-    // ==========================================
+    // 3. Lógica de UX: Auto-cierre de Acordeones
     const accordions = document.querySelectorAll('details[name="servicios"]');
-    
     accordions.forEach(accordion => {
         accordion.addEventListener('click', (e) => {
             if (!accordion.open) {
@@ -78,9 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ==========================================
-    // 5. LÓGICA DE VISIBILIDAD DEL FORMULARIO (MÓVIL VS PC)
-    // ==========================================
+    // 4. Lógica de Visibilidad del Formulario (Móvil vs PC)
     const btnPresupuesto = document.getElementById('btn-presupuesto');
     const formContacto = document.getElementById('formulario-contacto');
 
@@ -88,22 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
         btnPresupuesto.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // En dispositivos móviles (pantallas menores a 1024px)
             if (window.innerWidth < 1024) {
-                // Alternar la clase que lo muestra
                 formContacto.classList.toggle('form-visible');
-                
-                // Si el formulario ahora está visible, hacemos scroll hacia él
                 if (formContacto.classList.contains('form-visible')) {
                     setTimeout(() => {
                         formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 100); 
                 }
             } else {
-                // En PC, el formulario ya está visible de forma fija a la izquierda
                 formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                // Efecto visual para indicar dónde está el formulario
                 formContacto.style.transition = "box-shadow 0.3s ease";
                 formContacto.style.boxShadow = "0 0 25px var(--gnc-neon)";
                 setTimeout(() => {
@@ -115,12 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 4. FUNCIONES DEL FORMULARIO Y COMPARTIR
+// 5. FUNCIONES DEL FORMULARIO Y MÁS INFO
 // ==========================================
 
 function handleSubmit() {
     const btn = document.getElementById('btnSubmit');
-    
     const btnOriginalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
     btn.style.pointerEvents = 'none';
@@ -140,6 +106,21 @@ function resetForm() {
     document.getElementById('success-message').style.display = 'none';
 }
 
+function toggleInfo(id) {
+    const infoBox = document.getElementById(id);
+    if (infoBox) {
+        infoBox.classList.toggle('oculto');
+        
+        if (!infoBox.classList.contains('oculto')) {
+            infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--ngc-neon-rgb), 0.1)";
+            setTimeout(() => { infoBox.style.boxShadow = "none"; }, 500);
+        }
+    }
+}
+
+// ==========================================
+// 6. FUNCIÓN COMPARTIR SOBRESCRITA PARA ESTA PÁGINA
+// ==========================================
 function compartirWeb() {
   if (navigator.share) {
     navigator.share({
@@ -147,25 +128,9 @@ function compartirWeb() {
       text: 'Conocé los servicios eléctricos certificados de Sergio Villagra en Córdoba:',
       url: 'https://villaser.com.ar/servicios'
     })
-    .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Conocé los servicios eléctricos de Sergio Villagra en Córdoba: https://villaser.com.ar/servicios");
     window.open(whatsappUrl, '_blank');
   }
-}
-
-// ==========================================
-// 6. LÓGICA DE LOS BOTONES "MÁS INFORMACIÓN"
-// ==========================================
-function toggleInfo(id) {
-    const infoBox = document.getElementById(id);
-    if (infoBox) {
-        infoBox.classList.toggle('oculto');
-        
-        if (!infoBox.classList.contains('oculto')) {
-            infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--gnc-neon-rgb), 0.1)";
-            setTimeout(() => { infoBox.style.boxShadow = "none"; }, 500);
-        }
-    }
 }
