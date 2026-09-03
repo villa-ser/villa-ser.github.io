@@ -65,13 +65,8 @@
 /* --- antiguo Css del boton cambio de modo --- */
 
 /* --- CONTENEDORES PRINCIPALES --- */
-.gnc-main-title {
-    font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--gnc-neon); text-align: center; margin: 5px 0 10px 0;
-    text-shadow: 0 0 8px rgba(var(--gnc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
-}
 
-.gnc-banner, details, .gnc-form-container {
+.ngc-banner, details, .ngc-form-container {
     background: var(--gnc-glass); backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur); border: var(--gnc-border-glass);
     border-radius: 16px; border-left: 4px solid var(--gnc-neon); 
