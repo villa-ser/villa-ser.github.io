@@ -168,8 +168,8 @@ body {
     top: 21px; 
     right: 85px; /* Separación a la izquierda del logo */
     z-index: 9999;
-    width: 32px;
-    height: 48px;
+    width: 40px;
+    height: 60px;
     background: var(--gnc-glass);
     backdrop-filter: var(--gnc-blur);
     -webkit-backdrop-filter: var(--gnc-blur);
