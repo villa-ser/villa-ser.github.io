@@ -182,7 +182,7 @@ body {
 /* --- FOOTER REDES --- */
 .footer-wrapper { margin-top: auto; padding-top: 10px; padding-bottom: 5px; 
 }
-.footer-ngc-compact {
+.footer-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 16px; margin-top: auto; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
