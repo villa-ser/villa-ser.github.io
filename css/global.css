@@ -204,10 +204,3 @@ body {
 .ngc-site-credits span { color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700; }
 button.btn-share { background-color: transparent; border: none; outline: none; color: var(--ngc-text-desc); cursor: pointer; padding: 0; }
 
-/* --- ANIMACIONES --- */
-@keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
-
-
