@@ -162,7 +162,7 @@ body {
 .dropdown-flotante-content a i { color: var(--gnc-neon); }
 .dropdown-flotante-content a:hover { background: rgba(var(--gnc-neon-rgb), 0.15); color: var(--gnc-neon); }
 
----
+/* --- antiguo Css del boton cambio de modo --- */
 
 /* --- CONTENEDORES PRINCIPALES --- */
 .gnc-main-title {
