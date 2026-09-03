@@ -4,7 +4,7 @@
 
 :root {
     --gnc-text: #ffffff;
-    --gnc-text-muted: rgba(255, 255, 255, 0.8); 
+    --gnc-text-muted: rgba(255, 255, 255, 0.9); /* Mejorado para modo oscuro */
     --gnc-success: #28a745; 
     --gnc-bg-input: rgba(0, 0, 0, 0.6); 
     --content-bg: transparent;
@@ -12,7 +12,7 @@
 
 [data-theme="light"] {
     --gnc-text: #111111;
-    --gnc-text-muted: #444444; 
+    --gnc-text-muted: #333333; /* Mejorado para modo claro */
     --gnc-success: #1e7e34; 
     --gnc-bg-input: rgba(255, 255, 255, 0.4); 
     --content-bg: rgba(255, 255, 255, 0.5);
@@ -48,7 +48,6 @@
 .menu-flotante-container .btn-flotante-accion { position: static; }
 
 /* REPOSICIONAMIENTO DE LA LLAVE 3D EN LA SUBPÁGINA */
-/* Anula el left: 15px global para ponerlo al lado del logo derecho */
 .switch-plate.switch-servicios {
     left: auto !important; 
     right: 85px; 
@@ -71,7 +70,7 @@
 /* --- CONTENEDORES GLASS --- */
 .gnc-main-title {
     font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0;
+    color: var(--gnc-neon); text-align: center; margin: 5px 0 10px 0;
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
 }
 
@@ -87,7 +86,7 @@
 .servicios-container { display: flex; flex-direction: column; gap: 12px; }
 
 details[open] {
-    border-color: var(--ngc-neon);
+    border-color: var(--gnc-neon);
     box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 25px rgba(var(--ngc-neon-rgb), 0.15), var(--ngc-glass-edge);
 }
 
@@ -102,7 +101,7 @@ summary, .form-header {
 summary::-webkit-details-marker { display: none; }
 
 .summary-title, .form-title {
-    display: flex; align-items: center; gap: 12px; color: var(--ngc-neon);
+    display: flex; align-items: center; gap: 12px; color: var(--gnc-neon);
     text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); transition: all 0.3s ease;
 }
 
@@ -111,13 +110,13 @@ summary::-webkit-details-marker { display: none; }
     color: var(--gnc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg);
 }
 
-.gnc-content p { margin-bottom: 12px; }
+.gnc-content p { margin-bottom: 12px; color: var(--gnc-text-muted); }
 
 /* --- BOTONES Y CTAS --- */
 .gnc-btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-    padding: 12px; background: transparent; border: 1px solid var(--ngc-neon);
-    border-radius: 12px; color: var(--ngc-neon); font-weight: 700; text-transform: uppercase;
+    padding: 12px; background: transparent; border: 1px solid var(--gnc-neon);
+    border-radius: 12px; color: var(--gnc-neon); font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer;
 }
 .gnc-btn-outline:hover { background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
@@ -125,27 +124,27 @@ summary::-webkit-details-marker { display: none; }
 .btn-submit {
     display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px 10px;
     background: var(--ngc-glass); border: var(--ngc-border-glass); border-radius: 12px;
-    border-left: 4px solid var(--ngc-neon); color: var(--gnc-text); font-size: 0.85rem; font-weight: 700;
+    border-left: 4px solid var(--gnc-neon); color: var(--gnc-text); font-size: 0.85rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
     box-shadow: var(--ngc-glass-edge);
 }
 .btn-submit:hover {
-    background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon);
+    background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--gnc-neon);
     box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); color: var(--gnc-neon);
 }
 
 /* --- FORMULARIOS --- */
 .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
 
-label { font-size: 0.75rem; text-transform: uppercase; color: var(--ngc-neon); letter-spacing: 1.5px; font-weight: 600; }
+label { font-size: 0.75rem; text-transform: uppercase; color: var(--gnc-neon); letter-spacing: 1.5px; font-weight: 600; }
 
 input, textarea {
-    width: 100%; padding: 12px 14px; background: var(--gnc-bg-input); border: 1px solid rgba(var(--gnc-neon-rgb), 0.2);
+    width: 100%; padding: 12px 14px; background: var(--gnc-bg-input); border: 1px solid rgba(var(--ngc-neon-rgb), 0.2);
     border-radius: 12px; color: var(--gnc-text); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
 }
 input:focus, textarea:focus { 
-    border-color: var(--ngc-neon);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--gnc-neon-rgb), 0.3);
+    border-color: var(--gnc-neon);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.3);
 }
 
 #success-message {
@@ -153,10 +152,10 @@ input:focus, textarea:focus {
     border: 1px solid var(--gnc-success); border-radius: 12px; margin-top: 15px; animation: fadeIn 0.4s ease;
 }
 
-.neon { color: var(--ngc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
+.neon { color: var(--gnc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
 .icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--gnc-neon); }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -182,7 +181,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
     .dropdown-flotante-content { top: 80px; width: 250px; }
     
-    /* REPOSICIONAMIENTO LLAVE 3D EN ESCRITORIO */
     .switch-plate.switch-servicios {
         left: auto !important;
         right: 105px;
@@ -244,6 +242,5 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     font-size: 0.85rem; color: var(--gnc-text-muted); animation: slideDownFade 0.4s ease forwards;
 }
 [data-theme="light"] .extra-info-box { background: rgba(0, 0, 0, 0.05); }
-.extra-info-box p { margin-bottom: 8px; line-height: 1.5; }
+.extra-info-box p { margin-bottom: 8px; line-height: 1.5; color: var(--gnc-text-muted); }
 .extra-info-box p:last-child { margin-bottom: 0; }
-                       
