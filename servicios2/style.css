@@ -1,3 +1,8 @@
+/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+.gpu-accel {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
 
 /* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
 .oculto { display: none !important; }
