@@ -28,11 +28,11 @@
 <body>
 
     <!-- 1. Botón Volver (Flotante Izquierda) -->
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
-    <!-- 2. Botón Desplegable de Secciones (Ahora Rectangular) -->
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
@@ -48,17 +48,17 @@
         </div>
     </div>
 
-        <!-- 3. Botón Modo Día/Noche (Llave de luz 3D) -->
-    <button id="btn-tema" class="switch-plate gpu-accel" aria-label="Cambiar tema día/noche">
+    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
         <div class="switch-rocker"></div>
     </button>
 
-    <!-- 4. Logo Flotante (Transición CSS) -->
-    <div class="hero-logo-icon gpu-accel">
+    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
+    <div class="hero-logo-icon">
         <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
         <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
-        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
+        <svg class="hero-neon-svg" preserveAspectRatio="none">
+            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
     </div>
 
