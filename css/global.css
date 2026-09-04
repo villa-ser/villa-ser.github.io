@@ -214,7 +214,7 @@ body {
     position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow), var(--ngc-glass-edge);
-    display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
+    flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
 }
 .dropdown-flotante-content a {
     color: var(--ngc-text); text-decoration: none; padding: 10px 12px;
