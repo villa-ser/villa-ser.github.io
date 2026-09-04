@@ -12,12 +12,12 @@
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     /* Variables de Texto Originales */
-    --gnc-text: #ffffff;
+    --ngc-text: #ffffff;
     --ngc-text-main: #ffffff; 
     --ngc-text-desc: rgba(255, 255, 255, 0.9);
     --ngc-text-faded: rgba(255, 255, 255, 0.4);
-    --gnc-text-muted: rgba(255, 255, 255, 0.85); 
-    --gnc-success: #28a745; 
+    --ngc-text-muted: rgba(255, 255, 255, 0.85); 
+    --ngc-success: #28a745; 
     
     --bg-body: #121212;
     --ngc-privacy-border: rgba(255, 255, 255, 0.1);
@@ -39,11 +39,12 @@
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
     /* Textos invertidos para modo día */
-    --gnc-text: #111111;
+    --ngc-text: #111111;
     --ngc-text-main: #1a1a1a; 
     --ngc-text-desc: #333333;
-    --ngc-text-muted: #555555;
     --ngc-text-faded: #888888;
+    --ngc-text-muted: #333333; 
+    --ngc-success: #1e7e34; 
     
     --bg-body: #d6dbe0;
     --ngc-privacy-border: rgba(0, 0, 0, 0.15);
