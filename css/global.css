@@ -204,8 +204,8 @@ body {
 }
 
 #btn-tema-servicios.switch-plate:hover {
-    border-color: rgba(var(--gnc-neon-rgb), 0.4);
-    box-shadow: 0 4px 12px rgba(var(--gnc-neon-rgb), 0.15);
+    border-color: rgba(var(--ngc-neon-rgb), 0.4);
+    box-shadow: 0 4px 12px rgba(var(--ngc-neon-rgb), 0.15);
 }
 
 .switch-rocker {
@@ -238,7 +238,7 @@ body {
 
 .switch-rocker::after { top: 4px; background: rgba(255, 255, 255, 0.15); box-shadow: none; }
 [data-theme="light"] .switch-rocker::after {
-    top: auto; bottom: 4px; background: var(--gnc-neon); box-shadow: 0 0 6px rgba(var(--gnc-neon-rgb), 0.8);
+    top: auto; bottom: 4px; background: var(--gnc-neon); box-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.8);
 }
 
 .ngc-main-title {
