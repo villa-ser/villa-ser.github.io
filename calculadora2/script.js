@@ -51,28 +51,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // --- LÓGICA DEL MODO DÍA / NOCHE ---
-    const btnTema = document.getElementById('btn-tema');
-    if (btnTema) {
-        const iconTema = btnTema.querySelector('i');
-        if (temaGuardado === 'light') {
-            iconTema.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        btnTema.addEventListener('click', () => {
-            const temaActual = document.documentElement.getAttribute('data-theme');
-            if (temaActual === 'light') {
-                document.documentElement.removeAttribute('data-theme'); 
+    // Controlador de la LLave de Luz 3D (Tema)
+    const btnTemaServicios = document.getElementById('btn-tema-servicios');
+    if (btnTemaServicios) {
+        btnTemaServicios.addEventListener('click', () => {
+            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
+            if (esActualClaro) {
+                document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('temaVillaser', 'dark');
-                iconTema.classList.replace('fa-moon', 'fa-sun');
             } else {
-                document.documentElement.setAttribute('data-theme', 'light'); 
+                document.documentElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('temaVillaser', 'light');
-                iconTema.classList.replace('fa-sun', 'fa-moon');
             }
         });
     }
-
     // --- LÓGICA DE LOS SLIDERS ---
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
