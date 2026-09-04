@@ -273,3 +273,22 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
 /* --- ANIMACIÓN FOOTER --- */
 @keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
     
+/* --- EFECTO DE DESVANECIMIENTO SUPERIOR (SCROLL) --- */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110px; /* Cubre el alto de los botones (60px) + margen + zona de fade */
+    z-index: 9990; /* Justo por detrás de los botones flotantes (9999) */
+    pointer-events: none; /* Fundamental para que los clics pasen hacia el contenido de abajo */
+    
+    /* Efecto de cristal */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    /* Máscara en gradiente: Sólido arriba, transparente abajo */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
+}
