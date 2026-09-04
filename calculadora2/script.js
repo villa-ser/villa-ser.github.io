@@ -4,7 +4,7 @@
 const temaGuardado = localStorage.getItem('temaVillaser');
 const prefiereClaro = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
 
-// Detectar preferencia guardada o, si no hay ninguna, usar la del sistema operativo
+// Detecta preferencia guardada o usa la del sistema
 if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
     document.documentElement.setAttribute('data-theme', 'light');
 } else {
@@ -16,32 +16,14 @@ if (typeof lucide !== 'undefined') {
 }
 
 let listado = [];
-
-// VARIABLE GLOBAL PARA ALMACENAR LAS TARIFAS DEL JSON
 let tarifasGlobales = null;
 
+// ==========================================
+// 1. CARGA PRINCIPAL (SIN BLOQUEOS)
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- CARGA DEL ARCHIVO JSON ---
-    // Se ejecuta de manera asíncrona sin bloquear el resto de la interfaz (evita que se congelen los botones)
-    (async () => {
-        try {
-            const respuesta = await fetch('tarifas.json');
-            if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
-            tarifasGlobales = await respuesta.json();
-            recalcularTotal(); // Recalcular en caso de que ya haya ítems cargados post-lectura
-        } catch (error) {
-            console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
-            // Salvavidas por si el archivo no carga (ej. abriendo localmente sin servidor)
-            tarifasGlobales = {
-                con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
-                sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
-                factor_impuestos: 1.36
-            };
-        }
-    })();
-
-    // Lógica del Menú Flotante Superior
+    // --- A. ACTIVAR BOTONES PRIMERO (Evita congelamiento) ---
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
@@ -58,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Controlador de la LLave de Luz 3D (Tema)
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     if (btnTemaServicios) {
         btnTemaServicios.addEventListener('click', () => {
@@ -73,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- LÓGICA DE LOS SLIDERS ---
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
     if(sliderHoras && labelHoras) {
@@ -89,10 +69,31 @@ document.addEventListener("DOMContentLoaded", () => {
             labelDias.innerText = e.target.value + " días";
         });
     }
+
+    // --- B. CARGAR EL JSON AL FINAL (Asíncrono, no bloquea) ---
+    fetch('tarifas.json')
+        .then(respuesta => {
+            if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
+            return respuesta.json();
+        })
+        .then(datos => {
+            tarifasGlobales = datos;
+            recalcularTotal();
+        })
+        .catch(error => {
+            console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
+            // Salvavidas por si el archivo no carga en modo local
+            tarifasGlobales = {
+                con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
+                sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
+                factor_impuestos: 1.36
+            };
+            recalcularTotal();
+        });
 });
 
 // ==========================================
-// 4. FUNCIONES DEL SELECTOR Y CALCULADORA
+// 2. FUNCIONES DEL SELECTOR Y CALCULADORA
 // ==========================================
 
 function toggleDropdown(listId, displayId, event) {
@@ -237,16 +238,17 @@ function render() {
     recalcularTotal();
 }
 
-// LÓGICA DE TARIFAS Y LLENADO ACUMULATIVO POR ESCALONES
+// ==========================================
+// 3. LÓGICA DE TARIFAS Y ESCALONES
+// ==========================================
 function recalcularTotal() {
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
-    if (!tarifaRadio || !tarifasGlobales) return; // Esperar a que las tarifas estén cargadas
+    if (!tarifaRadio || !tarifasGlobales) return; 
     
     const tipoTarifa = tarifaRadio.value;
     let kwhAcumulados = 0;
     let costoEnergiaPuraTotal = 0;
 
-    // Llamamos a los datos desde nuestro JSON
     let tarifasRangos = tipoTarifa === "con_subsidio" ? tarifasGlobales.con_subsidio : tarifasGlobales.sin_subsidio;
     const FACTOR_IMPUESTOS = tarifasGlobales.factor_impuestos;
 
@@ -363,7 +365,9 @@ function recalcularTotal() {
             tierUI.classList.remove('oculto');
         }
     } else {
-        if (tierUI) tierUI.classList.add('oculto');
+        if (tierUI) {
+            tierUI.classList.add('oculto');
+        }
     }
 }
 
@@ -379,5 +383,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-                    }
-                
+        }
+                                 
