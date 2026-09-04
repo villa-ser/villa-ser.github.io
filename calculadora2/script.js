@@ -1,3 +1,17 @@
+// ==========================================
+// 0. APLICAR TEMA INSTANTÁNEAMENTE Y CARGAR TARIFAS
+// ==========================================
+const temaGuardado = localStorage.getItem('temaVillaser');
+if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+
+let listado = [];
+
 // VARIABLE GLOBAL PARA ALMACENAR LAS TARIFAS DEL JSON
 let tarifasGlobales = null;
 
@@ -16,6 +30,47 @@ document.addEventListener("DOMContentLoaded", async () => {
             sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
             factor_impuestos: 1.36
         };
+    }
+
+    // --- LÓGICA DEL MENÚ FLOTANTE ---
+    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
+    const dropdownFlotante = document.getElementById('dropdown-flotante');
+
+    if (btnMenuFlotante && dropdownFlotante) {
+        btnMenuFlotante.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownFlotante.classList.toggle('oculto');
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (btnMenuFlotante && dropdownFlotante) {
+            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
+                dropdownFlotante.classList.add('oculto');
+            }
+        }
+    });
+
+    // --- LÓGICA DEL MODO DÍA / NOCHE ---
+    const btnTema = document.getElementById('btn-tema');
+    if (btnTema) {
+        const iconTema = btnTema.querySelector('i');
+        if (temaGuardado === 'light') {
+            iconTema.classList.replace('fa-sun', 'fa-moon');
+        }
+
+        btnTema.addEventListener('click', () => {
+            const temaActual = document.documentElement.getAttribute('data-theme');
+            if (temaActual === 'light') {
+                document.documentElement.removeAttribute('data-theme'); 
+                localStorage.setItem('temaVillaser', 'dark');
+                iconTema.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light'); 
+                localStorage.setItem('temaVillaser', 'light');
+                iconTema.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
     }
 
     // --- LÓGICA DE LOS SLIDERS ---
