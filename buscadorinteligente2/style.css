@@ -1,12 +1,6 @@
 
 .oculto { display: none !important; }
 
-/* Aceleración por hardware */
-.gpu-accel {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
 .separador-bloque { width: 100%; margin-bottom: 12px; }
 
 /* --- BANNER DE AVISO --- */
