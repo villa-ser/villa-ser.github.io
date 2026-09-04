@@ -2,8 +2,13 @@
 // 0. APLICAR TEMA INSTANTÁNEAMENTE Y CARGAR TARIFAS
 // ==========================================
 const temaGuardado = localStorage.getItem('temaVillaser');
-if (temaGuardado === 'light') {
+const prefiereClaro = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+
+// Detectar preferencia guardada o, si no hay ninguna, usar la del sistema operativo
+if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
     document.documentElement.setAttribute('data-theme', 'light');
+} else {
+    document.documentElement.removeAttribute('data-theme');
 }
 
 if (typeof lucide !== 'undefined') {
@@ -15,22 +20,26 @@ let listado = [];
 // VARIABLE GLOBAL PARA ALMACENAR LAS TARIFAS DEL JSON
 let tarifasGlobales = null;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     
     // --- CARGA DEL ARCHIVO JSON ---
-    try {
-        const respuesta = await fetch('tarifas.json');
-        if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
-        tarifasGlobales = await respuesta.json();
-    } catch (error) {
-        console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
-        // Salvavidas por si el archivo no carga (ej. abriendo localmente sin servidor)
-        tarifasGlobales = {
-            con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
-            sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
-            factor_impuestos: 1.36
-        };
-    }
+    // Se ejecuta de manera asíncrona sin bloquear el resto de la interfaz (evita que se congelen los botones)
+    (async () => {
+        try {
+            const respuesta = await fetch('tarifas.json');
+            if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
+            tarifasGlobales = await respuesta.json();
+            recalcularTotal(); // Recalcular en caso de que ya haya ítems cargados post-lectura
+        } catch (error) {
+            console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
+            // Salvavidas por si el archivo no carga (ej. abriendo localmente sin servidor)
+            tarifasGlobales = {
+                con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
+                sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
+                factor_impuestos: 1.36
+            };
+        }
+    })();
 
     // Lógica del Menú Flotante Superior
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
@@ -48,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+
     // Controlador de la LLave de Luz 3D (Tema)
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     if (btnTemaServicios) {
@@ -62,6 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+
     // --- LÓGICA DE LOS SLIDERS ---
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
@@ -368,5 +379,5 @@ function compartirWeb() {
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
     window.open(whatsappUrl, '_blank');
   }
-    }
-            
+                    }
+                
