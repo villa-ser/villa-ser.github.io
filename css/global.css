@@ -172,7 +172,7 @@ body {
     font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
     color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0;
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
-
+}
 /* --- FOOTER REDES --- */
 .footer-gnc-compact {
     width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; 
