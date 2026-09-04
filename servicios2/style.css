@@ -29,43 +29,6 @@
 }
 @keyframes run-border { to { stroke-dashoffset: -200; } }
 
-.btn-flotante-accion {
-    position: fixed; top: 15px; z-index: 9999; height: 60px; border-radius: 8px;
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); color: var(--ngc-text);
-    display: flex; justify-content: center; align-items: center;
-    font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; text-decoration: none;
-}
-.btn-flotante-accion:hover {
-    color: var(--ngc-neon); border-color: var(--ngc-neon);
-    box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); transform: translateY(-2px);
-}
-
-#btn-ir-menu { width: 60px; left: 15px; }
-
-.btn-explorar {
-    width: auto !important; padding: 0 20px; gap: 8px;
-    font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-}
-.btn-explorar span { display: inline-block; }
-
-.menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
-.menu-flotante-container .btn-flotante-accion { position: static; }
-
-.dropdown-flotante-content {
-    position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
-    backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    border-radius: 12px; width: 220px; box-shadow: 0 10px 25px var(--card-shadow), var(--ngc-glass-edge);
-    display: flex; flex-direction: column; padding: 8px; gap: 5px; z-index: 10000;
-}
-.dropdown-flotante-content a {
-    color: var(--ngc-text); text-decoration: none; padding: 10px 12px;
-    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
-    border-radius: 8px; display: flex; align-items: center; gap: 8px; transition: 0.2s;
-}
-.dropdown-flotante-content a i { color: var(--ngc-neon); }
-.dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
 /* --- antiguo Css del boton cambio de modo --- */
 
@@ -213,10 +176,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
 @media (min-width: 768px) {
     .gnc-wrapper { max-width: 720px; padding: 25px; }
-    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
-    .menu-flotante-container { top: 25px; left: 105px; }
-    .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
-    .dropdown-flotante-content { top: 80px; width: 250px; }
     
     .switch-plate.switch-servicios {
         left: auto !important;
