@@ -123,9 +123,9 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 .btn-micro-info:hover { border-color: var(--ngc-text); color: var(--ngc-text); background: rgba(255,255,255,0.05); }
 
 .extra-info-box {
-    margin-top: 15px; padding: 15px; border-left: 3px solid var(--gnc-neon);
+    margin-top: 15px; padding: 15px; border-left: 3px solid var(--warning-amber);
     background: rgba(0, 0, 0, 0.25); border-radius: 0 12px 12px 0;
-    font-size: 0.85rem; color: var(--gnc-text-muted); animation: slideDownFade 0.4s ease forwards;
+    font-size: 0.85rem; color: var(--ngc-text-muted); animation: slideDownFade 0.4s ease forwards;
 }
 [data-theme="light"] .extra-info-box { background: rgba(0, 0, 0, 0.05); }
 .extra-info-box p { margin-bottom: 8px; line-height: 1.5; color: var(--ngc-text-muted); }
