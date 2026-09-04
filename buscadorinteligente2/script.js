@@ -494,4 +494,150 @@ function ejecutarBusqueda() {
                     } 
                     else if (opcionFonetica === conceptoFonetico) {
                         palabraEncontrada = true;
-                        mejorPuntajePalabra = Math.
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 9 : 6);
+                    }
+                    else if (sonSimilares(opcion, palabraConcepto)) {
+                        palabraEncontrada = true;
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 4);
+                    }
+                    else if (sonSimilares(opcionFonetica, conceptoFonetico)) {
+                        palabraEncontrada = true;
+                        mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 3);
+                    }
+                }
+            }
+
+            if (!palabraEncontrada) {
+                cumpleTodas = false;
+                break; 
+            }
+            score += mejorPuntajePalabra;
+        }
+
+        if (cumpleTodas) {
+            coincidencias.push({ item: item, score: score });
+        }
+    }
+
+    coincidencias.sort((a, b) => b.score - a.score);
+    const mejoresResultados = coincidencias.slice(0, 10).map(c => c.item);
+
+    if (mejoresResultados.length === 0) {
+        resultsContainer.innerHTML = `<div class="no-results">No se encontraron precios referenciales.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Intentá usar palabras más cortas o generales. (Ej: "tablero", "boca", "jabalina")</span></div>`;
+        return;
+    }
+
+    mejoresResultados.forEach(item => {
+        let precioFormat = "$ Consultar";
+        let priceNum = Number(item.precio);
+        if (!isNaN(priceNum) && item.precio !== "") {
+            precioFormat = `$ ${priceNum.toLocaleString('es-AR')}`;
+        } else if (item.precio) {
+            precioFormat = `$ ${item.precio}`;
+        }
+
+        const card = document.createElement("div");
+        card.className = "result-card gpu-accel"; 
+
+        const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
+        const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
+
+        card.innerHTML = `
+            <div class="result-header">
+                <span class="result-concept">${item.concepto}</span>
+                <div class="price-container">
+                    <span class="result-price">${precioFormat}</span>
+                    <span class="price-note">Solo Mano de Obra</span>
+                </div>
+            </div>
+            
+            <div class="result-obs-preview">
+                <span class="click-to-expand"><i class="fa-solid fa-chevron-down"></i> Toca para ver detalles</span>
+            </div>
+            
+            <div class="result-details">
+                <div class="detail-row obs-row">
+                    <span class="detail-label">Observaciones:</span><br> 
+                    ${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación. No incluye materiales."}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Entidad Referencia:</span><br> ${item.organizacion}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Categoría:</span><br> ${item.tema}
+                </div>
+                
+                <div class="wsp-section">
+                    <a href="${urlWp}" target="_blank" class="btn-whatsapp">
+                        <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar Viabilidad
+                    </a>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener("click", (e) => {
+            if (e.target.closest('.btn-whatsapp')) return;
+            card.classList.toggle("active");
+        });
+
+        resultsContainer.appendChild(card);
+    });
+    
+    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+}
+
+function compartirWeb() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Villaser - Buscador de Precios',
+      text: 'Buscador de precios referenciales para trabajos eléctricos en Córdoba:',
+      url: 'https://villaser.com.ar/buscadorinteligente'
+    }).catch(console.error);
+  } else {
+    window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
+  }
+}
+
+function busquedaRapida(termino) {
+    const searchInput = document.getElementById("searchInput");
+    const btnBuscar = document.getElementById("btnBuscar");
+    if(searchInput && btnBuscar) {
+        searchInput.value = termino;
+        btnBuscar.disabled = false;
+        seleccionPendiente = true; 
+        btnBuscar.click();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const parametrosURL = new URLSearchParams(window.location.search);
+    const servicioSolicitado = parametrosURL.get('servicio');
+
+    if (servicioSolicitado) {
+        const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
+
+        const temporizadorCarga = setInterval(() => {
+            if (typeof allData !== 'undefined' && allData.length > 0) {
+                clearInterval(temporizadorCarga); 
+
+                const inputBuscador = document.getElementById("searchInput");
+                const btnBuscar = document.getElementById("btnBuscar");
+                const listaSugerencias = document.getElementById("suggestionsList");
+
+                if (inputBuscador && btnBuscar) {
+                    inputBuscador.value = terminoBusqueda;
+                    inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
+                    
+                    if (listaSugerencias) {
+                        listaSugerencias.classList.add("oculto");
+                    }
+                    
+                    setTimeout(() => {
+                        btnBuscar.click();
+                    }, 50);
+                }
+            }
+        }, 100); 
+    }
+});
+                                                      
