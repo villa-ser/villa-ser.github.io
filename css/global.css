@@ -12,6 +12,7 @@
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
     /* Variables de Texto Originales */
+    --gnc-text: #ffffff;
     --ngc-text-main: #ffffff; 
     --ngc-text-desc: rgba(255, 255, 255, 0.9);
     --ngc-text-muted: rgba(255, 255, 255, 0.7);
@@ -37,6 +38,7 @@
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
     /* Textos invertidos para modo día */
+    --gnc-text: #111111;
     --ngc-text-main: #1a1a1a; 
     --ngc-text-desc: #333333;
     --ngc-text-muted: #555555;
