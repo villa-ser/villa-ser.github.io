@@ -48,6 +48,15 @@
 
 .separador-bloque { width: 100%; margin-bottom: 12px; }
 
+/* --- BANNER DE AVISO --- */
+.info-banner {
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); 
+    -webkit-backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); 
+    border-left: 4px solid var(--warning-amber); padding: 15px;
+    border-radius: 12px; margin-bottom: 15px; 
+    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); 
+}
+
 .banner-title {
     color: var(--warning-amber); font-size: 0.9rem; font-weight: 800;
     text-transform: uppercase; display: flex; align-items: center;
@@ -61,7 +70,6 @@
     text-align: center; font-size: 0.8rem; color: var(--ngc-neon);
     margin-bottom: 12px; font-weight: 600;
 }
-
 /* --- INPUTS Y BÚSQUEDA --- */
 .input-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
 
