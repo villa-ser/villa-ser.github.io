@@ -1,1 +1,44 @@
+<!-- 1. Estilos generales (compartidos) -->
+    <link rel="stylesheet" href="../css/global.css">
+    
+    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
+    <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
+    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="menu-flotante-container">
+        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
+            <i class="fas fa-bars"></i> <span>Explorar</span>
+        </button>
+        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
+            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
+            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
+            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
+        </div>
+    </div>
+
+    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
+        <div class="switch-rocker"></div>
+    </button>
+
+    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
+    <div class="hero-logo-icon">
+        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
+        <svg class="hero-neon-svg" preserveAspectRatio="none">
+            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
+        </svg>
+    </div>
+
+
+  
