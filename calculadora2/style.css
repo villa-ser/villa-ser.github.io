@@ -1,33 +1,4 @@
-/* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
-:root {
-    /* MODO OSCURO (Default) */
-    --gnc-neon: #00d4ff; 
-    --gnc-neon-rgb: 0, 212, 255;
-    
-    /* MODIFICACIONES: Mayor desenfoque y cristal más definido */
-    --gnc-blur: blur(15px);
-    --gnc-glass: rgba(0, 0, 0, 0.5); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3);
-    /* NUEVO: Reflejo para simular borde 3D */
-    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
-    
-    /* Variables de Texto */
-    --gnc-text: #ffffff;
-    --gnc-success: #28a745;
-    --gnc-danger: #ff4d4d;
-    --gnc-text-muted: rgba(255, 255, 255, 0.7);
-    
-    /* Variables de Layout y Componentes Calculadora */
-    --bg-body: #121212;
-    --card-shadow: rgba(0, 0, 0, 0.5);
-    
-    /* Inputs y Fondos internos (Oscuro) */
-    --input-bg: rgba(0, 0, 0, 0.6);
-    --item-row-bg: rgba(0, 0, 0, 0.5);
-    --select-bg: rgba(20, 20, 20, 0.95);
-    --opt-group-bg: rgba(0, 212, 255, 0.1);
-    --summary-bg: rgba(0, 0, 0, 0.6);
-}
+
 
 /* --- VARIABLES MODO DÍA --- */
 [data-theme="light"] {
