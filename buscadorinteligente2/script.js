@@ -101,15 +101,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
     // ==========================================
-    const btnTema = document.getElementById('btn-tema');
-    if (btnTema) {
-        btnTema.addEventListener('click', () => {
+    // Controlador de la LLave de Luz 3D (Tema)
+    const btnTemaServicios = document.getElementById('btn-tema-servicios');
+    if (btnTemaServicios) {
+        btnTemaServicios.addEventListener('click', () => {
             const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
             if (esActualClaro) {
-                aplicarTemaSeccion(false);
+                document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('temaVillaser', 'dark');
             } else {
-                aplicarTemaSeccion(true);
+                document.documentElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('temaVillaser', 'light');
             }
         });
