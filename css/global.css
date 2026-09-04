@@ -218,7 +218,7 @@ body {
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    border: 1px solid rgba(150, 150, 150, 0.2);
+    border: var(--ngc-border-glass);
     border-radius: 8px;
     display: flex;
     justify-content: center;
