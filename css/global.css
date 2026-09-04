@@ -10,7 +10,7 @@
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
     /* NUEVO: Reflejo superior e izquierdo para simular grosor de cristal (3D) */
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
-    
+
     /* Variables de Texto Originales */
     --ngc-text: #ffffff;
     --ngc-text-main: #ffffff; 
@@ -18,6 +18,7 @@
     --ngc-text-faded: rgba(255, 255, 255, 0.4);
     --ngc-text-muted: rgba(255, 255, 255, 0.85); 
     --ngc-success: #28a745; 
+    --gnc-danger: #ff4d4d;
     
     --bg-body: #121212;
     --ngc-privacy-border: rgba(255, 255, 255, 0.1);
@@ -37,8 +38,12 @@
     --result-hover-bg: rgba(0, 0, 0, 0.6);
     --quote-bg: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.1) 100%);
     --dropdown-bg: rgba(18, 18, 18, 0.95);
+    --item-row-bg: rgba(0, 0, 0, 0.5);
+    --select-bg: rgba(20, 20, 20, 0.95);
+    --opt-group-bg: rgba(0, 212, 255, 0.1);
+    --summary-bg: rgba(0, 0, 0, 0.6);
 }
-
+    
 [data-theme="light"] {
     --ngc-neon: #008fb3; 
     --ngc-neon-rgb: 0, 143, 179;
