@@ -185,6 +185,9 @@ body {
 
 @keyframes run-border { to { stroke-dashoffset: -200; } }
 
+/* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
+.oculto { display: none !important; }
+
 /* --- CONTROLES FLOTANTES SUPERIORES (Volver y Menú Explorar) --- */
 .btn-flotante-accion {
     position: fixed; top: 15px; z-index: 9999; height: 60px; border-radius: 8px;
