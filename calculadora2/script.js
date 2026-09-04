@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     }
 
-    // --- LÓGICA DEL MENÚ FLOTANTE ---
+    // Lógica del Menú Flotante Superior
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
@@ -41,16 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             e.stopPropagation();
             dropdownFlotante.classList.toggle('oculto');
         });
-    }
 
-    document.addEventListener('click', (e) => {
-        if (btnMenuFlotante && dropdownFlotante) {
+        document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
             }
-        }
-    });
-
+        });
+    }
     // Controlador de la LLave de Luz 3D (Tema)
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     if (btnTemaServicios) {
