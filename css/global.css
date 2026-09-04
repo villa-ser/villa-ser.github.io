@@ -25,6 +25,21 @@
     --ngc-modal-overlay: rgba(0, 0, 0, 0.75);
     --ngc-cta-banner: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
     --card-shadow: rgba(0, 0, 0, 0.5);
+
+    --success-green: #28a745;
+    --warning-amber: #ffcc00;
+    --error-red: #ff4b2b;
+    
+    --bg-body: #121212;
+
+    
+    /* Inputs y Fondos internos (Oscuro) */
+    --input-bg: rgba(0, 0, 0, 0.6);
+    --obs-bg: rgba(0,0,0,0.3);
+    --detail-bg: rgba(0,0,0,0.5);
+    --result-hover-bg: rgba(0, 0, 0, 0.6);
+    --quote-bg: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.1) 100%);
+    --dropdown-bg: rgba(18, 18, 18, 0.95);
 }
 
 [data-theme="light"] {
