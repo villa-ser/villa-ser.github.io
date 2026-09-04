@@ -111,6 +111,28 @@ body {
     margin-bottom: 15px;
 }
 
+/* --- LOGO Y BOTONES FLOTANTES SUPERIORES --- */
+.hero-logo-icon {
+    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
+    border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+}
+.logo-oscuro, .logo-claro {
+    position: absolute; top: 5px; left: 5px; width: calc(100% - 10px); height: calc(100% - 10px);
+    object-fit: contain; border-radius: 4px; transition: opacity 0.4s ease-in-out; z-index: 2;
+}
+.logo-claro { opacity: 0; }
+[data-theme="light"] .logo-oscuro { opacity: 0; }
+[data-theme="light"] .logo-claro { opacity: 1; }
+
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;}
+.hero-neon-rect {
+    fill: none; stroke: var(--ngc-neon); stroke-width: 4px;
+    stroke-dasharray: 60 140; vector-effect: non-scaling-stroke;
+    animation: run-border 5s linear infinite;
+}
+@keyframes run-border { to { stroke-dashoffset: -200; } }
+
 /* --- CONTROLES FLOTANTES SUPERIORES (Volver y Menú Explorar) --- */
 .btn-flotante-accion {
     position: fixed; top: 15px; z-index: 9999; height: 60px; border-radius: 8px;
