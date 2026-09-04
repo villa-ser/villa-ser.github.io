@@ -15,8 +15,9 @@
     --gnc-text: #ffffff;
     --ngc-text-main: #ffffff; 
     --ngc-text-desc: rgba(255, 255, 255, 0.9);
-    --ngc-text-muted: rgba(255, 255, 255, 0.7);
     --ngc-text-faded: rgba(255, 255, 255, 0.4);
+    --gnc-text-muted: rgba(255, 255, 255, 0.85); 
+    --gnc-success: #28a745; 
     
     --bg-body: #121212;
     --ngc-privacy-border: rgba(255, 255, 255, 0.1);
