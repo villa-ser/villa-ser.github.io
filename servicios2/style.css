@@ -44,7 +44,7 @@ summary::-webkit-details-marker { display: none; }
 /* --- BOTONES Y FORMULARIOS --- */
 .ngc-btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-    padding: 12px; background: transparent; border: 1px solid var(--gnc-neon);
+    padding: 12px; background: transparent; border: 1px solid var(--ngc-neon);
     border-radius: 12px; color: var(--ngc-neon); font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer;
 }
@@ -67,8 +67,8 @@ summary::-webkit-details-marker { display: none; }
 label { font-size: 0.75rem; text-transform: uppercase; color: var(--ngc-neon); letter-spacing: 1.5px; font-weight: 600; }
 
 input, textarea {
-    width: 100%; padding: 12px 14px; background: var(--ngc-bg-input); border: 1px solid rgba(var(--gnc-neon-rgb), 0.2);
-    border-radius: 12px; color: var(--gnc-text); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
+    width: 100%; padding: 12px 14px; background: var(--ngc-bg-input); border: 1px solid rgba(var(--ngc-neon-rgb), 0.2);
+    border-radius: 12px; color: var(--ngc-text); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
 }
 input:focus, textarea:focus { 
     border-color: var(--ngc-neon);
@@ -80,7 +80,7 @@ input:focus, textarea:focus {
     border: 1px solid var(--ngc-success); border-radius: 12px; margin-top: 15px; animation: fadeIn 0.4s ease;
 }
 
-.neon { color: var(--gnc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
+.neon { color: var(--ngc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
 .icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
