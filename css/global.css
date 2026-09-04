@@ -90,12 +90,21 @@ html {
 html::before, html::after {
     content: "";
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0; left: 0; 
+    width: 100%; 
+    
+    /* MEJORA APLICADA: 100svh evita el salto por la barra de direcciones en móviles */
+    height: 100svh; 
+    
     background-size: cover;
     background-position: center center;
+    background-repeat: no-repeat;
     z-index: -1;
     transition: opacity 0.5s ease-in-out;
-    will-change: opacity;
+    
+    /* MEJORA APLICADA: Aceleración GPU para eliminar temblores */
+    transform: translateZ(0); 
+    will-change: opacity, transform;
 }
 
 html::before {
@@ -115,7 +124,13 @@ body {
     margin: 0; padding: 80px 4px 4px 4px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--ngc-text); /* TEXTO BLANCO POR DEFECTO APLICADO */
-    width: 100%; min-height: 100vh; overflow-x: hidden;
+    width: 100%; 
+    
+    /* MEJORA APLICADA: Sincronizado con svh y asegurando posicionamiento */
+    min-height: 100svh; 
+    position: relative; 
+    
+    overflow-x: hidden;
     display: flex; justify-content: center;
 }
 
@@ -321,4 +336,5 @@ body::before {
 .gpu-accel {
     backface-visibility: hidden;
     transform: translateZ(0);
-}
+    }
+    
