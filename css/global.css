@@ -316,3 +316,9 @@ body::before {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
 }
+
+/* Aceleración por hardware para desenfoques (Mejora el scroll) */
+.gpu-accel {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
