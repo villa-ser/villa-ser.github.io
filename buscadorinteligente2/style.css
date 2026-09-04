@@ -18,11 +18,8 @@
 
 /* --- VARIABLES MODO DÍA --- */
 [data-theme="light"] {
-    --ngc-neon: #007a99; 
-    --ngc-neon-rgb: 0, 122, 153;
     
     /* MODIFICACIÓN: Vidrio translúcido blanco limpio en lugar de gris opaco */
-    --ngc-glass: rgba(255, 255, 255, 0.6); 
     --success-green: #1e7e34;
     --warning-amber: #b58700;
     --error-red: #d93025;
