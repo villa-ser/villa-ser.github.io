@@ -224,7 +224,7 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
     transition: all 0.3s ease;
     outline: none;
     padding: 0;
