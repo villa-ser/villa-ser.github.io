@@ -490,4 +490,44 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         flex-direction: column;
         gap: 40px;
         align-items: center;
-        width: 100
+        width: 100%;
+    }
+
+    .col-izquierda {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+        width: 100%;
+        max-width: 1000px;
+    }
+    
+    .col-izquierda::-webkit-scrollbar { width: auto; }
+
+    .col-derecha {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "banner cta"
+            "footer cta";
+        gap: 20px 30px;
+        width: 100%;
+        max-width: 1000px;
+        min-height: auto;
+    }
+
+    .cta-escritorio { grid-area: cta; }
+    .ngc-custom-quote { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+
+    .info-banner { grid-area: banner; margin-bottom: 0; }
+    .footer-wrapper { grid-area: footer; margin-top: 0; padding-top: 0; }
+
+    .separador-bloque { margin-bottom: 0; }
+    .result-card { padding: 20px; }
+    .result-concept { font-size: 1.1rem; }
+    .cta-flotante-clone { display: none !important; }
+    }
+    
