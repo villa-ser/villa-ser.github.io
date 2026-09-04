@@ -1,17 +1,3 @@
-// ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE Y CARGAR TARIFAS
-// ==========================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-if (temaGuardado === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
-
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-}
-
-let listado = [];
-
 // VARIABLE GLOBAL PARA ALMACENAR LAS TARIFAS DEL JSON
 let tarifasGlobales = null;
 
@@ -31,25 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             factor_impuestos: 1.36
         };
     }
-
-    // --- LÓGICA DEL MENÚ FLOTANTE ---
-    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
-    const dropdownFlotante = document.getElementById('dropdown-flotante');
-
-    if (btnMenuFlotante && dropdownFlotante) {
-        btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownFlotante.classList.toggle('oculto');
-        });
-    }
-
-    document.addEventListener('click', (e) => {
-        if (btnMenuFlotante && dropdownFlotante) {
-            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
-                dropdownFlotante.classList.add('oculto');
-            }
-        }
-    });
 
     // --- LÓGICA DE LOS SLIDERS ---
     const sliderHoras = document.getElementById("horas");
