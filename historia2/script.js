@@ -1,23 +1,19 @@
-  // Cerrar menú flotante al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
-                dropdownFlotante.classList.add('oculto');
-            }
-        });
-    }
 // =========================================================
 // 1. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
 // =========================================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
+// Se ejecuta inmediatamente para evitar el parpadeo de estilos
+(function aplicarTemaInicial() {
+    const temaGuardado = localStorage.getItem('temaVillaser');
+    const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
 
-if (temaGuardado === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-} else if (temaGuardado === 'dark') {
-    document.documentElement.removeAttribute('data-theme');
-} else if (prefiereSistemaClaro.matches) {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
+    if (temaGuardado === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else if (temaGuardado === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+    } else if (prefiereSistemaClaro.matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+})();
 
 // =========================================================
 // 2. EVENTOS QUE SE CARGAN CON EL DOM
@@ -49,23 +45,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
     if (btnMenuFlotante && dropdownFlotante) {
+        // Abrir/Cerrar menú al hacer clic en el botón
         btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Evita que el evento burbujee al document
             dropdownFlotante.classList.toggle('oculto');
         });
 
+        // Cerrar menú flotante al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
             }
         });
     }
-    }
 
     // ==========================================
     // 4. LÓGICA DE UX: Auto-cierre de Acordeones
     // ==========================================
-    const accordions = document.querySelectorAll('details.gnc-accordion');
+    // CORRECCIÓN: Se cambió 'gnc-accordion' por 'ngc-accordion' para coincidir con tu HTML
+    const accordions = document.querySelectorAll('details.ngc-accordion');
     
     accordions.forEach(accordion => {
         accordion.addEventListener('click', (e) => {
