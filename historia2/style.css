@@ -1,27 +1,8 @@
-/* CLASE CRÍTICA PARA EL MENÚ Y ELEMENTOS OCULTOS */
-.oculto { display: none !important; }
+/* ============================================================== */
+/* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Historia / Ley 10.281)    */
+/* ============================================================== */
 
-/* Aceleración por hardware para desenfoques */
-.gpu-accel {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.ngc-main-title {
-    font-size: 1.35rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0; line-height: 1.1;
-    text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
-}
-
-/* --- CONTENEDORES CON ESTILO NGC --- */
-.ngc-banner, details, .ngc-form-container {
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-radius: 16px; border-left: 4px solid var(--ngc-neon); 
-    overflow: hidden; transition: all 0.3s ease; width: 100%;
-    margin-bottom: 15px; 
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05), var(--ngc-glass-edge);
-}
-
+/* --- ESTADOS Y EFECTOS ESPECÍFICOS DE CONTENEDORES --- */
 details[open] {
     border-color: var(--ngc-neon);
     box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.1), var(--ngc-glass-edge);
@@ -43,7 +24,7 @@ summary, .form-header {
 summary::-webkit-details-marker { display: none; }
 
 .summary-title, .form-title {
-    display: flex; align-items: center; gap: 12px; color: var(--gnc-neon); text-shadow: 0 0 5px rgba(var(--gnc-neon-rgb), 0.2);
+    display: flex; align-items: center; gap: 12px; color: var(--ngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
 .ngc-content, .form-body {
@@ -89,7 +70,7 @@ input:focus, textarea:focus {
 }
 
 /* --- UTILIDADES --- */
-.text-neon { color: var(--gngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); font-weight: 600;}
+.text-neon { color: var(--ngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); font-weight: 600;}
 .ngc-content b { color: var(--ngc-text); font-weight: 600; }
 
 #success-message {
@@ -102,29 +83,14 @@ input:focus, textarea:focus {
 .chevron { transition: transform 0.3s ease; opacity: 0.6; width: 16px; height: 16px; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--ngc-neon)); }
 
-
 /* --- ANIMACIONES --- */
 @keyframes intense-beat { 0% { transform: scale(0.95); filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.5)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(40, 167, 69, 0.9)); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ======================================================= */
-/*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
+/*      ADAPTACIÓN RESPONSIVE ESPECÍFICA (ESCRITORIO)      */
 /* ======================================================= */
-
-@media (min-width: 768px) {
-    .ngc-wrapper { max-width: 720px; padding: 25px; }
-    
-    .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
-    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
-    
-    .menu-flotante-container { top: 25px; left: 105px; }
-    .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
-    .dropdown-flotante-content { top: 80px; width: 250px; }
-    
-    #btn-tema { top: 25px; right: 105px; width: 70px; height: 70px; font-size: 1.8rem; }
-}
-
 @media (min-width: 1024px) {
     body { padding-top: 40px; align-items: flex-start; }
     
@@ -174,15 +140,12 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
         order: 5;
     }
     
-    .footer-gnc-compact {
+    /* ¡AQUÍ ESTÁ LA CORRECCIÓN! Se apuntan a las clases reales del HTML */
+    .footer-gnc-compact, .ngc-site-credits {
         order: 6;
     }
-
-    ngc-site-credits {
-        order: 7;
-    }
+    
     .ngc-banner, details, .ngc-form-container, .ngc-main-title {
         margin-bottom: 0 !important;
     }
-  }
-  
+           }
