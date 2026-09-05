@@ -177,7 +177,10 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .footer-gnc-compact {
         order: 6;
     }
-    
+
+    ngc-site-credits {
+        order: 7;
+    }
     .ngc-banner, details, .ngc-form-container, .ngc-main-title {
         margin-bottom: 0 !important;
     }
