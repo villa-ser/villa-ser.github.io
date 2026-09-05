@@ -1,50 +1,7 @@
 /* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
 :root {
-    /* MODO OSCURO (Default) */
-    --gnc-neon: #00d4ff; 
-    --gnc-neon-rgb: 0, 212, 255;
     
-    /* MODIFICACIONES: Mayor desenfoque y cristal definido */
-    --gnc-blur: blur(15px); 
-    --gnc-glass: rgba(0, 0, 0, 0.5); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.3); 
-    /* NUEVO: Reflejo para simular borde 3D */
-    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
     
-    --gnc-text: #ffffff;
-    --gnc-text-muted: rgba(255, 255, 255, 0.7); 
-    --gnc-success: #28a745; 
-    
-    --bg-body: #121212;
-    --card-shadow: rgba(0, 0, 0, 0.5);
-    
-    /* Inputs y Fondos internos (Oscuro) */
-    --gnc-bg-input: rgba(0, 0, 0, 0.6); 
-    --content-bg: transparent;
-}
-
-/* --- VARIABLES MODO DÍA --- */
-[data-theme="light"] {
-    --gnc-neon: #007a99; 
-    --gnc-neon-rgb: 0, 122, 153;
-    
-    /* Cristal translúcido blanco limpio */
-    --gnc-glass: rgba(255, 255, 255, 0.6); 
-    --gnc-border-glass: 1px solid rgba(var(--gnc-neon-rgb), 0.6); 
-    /* NUEVO: Borde con reflejo blanco para el modo claro */
-    --gnc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
-    
-    /* Textos oscuros */
-    --gnc-text: #111111;
-    --gnc-text-muted: #444444; 
-    --gnc-success: #1e7e34; 
-    
-    --bg-body: #d6dbe0;
-    --card-shadow: rgba(0, 0, 0, 0.15);
-    
-    /* Entradas y fondos internos translúcidos (No grises opacos) */
-    --gnc-bg-input: rgba(255, 255, 255, 0.4); 
-    --content-bg: rgba(255, 255, 255, 0.5);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
