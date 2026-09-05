@@ -28,49 +28,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
     
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
 
-    <!-- 1. Botón Volver (Flotante Izquierda) -->
-    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-        <i class="fas fa-arrow-left"></i>
-    </a>
-
-    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
-    <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
-            <i class="fas fa-bars"></i> <span>Explorar</span>
-        </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
-            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
-            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
-            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
-        </div>
-    </div>
-
-    <!-- 3. Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
-        <i class="fas fa-sun"></i>
-    </button>
-
-    <!-- 4. Logo Flotante Animado (Transición CSS) -->
-    <div class="hero-logo-icon gpu-accel">
-        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
-        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
-        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
-        </svg>
-    </div>
-
-    <main class="gnc-main-wrapper">
+    <main class="ngc-main-wrapper">
         <div class="layout-desktop">
             
             <!-- ========================================== -->
