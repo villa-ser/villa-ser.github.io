@@ -174,7 +174,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
         order: 5;
     }
     
-    .footer-wrapper {
+    .footer-gnc-compact {
         order: 6;
     }
     
