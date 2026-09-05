@@ -86,7 +86,21 @@
 .btn-cta-formal:hover { background: var(--ngc-neon); color: white; box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
 
 /* --- BANNERS Y ACORDEONES (Ajustes Específicos) --- */
-.ngc-banner span { color: var(--ngc-neon); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+.ngc-banner {
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Opcional: separa el título del párrafo para mejor lectura */
+}
+
+.ngc-banner span { 
+    color: var(--ngc-neon); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    font-size: 0.85rem; 
+    letter-spacing: 1px; 
+}
+
 details:hover i { filter: drop-shadow(0 0 5px var(--ngc-neon)); transition: filter 0.3s ease; }
 details[open] { border-color: var(--ngc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.1); }
 
