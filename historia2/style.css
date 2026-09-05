@@ -90,7 +90,7 @@ input:focus, textarea:focus {
 
 /* --- UTILIDADES --- */
 .text-neon { color: var(--gngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); font-weight: 600;}
-.gnc-content b { color: var(--ngc-text); font-weight: 600; }
+.ngc-content b { color: var(--ngc-text); font-weight: 600; }
 
 #success-message {
     display: none; text-align: center; padding: 20px; color: var(--ngc-success); font-weight: bold;
@@ -100,7 +100,7 @@ input:focus, textarea:focus {
 
 .icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; width: 16px; height: 16px; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--gnc-neon)); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--ngc-neon)); }
 
 
 /* --- ANIMACIONES --- */
@@ -178,7 +178,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
         order: 6;
     }
     
-    .ngc-banner, details, .gnc-form-container, .gnc-main-title {
+    .ngc-banner, details, .ngc-form-container, .ngc-main-title {
         margin-bottom: 0 !important;
     }
   }
