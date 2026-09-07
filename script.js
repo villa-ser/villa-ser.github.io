@@ -1,29 +1,20 @@
-// ==========================================
+// =========================================================
 // 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
-// ==========================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-// Detectar si el sistema operativo o navegador prefiere modo claro
-const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
+// =========================================================
+(function aplicarTemaInicial() {
+    const temaGuardado = localStorage.getItem('temaVillaser');
+    const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
 
-function aplicarTemaRaiz(esClaro) {
-    if (esClaro) {
+    if (temaGuardado === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-    } else {
+    } else if (temaGuardado === 'dark') {
         document.documentElement.removeAttribute('data-theme');
+    } else if (prefiereSistemaClaro.matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
     }
-}
+})();
 
-// 1. Prioridad: Guardado por el usuario. 2. Secundario: Preferencia del Sistema
-if (temaGuardado === 'light') {
-    aplicarTemaRaiz(true);
-} else if (temaGuardado === 'dark') {
-    aplicarTemaRaiz(false);
-} else {
-    // Automático según el sistema: Si el SO es claro, aplica claro; si no, queda oscuro por defecto.
-    aplicarTemaRaiz(prefiereSistemaClaro.matches);
-}
-
-// Inicializar iconos de Lucide (si se usan en el index)
+// Inicializar iconos de Lucide
 if (typeof lucide !== 'undefined') {
     lucide.createIcons();
 }
@@ -33,26 +24,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 1. LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
     // ==========================================
-    const btnTema = document.getElementById('btn-tema');
+    const btnTemaServicios = document.getElementById('btn-tema-servicios');
     
-    if (btnTema) {
-        btnTema.addEventListener('click', () => {
+    if (btnTemaServicios) {
+        btnTemaServicios.addEventListener('click', () => {
             const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
             
             if (esActualClaro) {
-                // Cambiar a oscuro
-                aplicarTemaRaiz(false);
+                document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('temaVillaser', 'dark');
             } else {
-                // Cambiar a claro
-                aplicarTemaRaiz(true);
+                document.documentElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('temaVillaser', 'light');
             }
         });
     }
 
-// (El resto de tu código a partir de "2. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR" queda intacto)
-    
     // ==========================================
     // 2. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR
     // ==========================================
@@ -98,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
 
 // ==========================================
 // 4. FUNCIONES DE LA NUBE FLOTANTE (MODAL)
