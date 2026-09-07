@@ -278,49 +278,66 @@ body {
     stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
 }
 
-/* 2. Botón Tema (Izquierda) */
-/* 2. Botón Tema (Llave de luz 3D - Izquierda) */
-.switch-plate {
-  position: fixed; top: 15px; left: 15px; z-index: 9999;
-  width: 40px; height: 60px;
-  background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-  -webkit-backdrop-filter: var(--ngc-blur);
-  border: var(--ngc-border-glass); border-radius: 8px;
-  display: flex; justify-content: center; align-items: center;
-  cursor: pointer; transition: all 0.3s ease; outline: none;
-  box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+/* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
+#btn-tema-servicios.switch-plate {
+    position: fixed;
+    top: 15px; 
+    right: 85px; /* Separación a la izquierda del logo */
+    z-index: 9999;
+    width: 40px;
+    height: 60px;
+    background: var(--ngc-glass);
+    backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+    transition: all 0.3s ease;
+    outline: none;
+    padding: 0;
 }
-.switch-plate:hover {
-  border-color: var(--ngc-neon);
-  box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge);
-}
-.switch-rocker {
-  width: 20px; height: 38px; border-radius: 4px; position: relative;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background 0.3s ease;
-  transform-origin: center;
-}
-/* ESTADO: MODO OSCURO (Apagado) */
-.switch-rocker {
-  transform: perspective(150px) rotateX(-20deg);
-  background: linear-gradient(to bottom, #4a4a4a 0%, #1a1a1a 100%);
-  box-shadow: 0 6px 4px -2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 2px rgba(0,0,0,0.8);
-  border: 1px solid #333; border-bottom: 1px solid #000;
-}
-/* ESTADO: MODO CLARO (Encendido) */
-[data-theme="light"] .switch-rocker {
-  transform: perspective(150px) rotateX(20deg);
-  background: linear-gradient(to bottom, #ffffff 0%, #d4d4d4 100%);
-  box-shadow: 0 -6px 4px -2px rgba(0,0,0,0.2), inset 0 -1px 2px rgba(255,255,255,0.8), inset 0 1px 2px rgba(0,0,0,0.1);
-  border: 1px solid #bbb; border-top: 1px solid #999;
-}
-/* Indicador LED Neón NGC */
-.switch-rocker::after {
-  content: ''; position: absolute; width: 6px; height: 2px; border-radius: 2px;
-  left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
-}
-.switch-rocker::after { top: 6px; background: rgba(var(--ngc-neon-rgb), 0.2); box-shadow: none; }
-[data-theme="light"] .switch-rocker::after { top: auto; bottom: 6px; background: var(--ngc-neon); box-shadow: 0 0 8px var(--ngc-neon); }
 
+#btn-tema-servicios.switch-plate:hover {
+    border-color: rgba(var(--ngc-neon-rgb), 0.4);
+    box-shadow: 0 4px 12px rgba(var(--ngc-neon-rgb), 0.15);
+}
+
+.switch-rocker {
+    width: 14px;
+    height: 28px;
+    border-radius: 4px;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
+    transform-origin: center;
+}
+
+.switch-rocker {
+    transform: perspective(200px) rotateX(-12deg);
+    background: #2a2a2a;
+    border: 1px solid #1a1a1a;
+    box-shadow: 0 3px 2px -1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);
+}
+
+[data-theme="light"] .switch-rocker {
+    transform: perspective(200px) rotateX(12deg);
+    background: #f4f4f4;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 -3px 2px -1px rgba(0,0,0,0.1), inset 0 -1px 1px rgba(255,255,255,0.5);
+}
+
+.switch-rocker::after {
+    content: ''; position: absolute; width: 4px; height: 4px;
+    border-radius: 50%; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
+}
+
+.switch-rocker::after { top: 4px; background: rgba(255, 255, 255, 0.15); box-shadow: none; }
+[data-theme="light"] .switch-rocker::after {
+    top: auto; bottom: 4px; background: var(--ngc-neon); box-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.8);
+}
 
 /* --- NUBE FLOTANTE (MODAL SERVICIOS RÁPIDOS) --- */
 .ngc-modal-overlay {
