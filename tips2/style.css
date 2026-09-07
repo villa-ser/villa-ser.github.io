@@ -77,8 +77,26 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .ngc-section-label { margin-top: 5px; margin-bottom: 0; }
 }
 
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Tips)                   */
+/* ======================================================= */
 @media (max-width: 1023px) {
-    .ngc-banner-tips, details, .ngc-tips-cta, .ngc-section-label {
-        margin-bottom: 0 !important;
+    .col-izquierda, .col-derecha {
+        display: contents; 
+    }
+    
+    .footer-wrapper {
+        order: 6; 
+    }
+    
+    /* RESTAURAMOS LA SEPARACIÓN PARA MÓVILES */
+    .ngc-banner-tips, details, .ngc-tips-cta {
+        margin-bottom: 15px !important;
+    }
+    
+    /* Separamos las etiquetas de texto de los cuadros */
+    .ngc-section-label {
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
     }
 }
