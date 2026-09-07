@@ -1,30 +1,44 @@
-// ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE (Evita parpadeos)
-// ==========================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-if (temaGuardado === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
+// =========================================================
+// 1. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
+// =========================================================
+// Se ejecuta inmediatamente para evitar el parpadeo de estilos (Flicker)
+(function aplicarTemaInicial() {
+    const temaGuardado = localStorage.getItem('temaVillaser');
+    const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
 
+    if (temaGuardado === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else if (temaGuardado === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+    } else if (prefiereSistemaClaro.matches) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+})();
+
+// =========================================================
+// 2. EVENTOS QUE SE CARGAN CON EL DOM
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Inicializar iconos de Lucide
+    
+    // Inicializar los iconos de Lucide
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
     // ==========================================
-    // 2. LÓGICA DEL MENÚ FLOTANTE SUPERIOR
+    // Lógica del Menú Flotante Superior (Explorar)
     // ==========================================
     const btnMenuFlotante = document.getElementById('btn-menu-flotante');
     const dropdownFlotante = document.getElementById('dropdown-flotante');
 
     if (btnMenuFlotante && dropdownFlotante) {
+        // Abrir/Cerrar menú al hacer clic en el botón
         btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Evita que el clic cierre el menú al instante
             dropdownFlotante.classList.toggle('oculto');
         });
 
-        // Cerrar menú flotante al hacer clic fuera
+        // Cerrar menú flotante al hacer clic en cualquier lugar fuera de él
         document.addEventListener('click', (e) => {
             if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
                 dropdownFlotante.classList.add('oculto');
@@ -33,42 +47,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 3. LÓGICA DEL MODO DÍA / MODO NOCHE
+    // Controlador de la LLave de Luz 3D (Cambio de Tema)
     // ==========================================
-    const btnTema = document.getElementById('btn-tema');
+    const btnTemaServicios = document.getElementById('btn-tema-servicios');
     
-    if (btnTema) {
-        const iconTema = btnTema.querySelector('i');
-        
-        // Sincronizar iconos según el tema actual guardado
-        if (temaGuardado === 'light') {
-            iconTema.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        // Alternar tema
-        btnTema.addEventListener('click', () => {
-            const temaActual = document.documentElement.getAttribute('data-theme');
+    if (btnTemaServicios) {
+        btnTemaServicios.addEventListener('click', () => {
+            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
             
-            if (temaActual === 'light') {
-                document.documentElement.removeAttribute('data-theme'); 
+            if (esActualClaro) {
+                document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('temaVillaser', 'dark');
-                iconTema.classList.replace('fa-moon', 'fa-sun');
             } else {
-                document.documentElement.setAttribute('data-theme', 'light'); 
+                document.documentElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('temaVillaser', 'light');
-                iconTema.classList.replace('fa-sun', 'fa-moon');
             }
         });
     }
 
     // ==========================================
-    // 4. LÓGICA DE UX: Auto-cierre de Acordeones
+    // LÓGICA DE UX: Auto-cierre de Acordeones
     // ==========================================
     const accordions = document.querySelectorAll('details[name="consejo"]');
     
     accordions.forEach(accordion => {
         accordion.addEventListener('click', (e) => {
-            if (!accordion.open) {
+            if (!accordion.hasAttribute('open')) {
                 accordions.forEach(otherAccordion => {
                     if (otherAccordion !== accordion) {
                         otherAccordion.removeAttribute('open');
@@ -80,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 5. FUNCIÓN PARA COMPARTIR
+// FUNCIÓN PARA COMPARTIR
 // ==========================================
 function compartirWeb() {
   if (navigator.share) {
