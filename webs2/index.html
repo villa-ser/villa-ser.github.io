@@ -28,18 +28,19 @@
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <!-- 1. Estilos generales (compartidos) -->
+    <link rel="stylesheet" href="../css/global.css">
+    
+    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
 
-    <!-- 1. Botón Volver (Flotante Izquierda) -->
+<body>
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
         <i class="fas fa-arrow-left"></i>
     </a>
 
-    <!-- 2. Botón Desplegable de Secciones (Rectangular) -->
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
             <i class="fas fa-bars"></i> <span>Explorar</span>
@@ -55,21 +56,21 @@
         </div>
     </div>
 
-    <!-- 3. Botón Modo Día/Noche -->
-    <button id="btn-tema" class="btn-flotante-accion gpu-accel" aria-label="Cambiar tema">
-        <i class="fas fa-sun"></i>
+    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
+        <div class="switch-rocker"></div>
     </button>
 
-    <!-- 4. Logo Flotante Animado (Transición CSS) -->
-    <div class="hero-logo-icon gpu-accel">
+    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
+    <div class="hero-logo-icon">
         <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
         <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
-        <svg class="hero-neon-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <rect class="hero-neon-rect" x="2" y="2" width="96" height="96" rx="15" ry="15"></rect>
+        <svg class="hero-neon-svg" preserveAspectRatio="none">
+            <rect class="hero-neon-rect" x="0" y="0" rx="8" ry="8"></rect>
         </svg>
     </div>
 
-    <main class="gnc-wrapper">
+    <main class="ngc-wrapper">
         <div class="layout-desktop">
             
             <!-- ========================================== -->
@@ -77,12 +78,12 @@
             <!-- ========================================== -->
             <div class="col-izquierda">
 
-                <h1 class="gnc-main-title">Webs de Interés</h1>
+                <h1 class="ngc-main-title">Webs de Interés</h1>
 
                 <!-- BANNER INFORMATIVO -->
-                <div class="gnc-banner gpu-accel">
+                <div class="ngc-banner gpu-accel">
                     <span style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-link" style="color: var(--gnc-neon);"></i> Accesos Directos
+                        <i class="fa-solid fa-link" style="color: var(--ngc-neon);"></i> Accesos Directos
                     </span>
                     <p>Directorio de consulta rápida con marco legal vigente, entes reguladores y comercios de insumos eléctricos en Córdoba.</p>
                 </div>
@@ -102,7 +103,7 @@
             <!-- ========================================== -->
             <div class="col-derecha">
 
-                <div class="gnc-section-label">Marco Legal y Normativo</div>
+                <div class="ngc-section-label">Marco Legal y Normativo</div>
 
                 <!-- ACORDEONES CON NAME PARA AUTO-CIERRE -->
                 <details name="info" class="gpu-accel">
@@ -113,9 +114,9 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>Ley de Seguridad Eléctrica de la Provincia de Córdoba. Establece las condiciones obligatorias de seguridad en inmuebles públicos y privados.</p>
-                        <a href="https://ersep.cba.gov.ar/seguridad-electrica/" target="_blank" class="gnc-link">
+                        <a href="https://ersep.cba.gov.ar/seguridad-electrica/" target="_blank" class="ngc-link">
                             <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Ver en ERSEP
                         </a>
                     </div>
@@ -129,15 +130,15 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>Reglamentación para la Ejecución de Instalaciones Eléctricas en Inmuebles. La guía técnica fundamental para todo instalador matriculado.</p>
-                        <a href="https://aea.org.ar/" target="_blank" class="gnc-link">
+                        <a href="https://aea.org.ar/" target="_blank" class="ngc-link">
                             <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Web Oficial AEA
                         </a>
                     </div>
                 </details>
 
-                <div class="gnc-section-label" style="margin-top: 15px;">Entes y Servicios</div>
+                <div class="ngc-section-label" style="margin-top: 15px;">Entes y Servicios</div>
 
                 <details name="info" class="gpu-accel">
                     <summary>
@@ -147,9 +148,9 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>Ente Regulador de los Servicios Públicos. Plataforma oficial para consultar el padrón de Instaladores Electricistas Habilitados.</p>
-                        <a href="https://ersep.cba.gov.ar/" target="_blank" class="gnc-link">
+                        <a href="https://ersep.cba.gov.ar/" target="_blank" class="ngc-link">
                             <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Ir a ERSEP
                         </a>
                     </div>
@@ -163,9 +164,9 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>Empresa Provincial de Energía de Córdoba. Gestión de nuevos suministros, medidores, luz de obra y consulta de estados de cuenta.</p>
-                        <a href="https://www.epec.com.ar/" target="_blank" class="gnc-link">
+                        <a href="https://www.epec.com.ar/" target="_blank" class="ngc-link">
                             <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Oficina Virtual EPEC
                         </a>
                     </div>
@@ -179,15 +180,15 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>ONG dedicada a la seguridad ciudadana que detecta y gestiona la solución de peligros en la vía pública mediante la participación social y educativa.</p>
-                        <a href="https://relevandopeligros.org/" target="_blank" class="gnc-link">
+                        <a href="https://relevandopeligros.org/" target="_blank" class="ngc-link">
                             <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Ir a Relevando Peligros
                         </a>
                     </div>
                 </details>
 
-                <div class="gnc-section-label" style="margin-top: 15px;">Comercios en Córdoba</div>
+                <div class="ngc-section-label" style="margin-top: 15px;">Comercios en Córdoba</div>
 
                 <details name="info" class="gpu-accel">
                     <summary>
@@ -197,7 +198,7 @@
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
-                    <div class="gnc-content">
+                    <div class="ngc-content">
                         <p>Principales distribuidores de materiales normalizados en Córdoba Capital:</p>
                         <ul class="suppliers-list">
                             <li><b>Electro Alem:</b> Av. Alem.</li>
@@ -212,23 +213,32 @@
                 </details>
 
                 <!-- FOOTER Y CRÉDITOS -->
-                <div class="footer-wrapper">
-                    <div class="footer-gnc-compact gpu-accel">
-                        <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico"><i class="far fa-envelope"></i></a>
-                        <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web"> <i class="fa-solid fa-share-nodes"></i> </button>
-                        <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                    
-                    <div class="ngc-site-credits">
-                        &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
-                    </div>
+        
+                 <div class="footer-gnc-compact gpu-accel">
+                    <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
+                        <i class="far fa-envelope"></i>
+                    </a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
+                         <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
 
+                <div class="ngc-site-credits">
+                    &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+                </div>
             </div>
         </div>
     </main>
+
 
     <!-- Script con defer activado -->
     <script src="script.js" defer></script>
