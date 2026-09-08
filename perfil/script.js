@@ -1,87 +1,9 @@
 // =========================================================
-// 1. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
+// SCRIPTS ESPECÍFICOS DE LA PÁGINA "PERFIL"
 // =========================================================
-// Se ejecuta inmediatamente para evitar el parpadeo de estilos (Flicker)
-(function aplicarTemaInicial() {
-    const temaGuardado = localStorage.getItem('temaVillaser');
-    const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
 
-    if (temaGuardado === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else if (temaGuardado === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-    } else if (prefiereSistemaClaro.matches) {
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
-})();
-
-// =========================================================
-// 2. EVENTOS QUE SE CARGAN CON EL DOM
-// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Inicializar los iconos de Lucide
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    // ==========================================
-    // Lógica del Menú Flotante Superior (Explorar)
-    // ==========================================
-    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
-    const dropdownFlotante = document.getElementById('dropdown-flotante');
-
-    if (btnMenuFlotante && dropdownFlotante) {
-        // Abrir/Cerrar menú al hacer clic en el botón
-        btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownFlotante.classList.toggle('oculto');
-        });
-
-        // Cerrar menú flotante al hacer clic fuera de él
-        document.addEventListener('click', (e) => {
-            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
-                dropdownFlotante.classList.add('oculto');
-            }
-        });
-    }
-
-    // ==========================================
-    // Controlador de la LLave de Luz 3D (Cambio de Tema)
-    // ==========================================
-    const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    
-    if (btnTemaServicios) {
-        btnTemaServicios.addEventListener('click', () => {
-            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
-            
-            if (esActualClaro) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('temaVillaser', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('temaVillaser', 'light');
-            }
-        });
-    }
-
-    // ==========================================
-    // LÓGICA DE UX: Auto-cierre de Acordeones
-    // ==========================================
-    const accordions = document.querySelectorAll('details[name="historia"]');
-    
-    accordions.forEach(accordion => {
-        accordion.addEventListener('click', (e) => {
-            if (!accordion.hasAttribute('open')) {
-                accordions.forEach(otherAccordion => {
-                    if (otherAccordion !== accordion) {
-                        otherAccordion.removeAttribute('open');
-                    }
-                });
-            }
-        });
-    });
-
     // ==========================================
     // ROTACIÓN DE IMÁGENES (CROSSFADE PERFECTO)
     // ==========================================
@@ -98,10 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
             '../img/perfil6.avif'
         ];
 
-        // Precarga oculta para que no haya demoras de red al cambiar
+        // Precarga oculta para evitar demoras de red al cambiar
         imagenesPerfil.forEach(src => new Image().src = src);
 
-        // Creamos una segunda capa de imagen dinámica (sin tocar el HTML)
+        // Creamos una segunda capa de imagen dinámica
         const imgSuperpuesta = imgBase.cloneNode();
         imgSuperpuesta.style.position = 'absolute';
         imgSuperpuesta.style.top = '3px';
@@ -130,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 imgBase.src = imagenesPerfil[indexSiguiente];
                 
-                // Ocultamos la capa superior de golpe (sin transición) para que no se note
+                // Ocultamos la capa superior de golpe para que no se note
                 imgSuperpuesta.style.transition = 'none';
                 imgSuperpuesta.style.opacity = '0';
                 
@@ -145,20 +67,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
     }
 });
-
-// ==========================================
-// FUNCIÓN PARA COMPARTIR
-// ==========================================
-function compartirWeb() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'CV - Sergio Villagra Electricista',
-      text: 'Te comparto el currículum y certificaciones de Sergio Villagra, Electricista Cat III:',
-      url: 'https://villaser.com.ar/perfil'
-    })
-    .catch((error) => console.log('Error al compartir', error));
-  } else {
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto el CV de Sergio Villagra, Electricista Cat III en Córdoba: https://villaser.com.ar/perfil");
-    window.open(whatsappUrl, '_blank');
-  }
-}
