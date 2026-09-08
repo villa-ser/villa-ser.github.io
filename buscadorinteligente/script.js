@@ -1,58 +1,25 @@
-// ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
-// ==========================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
-
-function aplicarTemaSeccion(esClaro) {
-    if (esClaro) {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
-}
-
-// 1. Prioridad: Guardado por el usuario. 2. Secundario: Preferencia del Sistema
-if (temaGuardado === 'light') {
-    aplicarTemaSeccion(true);
-} else if (temaGuardado === 'dark') {
-    aplicarTemaSeccion(false);
-} else {
-    aplicarTemaSeccion(prefiereSistemaClaro.matches);
-}
+// =========================================================
+// SCRIPTS ESPECÍFICOS DEL "BUSCADOR INTELIGENTE"
+// =========================================================
 
 let allData = [];
-let diccionarioSugerencias = []; // Almacenará las palabras únicas para autocompletar
-let seleccionPendiente = false;  // Controla cuándo se debe seleccionar todo el texto
+let diccionarioSugerencias = [];
+let seleccionPendiente = false;
 
 // ==========================================
-// 0.5. PALABRAS VACÍAS (STOPWORDS)
+// 1. PALABRAS VACÍAS Y SINÓNIMOS
 // ==========================================
 const palabrasVacias = new Set([
     "electrico", "electrica", "el", "la", "los", "las", "un", "una", "unos", "unas",
-    "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante",
-    "en", "entre", "hacia", "hasta", "mediante", "para", "por", "x", "segun", "sin", "so", "sobre", "tras",
-    "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que",
-    "yo", "tu", "el", "ella", "ello", "nosotros", "nosotras", "vosotros", "vosotras",
-    "ellos", "ellas", "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les",
-    "mi", "ti", "conmigo", "contigo", "consigo",
-    "este", "ese", "aquel", "esta", "esa", "aquella", "estos", "esos", "aquellos",
-    "estas", "esas", "aquellas", "esto", "eso", "aquello",
-    "mio", "tuyo", "suyo", "nuestro", "vuestro",
-    "alguien", "nadie", "algo", "nada", "cualquiera", "alguno", "ninguno", "quien", "cual", "cuales",
-    "aqui", "ahi", "alli", "aca", "alla", "cerca", "lejos", "arriba", "abajo", "delante", "detras",
-    "dentro", "fuera", "hoy", "ayer", "manana", "ahora", "antes", "despues", "luego", "tarde", "temprano",
-    "pronto", "siempre", "nunca", "jamas", "ya", "todavia", "aun", "asi", "bien", "mal", "despacio", "deprisa",
-    "muy", "mucho", "poco", "bastante", "demasiado", "mas", "menos", "tan", "tanto",
-    "apenas", "casi", "medio", "tambien", "cierto", "claro", "exacto", "obvio",
-    "no", "tampoco", "quiza", "quizas", "acaso",
-    "bueno", "malo", "mejor", "peor", "mayor", "menor", "grande", "pequeno", "nuevo", "viejo",
-    "facil", "dificil", "bonito", "feo", "rapido", "lento", "solo", "solamente"
+    "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "x", "segun", "sin", "so", "sobre", "tras",
+    "y", "e", "ni", "o", "u", "pero", "mas", "sino", "aunque", "porque", "pues", "como", "si", "que", "yo", "tu", "el", "ella", "ello", "nosotros", "nosotras", "vosotros", "vosotras",
+    "ellos", "ellas", "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les", "mi", "ti", "conmigo", "contigo", "consigo", "este", "ese", "aquel", "esta", "esa", "aquella", "estos", "esos", "aquellos", "estas", "esas", "aquellas", "esto", "eso", "aquello",
+    "mio", "tuyo", "suyo", "nuestro", "vuestro", "alguien", "nadie", "algo", "nada", "cualquiera", "alguno", "ninguno", "quien", "cual", "cuales", "aqui", "ahi", "alli", "aca", "alla", "cerca", "lejos", "arriba", "abajo", "delante", "detras",
+    "dentro", "fuera", "hoy", "ayer", "manana", "ahora", "antes", "despues", "luego", "tarde", "temprano", "pronto", "siempre", "nunca", "jamas", "ya", "todavia", "aun", "asi", "bien", "mal", "despacio", "deprisa",
+    "muy", "mucho", "poco", "bastante", "demasiado", "mas", "menos", "tan", "tanto", "apenas", "casi", "medio", "tambien", "cierto", "claro", "exacto", "obvio", "no", "tampoco", "quiza", "quizas", "acaso",
+    "bueno", "malo", "mejor", "peor", "mayor", "menor", "grande", "pequeno", "nuevo", "viejo", "facil", "dificil", "bonito", "feo", "rapido", "lento", "solo", "solamente"
 ]);
 
-// ==========================================
-// 1. DICCIONARIO DE SINÓNIMOS
-// ==========================================
 const gruposSinonimos = [
     ["termomagnetica", "termica", "fusible", "breaker"],
     ["interruptor", "llave", "perilla", "apagador"],
@@ -76,45 +43,7 @@ const gruposSinonimos = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     cargarExcel();
-
-    // ==========================================
-    // LÓGICA DEL MENÚ FLOTANTE SUPERIOR
-    // ==========================================
-    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
-    const dropdownFlotante = document.getElementById('dropdown-flotante');
-
-    if (btnMenuFlotante && dropdownFlotante) {
-        btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownFlotante.classList.toggle('oculto');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
-                dropdownFlotante.classList.add('oculto');
-            }
-        });
-    }
-
-    // ==========================================
-    // LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
-    // ==========================================
-    // Controlador de la LLave de Luz 3D (Tema)
-    const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    if (btnTemaServicios) {
-        btnTemaServicios.addEventListener('click', () => {
-            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
-            if (esActualClaro) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('temaVillaser', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('temaVillaser', 'light');
-            }
-        });
-    }
 
     // ==========================================
     // LÓGICA DEL BUSCADOR Y AUTOCOMPLETADO
@@ -132,42 +61,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if(searchInput && btnBuscar) {
         
-        // --- SELECCIÓN AUTOMÁTICA SOLO DESPUÉS DE BUSCAR ---
         searchInput.addEventListener("focus", function() {
-            if (seleccionPendiente) {
-                this.select();
-                seleccionPendiente = false; 
-            }
+            if (seleccionPendiente) { this.select(); seleccionPendiente = false; }
         });
         
         searchInput.addEventListener("click", function() {
-            if (seleccionPendiente) {
-                this.select();
-                seleccionPendiente = false;
-            }
+            if (seleccionPendiente) { this.select(); seleccionPendiente = false; }
         });
 
-        // Escucha al escribir
         searchInput.addEventListener("input", () => {
             seleccionPendiente = false; 
             btnBuscar.disabled = searchInput.value.trim().length === 0;
-
             const text = searchInput.value;
             const words = text.split(/\s+/);
             const lastWord = words[words.length - 1]; 
 
-            if (lastWord.length >= 3) {
-                mostrarSugerencias(lastWord, words);
-            } else {
-                suggestionsList.classList.add("oculto");
-            }
+            if (lastWord.length >= 3) mostrarSugerencias(lastWord, words);
+            else suggestionsList.classList.add("oculto");
         });
 
         btnBuscar.addEventListener("click", () => {
             const textoOriginal = btnBuscar.innerHTML;
             btnBuscar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
             suggestionsList.classList.add("oculto"); 
-            
             seleccionPendiente = true;
 
             setTimeout(() => {
@@ -177,14 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         searchInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" && !btnBuscar.disabled) {
-                btnBuscar.click();
-            }
+            if (e.key === "Enter" && !btnBuscar.disabled) btnBuscar.click();
         });
     }
 
     // ==========================================
-    // --- LÓGICA CLON FLOTANTE CTA ---
+    // LÓGICA CLON FLOTANTE CTA
     // ==========================================
     const ctaOriginal = document.querySelector('.cta-escritorio');
     const colDerecha = document.querySelector('.col-derecha');
@@ -207,18 +121,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function actualizarCtaFlotante() {
             if (window.innerWidth >= 1024) return;
-            
-            if (window.scrollY > 300 && !isColDerechaVisible) {
-                ctaClone.classList.add('visible');
-            } else {
-                ctaClone.classList.remove('visible'); 
-            }
+            if (window.scrollY > 300 && !isColDerechaVisible) ctaClone.classList.add('visible');
+            else ctaClone.classList.remove('visible'); 
         }
+    }
+
+    // ==========================================
+    // LECTURA DE URL PARAMS (?servicio=)
+    // ==========================================
+    const parametrosURL = new URLSearchParams(window.location.search);
+    const servicioSolicitado = parametrosURL.get('servicio');
+
+    if (servicioSolicitado) {
+        const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
+        const temporizadorCarga = setInterval(() => {
+            if (typeof allData !== 'undefined' && allData.length > 0) {
+                clearInterval(temporizadorCarga); 
+                if (searchInput && btnBuscar) {
+                    searchInput.value = terminoBusqueda;
+                    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    if (suggestionsList) suggestionsList.classList.add("oculto");
+                    setTimeout(() => btnBuscar.click(), 50);
+                }
+            }
+        }, 100); 
     }
 });
 
 // ==========================================
-// FUNCIONES DE AUTOCOMPLETADO Y SUGERENCIAS
+// 2. FUNCIONES DEL MOTOR DE BÚSQUEDA
 // ==========================================
 function mostrarSugerencias(lastWord, allWords) {
     const suggestionsList = document.getElementById('suggestionsList');
@@ -226,7 +157,6 @@ function mostrarSugerencias(lastWord, allWords) {
     
     const lastWordNorm = lastWord.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const lastWordFonetica = normalizarFoneticaYPlural(lastWordNorm);
-    
     let matches = new Set(); 
     
     const checkMatchSugerencia = (palabraCorrecta) => {
@@ -246,8 +176,7 @@ function mostrarSugerencias(lastWord, allWords) {
     diccionarioSugerencias.forEach(palabra => {
         if (checkMatchSugerencia(palabra)) {
             matches.add(palabra); 
-            const sinonimos = obtenerSinonimos(palabra);
-            sinonimos.forEach(s => matches.add(s));
+            obtenerSinonimos(palabra).forEach(s => matches.add(s));
         }
     });
 
@@ -261,19 +190,16 @@ function mostrarSugerencias(lastWord, allWords) {
     });
 
     let matchesArray = Array.from(matches);
-    
     matchesArray.sort((a, b) => {
         const aNorm = a.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const bNorm = b.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const aFon = normalizarFoneticaYPlural(aNorm);
         const bFon = normalizarFoneticaYPlural(bNorm);
-        
         const aStarts = (aNorm.startsWith(lastWordNorm) || aFon.startsWith(lastWordFonetica)) ? -1 : 1;
         const bStarts = (bNorm.startsWith(lastWordNorm) || bFon.startsWith(lastWordFonetica)) ? -1 : 1;
         
         if (aStarts !== bStarts) return aStarts - bStarts;
         if (a.length !== b.length) return a.length - b.length;
-        
         return a.localeCompare(b);
     });
 
@@ -293,9 +219,7 @@ function mostrarSugerencias(lastWord, allWords) {
             allWords[allWords.length - 1] = match;
             searchInput.value = allWords.join(' ') + ' ';
             suggestionsList.classList.add("oculto");
-            
             document.getElementById("btnBuscar").disabled = false;
-
             searchInput.focus();
             const len = searchInput.value.length;
             searchInput.setSelectionRange(len, len);
@@ -310,12 +234,9 @@ function construirDiccionarioSugerencias() {
     allData.forEach(item => {
         let textoLimpio = item.concepto.replace(/[^\wáéíóúüñÁÉÍÓÚÜÑ]/g, ' ');
         let tokens = textoLimpio.split(/\s+/);
-        
         tokens.forEach(word => {
             let w = word.toLowerCase();
-            if (w.length >= 3 && !palabrasVacias.has(w)) {
-                palabras.add(w);
-            }
+            if (w.length >= 3 && !palabrasVacias.has(w)) palabras.add(w);
         });
     });
     diccionarioSugerencias = Array.from(palabras);
@@ -354,7 +275,6 @@ async function cargarExcel() {
         }
 
         construirDiccionarioSugerencias(); 
-        
         if(statusMsg) statusMsg.style.display = "none";
         if(searchInput) searchInput.disabled = false;
     } catch (error) {
@@ -368,22 +288,10 @@ async function cargarExcel() {
 
 function normalizarFoneticaYPlural(texto) {
     return texto.split(/\s+/).map(p => {
-        p = p.replace(/ll/g, "y");       
-        p = p.replace(/y/g, "i");        
-        p = p.replace(/v/g, "b");        
-        p = p.replace(/z/g, "s");        
-        p = p.replace(/ce/g, "se");      
-        p = p.replace(/ci/g, "si");      
-        p = p.replace(/ch/g, "x");       
-        p = p.replace(/h/g, "");         
-        p = p.replace(/x/g, "ch");       
-        
-        if (p.length > 4 && p.endsWith("es")) {
-            p = p.slice(0, -2);
-        } else if (p.length > 3 && p.endsWith("s")) {
-            p = p.slice(0, -1);
-        }
-        
+        p = p.replace(/ll/g, "y").replace(/y/g, "i").replace(/v/g, "b").replace(/z/g, "s")
+             .replace(/ce/g, "se").replace(/ci/g, "si").replace(/ch/g, "x").replace(/h/g, "").replace(/x/g, "ch");       
+        if (p.length > 4 && p.endsWith("es")) p = p.slice(0, -2);
+        else if (p.length > 3 && p.endsWith("s")) p = p.slice(0, -1);
         return p;
     }).join(" ");
 }
@@ -391,16 +299,11 @@ function normalizarFoneticaYPlural(texto) {
 function obtenerPalabrasClave(texto) {
     let txt = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "");
     let palabras = txt.split(/\s+/).filter(p => p.length > 0);
-    
     for (let i = 0; i < palabras.length; i++) {
         if (palabras[i] === "cable" && palabras[i+1] === "canal") {
-            palabras[i] = "cablecanal";
-            palabras.splice(i+1, 1);
-            i--; 
+            palabras[i] = "cablecanal"; palabras.splice(i+1, 1); i--; 
         } else if (palabras[i] === "puesta" && palabras[i+1] === "a" && palabras[i+2] === "tierra") {
-            palabras[i] = "puestaatierra";
-            palabras.splice(i+1, 2);
-            i--; 
+            palabras[i] = "puestaatierra"; palabras.splice(i+1, 2); i--; 
         }
     }
     return palabras;
@@ -409,9 +312,7 @@ function obtenerPalabrasClave(texto) {
 function obtenerSinonimos(palabra) {
     let opciones = [palabra];
     for (const grupo of gruposSinonimos) {
-        if (grupo.includes(palabra)) {
-            opciones = [...new Set([...opciones, ...grupo])];
-        }
+        if (grupo.includes(palabra)) opciones = [...new Set([...opciones, ...grupo])];
     }
     return opciones;
 }
@@ -446,9 +347,7 @@ function ejecutarBusqueda() {
 
     if (rawQuery.trim() === "") return;
 
-    const palabrasBusqueda = obtenerPalabrasClave(rawQuery)
-        .filter(p => !palabrasVacias.has(p))
-        .slice(0, 5);
+    const palabrasBusqueda = obtenerPalabrasClave(rawQuery).filter(p => !palabrasVacias.has(p)).slice(0, 5);
 
     if (palabrasBusqueda.length === 0) {
         resultsContainer.innerHTML = `<div class="no-results">Por favor ingresá términos técnicos más específicos.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Ej: "tablero", "boca", "jabalina"</span></div>`;
@@ -456,13 +355,11 @@ function ejecutarBusqueda() {
     }
 
     const coincidencias = [];
-
     const busquedaCompleta = rawQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     const busquedaCompletaNorm = normalizarFoneticaYPlural(busquedaCompleta);
 
     for (const item of allData) {
         let score = 0; 
-        
         const conceptoNormalizado = item.concepto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const conceptoNormalizadoFonetico = normalizarFoneticaYPlural(conceptoNormalizado);
         const palabrasDelConcepto = obtenerPalabrasClave(item.concepto);
@@ -470,14 +367,12 @@ function ejecutarBusqueda() {
         if (conceptoNormalizado.includes(busquedaCompleta)) {
             score += 100;
             if (conceptoNormalizado === busquedaCompleta) score += 50; 
-        } 
-        else if (conceptoNormalizadoFonetico.includes(busquedaCompletaNorm)) {
+        } else if (conceptoNormalizadoFonetico.includes(busquedaCompletaNorm)) {
             score += 80;
             if (conceptoNormalizadoFonetico === busquedaCompletaNorm) score += 40; 
         }
 
         let cumpleTodas = true;
-
         for (const palabraBuscada of palabrasBusqueda) {
             const opcionesBuscadas = obtenerSinonimos(palabraBuscada);
             let mejorPuntajePalabra = 0;
@@ -485,39 +380,28 @@ function ejecutarBusqueda() {
 
             for (const opcion of opcionesBuscadas) {
                 const opcionFonetica = normalizarFoneticaYPlural(opcion);
-
                 for (const palabraConcepto of palabrasDelConcepto) {
                     const conceptoFonetico = normalizarFoneticaYPlural(palabraConcepto);
 
                     if (opcion === palabraConcepto) {
                         palabraEncontrada = true;
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 10 : 7);
-                    } 
-                    else if (opcionFonetica === conceptoFonetico) {
+                    } else if (opcionFonetica === conceptoFonetico) {
                         palabraEncontrada = true;
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, opcion === palabraBuscada ? 9 : 6);
-                    }
-                    else if (sonSimilares(opcion, palabraConcepto)) {
+                    } else if (sonSimilares(opcion, palabraConcepto)) {
                         palabraEncontrada = true;
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 4);
-                    }
-                    else if (sonSimilares(opcionFonetica, conceptoFonetico)) {
+                    } else if (sonSimilares(opcionFonetica, conceptoFonetico)) {
                         palabraEncontrada = true;
                         mejorPuntajePalabra = Math.max(mejorPuntajePalabra, 3);
                     }
                 }
             }
-
-            if (!palabraEncontrada) {
-                cumpleTodas = false;
-                break; 
-            }
+            if (!palabraEncontrada) { cumpleTodas = false; break; }
             score += mejorPuntajePalabra;
         }
-
-        if (cumpleTodas) {
-            coincidencias.push({ item: item, score: score });
-        }
+        if (cumpleTodas) coincidencias.push({ item: item, score: score });
     }
 
     coincidencias.sort((a, b) => b.score - a.score);
@@ -583,20 +467,7 @@ function ejecutarBusqueda() {
 
         resultsContainer.appendChild(card);
     });
-    
     if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-}
-
-function compartirWeb() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'Villaser - Buscador de Precios',
-      text: 'Buscador de precios referenciales para trabajos eléctricos en Córdoba:',
-      url: 'https://villaser.com.ar/buscadorinteligente'
-    }).catch(console.error);
-  } else {
-    window.open("https://wa.me/?text=" + encodeURIComponent("Precios referenciales de trabajos eléctricos en Córdoba: https://villaser.com.ar/buscadorinteligente"), '_blank');
-  }
 }
 
 function busquedaRapida(termino) {
@@ -609,36 +480,3 @@ function busquedaRapida(termino) {
         btnBuscar.click();
     }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const parametrosURL = new URLSearchParams(window.location.search);
-    const servicioSolicitado = parametrosURL.get('servicio');
-
-    if (servicioSolicitado) {
-        const terminoBusqueda = servicioSolicitado.replace(/_/g, ' ');
-
-        const temporizadorCarga = setInterval(() => {
-            if (typeof allData !== 'undefined' && allData.length > 0) {
-                clearInterval(temporizadorCarga); 
-
-                const inputBuscador = document.getElementById("searchInput");
-                const btnBuscar = document.getElementById("btnBuscar");
-                const listaSugerencias = document.getElementById("suggestionsList");
-
-                if (inputBuscador && btnBuscar) {
-                    inputBuscador.value = terminoBusqueda;
-                    inputBuscador.dispatchEvent(new Event('input', { bubbles: true }));
-                    
-                    if (listaSugerencias) {
-                        listaSugerencias.classList.add("oculto");
-                    }
-                    
-                    setTimeout(() => {
-                        btnBuscar.click();
-                    }, 50);
-                }
-            }
-        }, 100); 
-    }
-});
-                                                      
