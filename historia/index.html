@@ -28,8 +28,8 @@
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</he<!-- 1. Estilos generales (compartidos) -->
+    
+    <!-- 1. Estilos generales (compartidos) -->
     <link rel="stylesheet" href="../css/global.css">
     
     <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
@@ -127,8 +127,8 @@
             <!-- COLUMNA DERECHA (Scrolleable)              -->
             <!-- ========================================== -->
             <div class="col-derecha">
-                <!-- ACORDEONES -->
-                <details class="ngc-accordion gpu-accel">
+                <!-- ACORDEONES (Ahora con name="historia") -->
+                <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="sparkles"></i></div>
@@ -144,7 +144,7 @@
                     </div>
                 </details>
 
-                <details class="ngc-accordion gpu-accel">
+                <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="fingerprint"></i></div>
@@ -160,7 +160,7 @@
                     </div>
                 </details>
 
-                <details class="ngc-accordion gpu-accel">
+                <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="shield-check"></i></div>
@@ -174,7 +174,7 @@
                     </div>
                 </details>
 
-                <details class="ngc-accordion gpu-accel">
+                <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="search-code"></i></div>
@@ -221,7 +221,9 @@
         </div>
     </main>
 
+    <!-- SCRIPT GLOBAL Y LOCAL -->
     <script src="../js/global.js" defer></script>
-<script src="script.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
-</html>
+                                </html>
+                                
