@@ -185,10 +185,15 @@ body {
 .hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-neon-rect {
     width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
-    stroke-dasharray: 100% 300%; animation: run-border 3s linear infinite;
+    /* Reemplazamos los porcentajes por valores exactos: 60px de línea y 180px de espacio (Total = 240px) */
+    stroke-dasharray: 60 180; 
+    animation: run-border 3s linear infinite;
 }
 
-@keyframes run-border { to { stroke-dashoffset: -200; } }
+@keyframes run-border { 
+    /* Movemos el trazo exactamente 240px para que encaje a la perfección con el inicio del bucle */
+    to { stroke-dashoffset: -240; } 
+}
 
 /* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
 .oculto { display: none !important; }
