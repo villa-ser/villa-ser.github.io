@@ -1,59 +1,16 @@
-// ==========================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE Y CARGAR TARIFAS
-// ==========================================
-const temaGuardado = localStorage.getItem('temaVillaser');
-const prefiereClaro = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-
-// Detecta preferencia guardada o usa la del sistema
-if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
-    document.documentElement.setAttribute('data-theme', 'light');
-} else {
-    document.documentElement.removeAttribute('data-theme');
-}
-
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-}
+// =========================================================
+// SCRIPTS ESPECÍFICOS DE LA "CALCULADORA DE CONSUMO"
+// =========================================================
 
 let listado = [];
 let tarifasGlobales = null;
 
 // ==========================================
-// 1. CARGA PRINCIPAL (SIN BLOQUEOS)
+// 1. CARGA PRINCIPAL
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- A. ACTIVAR BOTONES PRIMERO (Evita congelamiento) ---
-    const btnMenuFlotante = document.getElementById('btn-menu-flotante');
-    const dropdownFlotante = document.getElementById('dropdown-flotante');
-
-    if (btnMenuFlotante && dropdownFlotante) {
-        btnMenuFlotante.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownFlotante.classList.toggle('oculto');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!btnMenuFlotante.contains(e.target) && !dropdownFlotante.contains(e.target)) {
-                dropdownFlotante.classList.add('oculto');
-            }
-        });
-    }
-
-    const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    if (btnTemaServicios) {
-        btnTemaServicios.addEventListener('click', () => {
-            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
-            if (esActualClaro) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('temaVillaser', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('temaVillaser', 'light');
-            }
-        });
-    }
-
+    // --- A. ACTIVAR SLIDERS ---
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
     if(sliderHoras && labelHoras) {
@@ -70,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- B. CARGAR EL JSON AL FINAL (Asíncrono, no bloquea) ---
+    // --- B. CARGAR EL JSON DE TARIFAS ---
     fetch('tarifas.json')
         .then(respuesta => {
             if (!respuesta.ok) throw new Error("No se pudo cargar el archivo");
@@ -82,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => {
             console.warn("No se pudo cargar tarifas.json, usando tarifas por defecto.", error);
-            // Salvavidas por si el archivo no carga en modo local
             tarifasGlobales = {
                 con_subsidio: [121.84597, 191.10731, 219.23668, 333.61670],
                 sin_subsidio: [217.91977, 296.03448, 327.75950, 358.33820],
@@ -95,13 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 // 2. FUNCIONES DEL SELECTOR Y CALCULADORA
 // ==========================================
-
 function toggleDropdown(listId, displayId, event) {
-    if (event) {
-        event.stopPropagation();
-    } else if (window.event) {
-        window.event.stopPropagation();
-    }
+    if (event) event.stopPropagation();
+    else if (window.event) window.event.stopPropagation();
     
     const list = document.getElementById(listId);
     const display = document.getElementById(displayId);
@@ -138,9 +90,7 @@ function closeAllDropdowns() {
 
 document.addEventListener("click", function(event) {
     const customSelect = event.target.closest('.custom-select');
-    if (!customSelect) {
-        closeAllDropdowns();
-    }
+    if (!customSelect) closeAllDropdowns();
 });
 
 function actualizarWatts() {
@@ -149,11 +99,7 @@ function actualizarWatts() {
     if(!valObj || !wattsDisplay) return;
 
     const val = valObj.value;
-    if(val == "0") {
-        wattsDisplay.innerText = "0 Watts de potencia";
-    } else {
-        wattsDisplay.innerText = val + " Watts de potencia";
-    }
+    wattsDisplay.innerText = val == "0" ? "0 Watts de potencia" : val + " Watts de potencia";
 }
 
 function resetAll() {
@@ -184,14 +130,12 @@ function agregarItem() {
     const horasObj = document.getElementById('horas');
     const diasObj = document.getElementById('dias');
     
-    if (!inputObj || !horasObj || !diasObj) return;
-    if (inputObj.value == "0") return;
+    if (!inputObj || !horasObj || !diasObj || inputObj.value == "0") return;
     
     const nombre = inputObj.getAttribute('data-text'); 
     const w = parseFloat(inputObj.value);
     const h = parseFloat(horasObj.value);
     const d = parseFloat(diasObj.value);
-    
     const kwhMensual = (w * h * (d/7) * 30) / 1000;
     
     listado.push({ id: Date.now(), nombre, kwhMensual });
@@ -258,31 +202,16 @@ function recalcularTotal() {
         let desgloseLineas = [];
 
         while (kwhRestantes > 0.0001) {
-            let finEscalon = 0;
-            let precioKwh = 0;
-            let nombreEscalon = "";
-            let claseColor = "";
+            let finEscalon = 0, precioKwh = 0, nombreEscalon = "", claseColor = "";
 
             if (kwhAcumulados < 120) {
-                finEscalon = 120;
-                precioKwh = tarifasRangos[0];
-                nombreEscalon = "Esc. 1 (0-120)";
-                claseColor = "esc-verde";
+                finEscalon = 120; precioKwh = tarifasRangos[0]; nombreEscalon = "Esc. 1 (0-120)"; claseColor = "esc-verde";
             } else if (kwhAcumulados < 500) {
-                finEscalon = 500;
-                precioKwh = tarifasRangos[1];
-                nombreEscalon = "Esc. 2 (121-500)";
-                claseColor = "esc-amarillo";
+                finEscalon = 500; precioKwh = tarifasRangos[1]; nombreEscalon = "Esc. 2 (121-500)"; claseColor = "esc-amarillo";
             } else if (kwhAcumulados < 700) {
-                finEscalon = 700;
-                precioKwh = tarifasRangos[2];
-                nombreEscalon = "Esc. 3 (501-700)";
-                claseColor = "esc-naranja";
+                finEscalon = 700; precioKwh = tarifasRangos[2]; nombreEscalon = "Esc. 3 (501-700)"; claseColor = "esc-naranja";
             } else {
-                finEscalon = Infinity;
-                precioKwh = tarifasRangos[3];
-                nombreEscalon = "Esc. 4 (>700)";
-                claseColor = "esc-rojo";
+                finEscalon = Infinity; precioKwh = tarifasRangos[3]; nombreEscalon = "Esc. 4 (>700)"; claseColor = "esc-rojo";
             }
 
             let espacioEnEscalon = finEscalon - kwhAcumulados;
@@ -315,73 +244,46 @@ function recalcularTotal() {
 
     resultadosCalculados.forEach(res => {
         const contenedorDesglose = document.getElementById(`item-desglose-${res.id}`);
-        
         if (contenedorDesglose) {
             contenedorDesglose.innerHTML = '';
-
             res.desglose.forEach(linea => {
                 const divRow = document.createElement('div');
                 divRow.className = 'desglose-line-row';
-                
                 divRow.innerHTML = `
                     <span class="linea-escalon ${linea.clase}"><i class="fa-solid fa-layer-group" style="font-size:0.55rem;"></i> ${linea.texto}</span>
                     <span class="item-costo ${linea.clase}">$ ${linea.subtotal.toLocaleString('es-AR')}</span>
                 `;
-                
                 contenedorDesglose.prepend(divRow);
             });
         }
     });
 
     const tierUI = document.getElementById('tier-indicator');
-    if (totalKwh > 0) {
-        let textoEscalon = "";
-        let colorEscalon = "var(--gnc-neon)";
-        let bgEscalon = "rgba(var(--gnc-neon-rgb), 0.1)";
+    if (totalKwh > 0 && tierUI) {
+        let textoEscalon = "", colorEscalon = "var(--gnc-neon)", bgEscalon = "rgba(var(--gnc-neon-rgb), 0.1)";
         
         if (totalKwh <= 120) {
             textoEscalon = "Consumo Base (Hasta 120 kWh)";
         } else if (totalKwh <= 500) {
             textoEscalon = "Consumo Medio (121 a 500 kWh)";
-            colorEscalon = "#ffc107";
-            bgEscalon = "rgba(255, 193, 7, 0.1)";
+            colorEscalon = "#ffc107"; bgEscalon = "rgba(255, 193, 7, 0.1)";
         } else if (totalKwh <= 700) {
             textoEscalon = "Consumo Alto (501 a 700 kWh)";
-            colorEscalon = "#fd7e14";
-            bgEscalon = "rgba(253, 126, 20, 0.1)";
+            colorEscalon = "#fd7e14"; bgEscalon = "rgba(253, 126, 20, 0.1)";
         } else {
             textoEscalon = "Consumo Excedente (Más de 700 kWh)";
-            colorEscalon = "var(--gnc-danger)";
-            bgEscalon = "rgba(255, 77, 77, 0.1)"; 
+            colorEscalon = "var(--gnc-danger)"; bgEscalon = "rgba(255, 77, 77, 0.1)"; 
         }
         
         const subText = tipoTarifa === "con_subsidio" ? "Categoría N2/N3 (Subsidio)" : "Categoría N1 (Sin Subsidio)";
         
-        if (tierUI) {
-            tierUI.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${textoEscalon} <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px;">${subText}</span>`;
-            tierUI.style.color = colorEscalon;
-            tierUI.style.borderColor = colorEscalon;
-            tierUI.style.backgroundColor = bgEscalon;
-            tierUI.classList.remove('oculto');
-        }
-    } else {
-        if (tierUI) {
-            tierUI.classList.add('oculto');
-        }
+        tierUI.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${textoEscalon} <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px;">${subText}</span>`;
+        tierUI.style.color = colorEscalon;
+        tierUI.style.borderColor = colorEscalon;
+        tierUI.style.backgroundColor = bgEscalon;
+        tierUI.classList.remove('oculto');
+    } else if (tierUI) {
+        tierUI.classList.add('oculto');
     }
-}
-
-function compartirWeb() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'Villaser - Calculadora de Consumo',
-      text: 'Evaluá el gasto de tus electrodomésticos con la calculadora de Sergio Villagra:',
-      url: 'https://villaser.com.ar/calculadora'
-    })
-    .catch((error) => console.log('Error al compartir', error));
-  } else {
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Calculá tu consumo eléctrico con la herramienta de Sergio Villagra: https://villaser.com.ar/calculadora");
-    window.open(whatsappUrl, '_blank');
-  }
-        }
-                                 
+            }
+        
