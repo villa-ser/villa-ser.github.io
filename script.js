@@ -1,48 +1,5 @@
-// =========================================================
-// 0. APLICAR TEMA INSTANTÁNEAMENTE Y DETECTAR S.O.
-// =========================================================
-(function aplicarTemaInicial() {
-    const temaGuardado = localStorage.getItem('temaVillaser');
-    const prefiereSistemaClaro = window.matchMedia('(prefers-color-scheme: light)');
-
-    if (temaGuardado === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else if (temaGuardado === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-    } else if (prefiereSistemaClaro.matches) {
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
-})();
-
-// Inicializar iconos de Lucide
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // ==========================================
-    // 1. LÓGICA DEL MODO DÍA / MODO NOCHE (Llave 3D)
-    // ==========================================
-    const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    
-    if (btnTemaServicios) {
-        btnTemaServicios.addEventListener('click', () => {
-            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
-            
-            if (esActualClaro) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('temaVillaser', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('temaVillaser', 'light');
-            }
-        });
-    }
-
-    // ==========================================
-    // 2. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR
-    // ==========================================
+    // 1. LÓGICA DEL BOTÓN CLÁSICO EXPLORAR
     const btnExplorar = document.getElementById('btn-explorar');
     const menuBotones = document.getElementById('menu-botones');
     const iconoMenu = document.getElementById('icono-menu');
@@ -73,21 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem('abrirMenu');
     }
 
-    // ==========================================
-    // 3. CERRAR NUBE FLOTANTE AL TOCAR AFUERA
-    // ==========================================
+    // Cerrar Nube flotante al tocar afuera
     const modalOverlay = document.getElementById('modalServicio');
     if(modalOverlay) {
         modalOverlay.addEventListener('click', function(e) {
-            if(e.target === this) {
-                cerrarModalServicio();
-            }
+            if(e.target === this) cerrarModalServicio();
         });
     }
 });
 
 // ==========================================
-// 4. FUNCIONES DE LA NUBE FLOTANTE (MODAL)
+// 2. FUNCIONES DE LA NUBE FLOTANTE (MODAL)
 // ==========================================
 const serviciosInfo = {
     'apto': {
@@ -128,32 +81,11 @@ function abrirModalServicio(tipo) {
     document.getElementById('modal-wsp').href = wspLink;
     
     modal.classList.remove('oculto');
-    setTimeout(() => {
-        modal.classList.add('activo');
-    }, 10); 
+    setTimeout(() => { modal.classList.add('activo'); }, 10); 
 }
 
 function cerrarModalServicio() {
     const modal = document.getElementById('modalServicio');
     modal.classList.remove('activo');
-    setTimeout(() => {
-        modal.classList.add('oculto');
-    }, 300); 
-}
-
-// ==========================================
-// 5. FUNCIÓN COMPARTIR
-// ==========================================
-function compartirWeb() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'Villaser - Electricista Habilitado',
-      text: 'Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba:',
-      url: 'https://villaser.com.ar'
-    })
-    .catch((error) => console.log('Error al compartir', error));
-  } else {
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("Te comparto la web de Sergio Villagra, Electricista Habilitado Cat III en Córdoba: https://villaser.com.ar");
-    window.open(whatsappUrl, '_blank');
-  }
+    setTimeout(() => { modal.classList.add('oculto'); }, 300); 
 }
