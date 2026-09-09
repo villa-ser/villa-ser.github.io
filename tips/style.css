@@ -4,9 +4,26 @@
 
 /* --- TÍTULOS Y ETIQUETAS ESPECÍFICAS --- */
 .ngc-section-label {
-    font-size: 0.95rem; text-transform: uppercase; color: var(--success-green);
-    letter-spacing: 1.5px; margin-top: 5px; margin-left: 8px; font-weight: 700;
-    opacity: 0.9; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); margin-bottom: 8px;
+    /* Tipografía original */
+    font-size: 0.95rem; 
+    text-transform: uppercase; 
+    color: var(--success-green);
+    letter-spacing: 1.5px; 
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
+    
+    /* Efecto Glassmorphism (Idéntico a los botones) */
+    background: var(--ngc-glass);
+    backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass);
+    box-shadow: 0 4px 10px var(--card-shadow), var(--ngc-glass-edge);
+    
+    /* Estructura de "cápsula" */
+    border-radius: 8px; /* Bordes redondeados sutiles */
+    padding: 6px 16px;  /* Espacio interno para que el texto no toque los bordes */
+    width: fit-content; /* Hace que el fondo difuminado solo envuelva al texto y no ocupe todo el ancho */
+    margin: 20px 0 10px 0; /* Centrado vertical alineado a la izquierda */
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
