@@ -24,7 +24,6 @@
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass);
     box-shadow: 0 4px 10px var(--card-shadow), var(--ngc-glass-edge);
     
     /* Estructura de "cápsula" */
