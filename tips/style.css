@@ -97,22 +97,24 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      REORDENAMIENTO EN MÓVILES (Tips)                   */
 /* ======================================================= */
 @media (max-width: 1023px) {
+    /* Eliminamos 'display: contents' para evitar la suma del gap con los márgenes */
     .col-izquierda, .col-derecha {
-        display: contents; 
+        display: block; 
     }
     
-    .footer-wrapper {
-        order: 6; 
-    }
-    
-    /* RESTAURAMOS LA SEPARACIÓN PARA MÓVILES */
+    /* Igualamos la separación exactamente a 12px (idéntico a la página principal) */
     .ngc-banner-tips, details, .ngc-tips-cta {
-        margin-bottom: 15px !important;
+        margin-bottom: 12px !important;
     }
     
-    /* Separamos las etiquetas de texto de los cuadros */
+    /* Ajustamos los márgenes de las etiquetas para mantener la proporción visual */
     .ngc-section-label {
-        margin-top: 15px !important;
+        margin-top: 12px !important;
         margin-bottom: 10px !important;
+    }
+
+    /* Evitamos empujes extra en el footer, respetando el flujo de la columna */
+    .footer-gnc-compact {
+        margin-top: 0 !important;
     }
 }
