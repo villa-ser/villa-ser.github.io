@@ -212,16 +212,7 @@ label i { margin-right: 5px; }
 .legend-list strong { color: var(--ngc-text); }
 .legend-footer { margin-top: 15px; font-size: 0.65rem; text-align: right; color: var(--ngc-text-muted); font-weight: bold; letter-spacing: 1px; }
 
-.footer-wrapper { margin-top: auto; padding-bottom: 5px; }
-.footer-gnc-compact { width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 12px 0; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); border-radius: 16px; box-shadow: 0 10px 30px var(--card-shadow), var(--gnc-glass-edge);}
-.btn-social { text-decoration: none; color: var(--ngc-text-muted); font-size: 26px; transition: 0.2s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
-.btn-social:hover { color: var(--mgc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--ngc-neon-rgb), 0.6));}
-.whatsapp-pulse { color: #28a745; animation: intense-beat 0.7s infinite alternate;}
 @keyframes intense-beat { 0% { transform: scale(0.95); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(40, 167, 69, 0.6)); } }
-
-.ngc-site-credits { text-align: center; font-size: 0.65rem; color: var(--ngc-text-muted); margin-top: 15px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1.5px; }
-.ngc-site-credits span { color: var(--gnc-neon); font-weight: 700; opacity: 0.8; }
-button.btn-share { background-color: transparent; border: none; outline: none; color: var(--ngc-text-muted); cursor: pointer; padding: 0; }
 
 @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
