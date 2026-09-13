@@ -238,19 +238,22 @@ label i { margin-right: 5px; }
     .gnc-card { padding: 25px; margin-bottom: 0; }
 } /* <-- ¡Este cierre es vital! */
 
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Calculadora)            */
+/* ======================================================= */
 @media (max-width: 1023px) {
-    /* En celulares, desarmamos las columnas para apilar todo el contenido */
+    /* Eliminamos 'display: contents' para mantener los contenedores estructurales intactos */
     .col-izquierda, .col-derecha {
-        display: contents; 
+        display: block; 
     }
     
-    /* Forzamos que el footer y los créditos se ordenen estrictamente al final */
+    /* Estandarizamos el espacio exacto a 12px en todas las tarjetas y recuadros visuales */
+    .gnc-card, .ngc-tech-legend {
+        margin-bottom: 12px !important;
+    }
+
+    /* Quitamos el 'order' forzado y los márgenes extra; el footer bajará naturalmente al fondo */
     .footer-gnc-compact {
-        order: 98;
-        margin-top: 15px; /* Le da un respiro respecto al bloque anterior en móviles */
-    }
-    
-    .ngc-site-credits {
-        order: 99;
+        margin-top: 0 !important;
     }
 }
