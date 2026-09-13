@@ -1,3 +1,6 @@
+/* ============================================================== */
+/* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Buscador Inteligente)     */
+/* ============================================================== */
 
 .oculto { display: none !important; }
 
@@ -202,8 +205,6 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     pointer-events: auto;
 }
 
-/* --- ELEMENTOS FLOTANTES SUPERIORES --- */
-
 @keyframes intense-beat { 0% { transform: scale(0.95); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(40, 167, 69, 0.6)); } }
 
 /* ======================================================= */
@@ -264,11 +265,36 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     .ngc-custom-quote { height: 100%; display: flex; flex-direction: column; justify-content: center; }
 
     .info-banner { grid-area: banner; margin-bottom: 0; }
-    .footer-wrapper { grid-area: footer; margin-top: 0; padding-top: 0; }
+    .footer-gnc-compact { grid-area: footer; margin-top: 0; padding-top: 0; }
 
     .separador-bloque { margin-bottom: 0; }
     .result-card { padding: 20px; }
     .result-concept { font-size: 1.1rem; }
     .cta-flotante-clone { display: none !important; }
+}
+
+/* ======================================================= */
+/*      REORDENAMIENTO EN MÓVILES (Buscador / Cotizador)   */
+/* ======================================================= */
+@media (max-width: 1023px) {
+    /* Desactivamos 'display: contents' para mantener los bloques aislados */
+    .col-izquierda, .col-derecha {
+        display: block; 
     }
     
+    /* Estandarizamos los márgenes a 12px para lograr la simetría perfecta */
+    .info-banner, .input-section {
+        margin-bottom: 12px !important;
+    }
+
+    /* Forzamos el subtítulo debajo del h2 principal a 12px */
+    .ngc-main-title + p {
+        margin-bottom: 12px !important;
+    }
+
+    /* El footer baja de forma natural sin requerir órdenes ni márgenes extra */
+    .footer-gnc-compact {
+        margin-top: 0 !important;
+    }
+    }
+        
