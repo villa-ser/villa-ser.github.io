@@ -132,15 +132,38 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ======================================================= */
+/*      CORRECCIÓN DE ESPACIOS (Servicios)                 */
+/* ======================================================= */
 
+/* Como el contenedor ya usa 'gap: 12px', quitamos el margen de 
+   los acordeones para evitar que se sumen y generen 27px de espacio */
+.servicios-container details {
+    margin-bottom: 0 !important;
+}
 
 /* ======================================================= */
 /*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
 /* ======================================================= */
-
 @media (max-width: 1023px) {
+    /* Comportamiento original del formulario en móvil */
     #formulario-contacto { display: none; }
     #formulario-contacto.form-visible { display: block; animation: slideDownFade 0.4s ease forwards; }
+
+    /* Restauramos el bloque para no sumar el gap del layout general */
+    .col-izquierda, .col-derecha {
+        display: block; 
+    }
+
+    /* Estandarizamos los márgenes a 12px exactos como en la página principal */
+    .ngc-banner, .ngc-form-container, .servicios-container {
+        margin-bottom: 12px !important;
+    }
+
+    /* Respetamos el flujo del footer sin empujes forzados */
+    .footer-gnc-compact {
+        margin-top: 0 !important;
+    }
 }
 
 @media (min-width: 768px) {
@@ -148,7 +171,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     
     .switch-plate.switch-servicios {
         left: auto !important;
-        right: 105px; /* Ajuste junto al logo en escritorio */
+        right: 105px; 
     }
 }
 
@@ -156,11 +179,15 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     body { padding-top: 40px; align-items: flex-start; }
     .gnc-wrapper { max-width: 1050px; }
     .layout-desktop { display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; }
+    
     .col-izquierda {
         position: sticky; top: 40px; display: flex; flex-direction: column; gap: 0;
         max-height: calc(100vh - 80px); overflow-y: auto; padding-right: 5px;
     }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
+    
+    /* Mantenemos el footer al fondo de la columna */
     .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
+    
     .gnc-main-title { text-align: left; margin-bottom: 20px;}
 }
