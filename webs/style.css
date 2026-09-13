@@ -120,28 +120,24 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      REORDENAMIENTO EN MÓVILES (Webs)                   */
 /* ======================================================= */
 @media (max-width: 1023px) {
+    /* Eliminamos el 'display: contents' para evitar que se dupliquen los espacios con el flex-gap */
     .col-izquierda, .col-derecha {
-        display: contents; 
+        display: block; 
     }
     
-    /* RESTAURAMOS LA SEPARACIÓN PARA MÓVILES */
+    /* Igualamos la separación exactamente a 12px (idéntico al .separador-bloque de la página principal) */
     .ngc-banner, details, .ngc-webs-cta {
-        margin-bottom: 15px !important;
+        margin-bottom: 12px !important;
     }
     
-    /* Separamos las etiquetas de texto de los cuadros */
+    /* Ajustamos los márgenes de las etiquetas para mantener la proporción visual */
     .ngc-section-label {
-        margin-top: 15px !important;
+        margin-top: 12px !important;
         margin-bottom: 10px !important;
     }
 
-    /* ORDENAMOS EL FOOTER AL FINAL */
+    /* Eliminamos los márgenes extra y el reordenamiento. El HTML ya empuja el footer al final de forma natural. */
     .footer-gnc-compact {
-        order: 98; 
-        margin-top: 15px;
-    }
-    
-    .ngc-site-credits {
-        order: 99; 
+        margin-top: 0 !important;
     }
 }
