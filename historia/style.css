@@ -129,23 +129,21 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 }
               
 /* ======================================================= */
-/*      REORDENAMIENTO EN MÓVILES (Formulario al final)    */
+/*      REORDENAMIENTO EN MÓVILES (Historia)               */
 /* ======================================================= */
 @media (max-width: 1023px) {
+    /* Eliminamos 'display: contents' para anular la herencia del gap general */
     .col-izquierda, .col-derecha {
-        display: contents;
+        display: block;
     }
     
-    .ngc-form-container {
-        order: 5;
-    }
-    
-    /* ¡AQUÍ ESTÁ LA CORRECCIÓN! Se apuntan a las clases reales del HTML */
-    .footer-gnc-compact, .ngc-site-credits {
-        order: 6;
-    }
-    
+    /* Fijamos la separación exacta de 12px en todos los bloques visuales */
     .ngc-banner, details, .ngc-form-container, .ngc-main-title {
-        margin-bottom: 0 !important;
+        margin-bottom: 12px !important;
     }
-           }
+    
+    /* El footer retoma su lugar al final del flujo sin empujes extra */
+    .footer-gnc-compact {
+        margin-top: 0 !important;
+    }
+}
