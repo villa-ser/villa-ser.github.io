@@ -243,5 +243,6 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     .layout-desktop { display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; }
     .col-izquierda { position: sticky; top: 40px; display: flex; flex-direction: column; gap: 0; max-height: calc(100vh - 80px); overflow-y: auto; padding-right: 5px; }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
-    .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
-    .gnc-card { padding: 25px; ma
+        .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
+    .gnc-card { padding: 25px; margin-bottom: 0; }
+} /* <-- ¡Este cierre es vital! */
