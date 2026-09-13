@@ -237,3 +237,20 @@ label i { margin-right: 5px; }
         .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
     .gnc-card { padding: 25px; margin-bottom: 0; }
 } /* <-- ¡Este cierre es vital! */
+
+@media (max-width: 1023px) {
+    /* En celulares, desarmamos las columnas para apilar todo el contenido */
+    .col-izquierda, .col-derecha {
+        display: contents; 
+    }
+    
+    /* Forzamos que el footer y los créditos se ordenen estrictamente al final */
+    .footer-gnc-compact {
+        order: 98;
+        margin-top: 15px; /* Le da un respiro respecto al bloque anterior en móviles */
+    }
+    
+    .ngc-site-credits {
+        order: 99;
+    }
+}
