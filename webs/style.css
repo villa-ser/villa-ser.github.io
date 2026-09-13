@@ -105,6 +105,13 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      ADAPTACIÓN RESPONSIVE ESPECÍFICA                   */
 /* ======================================================= */
 @media (min-width: 1024px) {
+    /* Permitimos que el footer sea empujado al fondo */
+    .col-derecha { 
+        display: flex; 
+        flex-direction: column; 
+        min-height: calc(100vh - 80px); 
+    }
+    
     .ngc-banner, details, .ngc-webs-cta { margin-bottom: 0; }
     .ngc-section-label { margin-top: 5px; margin-bottom: 0; }
 }
@@ -117,10 +124,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
         display: contents; 
     }
     
-    .footer-wrapper {
-        order: 6; 
-    }
-    
     /* RESTAURAMOS LA SEPARACIÓN PARA MÓVILES */
     .ngc-banner, details, .ngc-webs-cta {
         margin-bottom: 15px !important;
@@ -130,5 +133,15 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .ngc-section-label {
         margin-top: 15px !important;
         margin-bottom: 10px !important;
+    }
+
+    /* ORDENAMOS EL FOOTER AL FINAL */
+    .footer-gnc-compact {
+        order: 98; 
+        margin-top: 15px;
+    }
+    
+    .ngc-site-credits {
+        order: 99; 
     }
 }
