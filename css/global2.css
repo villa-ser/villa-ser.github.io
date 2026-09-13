@@ -125,12 +125,12 @@ html::before, html::after {
 }
 
 html::before {
-    background-image: url('../img/fondo.avif');
+    background: #121212;
     opacity: 1;
 }
 
 html::after {
-    background-image: url('../img/fondoclaro.avif');
+    background: #E2E6EA;
     opacity: 0;
 }
 
