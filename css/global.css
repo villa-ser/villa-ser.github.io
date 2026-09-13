@@ -109,10 +109,6 @@ html::before, html::after {
     position: fixed;
     top: 0; left: 0; 
     width: 100%; 
-    
-    /* MEJORA APLICADA: 100svh evita el salto por la barra de direcciones en móviles */
-    height: 100svh; 
-    
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
