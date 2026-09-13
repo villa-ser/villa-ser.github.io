@@ -25,19 +25,40 @@
 .ngc-button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
 
 .ngc-btn {
-    position: relative; display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 10px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-radius: 12px; border-left: 4px solid var(--ngc-neon);
-    color: var(--ngc-text-main); text-decoration: none; font-size: 0.8rem; text-transform: uppercase;
-    letter-spacing: 1px; font-weight: 600; transition: all 0.3s ease; text-align: center;
-    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); outline: none; cursor: pointer;
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px;
+    padding: 14px 10px; 
+    background: var(--ngc-btn-bg); /* Fondo sólido */
+    border: var(--ngc-border-glass); 
+    border-radius: 12px; 
+    border-left: 4px solid var(--ngc-neon); /* Línea neón intacta */
+    color: var(--ngc-text-main); 
+    text-decoration: none; 
+    font-size: 0.8rem; 
+    text-transform: uppercase;
+    letter-spacing: 1px; 
+    font-weight: 600; 
+    transition: all 0.3s ease; 
+    text-align: center;
+    box-shadow: 0 4px 15px var(--card-shadow); /* Eliminado el borde interno de cristal */
+    outline: none; 
+    cursor: pointer;
 }
 
-.ngc-btn i { color: var(--ngc-neon); font-size: 1rem; }
+.ngc-btn i { 
+    color: var(--ngc-neon); 
+    font-size: 1rem; 
+}
+
 .ngc-btn:hover {
-    background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon); color: var(--ngc-neon);
+    background: var(--ngc-btn-hover); 
+    border-color: var(--ngc-neon); 
+    color: var(--ngc-neon);
     transform: translateY(-2px); 
-    box-shadow: 0 8px 20px var(--card-shadow), inset 0 0 10px rgba(var(--ngc-neon-rgb), 0.1), var(--ngc-glass-edge);
+    box-shadow: 0 8px 20px var(--card-shadow), inset 0 0 10px rgba(var(--ngc-neon-rgb), 0.15);
 }
 
 /* --- SERVICIOS RÁPIDOS --- */
