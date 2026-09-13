@@ -159,22 +159,31 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 }
 
 /* ======================================================= */
-/*      REORDENAMIENTO EN MÓVILES (Fusión de Columnas)     */
+/*      REORDENAMIENTO EN MÓVILES (Perfil)                 */
 /* ======================================================= */
 @media (max-width: 1023px) {
+    /* Eliminamos 'display: contents' para anular la herencia del gap general */
     .col-izquierda, .col-derecha {
-        display: contents;
+        display: block;
     }
     
-    .footer-gnc-compact, .ngc-site-credits {
-        order: 6; 
-    }
-    
-    .ngc-full-container, .ngc-banner, details, .ngc-main-title {
-        margin-bottom: 0 !important;
-    }
-    
+    /* Ocultar el título "Trayectoria" duplicado en móviles */
     .hidden-mobile { 
         display: none !important; 
+    }
+
+    /* Fijamos la separación exacta de 12px en todos los bloques para lograr simetría */
+    .ngc-full-container, .ngc-banner, details {
+        margin-bottom: 12px !important;
+    }
+    
+    /* Separación estandarizada para el título principal */
+    .ngc-main-title {
+        margin-bottom: 12px !important;
+    }
+
+    /* El footer retoma su lugar al final del flujo sin órdenes forzados */
+    .footer-gnc-compact {
+        margin-top: 0 !important;
     }
 }
