@@ -84,47 +84,6 @@
                    <p>Esta ley busca garantizar la seguridad de las instalaciones eléctricas en toda la provincia.</p>
                 </div>
 
-                <!-- FORMULARIO DE CONSULTA -->
-                <div class="ngc-form-container gpu-accel">
-                    <div class="form-header">
-                        <div class="form-title">
-                            <div class="icon-box"><i data-lucide="send"></i></div>
-                            <span>Envíame tu consulta</span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-body">
-                        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-                        
-                        <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
-                            <div class="field-group">
-                                <label>Nombre</label>
-                                <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
-                            </div>
-                            <div class="field-group">
-                                <label>WhatsApp</label>
-                                <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
-                            </div>
-                            <div class="field-group">
-                                <label>Consulta</label>
-                                <textarea name="entry.615194603" placeholder="Describe aquí el trabajo, duda o problema..." rows="4" required></textarea>
-                            </div>
-                            <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
-                        </form>
-
-                        <div id="success-message">
-                            <div style="color: var(--ngc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.2rem;">✓ CONSULTA ENVIADA</div>
-                            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px; color: var(--ngc-text);">Sergio se pondrá en contacto pronto.</p>
-                            <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========================================== -->
-            <!-- COLUMNA DERECHA (Scrolleable)              -->
-            <!-- ========================================== -->
-            <div class="col-derecha">
                 <!-- ACORDEONES (Ahora con name="historia") -->
                 <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
@@ -185,13 +144,55 @@
                        <p>• <b>Electricistas habilitados:</b> Buscá profesionales capacitados para asesorarte.</p>
                     </div>
                 </details>
+            </div>
 
+            <!-- ========================================== -->
+            <!-- COLUMNA DERECHA (Scrolleable)              -->
+            <!-- ========================================== -->
+            <div class="col-derecha">
+                
                 <!-- BANNER DE CIERRE -->
                 <div class="ngc-banner gpu-accel" style="border-left-color: var(--ngc-success);">
                     <p>La Ley 10.281 es una herramienta para garantizar la seguridad eléctrica en Córdoba.</p>
                     <p><b class="text-neon">¡Cumplirla es esencial para tu tranquilidad!</b></p>
                 </div>
 
+                <!-- FORMULARIO DE CONSULTA -->
+                <div class="ngc-form-container gpu-accel">
+                    <div class="form-header">
+                        <div class="form-title">
+                            <div class="icon-box"><i data-lucide="send"></i></div>
+                            <span>Envíame tu consulta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-body">
+                        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+                        
+                        <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
+                            <div class="field-group">
+                                <label>Nombre</label>
+                                <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="field-group">
+                                <label>WhatsApp</label>
+                                <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
+                            </div>
+                            <div class="field-group">
+                                <label>Consulta</label>
+                                <textarea name="entry.615194603" placeholder="Describe aquí el trabajo, duda o problema..." rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
+                        </form>
+
+                        <div id="success-message">
+                            <div style="color: var(--ngc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.2rem;">✓ CONSULTA ENVIADA</div>
+                            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px; color: var(--ngc-text);">Sergio se pondrá en contacto pronto.</p>
+                            <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- FOOTER Y CRÉDITOS -->
         
                  <div class="footer-gnc-compact gpu-accel">
