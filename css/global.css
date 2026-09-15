@@ -49,8 +49,8 @@
 }
     
 [data-theme="light"] {
-    --ngc-neon: #008fb3; 
-    --ngc-neon-rgb: 0, 143, 179;
+    --ngc-neon: #0056d6; 
+    --ngc-neon-rgb: 0, 86, 214;
     
     --ngc-glass: rgba(255, 255, 255, 0.6); 
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
