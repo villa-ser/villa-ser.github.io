@@ -16,8 +16,8 @@
 
 /* --- VARIABLES MODO DÍA --- */
 [data-theme="light"] {
-  --gnc-neon: #007a99; 
-  --gnc-neon-rgb: 0, 122, 153;
+  --gnc-neon: #0056d6; 
+  --gnc-neon-rgb: 0, 86, 214;
   --gnc-glass: rgba(255, 255, 255, 0.75); 
   --gnc-border: 1px solid rgba(0, 122, 153, 0.3); 
   --gnc-text: #111111;
