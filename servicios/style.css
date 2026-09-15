@@ -76,6 +76,24 @@ input:focus, textarea:focus {
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
 
+/* Mensaje de privacidad debajo del botón */
+.form-privacy-note {
+    font-size: 0.7rem;
+    color: var(--ngc-text-faded); /* Usa tu variable global para que se vea sutil en ambos modos */
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 0;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.form-privacy-note i {
+    color: var(--ngc-neon); /* El candadito brillará con el color de tu tema */
+    margin-right: 5px;
+    opacity: 0.8;
+}
+
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* --- BOTONES DE ACCIÓN EN SERVICIOS (COTI, WHATSAPP, INFO) --- */
