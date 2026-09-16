@@ -40,7 +40,7 @@
     <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
 <script>
     (function() {
-        const TIEMPO_CADUCIDAD = 2 * 60 * 60 * 1000; // 2 horas
+        const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
         const temaGuardado = localStorage.getItem('temaVillaser');
         const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
         const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
