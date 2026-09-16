@@ -111,7 +111,7 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); }
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); }
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.3s ease; background: var(--content-bg); }
 .ngc-content strong { color: var(--ngc-text); }
 
