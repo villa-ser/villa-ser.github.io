@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. LÓGICA INTELIGENTE DE TEMA (MODO DÍA/NOCHE)
     // =========================================================
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    const TIEMPO_CADUCIDAD = 2 * 60 * 60 * 1000; // 2 horas en milisegundos
-
+    const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
+    
     function sincronizarTema() {
         const temaGuardado = localStorage.getItem('temaVillaser');
         const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
