@@ -24,7 +24,7 @@ summary, .form-header {
 summary::-webkit-details-marker { display: none; }
 
 .summary-title, .form-title {
-    display: flex; align-items: center; gap: 12px; color: var(--ngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
+    display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
 .ngc-content, .form-body {
