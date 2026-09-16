@@ -36,6 +36,40 @@
     <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
+
+    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
+<script>
+    (function() {
+        const TIEMPO_CADUCIDAD = 2 * 60 * 60 * 1000; // 2 horas
+        const temaGuardado = localStorage.getItem('temaVillaser');
+        const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+        let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
+
+        // Si el usuario eligió un tema manualmente
+        if (temaGuardado && tiempoGuardado) {
+            const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
+            
+            if (tiempoPasado <= TIEMPO_CADUCIDAD) {
+                // Si NO pasaron 2 horas, respetamos su decisión
+                temaFinal = temaGuardado; 
+            } else {
+                // Si caducó, miramos qué pide el sistema
+                temaFinal = prefiereClaro ? 'light' : 'dark';
+            }
+        } else if (prefiereClaro) {
+            // Si nunca eligió nada y su sistema es claro
+            temaFinal = 'light';
+        }
+
+        // Aplicamos el atributo al HTML al instante
+        if (temaFinal === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+</script>
+    
     
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
