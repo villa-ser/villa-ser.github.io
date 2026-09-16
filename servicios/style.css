@@ -36,7 +36,7 @@ summary::-webkit-details-marker { display: none; }
 .ngc-btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
     padding: 12px; background: transparent; border: 1px solid var(--ngc-neon);
-    border-radius: 12px; color: var(--ngc-neon); font-weight: 700; text-transform: uppercase;
+    border-radius: 12px; color: var(--ngc-text-main); font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer;
 }
 .ngc-btn-outline:hover { background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
