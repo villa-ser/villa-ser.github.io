@@ -52,7 +52,7 @@
             const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
             
             if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 2 horas, respetamos su decisión
+                // Si NO pasaron 30 minutos, respetamos su decisión
                 temaFinal = temaGuardado; 
             } else {
                 // Si caducó, miramos qué pide el sistema
@@ -63,14 +63,16 @@
             temaFinal = 'light';
         }
 
-        // Aplicamos el atributo al HTML al instante
+        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
         if (temaFinal === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
+            document.documentElement.removeAttribute('data-theme');
         }
     })();
 </script>
-    
-    
+
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
