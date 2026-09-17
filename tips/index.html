@@ -36,7 +36,6 @@
     <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
-
     <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
 <script>
     (function() {
@@ -52,7 +51,7 @@
             const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
             
             if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 2 horas, respetamos su decisión
+                // Si NO pasaron 30 minutos, respetamos su decisión
                 temaFinal = temaGuardado; 
             } else {
                 // Si caducó, miramos qué pide el sistema
@@ -63,13 +62,15 @@
             temaFinal = 'light';
         }
 
-        // Aplicamos el atributo al HTML al instante
+        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
         if (temaFinal === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
+            document.documentElement.removeAttribute('data-theme');
         }
     })();
 </script>
-    
     
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
