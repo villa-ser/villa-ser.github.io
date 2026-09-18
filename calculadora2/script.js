@@ -45,76 +45,62 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 2. FUNCIONES DEL SELECTOR Y CALCULADORA
+// 2. FUNCIONES DEL MODAL FLOTANTE
 // ==========================================
-function toggleDropdown(listId, displayId, event) {
-    if (event) event.stopPropagation();
-    else if (window.event) window.event.stopPropagation();
-    
-    const list = document.getElementById(listId);
-    const display = document.getElementById(displayId);
-    if(!list || !display) return;
-    
-    const isShowing = list.classList.contains('show');
-    closeAllDropdowns();
-    
-    if (!isShowing) { 
-        list.classList.add('show'); 
-        display.classList.add('select-arrow-active'); 
-    }
+function abrirModalAparatos() {
+    document.getElementById('modal-aparatos').classList.remove('oculto');
+}
+
+function cerrarModalAparatos() {
+    document.getElementById('modal-aparatos').classList.add('oculto');
 }
 
 function selectOption(val, text) {
-    const displayAparato = document.getElementById('display-aparato');
     const hiddenInput = document.getElementById('aparato');
+    const containerSelected = document.getElementById('aparato-seleccionado-container');
+    const nameDisplay = document.getElementById('aparato-seleccionado-nombre');
+    const wattsDisplay = document.getElementById('aparato-seleccionado-watts');
     
-    if (displayAparato && hiddenInput) {
-        displayAparato.innerText = text;
-        hiddenInput.value = val;
-        hiddenInput.setAttribute('data-text', text);
-        closeAllDropdowns();
-        actualizarWatts();
-    }
+    // Asignar el valor al input invisible para los cálculos
+    hiddenInput.value = val;
+    hiddenInput.setAttribute('data-text', text);
+    
+    // Mostrar el texto y watts en la cajita inferior
+    nameDisplay.innerText = text;
+    wattsDisplay.innerText = val + " W de potencia";
+    
+    // Mostrar la cajita y cerrar el modal
+    containerSelected.classList.remove('oculto');
+    cerrarModalAparatos();
 }
 
-function closeAllDropdowns() {
-    const list = document.getElementById('list-aparato');
-    const display = document.getElementById('display-aparato');
-    if (list) list.classList.remove('show');
-    if (display) display.classList.remove('select-arrow-active');
-}
-
+// Cierra el modal si se toca la zona oscura fuera de la caja
 document.addEventListener("click", function(event) {
-    const customSelect = event.target.closest('.custom-select');
-    if (!customSelect) closeAllDropdowns();
+    const modal = document.getElementById('modal-aparatos');
+    if (event.target === modal) {
+        cerrarModalAparatos();
+    }
 });
 
-function actualizarWatts() {
-    const valObj = document.getElementById('aparato');
-    const wattsDisplay = document.getElementById('watts_display');
-    if(!valObj || !wattsDisplay) return;
-
-    const val = valObj.value;
-    wattsDisplay.innerText = val == "0" ? "0 Watts de potencia" : val + " Watts de potencia";
-}
-
+// ==========================================
+// 3. FUNCIONES DE CALCULADORA (AGREGAR / RESET)
+// ==========================================
 function resetAll() {
     listado = [];
     const inputObj = document.getElementById('aparato');
-    const displayObj = document.getElementById('display-aparato');
-    const wattsDisplay = document.getElementById('watts_display');
+    const containerSelected = document.getElementById('aparato-seleccionado-container');
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
     const sliderDias = document.getElementById("dias");
     const labelDias = document.getElementById("dias-val");
 
-    if(inputObj && displayObj && wattsDisplay) {
+    if(inputObj) {
         inputObj.value = "0";
         inputObj.setAttribute('data-text', "");
-        displayObj.innerText = "Seleccionar artefacto...";
-        wattsDisplay.innerText = "0 Watts de potencia";
     }
-    
+    if(containerSelected) {
+        containerSelected.classList.add('oculto'); // Ocultar cajita
+    }
     if(sliderHoras && labelHoras) { sliderHoras.value = 4; labelHoras.innerText = "4 hs"; }
     if(sliderDias && labelDias) { sliderDias.value = 7; labelDias.innerText = "7 días"; }
     
@@ -125,6 +111,7 @@ function agregarItem() {
     const inputObj = document.getElementById('aparato');
     const horasObj = document.getElementById('horas');
     const diasObj = document.getElementById('dias');
+    const containerSelected = document.getElementById('aparato-seleccionado-container');
     
     if (!inputObj || !horasObj || !diasObj || inputObj.value == "0") return;
     
@@ -136,13 +123,10 @@ function agregarItem() {
     
     listado.push({ id: Date.now(), nombre, kwhMensual });
     
+    // Resetear el selector después de agregar
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
-    
-    const displayObj = document.getElementById('display-aparato');
-    const wattsDisplay = document.getElementById('watts_display');
-    if(displayObj) displayObj.innerText = "Seleccionar artefacto...";
-    if(wattsDisplay) wattsDisplay.innerText = "0 Watts de potencia";
+    if(containerSelected) containerSelected.classList.add('oculto'); // Ocultar cajita
     
     render();
 }
@@ -179,7 +163,7 @@ function render() {
 }
 
 // ==========================================
-// 3. LÓGICA DE TARIFAS Y ESCALONES
+// 4. LÓGICA DE TARIFAS Y ESCALONES
 // ==========================================
 function recalcularTotal() {
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
@@ -257,7 +241,6 @@ function recalcularTotal() {
     const tierUI = document.getElementById('tier-indicator');
     if (totalKwh > 0 && tierUI) {
         
-        // CORRECCIÓN EXACTA A LOS COLORES DEL BORDE (USANDO HEX PARA EVITAR FALLOS)
         let textoEscalon = "";
         let colorBorde = "#28a745"; // Verde
         
@@ -278,12 +261,10 @@ function recalcularTotal() {
         const subText = tipoTarifa === "con_subsidio" ? "Categoría N2/N3 (Subsidio)" : "Categoría N1 (Sin Subsidio)";
         
         tierUI.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${textoEscalon} <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px;">${subText}</span>`;
-        
-        // Asignamos únicamente el color del borde. El fondo y texto se mantienen siempre verdes gracias al CSS.
         tierUI.style.borderColor = colorBorde;
         tierUI.classList.remove('oculto');
         
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-        }
+            }
