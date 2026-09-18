@@ -21,11 +21,8 @@
     margin-bottom: 15px;
     animation: fadeIn 0.5s ease;
 }
-
-/* Variante de borde neón superior */
 .module-top-neon { border-top: 4px solid var(--ngc-neon); border-left: var(--ngc-border-glass); }
 
-/* Encabezados de controles */
 .header-module {
     display: flex; justify-content: space-between; align-items: center;
 }
@@ -95,53 +92,78 @@ label i { margin-right: 5px; }
     box-shadow: 0 0 10px var(--ngc-neon); border: 2px solid white;
 }
 
-.custom-select { position: relative; width: 100%; }
+/* ============================================== */
+/* NUEVOS ESTILOS: BOTÓN DISPARADOR Y MODAL       */
+/* ============================================== */
 
-/* Selector 100% Sólido - Eliminada Transparencia */
-.select-selected {
-    background: #1a1a1a !important; border: 1px solid rgba(var(--ngc-neon-rgb), 0.3); border-radius: 10px; 
-    padding: 12px 14px; color: var(--ngc-text); font-size: 0.9rem; cursor: pointer; display: flex; 
-    justify-content: space-between; align-items: center; user-select: none; transition: 0.3s; font-weight: 500;
+/* Botón + Aparato Eléctrico */
+.btn-aparato-trigger {
+    width: 100%; background: rgba(var(--ngc-neon-rgb), 0.1);
+    border: 1px dashed var(--ngc-neon); color: var(--ngc-neon);
+    padding: 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.9rem;
+    cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.1);
 }
-[data-theme="light"] .select-selected { background: #f4f4f4 !important; }
+.btn-aparato-trigger:hover { 
+    background: rgba(var(--ngc-neon-rgb), 0.2); 
+    box-shadow: 0 0 20px rgba(var(--ngc-neon-rgb), 0.4); 
+    transform: translateY(-2px);
+}
 
-.select-selected:focus, .select-arrow-active {
-    border-color: var(--ngc-neon); 
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.3);
+/* Overlay / Fondo del Modal Flotante */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 10000; display: flex; align-items: center; justify-content: center;
+    opacity: 1; transition: opacity 0.3s ease;
 }
-.select-selected::after {
-    content: "\f078"; font-family: "Font Awesome 6 Free"; font-weight: 900;
-    color: var(--ngc-neon); transition: transform 0.3s ease;
+.modal-overlay.oculto {
+    opacity: 0; pointer-events: none; display: none !important;
 }
-.select-selected.select-arrow-active::after { transform: rotate(180deg); }
 
-/* Menú Desplegable 100% Sólido - Eliminada Transparencia */
-.select-items {
-    position: absolute; 
-    background: #111111 !important; /* Negro Sólido */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    top: 100%; left: 0; width: 100%; z-index: 99; border: var(--ngc-border-glass);
-    border-radius: 12px; margin-top: 5px; max-height: 250px; overflow-y: auto; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.8); display: none;
+/* Caja del Modal Flotante */
+.modal-content {
+    background: #111111; border: 1px solid rgba(var(--ngc-neon-rgb), 0.4);
+    border-radius: 16px; width: 92%; max-width: 450px; max-height: 80vh;
+    display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+    animation: slideDown 0.3s ease-out;
 }
-[data-theme="light"] .select-items { 
-    background: #ffffff !important; /* Blanco Sólido */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-.select-items.show { display: block; animation: slideDown 0.2s ease-out; }
+[data-theme="light"] .modal-content { background: #ffffff; border-color: rgba(var(--ngc-neon-rgb), 0.8); }
 
-.opt-item { 
-    color: var(--ngc-text); padding: 12px 14px; cursor: pointer; font-size: 0.85rem; 
-    border-bottom: 1px solid rgba(128, 128, 128, 0.2); transition: background 0.2s; 
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px; border-bottom: 1px solid rgba(128,128,128,0.2);
 }
-.opt-item:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); padding-left: 20px;}
+.modal-header h3 { color: var(--ngc-neon); margin: 0; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+.btn-close-modal { background: none; border: none; color: var(--ngc-danger); font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
+.btn-close-modal:hover { transform: scale(1.1); filter: drop-shadow(0 0 5px var(--ngc-danger)); }
+
+.modal-body {
+    padding: 10px 0 20px 0; overflow-y: auto;
+}
+
+/* Filas de Ítems del Modal */
+.opt-item-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid rgba(128,128,128,0.1); cursor: pointer; transition: background 0.2s;
+}
+.opt-item-row:hover { background: rgba(var(--ngc-neon-rgb), 0.15); }
+.item-name { color: var(--ngc-text); font-size: 0.85rem; flex-grow: 1; font-weight: 600;}
+[data-theme="light"] .item-name { color: #111; }
+
+.item-right { display: flex; align-items: center; gap: 12px; }
+.item-watts { font-size: 0.75rem; color: var(--ngc-text-muted); font-weight: bold; }
+.btn-item-add {
+    background: var(--ngc-neon); color: #000; border: none; width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; pointer-events: none;
+}
 .opt-group { 
-    color: var(--ngc-success); padding: 10px 14px 4px 14px; font-size: 1.0rem; 
+    color: var(--ngc-success); padding: 15px 20px 5px 20px; font-size: 1.05rem; 
     font-weight: 800; text-transform: uppercase; background: var(--opt-group-bg); pointer-events: none; 
 }
 
-/* Botón Destacado Independiente */
+
+/* Botón de Agregar (Principal) */
 .btn-add {
     width: 100%; background: var(--ngc-neon); border: 1px solid var(--ngc-neon);
     color: #121212; padding: 16px; border-radius: 12px; cursor: pointer;
@@ -166,13 +188,10 @@ label i { margin-right: 5px; }
     border-left: 3px solid var(--ngc-neon); border-top: 1px solid rgba(var(--ngc-neon-rgb), 0.1); border-right: 1px solid rgba(var(--ngc-neon-rgb), 0.1); border-bottom: 1px solid rgba(var(--ngc-neon-rgb), 0.1);
     animation: fadeIn 0.4s ease;
 }
-.item-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-}
+.item-header { display: flex; justify-content: space-between; align-items: flex-start; }
 .item-info { flex-grow: 1; }
 .item-info strong { display: block; font-size: 0.85rem; color: var(--ngc-text); margin-bottom: 2px;}
 .item-desglose { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
-
 .desglose-line-row { display: flex; justify-content: space-between; align-items: center; }
 .linea-escalon { font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
 .item-costo { font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
@@ -199,7 +218,7 @@ label i { margin-right: 5px; }
 .total-val { font-size: 1.2rem; font-weight: 800; color: var(--ngc-text); }
 .pesos-val { font-size: 1.35rem; font-weight: 800; color: var(--ngc-success); text-shadow: 0 0 8px rgba(40, 167, 69, 0.2); }
 
-/* TRUCO CSS: Texto y fondo Verde bloqueados. JS solo controlará el color del borde */
+/* TRUCO CSS: Escalafón */
 .tier-badge {
     background-color: rgba(40, 167, 69, 0.08) !important; 
     color: var(--ngc-success) !important; 
@@ -245,7 +264,7 @@ label i { margin-right: 5px; }
 .legend-list strong { color: var(--ngc-text); }
 .legend-footer { margin-top: 15px; font-size: 0.65rem; text-align: right; color: var(--ngc-text-muted); font-weight: bold; letter-spacing: 1px; }
 
-@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (min-width: 768px) {
@@ -273,5 +292,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-    }
-    
+                    }
+            
