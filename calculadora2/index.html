@@ -172,28 +172,38 @@
             <!-- COLUMNA DERECHA (Resultados) -->
             <div class="col-derecha">
                 
-                <!-- MÓDULO UNIFICADO: TÍTULO + LISTA DE APARATOS -->
+                <!-- MÓDULO UNIFICADO COMPLETO: TOTALES + LISTA + ESCALAFÓN -->
                 <div class="ngc-module module-top-neon gpu-accel">
                     <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0 0 15px 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
                         <i class="fa-solid fa-list-check"></i> Detalle de Consumo
                     </h3>
+                    
+                    <!-- PANEL DE TOTALES (Movido arriba e integrado limpio) -->
+                    <div class="summary-panel gpu-accel">
+                        <div>
+                            <span class="res-label">CONSUMO ESTIMADO</span>
+                            <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--gnc-text);">kWh/mes</span></span>
+                        </div>
+                        <div>
+                            <span class="res-label">TOTAL FACTURA (Aprox)</span>
+                            <span class="pesos-val" id="total-pesos">$ 0</span>
+                        </div>
+                    </div>
+
+                    <!-- LISTA DE APARATOS -->
                     <div id="lista-items"></div>
-                </div>
 
-                <!-- PANEL DE TOTALES -->
-                <div class="summary-panel gpu-accel">
-                    <div>
-                        <span class="res-label">CONSUMO ESTIMADO</span>
-                        <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--gnc-text);">kWh/mes</span></span>
-                    </div>
-                    <div>
-                        <span class="res-label">TOTAL FACTURA (Aprox)</span>
-                        <span class="pesos-val" id="total-pesos">$ 0</span>
+                    <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO (Integrada abajo) -->
+                    <div id="tier-indicator" class="tier-badge gpu-accel oculto">
+                        <div id="tier-text-container"></div>
+                        <div class="tier-progress-bar">
+                            <div class="tier-segment segment-1" id="seg-1"></div>
+                            <div class="tier-segment segment-2" id="seg-2"></div>
+                            <div class="tier-segment segment-3" id="seg-3"></div>
+                            <div class="tier-segment segment-4" id="seg-4"></div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- ETIQUETA DINÁMICA DE ESCALAFÓN -->
-                <div id="tier-indicator" class="tier-badge gpu-accel oculto"></div>
                 
                 <!-- CTA DE OPTIMIZACIÓN -->
                 <div class="cta-optimizar gpu-accel">
