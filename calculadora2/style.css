@@ -76,7 +76,7 @@ label i { margin-right: 5px; }
 
 .top-controls-row {
     display: flex;
-    align-items: stretch;
+    align-items: stretch; /* ESTO HACE QUE AMBAS COLUMNAS MIDAN EXACTAMENTE LO MISMO */
     gap: 10px;
     margin-bottom: 15px;
     width: 100%;
@@ -85,18 +85,18 @@ label i { margin-right: 5px; }
 .stacked-tarifa-toggle {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    align-self: stretch;
-    flex: 0 0 115px; /* Ancho de la columna izquierda de botones */
+    gap: 8px; /* Espacio entre los dos botoncitos */
+    flex: 0 0 115px; /* Ancho de la columna de botones */
 }
 
 .tarifa-mini-opt {
+    margin: 0; /* Elimina márgenes extra */
+    flex: 1; /* ESTO HACE QUE SE ESTIREN EXACTAMENTE MITAD Y MITAD (menos el gap) */
     background: rgba(128, 128, 128, 0.05); 
     border: 1px solid rgba(128, 128, 128, 0.4);
     color: var(--ngc-text-muted);
     border-radius: 8px; 
     padding: 0 10px;
-    flex: 1; /* Divide la altura total del contenedor en 2 partes iguales menos el gap */
     font-size: 0.65rem; 
     font-weight: bold; 
     cursor: pointer; 
@@ -119,13 +119,14 @@ label i { margin-right: 5px; }
 }
 
 .btn-aparato-trigger-side {
+    margin: 0;
     flex: 1;
     background: rgba(var(--ngc-neon-rgb), 0.1);
     border: 1px dashed var(--ngc-neon); color: var(--ngc-neon);
     padding: 0 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem;
     cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.1);
-    min-height: 64px; /* Altura base que comanda el alto total de la fila */
+    min-height: 74px; /* ALTURA MAESTRA: Modifica esto si quieres que el conjunto sea más alto o más bajo */
 }
 
 .btn-aparato-trigger-side:hover { 
