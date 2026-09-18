@@ -113,19 +113,19 @@
     <main class="ngc-wrapper">
         <div class="layout-desktop">
             
-            <!-- COLUMNA IZQUIERDA (Controles) -->
+            <!-- COLUMNA IZQUIERDA (Controles sin caja de fondo) -->
             <div class="col-izquierda">
                 
-                <!-- MÓDULO: TÍTULO -->
-                <div class="ngc-module module-top-neon gpu-accel header-module">
-                    <h2>Calculadora de Consumo</h2>
+                <!-- TÍTULO Y RESET (Sin Caja) -->
+                <div class="header-module form-group-transparent gpu-accel" style="margin-bottom: 25px;">
+                    <h2 style="font-size: 1.1rem;">Calculadora de Consumo</h2>
                     <button class="btn-reset" onclick="resetAll()">
                         <i class="fa-solid fa-rotate-right"></i> Reset
                     </button>
                 </div>
 
-                <!-- MÓDULO: TARIFA -->
-                <div class="ngc-module module-left-neon gpu-accel">
+                <!-- SEGMENTACIÓN DE TARIFA (Sin Caja) -->
+                <div class="form-group-transparent gpu-accel">
                     <label><i class="fa-solid fa-file-invoice-dollar"></i> Segmentación de Tarifa</label>
                     <div class="option-grid segment-grid">
                         <label class="opt-box"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()">SIN SUBSIDIO<br><span style="font-size:0.55rem; opacity:0.8;">(Sin SEF)</span></label>
@@ -133,8 +133,8 @@
                     </div>
                 </div>
 
-                <!-- MÓDULO: APARATO ELÉCTRICO (Con Z-Index Ajustado para el desplegable) -->
-                <div class="ngc-module module-left-neon gpu-accel" style="position: relative; z-index: 50;">
+                <!-- APARATO ELÉCTRICO (Sin Caja, con z-index para dropdown) -->
+                <div class="form-group-transparent gpu-accel" style="position: relative; z-index: 50;">
                     <label style="margin-bottom: 8px;"><i class="fa-solid fa-plug"></i> Aparato Eléctrico</label>
                     <div class="custom-select">
                         <div class="select-selected" id="display-aparato" onclick="toggleDropdown('list-aparato', 'display-aparato', event)">Seleccionar artefacto...</div>
@@ -188,8 +188,8 @@
                     <div id="watts_display" class="readonly-box" style="margin-top: 15px;">0 Watts de potencia</div>
                 </div>
 
-                <!-- MÓDULO: SLIDERS -->
-                <div class="ngc-module module-left-neon gpu-accel" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- SLIDERS (Sin Caja) -->
+                <div class="form-group-transparent gpu-accel" style="display: flex; flex-direction: column; gap: 15px;">
                     <div class="slider-group">
                         <div class="slider-header">
                             <label><i class="fa-regular fa-clock"></i> Uso Diario</label>
@@ -216,15 +216,16 @@
             <!-- COLUMNA DERECHA (Resultados) -->
             <div class="col-derecha">
                 
-                <!-- MÓDULO: TÍTULO RESULTADOS -->
-                <div class="ngc-module module-top-neon gpu-accel header-module">
-                    <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-list-check"></i> Detalle de Consumo</h3>
+                <!-- MÓDULO UNIFICADO: TÍTULO + LISTA DE APARATOS -->
+                <div class="ngc-module module-top-neon gpu-accel">
+                    <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0 0 15px 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fa-solid fa-list-check"></i> Detalle de Consumo
+                    </h3>
+                    <!-- LA LISTA QUEDA DENTRO DE ESTA MISMA CAJA -->
+                    <div id="lista-items"></div>
                 </div>
-                
-                <!-- LISTA DE ITEMS AÑADIDOS -->
-                <div id="lista-items"></div>
 
-                <!-- MÓDULO: PANEL DE TOTALES -->
+                <!-- PANEL DE TOTALES -->
                 <div class="summary-panel gpu-accel">
                     <div>
                         <span class="res-label">CONSUMO ESTIMADO</span>
@@ -236,10 +237,10 @@
                     </div>
                 </div>
 
-                <!-- ETIQUETA DINÁMICA DE ESCALAFÓN -->
+                <!-- ETIQUETA DINÁMICA DE ESCALAFÓN (MODIFICADA CSS PARA BORDE) -->
                 <div id="tier-indicator" class="tier-badge gpu-accel oculto"></div>
                 
-                <!-- MÓDULO: CTA DE OPTIMIZACIÓN -->
+                <!-- CTA DE OPTIMIZACIÓN -->
                 <div class="cta-optimizar gpu-accel">
                     <span class="cta-title">¿Tu consumo es muy elevado?</span>
                     <p>Un electricista habilitado puede detectar fugas invisibles que encarecen tu factura.</p>
