@@ -160,45 +160,43 @@
                 </button>
             </div>
 
-            <!-- COLUMNA DERECHA (Resultados) -->
+            <!-- COLUMNA DERECHA (Resultados ampliados) -->
             <div class="col-derecha">
                 
-                <!-- MÓDULO UNIFICADO COMPLETO: TOTALES + LISTA + ESCALAFÓN -->
-                <div class="ngc-module module-top-neon gpu-accel">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
-                        <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
-                            <i class="fa-solid fa-list-check"></i> Detalle
-                        </h3>
-                        <div class="header-tarifa-toggle">
-                            <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
-                            <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF *</label>
-                        </div>
+                <!-- ENCABEZADO DE RESULTADOS: TÍTULO Y TOGGLE (Sin módulo envolvente) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; animation: fadeIn 0.5s ease;">
+                    <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3);">
+                        <i class="fa-solid fa-list-check"></i> Detalle
+                    </h3>
+                    <div class="header-tarifa-toggle">
+                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
+                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF *</label>
                     </div>
-                    
-                    <!-- PANEL DE TOTALES (Sin borde cian, más ancho y visible) -->
-                    <div class="summary-panel gpu-accel">
-                        <div>
-                            <span class="res-label">CONSUMO ESTIMADO</span>
-                            <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--ngc-text);">kWh/mes</span></span>
-                        </div>
-                        <div>
-                            <span class="res-label">TOTAL FACTURA (Aprox)</span>
-                            <span class="pesos-val" id="total-pesos">$ 0</span>
-                        </div>
+                </div>
+                
+                <!-- PANEL DE TOTALES (Ancho completo) -->
+                <div class="summary-panel gpu-accel">
+                    <div>
+                        <span class="res-label">CONSUMO ESTIMADO</span>
+                        <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--ngc-text);">kWh/mes</span></span>
                     </div>
+                    <div>
+                        <span class="res-label">TOTAL FACTURA (Aprox)</span>
+                        <span class="pesos-val" id="total-pesos">$ 0</span>
+                    </div>
+                </div>
 
-                    <!-- LISTA DE APARATOS -->
-                    <div id="lista-items"></div>
+                <!-- LISTA DE APARATOS -->
+                <div id="lista-items"></div>
 
-                    <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO -->
-                    <div id="tier-indicator" class="tier-badge gpu-accel oculto">
-                        <div id="tier-text-container"></div>
-                        <div class="tier-progress-bar">
-                            <div class="tier-segment segment-1" id="seg-1"></div>
-                            <div class="tier-segment segment-2" id="seg-2"></div>
-                            <div class="tier-segment segment-3" id="seg-3"></div>
-                            <div class="tier-segment segment-4" id="seg-4"></div>
-                        </div>
+                <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO -->
+                <div id="tier-indicator" class="tier-badge gpu-accel oculto">
+                    <div id="tier-text-container"></div>
+                    <div class="tier-progress-bar">
+                        <div class="tier-segment segment-1" id="seg-1"></div>
+                        <div class="tier-segment segment-2" id="seg-2"></div>
+                        <div class="tier-segment segment-3" id="seg-3"></div>
+                        <div class="tier-segment segment-4" id="seg-4"></div>
                     </div>
                 </div>
                 
@@ -222,9 +220,10 @@
                         </div>
                     </div>
                     <ul class="legend-list">
+                        <li><i class="fa-solid fa-check"></i> <strong>* SEF:</strong> Subsidios del Estado Federal (Segmentación Nacional).</li>
                         <li><i class="fa-solid fa-check"></i> <strong>Cálculo Estimativo:</strong> Incluye IVA (21%) y Tasas (aprox. 15%). No incluye Cargos Fijos.</li>
-                        <li><i class="fa-solid fa-check"></i> <strong>Potencia:</strong> Los Watts son promedios; el consumo real depende de la eficiencia (Inverter, Clase A).</li>
-                        <li><i class="fa-solid fa-check"></i> <strong>Vigencia:</strong> Lógica basada en el Cuadro Tarifario escalonado de EPEC y ERSeP.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Potencia:</strong> Los Watts son promedios; el consumo real depende de la eficiencia.</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Vigencia:</strong> Lógica basada en el Cuadro Tarifario escalonado de EPEC.</li>
                     </ul>
                     <div class="legend-footer">CÓRDOBA, ARGENTINA</div>
                 </div>
@@ -272,7 +271,7 @@
                 <div class="opt-item-row" onclick="selectOption(2000, 'Radiador Eléctrico')"><span class="item-name">Radiador Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
                 <div class="opt-item-row" onclick="selectOption(60, 'Ventilador de Pie/Techo')"><span class="item-name">Ventilador de Pie/Techo</span><div class="item-right"><span class="item-watts">60 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
                 <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-
+             
                 <!-- Cocina -->
                 <div class="opt-group">Cocina</div>
                 <div class="opt-item-row" onclick="selectOption(150, 'Heladera con Freezer')"><span class="item-name">Heladera con Freezer</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
@@ -320,4 +319,4 @@
     <script src="script.js" defer></script>
     
 </body>
-</html>
+</html>                                                                                                                                                                                                                                               </html>
