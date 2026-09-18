@@ -29,7 +29,7 @@
     <meta property="og:image:height" content="600">
     <meta property="og:image:alt" content="Fotografía en blanco y negro de un electricista con lentes, serio frente a una pared de tiza con iconos de seguridad eléctrica y el texto VILLASER ELECTRICISTA.">
 
-    <!-- Twitter Cards (Refuerzo para WhatsApp y otras plataformas) -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Calculadora de Consumo Eléctrico en Córdoba Capital | Villaser">
     <meta name="twitter:description" content="Calculá el consumo eléctrico de tu hogar y estimá tu factura de EPEC. Herramienta gratuita para controlar tu gasto y optimizar el ahorro.">
@@ -37,7 +37,7 @@
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
 
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
+    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
             const TIEMPO_CADUCIDAD = 30 * 60 * 1000; 
@@ -133,8 +133,8 @@
                     </div>
                 </div>
 
-                <!-- MÓDULO: APARATO ELÉCTRICO -->
-                <div class="ngc-module module-left-neon gpu-accel">
+                <!-- MÓDULO: APARATO ELÉCTRICO (Con Z-Index Ajustado para el desplegable) -->
+                <div class="ngc-module module-left-neon gpu-accel" style="position: relative; z-index: 50;">
                     <label style="margin-bottom: 8px;"><i class="fa-solid fa-plug"></i> Aparato Eléctrico</label>
                     <div class="custom-select">
                         <div class="select-selected" id="display-aparato" onclick="toggleDropdown('list-aparato', 'display-aparato', event)">Seleccionar artefacto...</div>
@@ -207,7 +207,7 @@
                     </div>
                 </div>
 
-                <!-- BOTÓN AGREGAR (Independiente) -->
+                <!-- BOTÓN AGREGAR -->
                 <button class="btn-add gpu-accel" onclick="agregarItem()">
                     <i class="fa-solid fa-plus"></i> Agregar a la lista
                 </button>
@@ -224,7 +224,7 @@
                 <!-- LISTA DE ITEMS AÑADIDOS -->
                 <div id="lista-items"></div>
 
-                <!-- MÓDULO: PANEL DE TOTALES (Borde inferior Verde) -->
+                <!-- MÓDULO: PANEL DE TOTALES -->
                 <div class="summary-panel gpu-accel">
                     <div>
                         <span class="res-label">CONSUMO ESTIMADO</span>
@@ -239,7 +239,7 @@
                 <!-- ETIQUETA DINÁMICA DE ESCALAFÓN -->
                 <div id="tier-indicator" class="tier-badge gpu-accel oculto"></div>
                 
-                <!-- MÓDULO: CTA DE OPTIMIZACIÓN (Borde izquierdo Verde) -->
+                <!-- MÓDULO: CTA DE OPTIMIZACIÓN -->
                 <div class="cta-optimizar gpu-accel">
                     <span class="cta-title">¿Tu consumo es muy elevado?</span>
                     <p>Un electricista habilitado puede detectar fugas invisibles que encarecen tu factura.</p>
@@ -248,7 +248,7 @@
                     </a>
                 </div>
 
-                <!-- INTACTO: INFORMACIÓN TÉCNICA -->
+                <!-- INFORMACIÓN TÉCNICA -->
                 <div class="ngc-tech-legend gpu-accel">
                     <span class="legend-title"><i class="fa-solid fa-circle-info"></i> Información Técnica Tarifaria</span>
                     <div class="legend-section">
@@ -266,7 +266,7 @@
                     <div class="legend-footer">CÓRDOBA, ARGENTINA</div>
                 </div>
 
-                <!-- INTACTO: FOOTER Y CRÉDITOS -->
+                <!-- FOOTER Y CRÉDITOS -->
                 <div class="footer-gnc-compact gpu-accel">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
                         <i class="far fa-envelope"></i>
@@ -296,5 +296,4 @@
     <script src="script.js" defer></script>
     
 </body>
-          </html>
-                           
+</html>
