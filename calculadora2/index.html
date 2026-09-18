@@ -118,15 +118,6 @@
                     </button>
                 </div>
 
-                <!-- SEGMENTACIÓN DE TARIFA -->
-                <div class="form-group-transparent gpu-accel">
-                    <label><i class="fa-solid fa-file-invoice-dollar"></i> Segmentación de Tarifa</label>
-                    <div class="option-grid segment-grid">
-                        <label class="opt-box"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()">SIN SUBSIDIO<br><span style="font-size:0.55rem; opacity:0.8;">(Sin SEF)</span></label>
-                        <label class="opt-box"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()">CON SUBSIDIO<br><span style="font-size:0.55rem; opacity:0.8;">(SEF)</span></label>
-                    </div>
-                </div>
-
                 <!-- APARATO ELÉCTRICO (DINÁMICO) -->
                 <div class="form-group-transparent gpu-accel">
                     <!-- Botón disparador visible por defecto -->
@@ -174,15 +165,21 @@
                 
                 <!-- MÓDULO UNIFICADO COMPLETO: TOTALES + LISTA + ESCALAFÓN -->
                 <div class="ngc-module module-top-neon gpu-accel">
-                    <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0 0 15px 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
-                        <i class="fa-solid fa-list-check"></i> Detalle de Consumo
-                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
+                        <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                            <i class="fa-solid fa-list-check"></i> Detalle
+                        </h3>
+                        <div class="header-tarifa-toggle">
+                            <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
+                            <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF *</label>
+                        </div>
+                    </div>
                     
-                    <!-- PANEL DE TOTALES (Movido arriba e integrado limpio) -->
+                    <!-- PANEL DE TOTALES (Sin borde cian, más ancho y visible) -->
                     <div class="summary-panel gpu-accel">
                         <div>
                             <span class="res-label">CONSUMO ESTIMADO</span>
-                            <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--gnc-text);">kWh/mes</span></span>
+                            <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--ngc-text);">kWh/mes</span></span>
                         </div>
                         <div>
                             <span class="res-label">TOTAL FACTURA (Aprox)</span>
@@ -193,7 +190,7 @@
                     <!-- LISTA DE APARATOS -->
                     <div id="lista-items"></div>
 
-                    <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO (Integrada abajo) -->
+                    <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO -->
                     <div id="tier-indicator" class="tier-badge gpu-accel oculto">
                         <div id="tier-text-container"></div>
                         <div class="tier-progress-bar">
@@ -258,9 +255,7 @@
         </div>
     </main>
 
-    <!-- ============================================== -->
-    <!-- NUEVO MODAL FLOTANTE DE LISTA DE APARATOS      -->
-    <!-- ============================================== -->
+    <!-- MODAL FLOTANTE DE LISTA DE APARATOS -->
     <div id="modal-aparatos" class="modal-overlay oculto gpu-accel">
         <div class="modal-content">
             <div class="modal-header">
