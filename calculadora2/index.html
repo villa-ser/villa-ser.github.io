@@ -120,13 +120,8 @@
 
                 <!-- APARATO ELÉCTRICO (DINÁMICO) -->
                 <div class="form-group-transparent gpu-accel">
-                    <!-- Botón disparador visible por defecto -->
-                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger gpu-accel" onclick="abrirModalAparatos()">
-                        <i class="fa-solid fa-plus"></i> Aparato Eléctrico
-                    </button>
-
                     <!-- CAJA DE APARATO SELECCIONADO (Oculta por defecto) -->
-                    <div id="aparato-seleccionado-container" class="readonly-box oculto" style="margin-top: 15px; border-color: var(--ngc-success);">
+                    <div id="aparato-seleccionado-container" class="readonly-box oculto" style="border-color: var(--ngc-success);">
                         <span style="display:block; font-size:0.65rem; color:var(--ngc-text-muted); margin-bottom:4px; letter-spacing:1px;">CONFIGURA ESTE APARATO:</span>
                         <span id="aparato-seleccionado-nombre" style="color:var(--ngc-success); font-size: 1.05rem; display: block; margin-bottom: 2px;"></span>
                         <span id="aparato-seleccionado-watts" style="display:block; font-size: 0.8rem; color:var(--ngc-text); font-weight: normal; text-transform:none;"></span>
@@ -172,15 +167,16 @@
             <!-- COLUMNA DERECHA (Resultados ampliados) -->
             <div class="col-derecha">
                 
-                <!-- ENCABEZADO DE RESULTADOS: TÍTULO Y TOGGLE (Sin módulo envolvente) -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; animation: fadeIn 0.5s ease;">
-                    <h3 class="panel-title" style="color: var(--gnc-neon); margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3);">
-                        <i class="fa-solid fa-list-check"></i> Detalle
-                    </h3>
-                    <div class="header-tarifa-toggle">
-                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
-                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
+                <!-- ENCABEZADO DE RESULTADOS: TOGGLES Y BOTÓN +APARATO -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; animation: fadeIn 0.5s ease;">
+                    <div class="header-tarifa-toggle" style="flex-grow: 1; display: flex;">
+                        <label class="tarifa-mini-opt" style="flex: 1; justify-content: center;"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
+                        <label class="tarifa-mini-opt" style="flex: 1; justify-content: center;"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
                     </div>
+                    
+                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger gpu-accel" style="width: auto; margin: 0; flex-grow: 1.5;" onclick="abrirModalAparatos()">
+                        <i class="fa-solid fa-plus"></i> + Aparato Eléctrico
+                    </button>
                 </div>
                 
                 <!-- PANEL DE TOTALES (Ancho completo) -->
@@ -350,4 +346,4 @@
     <script src="script.js" defer></script>
     
 </body>
-</html>
+    </html>
