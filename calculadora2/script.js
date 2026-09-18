@@ -127,7 +127,7 @@ function selectOption(val, text) {
     nameDisplay.innerText = text;
     
     // Ocultar botón inicial y mostrar contenedor de nombre de aparato
-    document.getElementById('btn-aparato-trigger-side').classList.add('oculto');
+    document.getElementById('btn-aparato-trigger').classList.add('oculto');
     document.getElementById('aparato-seleccionado-container').classList.remove('oculto');
     
     // --- LÓGICA DE RECOMENDACIÓN TÉCNICA ---
@@ -221,7 +221,7 @@ function resetAll() {
     if(sliderDias && labelDias) { sliderDias.value = 7; labelDias.innerText = "7 días"; }
     
     // LÓGICA DE VISIBILIDAD (VOLVER AL INICIO)
-    const trigger = document.getElementById('btn-aparato-trigger-side');
+    const trigger = document.getElementById('btn-aparato-trigger');
     const containerSelected = document.getElementById('aparato-seleccionado-container');
     const recoContainer = document.getElementById('recomendacion-container');
     const sliders = document.getElementById('sliders-container');
@@ -256,7 +256,7 @@ function agregarItem() {
     inputObj.setAttribute('data-text', "");
     
     // Preparar UI para nuevo aparato
-    document.getElementById('btn-aparato-trigger-side').classList.remove('oculto');
+    document.getElementById('btn-aparato-trigger').classList.remove('oculto');
     document.getElementById('aparato-seleccionado-container').classList.add('oculto');
     document.getElementById('recomendacion-container').classList.add('oculto');
     document.getElementById('sliders-container').classList.add('oculto');
@@ -411,5 +411,5 @@ function recalcularTotal() {
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-        }
-    
+                    }
+            
