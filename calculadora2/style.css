@@ -2,7 +2,14 @@
 /*  ESTILO NGC - MODULAR PARA CALCULADORA                    */
 /* ========================================================= */
 
-/* NUEVA ESTRUCTURA MODULAR */
+/* CONTENEDOR TRANSPARENTE PARA COLUMNA IZQUIERDA */
+.form-group-transparent {
+    width: 100%;
+    margin-bottom: 22px;
+    animation: fadeIn 0.5s ease;
+}
+
+/* CAJAS MODULARES CON FONDO (Columna Derecha) */
 .ngc-module {
     background: var(--ngc-glass); 
     backdrop-filter: var(--ngc-blur);
@@ -15,17 +22,16 @@
     animation: fadeIn 0.5s ease;
 }
 
-/* Variantes de borde estético por módulo */
-.module-top-neon { border-top: 4px solid var(--ngc-neon); border-left: var(--ngc-border-glass); padding: 15px; }
-.module-left-neon { border-left: 4px solid var(--ngc-neon); }
+/* Variante de borde neón superior */
+.module-top-neon { border-top: 4px solid var(--ngc-neon); border-left: var(--ngc-border-glass); }
 
-/* Encabezados de módulos aislados */
+/* Encabezados de controles */
 .header-module {
     display: flex; justify-content: space-between; align-items: center;
 }
 
 h2 {
-    color: var(--ngc-neon); font-size: 1rem; text-transform: uppercase; margin: 0;
+    color: var(--ngc-neon); text-transform: uppercase; margin: 0;
     letter-spacing: 1px; flex-grow: 1; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3);
 }
 
@@ -90,13 +96,17 @@ label i { margin-right: 5px; }
 }
 
 .custom-select { position: relative; width: 100%; }
+
+/* Selector 100% Sólido - Eliminada Transparencia */
 .select-selected {
-    background: var(--input-bg); border: 1px solid rgba(var(--ngc-neon-rgb), 0.3); border-radius: 10px; 
+    background: #1a1a1a !important; border: 1px solid rgba(var(--ngc-neon-rgb), 0.3); border-radius: 10px; 
     padding: 12px 14px; color: var(--ngc-text); font-size: 0.9rem; cursor: pointer; display: flex; 
     justify-content: space-between; align-items: center; user-select: none; transition: 0.3s; font-weight: 500;
 }
+[data-theme="light"] .select-selected { background: #f4f4f4 !important; }
+
 .select-selected:focus, .select-arrow-active {
-    border-color: var(--ngc-neon); background: var(--item-row-bg);
+    border-color: var(--ngc-neon); 
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.3);
 }
 .select-selected::after {
@@ -105,11 +115,19 @@ label i { margin-right: 5px; }
 }
 .select-selected.select-arrow-active::after { transform: rotate(180deg); }
 
+/* Menú Desplegable 100% Sólido - Eliminada Transparencia */
 .select-items {
-    position: absolute; background: var(--select-bg); backdrop-filter: var(--ngc-blur);
+    position: absolute; 
+    background: #111111 !important; /* Negro Sólido */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     top: 100%; left: 0; width: 100%; z-index: 99; border: var(--ngc-border-glass);
     border-radius: 12px; margin-top: 5px; max-height: 250px; overflow-y: auto; 
-    box-shadow: 0 10px 25px var(--card-shadow), var(--ngc-glass-edge); display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8); display: none;
+}
+[data-theme="light"] .select-items { 
+    background: #ffffff !important; /* Blanco Sólido */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 .select-items.show { display: block; animation: slideDown 0.2s ease-out; }
 
@@ -134,7 +152,7 @@ label i { margin-right: 5px; }
 .btn-add:hover { background: transparent; color: var(--ngc-neon); box-shadow: 0 0 25px rgba(var(--ngc-neon-rgb), 0.7); transform: translateY(-2px); }
 
 /* Ajuste margen inferior de la lista de items agregados */
-#lista-items { margin-bottom: 15px; max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;}
+#lista-items { margin-top: 15px; max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;}
 
 #lista-items:empty::after {
     content: 'Aún no has agregado aparatos';
@@ -168,7 +186,7 @@ label i { margin-right: 5px; }
 .btn-delete { background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.3); border-radius: 6px; color: var(--ngc-danger); width: 30px; height: 30px; display:flex; align-items:center; justify-content:center; cursor: pointer; transition: 0.3s;}
 .btn-delete:hover { background: var(--ngc-danger); color: white; }
 
-/* Panel Totales convertido en Módulo Independiente */
+/* Panel Totales */
 .summary-panel {
     background: var(--summary-bg); backdrop-filter: var(--ngc-blur);
     border-radius: 12px; padding: 20px 15px; 
@@ -182,18 +200,20 @@ label i { margin-right: 5px; }
 .total-val { font-size: 1.2rem; font-weight: 800; color: var(--ngc-text); }
 .pesos-val { font-size: 1.35rem; font-weight: 800; color: var(--ngc-success); text-shadow: 0 0 8px rgba(40, 167, 69, 0.2); }
 
-/* Escalafón Módulo */
+/* TRUCO CSS: Mantiene siempre texto y fondo verde (legible), pero permite que el borde dinámico cambie de color mediante el Javascript existente */
 .tier-badge {
-    background: rgba(var(--ngc-neon-rgb), 0.1); backdrop-filter: var(--ngc-blur);
-    border: 1px dashed var(--ngc-neon); border-top: 3px solid var(--ngc-neon);
-    color: var(--ngc-neon); padding: 15px; border-radius: 12px; text-align: center;
+    background-color: rgba(40, 167, 69, 0.08) !important; 
+    color: var(--ngc-success) !important; 
+    border-style: solid !important;
+    border-width: 2px !important; 
+    padding: 15px; border-radius: 12px; text-align: center;
     font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px;
     letter-spacing: 0.5px; animation: fadeIn 0.4s ease; transition: all 0.3s ease;
-    box-shadow: 0 8px 20px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow);
 }
 .tier-badge i { margin-right: 5px; }
 
-/* CTA Optimizar convertido a módulo lateral verde */
+/* CTA Optimizar */
 .cta-optimizar {
     background: rgba(40, 167, 69, 0.05); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-success);
@@ -254,5 +274,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-        }
-    
+    }
+            
