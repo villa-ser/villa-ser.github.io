@@ -76,7 +76,7 @@ label i { margin-right: 5px; }
 
 .top-controls-row {
     display: flex;
-    align-items: stretch; /* ESTO HACE QUE AMBAS COLUMNAS MIDAN EXACTAMENTE LO MISMO */
+    align-items: stretch;
     gap: 10px;
     margin-bottom: 15px;
     width: 100%;
@@ -85,13 +85,13 @@ label i { margin-right: 5px; }
 .stacked-tarifa-toggle {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Espacio entre los dos botoncitos */
-    flex: 0 0 115px; /* Ancho de la columna de botones */
+    gap: 8px; 
+    flex: 0 0 115px; 
 }
 
 .tarifa-mini-opt {
-    margin: 0; /* Elimina márgenes extra */
-    flex: 1; /* ESTO HACE QUE SE ESTIREN EXACTAMENTE MITAD Y MITAD (menos el gap) */
+    margin: 0; 
+    flex: 1; 
     background: rgba(128, 128, 128, 0.05); 
     border: 1px solid rgba(128, 128, 128, 0.4);
     color: var(--ngc-text-muted);
@@ -126,14 +126,17 @@ label i { margin-right: 5px; }
     padding: 0 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem;
     cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.1);
-    min-height: 74px; /* ALTURA MAESTRA: Modifica esto si quieres que el conjunto sea más alto o más bajo */
+    min-height: 74px; 
 }
-
 .btn-aparato-trigger-side:hover { 
     background: rgba(var(--ngc-neon-rgb), 0.2); 
     box-shadow: 0 0 20px rgba(var(--ngc-neon-rgb), 0.4); 
     transform: translateY(-2px);
 }
+
+/* ============================================== */
+/* MODAL Y ACORDEONES                             */
+/* ============================================== */
 
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -147,7 +150,7 @@ label i { margin-right: 5px; }
     background: #111111; border: 1px solid rgba(var(--ngc-neon-rgb), 0.4);
     border-radius: 16px; width: 92%; max-width: 450px; max-height: 80vh;
     display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.9);
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown 0.3s ease-out; overflow: hidden;
 }
 [data-theme="light"] .modal-content { background: #ffffff; border-color: rgba(var(--ngc-neon-rgb), 0.8); }
 
@@ -159,11 +162,33 @@ label i { margin-right: 5px; }
 .btn-close-modal { background: none; border: none; color: var(--ngc-danger); font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
 .btn-close-modal:hover { transform: scale(1.1); filter: drop-shadow(0 0 5px var(--ngc-danger)); }
 
-.modal-body { padding: 10px 0 20px 0; overflow-y: auto; }
+.modal-body { overflow-y: auto; }
+
+/* Acordeón Headers */
+.opt-group { 
+    color: var(--ngc-success); padding: 18px 20px; font-size: 1rem; 
+    font-weight: 800; text-transform: uppercase; background: var(--opt-group-bg); 
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(128,128,128,0.1); transition: background 0.2s;
+    user-select: none;
+}
+.opt-group:hover { background: rgba(var(--ngc-neon-rgb), 0.1); }
+.opt-group i { transition: transform 0.3s ease; color: var(--ngc-text-muted); font-size: 0.9rem; }
+.opt-group.active i { transform: rotate(180deg); color: var(--ngc-success); }
+.opt-group.active { border-bottom: none; }
+
+/* Acordeón Content */
+.accordion-content {
+    display: none; background: rgba(0,0,0,0.15);
+}
+[data-theme="light"] .accordion-content { background: rgba(0,0,0,0.02); }
+.accordion-content.active {
+    display: block; animation: fadeIn 0.3s ease;
+}
 
 .opt-item-row {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 20px; border-bottom: 1px solid rgba(128,128,128,0.1); cursor: pointer; transition: background 0.2s;
+    padding: 14px 20px 14px 30px; border-bottom: 1px solid rgba(128,128,128,0.1); cursor: pointer; transition: background 0.2s;
 }
 .opt-item-row:hover { background: rgba(var(--ngc-neon-rgb), 0.15); }
 .item-name { color: var(--ngc-text); font-size: 0.85rem; flex-grow: 1; font-weight: 600;}
@@ -173,10 +198,6 @@ label i { margin-right: 5px; }
 .btn-item-add {
     background: var(--ngc-neon); color: #000; border: none; width: 28px; height: 28px;
     border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; pointer-events: none;
-}
-.opt-group { 
-    color: var(--ngc-success); padding: 15px 20px 5px 20px; font-size: 1.05rem; 
-    font-weight: 800; text-transform: uppercase; background: var(--opt-group-bg); pointer-events: none; 
 }
 
 /* ============================================== */
@@ -367,4 +388,4 @@ label i { margin-right: 5px; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
     }
-
+             
