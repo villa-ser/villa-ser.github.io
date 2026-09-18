@@ -2,6 +2,46 @@ let listado = [];
 let tarifasGlobales = null;
 
 // ==========================================
+// BASE DE DATOS DE RECOMENDACIONES TÉCNICAS
+// ==========================================
+const recomendacionesData = {
+    "Heladera con Freezer": { 
+        horas: 8, dias: 7, 
+        desc: "Aunque la heladera está enchufada 24 horas, su motor (compresor) arranca y se detiene automáticamente gracias al termostato. En promedio, consume energía nominal únicamente unas 8 horas al día." 
+    },
+    "Freezer Pozo": { 
+        horas: 8, dias: 7, 
+        desc: "Al igual que una heladera, el compresor corta cuando alcanza la temperatura óptima. Su funcionamiento real promedio es de unas 8 horas diarias." 
+    },
+    "Aire Acondicionado (3000f)": { 
+        horas: 4, dias: 7, 
+        desc: "Si lo usas 8 horas para dormir a una temperatura media (ej. 24°C), el compresor corta periódicamente. Se estiman unas 4 horas reales de consumo a potencia nominal." 
+    },
+    "Aire Acondicionado (4500f)": { 
+        horas: 4, dias: 7, 
+        desc: "Si lo usas 8 horas a 24°C, el motor no funciona el 100% del tiempo. Se estiman aproximadamente 4 horas de consumo a potencia nominal." 
+    },
+    "Termotanque Eléctrico": { 
+        horas: 3, dias: 7, 
+        desc: "Mantiene el agua caliente y corta automáticamente. Aunque está conectado 24/7, la resistencia calienta agua entre 2 y 4 horas diarias, dependiendo de tu uso." 
+    },
+    "Radiador Eléctrico": { 
+        horas: 4, dias: 7, 
+        desc: "Posee un termostato de corte. Si lo mantienes encendido 8 horas en una habitación, la resistencia funcionará y consumirá energía aproximadamente la mitad de ese tiempo." 
+    },
+    "Caloventor / Estufa Cuarzo": { 
+        horas: 4, dias: 7, 
+        desc: "Al generar mucho calor rápidamente, suelen apagarse por su termostato interno o el usuario los apaga. En un uso de 8 horas, funcionan a potencia nominal unas 4 horas." 
+    },
+    "Plancha de Ropa": { 
+        horas: 1, dias: 2, 
+        desc: "La plancha corta el consumo constantemente por temperatura. Una sesión de planchado de 2 horas reales consume energía nominal por aproximadamente 1 hora." 
+    }
+};
+
+let aparatoActualRecomendado = null; // Para guardar la sugerencia actual
+
+// ==========================================
 // 1. CARGA PRINCIPAL
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -60,33 +100,88 @@ function selectOption(val, text) {
     const nameDisplay = document.getElementById('aparato-seleccionado-nombre');
     const wattsDisplay = document.getElementById('aparato-seleccionado-watts');
     
-    // Asignar el valor al input invisible para los cálculos
     hiddenInput.value = val;
     hiddenInput.setAttribute('data-text', text);
-    
-    // Mostrar el texto y watts en la cajita inferior
     nameDisplay.innerText = text;
-    wattsDisplay.innerText = val + " W de potencia";
     
-    // --- LÓGICA DE VISIBILIDAD (FLUJO DE SELECCIÓN) ---
+    // Ocultar botón inicial y mostrar contenedor de nombre de aparato
     document.getElementById('btn-aparato-trigger').classList.add('oculto');
     document.getElementById('aparato-seleccionado-container').classList.remove('oculto');
-    document.getElementById('sliders-container').classList.remove('oculto');
-    document.getElementById('btn-agregar-lista').classList.remove('oculto');
     
+    // --- LÓGICA DE RECOMENDACIÓN TÉCNICA ---
+    if (recomendacionesData[text]) {
+        // El aparato tiene termostato/ciclo
+        aparatoActualRecomendado = text;
+        wattsDisplay.innerText = val + " W de potencia (Nominal)"; // Etiqueta (Nominal)
+        
+        document.getElementById('reco-texto').innerText = `Configuración recomendada de ${recomendacionesData[text].horas} horas y ${recomendacionesData[text].dias} días.`;
+        document.getElementById('recomendacion-container').classList.remove('oculto');
+        
+        // Ocultar los deslizadores por defecto para que lean la sugerencia
+        document.getElementById('sliders-container').classList.add('oculto');
+        document.getElementById('btn-agregar-lista').classList.add('oculto');
+    } else {
+        // Aparato normal sin ciclos (luces, tv, microondas)
+        aparatoActualRecomendado = null;
+        wattsDisplay.innerText = val + " W de potencia";
+        
+        document.getElementById('recomendacion-container').classList.add('oculto');
+        document.getElementById('sliders-container').classList.remove('oculto');
+        document.getElementById('btn-agregar-lista').classList.remove('oculto');
+    }
+
     cerrarModalAparatos();
 }
 
-// Cierra el modal si se toca la zona oscura fuera de la caja
+// Cierra el modal de aparatos si se toca la zona oscura
 document.addEventListener("click", function(event) {
-    const modal = document.getElementById('modal-aparatos');
-    if (event.target === modal) {
-        cerrarModalAparatos();
-    }
+    const modalAparatos = document.getElementById('modal-aparatos');
+    const modalReco = document.getElementById('modal-recomendacion');
+    if (event.target === modalAparatos) cerrarModalAparatos();
+    if (event.target === modalReco) cerrarModalRecomendacion();
 });
 
 // ==========================================
-// 3. FUNCIONES DE CALCULADORA (AGREGAR / RESET)
+// 3. LOGICA DEL MODAL DE RECOMENDACIÓN
+// ==========================================
+function abrirModalRecomendacion() {
+    if(!aparatoActualRecomendado || !recomendacionesData[aparatoActualRecomendado]) return;
+    
+    document.getElementById('modal-reco-desc').innerText = recomendacionesData[aparatoActualRecomendado].desc;
+    document.getElementById('modal-recomendacion').classList.remove('oculto');
+}
+
+function cerrarModalRecomendacion() {
+    document.getElementById('modal-recomendacion').classList.add('oculto');
+}
+
+function usarRecomendacion() {
+    if(!aparatoActualRecomendado || !recomendacionesData[aparatoActualRecomendado]) return;
+    
+    // Setear los valores recomendados en los sliders (aunque estén ocultos, sirven para agregarItem)
+    const h = recomendacionesData[aparatoActualRecomendado].horas;
+    const d = recomendacionesData[aparatoActualRecomendado].dias;
+    
+    document.getElementById('horas').value = h;
+    document.getElementById('horas-val').innerText = h + " hs";
+    document.getElementById('dias').value = d;
+    document.getElementById('dias-val').innerText = d + " días";
+    
+    // Cerrar modal y simular clic en agregar
+    cerrarModalRecomendacion();
+    agregarItem();
+}
+
+function ingresoManual() {
+    cerrarModalRecomendacion();
+    // Ocultar sugerencia y revelar deslizadores normales
+    document.getElementById('recomendacion-container').classList.add('oculto');
+    document.getElementById('sliders-container').classList.remove('oculto');
+    document.getElementById('btn-agregar-lista').classList.remove('oculto');
+}
+
+// ==========================================
+// 4. FUNCIONES DE CALCULADORA (AGREGAR / RESET)
 // ==========================================
 function resetAll() {
     listado = [];
@@ -103,14 +198,16 @@ function resetAll() {
     if(sliderHoras && labelHoras) { sliderHoras.value = 4; labelHoras.innerText = "4 hs"; }
     if(sliderDias && labelDias) { sliderDias.value = 7; labelDias.innerText = "7 días"; }
     
-    // --- LÓGICA DE VISIBILIDAD (VOLVER AL INICIO) ---
+    // LÓGICA DE VISIBILIDAD (VOLVER AL INICIO)
     const trigger = document.getElementById('btn-aparato-trigger');
     const containerSelected = document.getElementById('aparato-seleccionado-container');
+    const recoContainer = document.getElementById('recomendacion-container');
     const sliders = document.getElementById('sliders-container');
     const btnAdd = document.getElementById('btn-agregar-lista');
 
     if(trigger) trigger.classList.remove('oculto');
     if(containerSelected) containerSelected.classList.add('oculto');
+    if(recoContainer) recoContainer.classList.add('oculto');
     if(sliders) sliders.classList.add('oculto');
     if(btnAdd) btnAdd.classList.add('oculto');
 
@@ -136,9 +233,10 @@ function agregarItem() {
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
     
-    // --- LÓGICA DE VISIBILIDAD (PREPARAR PARA NUEVO APARATO) ---
+    // Preparar UI para nuevo aparato
     document.getElementById('btn-aparato-trigger').classList.remove('oculto');
     document.getElementById('aparato-seleccionado-container').classList.add('oculto');
+    document.getElementById('recomendacion-container').classList.add('oculto');
     document.getElementById('sliders-container').classList.add('oculto');
     document.getElementById('btn-agregar-lista').classList.add('oculto');
     
@@ -177,7 +275,7 @@ function render() {
 }
 
 // ==========================================
-// 4. LÓGICA DE TARIFAS Y BARRA DE PROGRESO
+// 5. LÓGICA DE TARIFAS Y BARRA DE PROGRESO
 // ==========================================
 function recalcularTotal() {
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
@@ -252,7 +350,6 @@ function recalcularTotal() {
         }
     });
 
-    // ACTUALIZACIÓN DEL ESCALAFÓN CON BARRA DE PROGRESO
     const tierUI = document.getElementById('tier-indicator');
     const tierText = document.getElementById('tier-text-container');
     
@@ -282,7 +379,6 @@ function recalcularTotal() {
             <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px; color: var(--ngc-text-muted);">${subText}</span>
         `;
         
-        // Encender los segmentos de la barra de acuerdo al nivel actual
         document.getElementById('seg-1').className = 'tier-segment segment-1 ' + (nivel >= 1 ? 'active-1' : '');
         document.getElementById('seg-2').className = 'tier-segment segment-2 ' + (nivel >= 2 ? 'active-2' : '');
         document.getElementById('seg-3').className = 'tier-segment segment-3 ' + (nivel >= 3 ? 'active-3' : '');
@@ -293,4 +389,5 @@ function recalcularTotal() {
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-            }
+        }
+                                                                                                                           
