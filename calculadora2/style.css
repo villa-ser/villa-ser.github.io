@@ -2,7 +2,7 @@
 /*  ESTILO NGC - MODULAR PARA CALCULADORA                    */
 /* ========================================================= */
 
-/* NUEVA ESTRUCTURA MODULAR (Reemplaza al .gnc-card) */
+/* NUEVA ESTRUCTURA MODULAR */
 .ngc-module {
     background: var(--ngc-glass); 
     backdrop-filter: var(--ngc-blur);
@@ -62,9 +62,13 @@ label i { margin-right: 5px; }
 }
 .opt-box input { display: none; }
 .opt-box:hover { background: rgba(var(--ngc-neon-rgb), 0.1); }
+
+/* COLOR VERDE ESTABLECIDO PARA LA SELECCIÓN DE TARIFA */
 .opt-box:has(input:checked) {
-    background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon);
-    color: var(--ngc-neon); box-shadow: 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
+    background: rgba(40, 167, 69, 0.15); 
+    border-color: var(--ngc-success);
+    color: var(--ngc-success); 
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
 }
 
 .slider-group { display: flex; flex-direction: column; gap: 8px; }
@@ -250,5 +254,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-}
-
+        }
+    
