@@ -389,5 +389,5 @@ function recalcularTotal() {
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-        }
-                                                                                                                           
+}
+    
