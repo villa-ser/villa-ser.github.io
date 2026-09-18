@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 2. FUNCIONES DEL MODAL FLOTANTE
+// 2. FUNCIONES DEL MODAL FLOTANTE Y VISIBILIDAD
 // ==========================================
 function abrirModalAparatos() {
     document.getElementById('modal-aparatos').classList.remove('oculto');
@@ -57,7 +57,6 @@ function cerrarModalAparatos() {
 
 function selectOption(val, text) {
     const hiddenInput = document.getElementById('aparato');
-    const containerSelected = document.getElementById('aparato-seleccionado-container');
     const nameDisplay = document.getElementById('aparato-seleccionado-nombre');
     const wattsDisplay = document.getElementById('aparato-seleccionado-watts');
     
@@ -69,8 +68,14 @@ function selectOption(val, text) {
     nameDisplay.innerText = text;
     wattsDisplay.innerText = val + " W de potencia";
     
-    // Mostrar la cajita y cerrar el modal
-    containerSelected.classList.remove('oculto');
+    // --- LÓGICA DE VISIBILIDAD (FLUJO DE SELECCIÓN) ---
+    // Ocultar botón disparador
+    document.getElementById('btn-aparato-trigger').classList.add('oculto');
+    // Mostrar controles de configuración
+    document.getElementById('aparato-seleccionado-container').classList.remove('oculto');
+    document.getElementById('sliders-container').classList.remove('oculto');
+    document.getElementById('btn-agregar-lista').classList.remove('oculto');
+    
     cerrarModalAparatos();
 }
 
@@ -88,7 +93,6 @@ document.addEventListener("click", function(event) {
 function resetAll() {
     listado = [];
     const inputObj = document.getElementById('aparato');
-    const containerSelected = document.getElementById('aparato-seleccionado-container');
     const sliderHoras = document.getElementById("horas");
     const labelHoras = document.getElementById("horas-val");
     const sliderDias = document.getElementById("dias");
@@ -98,12 +102,20 @@ function resetAll() {
         inputObj.value = "0";
         inputObj.setAttribute('data-text', "");
     }
-    if(containerSelected) {
-        containerSelected.classList.add('oculto'); // Ocultar cajita
-    }
     if(sliderHoras && labelHoras) { sliderHoras.value = 4; labelHoras.innerText = "4 hs"; }
     if(sliderDias && labelDias) { sliderDias.value = 7; labelDias.innerText = "7 días"; }
     
+    // --- LÓGICA DE VISIBILIDAD (VOLVER AL INICIO) ---
+    const trigger = document.getElementById('btn-aparato-trigger');
+    const containerSelected = document.getElementById('aparato-seleccionado-container');
+    const sliders = document.getElementById('sliders-container');
+    const btnAdd = document.getElementById('btn-agregar-lista');
+
+    if(trigger) trigger.classList.remove('oculto');
+    if(containerSelected) containerSelected.classList.add('oculto');
+    if(sliders) sliders.classList.add('oculto');
+    if(btnAdd) btnAdd.classList.add('oculto');
+
     render();
 }
 
@@ -111,7 +123,6 @@ function agregarItem() {
     const inputObj = document.getElementById('aparato');
     const horasObj = document.getElementById('horas');
     const diasObj = document.getElementById('dias');
-    const containerSelected = document.getElementById('aparato-seleccionado-container');
     
     if (!inputObj || !horasObj || !diasObj || inputObj.value == "0") return;
     
@@ -126,7 +137,12 @@ function agregarItem() {
     // Resetear el selector después de agregar
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
-    if(containerSelected) containerSelected.classList.add('oculto'); // Ocultar cajita
+    
+    // --- LÓGICA DE VISIBILIDAD (PREPARAR PARA NUEVO APARATO) ---
+    document.getElementById('btn-aparato-trigger').classList.remove('oculto');
+    document.getElementById('aparato-seleccionado-container').classList.add('oculto');
+    document.getElementById('sliders-container').classList.add('oculto');
+    document.getElementById('btn-agregar-lista').classList.add('oculto');
     
     render();
 }
@@ -267,4 +283,4 @@ function recalcularTotal() {
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-            }
+    }
