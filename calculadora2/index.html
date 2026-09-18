@@ -167,14 +167,14 @@
             <!-- COLUMNA DERECHA (Resultados ampliados) -->
             <div class="col-derecha">
                 
-                <!-- ENCABEZADO DE RESULTADOS: TOGGLES Y BOTÓN +APARATO -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; animation: fadeIn 0.5s ease;">
-                    <div class="header-tarifa-toggle" style="flex-grow: 1; display: flex;">
-                        <label class="tarifa-mini-opt" style="flex: 1; justify-content: center;"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
-                        <label class="tarifa-mini-opt" style="flex: 1; justify-content: center;"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
+                <!-- ENCABEZADO DE RESULTADOS: BOTONES APILADOS IZQUIERDA + BOTÓN +APARATO DERECHA -->
+                <div class="top-controls-row gpu-accel">
+                    <div class="stacked-tarifa-toggle">
+                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
+                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
                     </div>
                     
-                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger gpu-accel" style="width: auto; margin: 0; flex-grow: 1.5;" onclick="abrirModalAparatos()">
+                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger-side gpu-accel" onclick="abrirModalAparatos()">
                         <i class="fa-solid fa-plus"></i> + Aparato Eléctrico
                     </button>
                 </div>
@@ -320,7 +320,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EXPLICACIÓN TÉCNICA (NUEVO) -->
+    <!-- MODAL DE EXPLICACIÓN TÉCNICA -->
     <div id="modal-recomendacion" class="modal-overlay oculto gpu-accel">
         <div class="modal-content">
             <div class="modal-header">
@@ -346,4 +346,4 @@
     <script src="script.js" defer></script>
     
 </body>
-    </html>
+</html>                                                                                                                                      </html>
