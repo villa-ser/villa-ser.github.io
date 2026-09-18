@@ -53,26 +53,6 @@ label i { margin-right: 5px; }
     text-transform: uppercase; letter-spacing: 1px;
 }
 
-.option-grid { display: grid; gap: 8px; }
-.segment-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 0; }
-
-.opt-box {
-    background: var(--input-bg); padding: 12px 6px; border-radius: 10px; text-align: center;
-    font-size: 0.7rem; font-weight: 700; border: var(--ngc-border-glass);
-    cursor: pointer; line-height: 1.2; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; transition: all 0.2s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-    color: var(--ngc-text);
-}
-.opt-box input { display: none; }
-.opt-box:hover { background: rgba(var(--ngc-neon-rgb), 0.1); }
-
-.opt-box:has(input:checked) {
-    background: rgba(40, 167, 69, 0.15); 
-    border-color: var(--ngc-success);
-    color: var(--ngc-success); 
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
-}
-
 .slider-group { display: flex; flex-direction: column; gap: 8px; }
 .slider-header { display: flex; justify-content: space-between; align-items: center; }
 .slider-header label { margin: 0; }
@@ -164,21 +144,37 @@ label i { margin-right: 5px; }
 .btn-add:hover { background: transparent; color: var(--ngc-neon); box-shadow: 0 0 25px rgba(var(--ngc-neon-rgb), 0.7); transform: translateY(-2px); }
 
 /* ============================================== */
-/* PANEL DE TOTALES, LISTA Y ESCALAFÓN            */
+/* PANEL DE TOTALES SIN BORDE CIAN + TOGGLE TARIFA*/
 /* ============================================== */
 
-/* Panel Totales Limpio y Sin Borde Inferior Verde */
+/* Toggle de Tarifa en el Encabezado del Detalle */
+.header-tarifa-toggle {
+    display: flex; background: var(--input-bg); border: var(--ngc-border-glass);
+    border-radius: 8px; padding: 3px; gap: 3px;
+}
+.tarifa-mini-opt {
+    font-size: 0.68rem; font-weight: 700; color: var(--ngc-text-muted);
+    padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 4px; user-select: none;
+}
+.tarifa-mini-opt input { display: none; }
+.tarifa-mini-opt:has(input:checked) {
+    background: rgba(40, 167, 69, 0.2); color: var(--ngc-success);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Panel Totales sin borde cian, más ancho y visible */
 .summary-panel {
     background: var(--summary-bg); backdrop-filter: var(--ngc-blur);
-    border-radius: 12px; padding: 20px 15px; 
-    border: var(--ngc-border-glass);
+    border-radius: 12px; padding: 22px 12px; 
+    border: none; /* Sin borde cian */
+    box-shadow: inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.08), 0 4px 15px rgba(0,0,0,0.25);
     display: grid; grid-template-columns: 1fr 1fr;
-    text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); 
-    gap: 10px; margin-bottom: 15px;
+    text-align: center; gap: 12px; margin-bottom: 18px; width: 100%;
 }
-.res-label { font-size: 0.65rem; display: block; color: var(--ngc-neon); text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-.total-val { font-size: 1.2rem; font-weight: 800; color: var(--ngc-text); }
-.pesos-val { font-size: 1.35rem; font-weight: 800; color: var(--ngc-success); text-shadow: 0 0 8px rgba(40, 167, 69, 0.2); }
+.res-label { font-size: 0.7rem; display: block; color: var(--ngc-neon); text-transform: uppercase; font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px; }
+.total-val { font-size: 1.3rem; font-weight: 800; color: var(--ngc-text); }
+.pesos-val { font-size: 1.5rem; font-weight: 800; color: var(--ngc-success); text-shadow: 0 0 10px rgba(40, 167, 69, 0.3); }
 
 #lista-items { margin-bottom: 15px; max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;}
 #lista-items:empty::after {
@@ -230,7 +226,6 @@ label i { margin-right: 5px; }
     flex: 1; height: 100%; opacity: 0.2; transition: all 0.4s ease;
     background: #888;
 }
-/* Activación de colores para la barra de progreso */
 .tier-segment.active-1 { opacity: 1; background: #28a745; box-shadow: 0 0 10px #28a745; }
 .tier-segment.active-2 { opacity: 1; background: #ffc107; box-shadow: 0 0 10px #ffc107; }
 .tier-segment.active-3 { opacity: 1; background: #fd7e14; box-shadow: 0 0 10px #fd7e14; }
@@ -297,4 +292,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-}
+                     }
+    
