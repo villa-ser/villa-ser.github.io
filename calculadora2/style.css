@@ -85,9 +85,9 @@ label i { margin-right: 5px; }
 .stacked-tarifa-toggle {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 6px;
-    flex: 0 0 auto;
+    align-self: stretch;
+    flex: 0 0 115px; /* Ancho de la columna izquierda de botones */
 }
 
 .tarifa-mini-opt {
@@ -95,8 +95,8 @@ label i { margin-right: 5px; }
     border: 1px solid rgba(128, 128, 128, 0.4);
     color: var(--ngc-text-muted);
     border-radius: 8px; 
-    padding: 7px 12px;
-    height: 28px;
+    padding: 0 10px;
+    flex: 1; /* Divide la altura total del contenedor en 2 partes iguales menos el gap */
     font-size: 0.65rem; 
     font-weight: bold; 
     cursor: pointer; 
@@ -106,6 +106,7 @@ label i { margin-right: 5px; }
     user-select: none;
     box-sizing: border-box;
 }
+
 .tarifa-mini-opt input { display: none; }
 .tarifa-mini-opt:hover {
     background: rgba(128, 128, 128, 0.15);
@@ -124,8 +125,9 @@ label i { margin-right: 5px; }
     padding: 0 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem;
     cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.1);
-    min-height: 64px;
+    min-height: 64px; /* Altura base que comanda el alto total de la fila */
 }
+
 .btn-aparato-trigger-side:hover { 
     background: rgba(var(--ngc-neon-rgb), 0.2); 
     box-shadow: 0 0 20px rgba(var(--ngc-neon-rgb), 0.4); 
