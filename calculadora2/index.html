@@ -127,11 +127,10 @@
                     </div>
                 </div>
 
-                <!-- APARATO ELÉCTRICO (NUEVO BOTÓN DISPARADOR) -->
+                <!-- APARATO ELÉCTRICO (DINÁMICO) -->
                 <div class="form-group-transparent gpu-accel">
-                    <label style="margin-bottom: 8px;"><i class="fa-solid fa-plug"></i> Aparato Eléctrico</label>
-                    
-                    <button type="button" class="btn-aparato-trigger gpu-accel" onclick="abrirModalAparatos()">
+                    <!-- Botón disparador visible por defecto -->
+                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger gpu-accel" onclick="abrirModalAparatos()">
                         <i class="fa-solid fa-plus"></i> + Aparato Eléctrico
                     </button>
 
@@ -145,8 +144,8 @@
                     <input type="hidden" id="aparato" value="0" data-text="">
                 </div>
 
-                <!-- SLIDERS -->
-                <div class="form-group-transparent gpu-accel" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- SLIDERS (Ocultos por defecto) -->
+                <div id="sliders-container" class="form-group-transparent gpu-accel oculto" style="display: flex; flex-direction: column; gap: 15px;">
                     <div class="slider-group">
                         <div class="slider-header">
                             <label><i class="fa-regular fa-clock"></i> Uso Diario</label>
@@ -164,8 +163,8 @@
                     </div>
                 </div>
 
-                <!-- BOTÓN AGREGAR -->
-                <button class="btn-add gpu-accel" onclick="agregarItem()">
+                <!-- BOTÓN AGREGAR (Oculto por defecto) -->
+                <button id="btn-agregar-lista" class="btn-add gpu-accel oculto" onclick="agregarItem()">
                     <i class="fa-solid fa-plus"></i> Agregar al consumo total
                 </button>
             </div>
