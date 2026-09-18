@@ -122,7 +122,7 @@
                 <div class="form-group-transparent gpu-accel">
                     <!-- Botón disparador visible por defecto -->
                     <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger gpu-accel" onclick="abrirModalAparatos()">
-                        <i class="fa-solid fa-plus"></i> Aparato Eléctrico
+                        <i class="fa-solid fa-plus"></i> + Aparato Eléctrico
                     </button>
 
                     <!-- CAJA DE APARATO SELECCIONADO (Oculta por defecto) -->
@@ -133,6 +133,15 @@
                     </div>
 
                     <input type="hidden" id="aparato" value="0" data-text="">
+                </div>
+
+                <!-- CAJA DE RECOMENDACIÓN TÉCNICA (Oculta por defecto) -->
+                <div id="recomendacion-container" class="form-group-transparent gpu-accel oculto">
+                    <div class="recomendacion-box">
+                        <span class="reco-title"><i class="fa-solid fa-lightbulb"></i> Uso Recomendado</span>
+                        <p id="reco-texto"></p>
+                        <button type="button" class="btn-reco-detalle" onclick="abrirModalRecomendacion()">Ver detalle técnico</button>
+                    </div>
                 </div>
 
                 <!-- SLIDERS (Ocultos por defecto) -->
@@ -170,7 +179,7 @@
                     </h3>
                     <div class="header-tarifa-toggle">
                         <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
-                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
+                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF *</label>
                     </div>
                 </div>
                 
@@ -220,7 +229,7 @@
                         </div>
                     </div>
                     <ul class="legend-list">
-                        <li><i class="fa-solid fa-check"></i> <strong>SEF:</strong> Subsidios del Estado Federal (Segmentación Nacional).</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>* SEF:</strong> Subsidios del Estado Federal (Segmentación Nacional).</li>
                         <li><i class="fa-solid fa-check"></i> <strong>Cálculo Estimativo:</strong> Incluye IVA (21%) y Tasas (aprox. 15%). No incluye Cargos Fijos.</li>
                         <li><i class="fa-solid fa-check"></i> <strong>Potencia:</strong> Los Watts son promedios; el consumo real depende de la eficiencia.</li>
                         <li><i class="fa-solid fa-check"></i> <strong>Vigencia:</strong> Lógica basada en el Cuadro Tarifario escalonado de EPEC.</li>
@@ -271,7 +280,7 @@
                 <div class="opt-item-row" onclick="selectOption(2000, 'Radiador Eléctrico')"><span class="item-name">Radiador Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
                 <div class="opt-item-row" onclick="selectOption(60, 'Ventilador de Pie/Techo')"><span class="item-name">Ventilador de Pie/Techo</span><div class="item-right"><span class="item-watts">60 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
                 <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-             
+
                 <!-- Cocina -->
                 <div class="opt-group">Cocina</div>
                 <div class="opt-item-row" onclick="selectOption(150, 'Heladera con Freezer')"><span class="item-name">Heladera con Freezer</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
@@ -315,8 +324,30 @@
         </div>
     </div>
 
+    <!-- MODAL DE EXPLICACIÓN TÉCNICA (NUEVO) -->
+    <div id="modal-recomendacion" class="modal-overlay oculto gpu-accel">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-microchip"></i> Detalle Técnico</h3>
+                <button class="btn-close-modal" onclick="cerrarModalRecomendacion()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body" style="padding: 22px;">
+                <p id="modal-reco-desc" style="color: var(--ngc-text); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn-add" onclick="usarRecomendacion()" style="margin: 0;">
+                        <i class="fa-solid fa-check"></i> Usar Recomendación
+                    </button>
+                    <button class="btn-aparato-trigger" onclick="ingresoManual()" style="margin: 0; padding: 14px;">
+                        <i class="fa-solid fa-sliders"></i> Ingreso Manual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/global.js" defer></script>
     <script src="script.js" defer></script>
     
 </body>
-</html>                                                                                                                                                                                                                                               </html>
+</html>
