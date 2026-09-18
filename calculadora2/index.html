@@ -259,7 +259,7 @@
         </div>
     </main>
 
-    <!-- MODAL FLOTANTE DE LISTA DE APARATOS -->
+    <!-- MODAL FLOTANTE DE LISTA DE APARATOS (ACORDEONES) -->
     <div id="modal-aparatos" class="modal-overlay oculto gpu-accel">
         <div class="modal-content">
             <div class="modal-header">
@@ -267,55 +267,75 @@
                 <button class="btn-close-modal" onclick="cerrarModalAparatos()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0;">
                 <!-- Climatización -->
-                <div class="opt-group">Climatización</div>
-                <div class="opt-item-row" onclick="selectOption(2200, 'Aire Acondicionado (3000f)')"><span class="item-name">Aire Acondicionado (3000f)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(3500, 'Aire Acondicionado (4500f)')"><span class="item-name">Aire Acondicionado (4500f)</span><div class="item-right"><span class="item-watts">3500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1500, 'Caloventor / Estufa Cuarzo')"><span class="item-name">Caloventor / Estufa Cuarzo</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(2000, 'Radiador Eléctrico')"><span class="item-name">Radiador Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(60, 'Ventilador de Pie/Techo')"><span class="item-name">Ventilador de Pie/Techo</span><div class="item-right"><span class="item-watts">60 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-clima')">
+                    Climatización <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="acc-clima" class="accordion-content">
+                    <div class="opt-item-row" onclick="selectOption(2200, 'Aire Acondicionado (3000f)')"><span class="item-name">Aire Acondicionado (3000f)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(3500, 'Aire Acondicionado (4500f)')"><span class="item-name">Aire Acondicionado (4500f)</span><div class="item-right"><span class="item-watts">3500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1500, 'Caloventor / Estufa Cuarzo')"><span class="item-name">Caloventor / Estufa Cuarzo</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(2000, 'Radiador Eléctrico')"><span class="item-name">Radiador Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(60, 'Ventilador de Pie/Techo')"><span class="item-name">Ventilador de Pie/Techo</span><div class="item-right"><span class="item-watts">60 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                </div>
 
                 <!-- Cocina -->
-                <div class="opt-group">Cocina</div>
-                <div class="opt-item-row" onclick="selectOption(150, 'Heladera con Freezer')"><span class="item-name">Heladera con Freezer</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(250, 'Freezer Pozo')"><span class="item-name">Freezer Pozo</span><div class="item-right"><span class="item-watts">250 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(2000, 'Pava Eléctrica')"><span class="item-name">Pava Eléctrica</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1500, 'Anfe Eléctrico (1 hornalla)')"><span class="item-name">Anfe Eléctrico (1 hornalla)</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(800, 'Microondas')"><span class="item-name">Microondas</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1500, 'Horno Eléctrico Grande')"><span class="item-name">Horno Eléctrico Grande</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(700, 'Cafetera de Filtro')"><span class="item-name">Cafetera de Filtro</span><div class="item-right"><span class="item-watts">700 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1400, 'Cafetera de Cápsulas')"><span class="item-name">Cafetera de Cápsulas</span><div class="item-right"><span class="item-watts">1400 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(600, 'Licuadora / Batidora')"><span class="item-name">Licuadora / Batidora</span><div class="item-right"><span class="item-watts">600 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1200, 'Tostadora / Wanflera')"><span class="item-name">Tostadora / Wanflera</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-cocina')">
+                    Cocina <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="acc-cocina" class="accordion-content">
+                    <div class="opt-item-row" onclick="selectOption(150, 'Heladera con Freezer')"><span class="item-name">Heladera con Freezer</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(250, 'Freezer Pozo')"><span class="item-name">Freezer Pozo</span><div class="item-right"><span class="item-watts">250 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(2000, 'Pava Eléctrica')"><span class="item-name">Pava Eléctrica</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1500, 'Anfe Eléctrico (1 hornalla)')"><span class="item-name">Anfe Eléctrico (1 hornalla)</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(800, 'Microondas')"><span class="item-name">Microondas</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1500, 'Horno Eléctrico Grande')"><span class="item-name">Horno Eléctrico Grande</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(700, 'Cafetera de Filtro')"><span class="item-name">Cafetera de Filtro</span><div class="item-right"><span class="item-watts">700 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1400, 'Cafetera de Cápsulas')"><span class="item-name">Cafetera de Cápsulas</span><div class="item-right"><span class="item-watts">1400 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(600, 'Licuadora / Batidora')"><span class="item-name">Licuadora / Batidora</span><div class="item-right"><span class="item-watts">600 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1200, 'Tostadora / Wanflera')"><span class="item-name">Tostadora / Wanflera</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                </div>
 
                 <!-- Lavado y Baño -->
-                <div class="opt-group">Lavado y Baño</div>
-                <div class="opt-item-row" onclick="selectOption(800, 'Lavarropas Automático')"><span class="item-name">Lavarropas Automático</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(500, 'Secarropas Centrífugo')"><span class="item-name">Secarropas Centrífugo</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(2000, 'Secarropas por Calor')"><span class="item-name">Secarropas por Calor</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(2000, 'Termotanque Eléctrico')"><span class="item-name">Termotanque Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1800, 'Secador de Pelo')"><span class="item-name">Secador de Pelo</span><div class="item-right"><span class="item-watts">1800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1000, 'Planchita de Pelo')"><span class="item-name">Planchita de Pelo</span><div class="item-right"><span class="item-watts">1000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-lavado')">
+                    Lavado y Baño <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="acc-lavado" class="accordion-content">
+                    <div class="opt-item-row" onclick="selectOption(800, 'Lavarropas Automático')"><span class="item-name">Lavarropas Automático</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(500, 'Secarropas Centrífugo')"><span class="item-name">Secarropas Centrífugo</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(2000, 'Secarropas por Calor')"><span class="item-name">Secarropas por Calor</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(2000, 'Termotanque Eléctrico')"><span class="item-name">Termotanque Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1800, 'Secador de Pelo')"><span class="item-name">Secador de Pelo</span><div class="item-right"><span class="item-watts">1800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1000, 'Planchita de Pelo')"><span class="item-name">Planchita de Pelo</span><div class="item-right"><span class="item-watts">1000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                </div>
 
                 <!-- Movilidad Eléctrica -->
-                <div class="opt-group">Movilidad Eléctrica</div>
-                <div class="opt-item-row" onclick="selectOption(150, 'Patineta Eléctrica (Carga)')"><span class="item-name">Patineta Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(500, 'Moto Eléctrica (Carga)')"><span class="item-name">Moto Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(2200, 'Vehículo Eléctrico (Carga Lenta)')"><span class="item-name">Vehículo Eléctrico (Lenta)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(7000, 'Vehículo Eléctrico (Wallbox)')"><span class="item-name">Vehículo Eléctrico (Wallbox)</span><div class="item-right"><span class="item-watts">7000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-movilidad')">
+                    Movilidad Eléctrica <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="acc-movilidad" class="accordion-content">
+                    <div class="opt-item-row" onclick="selectOption(150, 'Patineta Eléctrica (Carga)')"><span class="item-name">Patineta Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(500, 'Moto Eléctrica (Carga)')"><span class="item-name">Moto Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(2200, 'Vehículo Eléctrico (Carga Lenta)')"><span class="item-name">Vehículo Eléctrico (Lenta)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(7000, 'Vehículo Eléctrico (Wallbox)')"><span class="item-name">Vehículo Eléctrico (Wallbox)</span><div class="item-right"><span class="item-watts">7000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                </div>
 
                 <!-- Tecnología y Otros -->
-                <div class="opt-group">Tecnología y Otros</div>
-                <div class="opt-item-row" onclick="selectOption(100, 'Televisor LED / Smart')"><span class="item-name">Televisor LED / Smart</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(300, 'Consola de Juegos (PS5/Xbox)')"><span class="item-name">Consola de Juegos</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(300, 'PC Escritorio (Gamer)')"><span class="item-name">PC Escritorio (Gamer)</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(45, 'Notebook')"><span class="item-name">Notebook</span><div class="item-right"><span class="item-watts">45 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(15, 'Cargador Rápido Móvil')"><span class="item-name">Cargador Rápido Móvil</span><div class="item-right"><span class="item-watts">15 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(10, 'Iluminación LED (x5 focos)')"><span class="item-name">Iluminación LED (x5)</span><div class="item-right"><span class="item-watts">10 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1500, 'Plancha de Ropa')"><span class="item-name">Plancha de Ropa</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                <div class="opt-item-row" onclick="selectOption(1200, 'Aspiradora')"><span class="item-name">Aspiradora</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-tecno')">
+                    Tecnología y Otros <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="acc-tecno" class="accordion-content">
+                    <div class="opt-item-row" onclick="selectOption(100, 'Televisor LED / Smart')"><span class="item-name">Televisor LED / Smart</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(300, 'Consola de Juegos (PS5/Xbox)')"><span class="item-name">Consola de Juegos</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(300, 'PC Escritorio (Gamer)')"><span class="item-name">PC Escritorio (Gamer)</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(45, 'Notebook')"><span class="item-name">Notebook</span><div class="item-right"><span class="item-watts">45 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(15, 'Cargador Rápido Móvil')"><span class="item-name">Cargador Rápido Móvil</span><div class="item-right"><span class="item-watts">15 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(10, 'Iluminación LED (x5 focos)')"><span class="item-name">Iluminación LED (x5)</span><div class="item-right"><span class="item-watts">10 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1500, 'Plancha de Ropa')"><span class="item-name">Plancha de Ropa</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div class="opt-item-row" onclick="selectOption(1200, 'Aspiradora')"><span class="item-name">Aspiradora</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                </div>
             </div>
         </div>
     </div>
@@ -346,4 +366,4 @@
     <script src="script.js" defer></script>
     
 </body>
-</html>                                                                                                                                      </html>
+</html>
