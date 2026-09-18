@@ -151,7 +151,6 @@ label i { margin-right: 5px; }
 }
 .btn-add:hover { background: transparent; color: var(--ngc-neon); box-shadow: 0 0 25px rgba(var(--ngc-neon-rgb), 0.7); transform: translateY(-2px); }
 
-/* Ajuste margen inferior de la lista de items agregados */
 #lista-items { margin-top: 15px; max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;}
 
 #lista-items:empty::after {
@@ -200,7 +199,7 @@ label i { margin-right: 5px; }
 .total-val { font-size: 1.2rem; font-weight: 800; color: var(--ngc-text); }
 .pesos-val { font-size: 1.35rem; font-weight: 800; color: var(--ngc-success); text-shadow: 0 0 8px rgba(40, 167, 69, 0.2); }
 
-/* TRUCO CSS: Mantiene siempre texto y fondo verde (legible), pero permite que el borde dinámico cambie de color mediante el Javascript existente */
+/* TRUCO CSS: Texto y fondo Verde bloqueados. JS solo controlará el color del borde */
 .tier-badge {
     background-color: rgba(40, 167, 69, 0.08) !important; 
     color: var(--ngc-success) !important; 
@@ -275,4 +274,4 @@ label i { margin-right: 5px; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
     }
-            
+    
