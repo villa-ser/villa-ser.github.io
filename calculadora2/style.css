@@ -131,6 +131,47 @@ label i { margin-right: 5px; }
     font-weight: 800; text-transform: uppercase; background: var(--opt-group-bg); pointer-events: none; 
 }
 
+/* ============================================== */
+/* CAJA DE RECOMENDACIÓN TÉCNICA                  */
+/* ============================================== */
+
+.recomendacion-box {
+    background: rgba(var(--ngc-neon-rgb), 0.05);
+    border: 1px dashed rgba(var(--ngc-neon-rgb), 0.4);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+.reco-title {
+    display: block;
+    color: var(--ngc-neon);
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+.recomendacion-box p {
+    font-size: 0.8rem;
+    color: var(--ngc-text);
+    margin-bottom: 12px;
+}
+.btn-reco-detalle {
+    background: transparent;
+    border: 1px solid var(--ngc-neon);
+    color: var(--ngc-neon);
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+.btn-reco-detalle:hover {
+    background: var(--ngc-neon);
+    color: #000;
+}
 
 /* Botón de Agregar (Principal) */
 .btn-add {
@@ -306,5 +347,4 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-                        }
-
+              }
