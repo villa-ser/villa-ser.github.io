@@ -1,7 +1,3 @@
-// =========================================================
-// SCRIPTS ESPECÍFICOS DE LA "CALCULADORA DE CONSUMO"
-// =========================================================
-
 let listado = [];
 let tarifasGlobales = null;
 
@@ -260,30 +256,34 @@ function recalcularTotal() {
 
     const tierUI = document.getElementById('tier-indicator');
     if (totalKwh > 0 && tierUI) {
-        let textoEscalon = "", colorEscalon = "var(--gnc-neon)", bgEscalon = "rgba(var(--gnc-neon-rgb), 0.1)";
+        
+        // CORRECCIÓN EXACTA A LOS COLORES DEL BORDE (USANDO HEX PARA EVITAR FALLOS)
+        let textoEscalon = "";
+        let colorBorde = "#28a745"; // Verde
         
         if (totalKwh <= 120) {
             textoEscalon = "Consumo Base (Hasta 120 kWh)";
+            colorBorde = "#28a745"; // Verde
         } else if (totalKwh <= 500) {
             textoEscalon = "Consumo Medio (121 a 500 kWh)";
-            colorEscalon = "#ffc107"; bgEscalon = "rgba(255, 193, 7, 0.1)";
+            colorBorde = "#ffc107"; // Amarillo
         } else if (totalKwh <= 700) {
             textoEscalon = "Consumo Alto (501 a 700 kWh)";
-            colorEscalon = "#fd7e14"; bgEscalon = "rgba(253, 126, 20, 0.1)";
+            colorBorde = "#fd7e14"; // Naranja
         } else {
             textoEscalon = "Consumo Excedente (Más de 700 kWh)";
-            colorEscalon = "var(--gnc-danger)"; bgEscalon = "rgba(255, 77, 77, 0.1)"; 
+            colorBorde = "#ff4d4d"; // Rojo
         }
         
         const subText = tipoTarifa === "con_subsidio" ? "Categoría N2/N3 (Subsidio)" : "Categoría N1 (Sin Subsidio)";
         
         tierUI.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${textoEscalon} <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px;">${subText}</span>`;
-        tierUI.style.color = colorEscalon;
-        tierUI.style.borderColor = colorEscalon;
-        tierUI.style.backgroundColor = bgEscalon;
+        
+        // Asignamos únicamente el color del borde. El fondo y texto se mantienen siempre verdes gracias al CSS.
+        tierUI.style.borderColor = colorBorde;
         tierUI.classList.remove('oculto');
+        
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-            }
-        
+        }
