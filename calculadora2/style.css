@@ -71,17 +71,62 @@ label i { margin-right: 5px; }
 }
 
 /* ============================================== */
-/* BOTÓN DISPARADOR Y MODAL FLOTANTE              */
+/* BOTONES APILADOS IZQUIERDA + BOTÓN LATERAL     */
 /* ============================================== */
 
-.btn-aparato-trigger {
-    width: 100%; background: rgba(var(--ngc-neon-rgb), 0.1);
+.top-controls-row {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.stacked-tarifa-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+
+.tarifa-mini-opt {
+    background: rgba(128, 128, 128, 0.05); 
+    border: 1px solid rgba(128, 128, 128, 0.4);
+    color: var(--ngc-text-muted);
+    border-radius: 8px; 
+    padding: 5px 12px;
+    height: 100%;
+    font-size: 0.65rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+    box-sizing: border-box;
+}
+.tarifa-mini-opt input { display: none; }
+.tarifa-mini-opt:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+.tarifa-mini-opt:has(input:checked) {
+    background: rgba(40, 167, 69, 0.1); 
+    border-color: var(--ngc-success);
+    color: var(--ngc-success); 
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+}
+
+.btn-aparato-trigger-side {
+    flex: 1;
+    background: rgba(var(--ngc-neon-rgb), 0.1);
     border: 1px dashed var(--ngc-neon); color: var(--ngc-neon);
-    padding: 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.9rem;
+    padding: 0 16px; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem;
     cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.1);
+    min-height: 64px;
 }
-.btn-aparato-trigger:hover { 
+.btn-aparato-trigger-side:hover { 
     background: rgba(var(--ngc-neon-rgb), 0.2); 
     box-shadow: 0 0 20px rgba(var(--ngc-neon-rgb), 0.4); 
     transform: translateY(-2px);
@@ -186,35 +231,6 @@ label i { margin-right: 5px; }
 /* ============================================== */
 /* RESULTADOS AMPLIADOS (Sin Módulo General)      */
 /* ============================================== */
-
-/* Botones de Tarifa estilo Reset Hueco */
-.header-tarifa-toggle {
-    display: flex; gap: 8px;
-}
-.tarifa-mini-opt {
-    background: rgba(128, 128, 128, 0.05); 
-    border: 1px solid rgba(128, 128, 128, 0.4);
-    color: var(--ngc-text-muted);
-    border-radius: 8px; 
-    padding: 6px 12px;
-    font-size: 0.7rem; 
-    font-weight: bold; 
-    cursor: pointer; 
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    display: flex; align-items: center; justify-content: center;
-    user-select: none;
-}
-.tarifa-mini-opt input { display: none; }
-.tarifa-mini-opt:hover {
-    background: rgba(128, 128, 128, 0.15);
-}
-.tarifa-mini-opt:has(input:checked) {
-    background: rgba(40, 167, 69, 0.1); 
-    border-color: var(--ngc-success);
-    color: var(--ngc-success); 
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
-}
 
 /* Panel Totales sin borde cian, ocupa 100% del ancho */
 .summary-panel {
@@ -347,5 +363,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-              }
-    
+    }
+
