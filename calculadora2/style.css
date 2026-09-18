@@ -80,6 +80,7 @@ label i { margin-right: 5px; }
     gap: 10px;
     margin-bottom: 15px;
     width: 100%;
+    min-height: 74px; /* FIJA LA ALTURA para que al ocultar el botón derecho nada se mueva */
 }
 
 .stacked-tarifa-toggle {
@@ -387,5 +388,5 @@ label i { margin-right: 5px; }
     .col-izquierda, .col-derecha { display: block; }
     .ngc-module, .ngc-tech-legend, .btn-add, .summary-panel, .cta-optimizar, .tier-badge { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-    }
-             
+                                    }
+    
