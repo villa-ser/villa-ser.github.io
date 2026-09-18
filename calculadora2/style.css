@@ -95,7 +95,7 @@ label i { margin-right: 5px; }
     border: 1px solid rgba(128, 128, 128, 0.4);
     color: var(--ngc-text-muted);
     border-radius: 8px; 
-    padding: 7px 12px;
+    padding: 9px 12px;
     height: 100%;
     font-size: 0.65rem; 
     font-weight: bold; 
