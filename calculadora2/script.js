@@ -69,9 +69,7 @@ function selectOption(val, text) {
     wattsDisplay.innerText = val + " W de potencia";
     
     // --- LÓGICA DE VISIBILIDAD (FLUJO DE SELECCIÓN) ---
-    // Ocultar botón disparador
     document.getElementById('btn-aparato-trigger').classList.add('oculto');
-    // Mostrar controles de configuración
     document.getElementById('aparato-seleccionado-container').classList.remove('oculto');
     document.getElementById('sliders-container').classList.remove('oculto');
     document.getElementById('btn-agregar-lista').classList.remove('oculto');
@@ -179,7 +177,7 @@ function render() {
 }
 
 // ==========================================
-// 4. LÓGICA DE TARIFAS Y ESCALONES
+// 4. LÓGICA DE TARIFAS Y BARRA DE PROGRESO
 // ==========================================
 function recalcularTotal() {
     const tarifaRadio = document.querySelector('input[name="tarifa"]:checked');
@@ -254,33 +252,45 @@ function recalcularTotal() {
         }
     });
 
+    // ACTUALIZACIÓN DEL ESCALAFÓN CON BARRA DE PROGRESO
     const tierUI = document.getElementById('tier-indicator');
-    if (totalKwh > 0 && tierUI) {
+    const tierText = document.getElementById('tier-text-container');
+    
+    if (totalKwh > 0 && tierUI && tierText) {
         
         let textoEscalon = "";
-        let colorBorde = "#28a745"; // Verde
+        let nivel = 1;
         
         if (totalKwh <= 120) {
             textoEscalon = "Consumo Base (Hasta 120 kWh)";
-            colorBorde = "#28a745"; // Verde
+            nivel = 1;
         } else if (totalKwh <= 500) {
             textoEscalon = "Consumo Medio (121 a 500 kWh)";
-            colorBorde = "#ffc107"; // Amarillo
+            nivel = 2;
         } else if (totalKwh <= 700) {
             textoEscalon = "Consumo Alto (501 a 700 kWh)";
-            colorBorde = "#fd7e14"; // Naranja
+            nivel = 3;
         } else {
             textoEscalon = "Consumo Excedente (Más de 700 kWh)";
-            colorBorde = "#ff4d4d"; // Rojo
+            nivel = 4;
         }
         
         const subText = tipoTarifa === "con_subsidio" ? "Categoría N2/N3 (Subsidio)" : "Categoría N1 (Sin Subsidio)";
         
-        tierUI.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${textoEscalon} <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px;">${subText}</span>`;
-        tierUI.style.borderColor = colorBorde;
+        tierText.innerHTML = `
+            <i class="fa-solid fa-chart-line"></i> <span style="color: var(--ngc-text);">${textoEscalon}</span> 
+            <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px; color: var(--ngc-text-muted);">${subText}</span>
+        `;
+        
+        // Encender los segmentos de la barra de acuerdo al nivel actual
+        document.getElementById('seg-1').className = 'tier-segment segment-1 ' + (nivel >= 1 ? 'active-1' : '');
+        document.getElementById('seg-2').className = 'tier-segment segment-2 ' + (nivel >= 2 ? 'active-2' : '');
+        document.getElementById('seg-3').className = 'tier-segment segment-3 ' + (nivel >= 3 ? 'active-3' : '');
+        document.getElementById('seg-4').className = 'tier-segment segment-4 ' + (nivel >= 4 ? 'active-4' : '');
+        
         tierUI.classList.remove('oculto');
         
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-    }
+            }
