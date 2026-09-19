@@ -13,96 +13,106 @@
     --ngc-cv-pill-border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Ocultar elementos en móvil (Usado en el título duplicado) */
 .hidden-mobile { display: block; }
 
 /* --- TARJETA PRINCIPAL (CV) --- */
+/* CORRECCIÓN: Elevación elegante sin resplandor interior */
 .ngc-full-container {
     width: 100%; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 25px 20px;
     border-left: 4px solid var(--ngc-neon); display: flex; flex-direction: column; gap: 20px;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05); 
+    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); 
     margin-bottom: 15px;
 }
 
-/* --- FOTO LUZ PERIMETRAL --- */
+/* --- FOTO MARCO PREMIUM --- */
+/* CORRECCIÓN: Eliminada animación RGB. Reemplazada por un marco de cristal sobrio y profesional */
 .ngc-photo-landscape {
-    position: relative; width: 100%; border-radius: 12px; overflow: hidden; padding: 3px; 
-    display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
-.ngc-photo-landscape::before {
-    content: ''; position: absolute; width: 200%; height: 200%;
-    background: conic-gradient(transparent, transparent 20%, var(--ngc-neon), transparent 30%);
-    animation: rotateNeon 4s linear infinite;
+    position: relative; width: 100%; border-radius: 12px; overflow: hidden; padding: 4px; 
+    display: flex; justify-content: center; align-items: center; 
+    background: var(--ngc-privacy-border);
+    box-shadow: 0 5px 15px var(--card-shadow);
 }
 .ngc-photo-landscape::after {
-    content: ''; position: absolute; inset: 3px; background: var(--ngc-glass); 
+    content: ''; position: absolute; inset: 4px; background: var(--ngc-glass); 
     border-radius: 10px; z-index: 0;
 }
 .ngc-photo-landscape img {
     width: 100%; height: auto; display: block; object-fit: cover; border-radius: 9px;
     z-index: 1; position: relative;
 }
-@keyframes rotateNeon { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* --- TEXTOS DEL PERFIL --- */
 .ngc-content-area { width: 100%; text-align: left; }
-.ngc-user-name { display: block; color: var(--ngc-text-desc); font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; line-height: 1.2; letter-spacing: 1px; }
-.active-cyan { color: var(--ngc-neon); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
+
+/* CORRECCIÓN: Nombre nítido y en el color principal de texto, sin text-shadow borroso */
+.ngc-user-name { 
+    display: block; color: var(--ngc-text-main); font-size: 1.15rem; 
+    font-weight: 800; margin-bottom: 6px; line-height: 1.2; letter-spacing: 1px; 
+}
 
 .cv-personal-info {
     display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-    margin-top: 10px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 12px;
+    margin-top: 10px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 12px;
 }
 .cv-personal-info span {
     font-size: 0.75rem; color: var(--ngc-text-muted); text-transform: uppercase;
     letter-spacing: 1px; background: var(--ngc-cv-pill-bg); padding: 4px 10px; border-radius: 20px;
-    border: var(--ngc-cv-pill-border); font-weight: 500;
+    border: var(--ngc-cv-pill-border); font-weight: 600;
 }
 
 .cv-section-title {
     color: var(--ngc-text-muted); font-size: 0.8rem; text-transform: uppercase;
     letter-spacing: 1.5px; margin-bottom: 15px; font-weight: 700;
-    border-bottom: 1px solid rgba(var(--ngc-neon-rgb), 0.3); padding-bottom: 5px;
+    border-bottom: 1px solid var(--ngc-privacy-border); padding-bottom: 5px;
 }
+.cv-section-title i { color: var(--ngc-neon); margin-right: 5px;}
 
 /* LISTA DE CREDENCIALES */
 .cv-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
 .cv-item:last-child { margin-bottom: 0; }
-.cv-icon { color: var(--ngc-success); font-size: 1rem; margin-top: 2px; filter: drop-shadow(0 0 3px rgba(40, 167, 69, 0.4));}
+
+/* CORRECCIÓN: Check verde limpio, institucional y sin sombra de neón */
+.cv-icon { color: var(--success-green); font-size: 1rem; margin-top: 2px; }
+
 .cv-item-text { display: flex; flex-direction: column; gap: 2px; }
-.cv-item-text strong { font-size: 0.9rem; color: var(--ngc-text-desc); font-weight: 600; }
+.cv-item-text strong { font-size: 0.9rem; color: var(--ngc-text-main); font-weight: 700; }
 .cv-item-text span { font-size: 0.75rem; color: var(--ngc-text-muted); }
 
 /* CTA FORMAL */
+/* CORRECCIÓN: Diseño de botón ejecutivo, en cristal opaco, que reacciona con neón en hover */
 .btn-cta-formal {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; padding: 12px; background: rgba(var(--ngc-neon-rgb), 0.1);
-    border: 1px solid var(--ngc-neon); border-radius: 12px; color: var(--ngc-neon);
+    width: 100%; padding: 12px; background: var(--ngc-glass);
+    border: 1px solid var(--ngc-privacy-border); border-radius: 12px; color: var(--ngc-text-main);
     font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
     text-decoration: none; transition: all 0.3s ease; margin-top: 5px;
 }
-.btn-cta-formal:hover { background: var(--ngc-neon); color: white; box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
+.btn-cta-formal:hover { 
+    border-color: var(--ngc-neon); color: var(--ngc-neon);
+    background: rgba(var(--ngc-neon-rgb), 0.1); 
+    box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.2); 
+    transform: translateY(-2px);
+}
 
 /* --- BANNERS Y ACORDEONES (Ajustes Específicos) --- */
-.ngc-banner {
-    padding: 15px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Opcional: separa el título del párrafo para mejor lectura */
+/* CORRECCIÓN: Sin resplandor interno para mantener limpieza */
+.ngc-banner, details {
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
+    width: 100%; transition: all 0.3s ease;
+    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-.ngc-banner span { 
-    color: var(--ngc-neon); 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    font-size: 0.85rem; 
-    letter-spacing: 1px; 
-}
+.ngc-banner { padding: 15px 20px; display: flex; flex-direction: column; gap: 8px; }
+.ngc-banner span { color: var(--ngc-text-main); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+.ngc-banner span i { color: var(--ngc-neon); }
+.ngc-banner p { margin: 0; color: var(--ngc-text-muted); font-size: 0.85rem; line-height: 1.5; }
 
-details:hover i { filter: drop-shadow(0 0 5px var(--ngc-neon)); transition: filter 0.3s ease; }
-details[open] { border-color: var(--ngc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.1); }
+details:hover .icon-box i { color: var(--ngc-neon); filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); transition: all 0.3s ease; }
+
+/* CORRECCIÓN: Elevación sutil por sombra oscura */
+details[open] { border-color: var(--ngc-neon); box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge); }
 
 summary {
     padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
@@ -111,13 +121,14 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); }
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.3s ease; background: var(--content-bg); }
-.ngc-content strong { color: var(--ngc-text); }
+.ngc-content strong { color: var(--ngc-text-main); font-weight: 700;}
 
-.icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+.icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: var(--ngc-text-muted); transition: all 0.3s ease;}
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--ngc-neon)); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
+details[open] .icon-box i { color: var(--ngc-neon); }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -162,28 +173,24 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      REORDENAMIENTO EN MÓVILES (Perfil)                 */
 /* ======================================================= */
 @media (max-width: 1023px) {
-    /* Eliminamos 'display: contents' para anular la herencia del gap general */
     .col-izquierda, .col-derecha {
         display: block;
     }
     
-    /* Ocultar el título "Trayectoria" duplicado en móviles */
     .hidden-mobile { 
         display: none !important; 
     }
 
-    /* Fijamos la separación exacta de 12px en todos los bloques para lograr simetría */
     .ngc-full-container, .ngc-banner, details {
         margin-bottom: 12px !important;
     }
     
-    /* Separación estandarizada para el título principal */
     .ngc-main-title {
         margin-bottom: 12px !important;
     }
 
-    /* El footer retoma su lugar al final del flujo sin órdenes forzados */
     .footer-gnc-compact {
         margin-top: 0 !important;
     }
-}
+    }
+
