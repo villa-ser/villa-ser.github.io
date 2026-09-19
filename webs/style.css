@@ -2,20 +2,29 @@
 /* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Webs y Enlaces)           */
 /* ============================================================== */
 
+/* 1. EL ESCUDO DEL TÍTULO PRINCIPAL (Bloquea herencias de global.css) */
+.ngc-main-title {
+    color: var(--ngc-text-main);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: none !important; /* Adiós al neón difuso */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
 /* --- TÍTULOS Y ETIQUETAS --- */
-/* CORRECCIÓN: Etiqueta neutra idéntica a la página de Tips */
 .ngc-section-label {
     font-size: 0.8rem; 
     text-transform: uppercase; 
     color: var(--ngc-text-muted);
     letter-spacing: 1.5px; 
     font-weight: 700;
-    
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: 1px solid var(--ngc-privacy-border);
-    
     border-radius: 8px; 
     padding: 6px 16px;  
     width: fit-content; 
@@ -24,7 +33,6 @@
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
-/* CORRECCIÓN: Sin resplandor interno */
 .ngc-banner, details {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
@@ -32,15 +40,14 @@
     box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-/* CORRECCIÓN: Elevación por sombra en lugar de neón */
 details[open] { 
     border-color: var(--ngc-neon); 
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
+/* CORRECCIÓN: Hover de íconos nítido, sin sombra neón difusa */
 details:hover .icon-box i { 
     color: var(--ngc-neon); 
-    filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); 
     transition: all 0.3s ease; 
 }
 
@@ -58,11 +65,10 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-/* CORRECCIÓN: Títulos nítidos sin sombra difusa */
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
+/* CORRECCIÓN: Título protegido de brillos externos */
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: none !important; }
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg); }
 
-/* CORRECCIÓN: Negritas legibles */
 .ngc-content b { color: var(--ngc-text-main); font-weight: 700; }
 
 /* LISTA DE PROVEEDORES */
@@ -76,7 +82,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 details[open] .icon-box i { color: var(--ngc-neon); }
 
 /* --- ENLACES EXTERNOS --- */
-/* CORRECCIÓN: Botones "Glass" elegantes que reaccionan al hover sutilmente */
 .ngc-link {
     display: inline-flex; align-items: center; gap: 8px; color: var(--ngc-neon);
     text-decoration: none; margin-top: 12px; padding: 10px 16px;
@@ -91,30 +96,59 @@ details[open] .icon-box i { color: var(--ngc-neon); }
 }
 
 /* --- CTA COMERCIAL INFERIOR --- */
-/* CORRECCIÓN: Mismo CTA limpio que en la página de Tips */
 .ngc-webs-cta {
     background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px;
     text-align: center; margin-top: 5px; 
-    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
 .ngc-webs-cta h3 { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
 .ngc-webs-cta p { font-size: 0.8rem; color: var(--ngc-text-muted); margin-bottom: 15px; }
 
+/* CORRECCIÓN: Elevación física oscura, no resplandor verde tóxico */
 .btn-cta-wa {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
     background: #25D366; color: white; padding: 12px; border-radius: 12px;
     text-decoration: none; font-weight: 800; font-size: 0.85rem; text-transform: uppercase;
-    letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--card-shadow);
 }
-.btn-cta-wa:hover { background: #1ebe57; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5); transform: translateY(-2px); color: white;}
+.btn-cta-wa:hover { 
+    background: #1ebe57; 
+    box-shadow: 0 8px 25px var(--card-shadow); 
+    transform: translateY(-2px); 
+    color: white;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ======================================================= */
 /*      ADAPTACIÓN RESPONSIVE ESPECÍFICA                   */
 /* ======================================================= */
 @media (min-width: 1024px) {
+    body { padding-top: 40px; align-items: flex-start; }
+    
+    .layout-desktop {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .col-izquierda {
+        position: sticky;
+        top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    
+    .col-izquierda::-webkit-scrollbar { width: 0px; }
+
     .col-derecha { 
         display: flex; 
         flex-direction: column; 
@@ -122,6 +156,7 @@ details[open] .icon-box i { color: var(--ngc-neon); }
     }
     .ngc-banner, details, .ngc-webs-cta { margin-bottom: 0; }
     .ngc-section-label { margin-top: 5px; margin-bottom: 0; }
+    .ngc-main-title { text-align: left; }
 }
 
 /* ======================================================= */
@@ -144,4 +179,4 @@ details[open] .icon-box i { color: var(--ngc-neon); }
     .footer-gnc-compact {
         margin-top: 0 !important;
     }
-                 }
+}
