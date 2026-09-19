@@ -2,52 +2,53 @@
 /* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Webs y Enlaces)           */
 /* ============================================================== */
 
-/* --- VARIABLES ESPECÍFICAS DE ESTA PÁGINA --- */
-:root {
-    --ngc-link-bg: rgba(0, 212, 255, 0.1);
-}
-[data-theme="light"] {
-    --ngc-link-bg: rgba(0, 122, 153, 0.08);
-}
-
 /* --- TÍTULOS Y ETIQUETAS --- */
+/* CORRECCIÓN: Etiqueta neutra idéntica a la página de Tips */
 .ngc-section-label {
-    /* Tipografía original */
-    font-size: 0.95rem; 
+    font-size: 0.8rem; 
     text-transform: uppercase; 
-    color: var(--success-green);
+    color: var(--ngc-text-muted);
     letter-spacing: 1.5px; 
     font-weight: 700;
-    text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
     
-    /* Efecto Glassmorphism (Idéntico a los botones) */
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    box-shadow: 0 4px 10px var(--card-shadow), var(--ngc-glass-edge);
+    border: 1px solid var(--ngc-privacy-border);
     
-    /* Estructura de "cápsula" */
-    border-radius: 8px; /* Bordes redondeados sutiles */
-    padding: 6px 16px;  /* Espacio interno para que el texto no toque los bordes */
-    width: fit-content; /* Hace que el fondo difuminado solo envuelva al texto y no ocupe todo el ancho */
-    margin: 20px 0 10px 0; /* Centrado vertical alineado a la izquierda */
+    border-radius: 8px; 
+    padding: 6px 16px;  
+    width: fit-content; 
+    margin: 20px 0 10px 0; 
+    box-shadow: 0 4px 10px var(--card-shadow);
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
+/* CORRECCIÓN: Sin resplandor interno */
 .ngc-banner, details {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
     width: 100%; transition: all 0.3s ease;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05), var(--ngc-glass-edge);
+    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-details[open] { border-color: var(--ngc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.1), var(--ngc-glass-edge); }
-details:hover i { filter: drop-shadow(0 0 5px var(--ngc-neon)); transition: filter 0.3s ease; }
+/* CORRECCIÓN: Elevación por sombra en lugar de neón */
+details[open] { 
+    border-color: var(--ngc-neon); 
+    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
+}
+
+details:hover .icon-box i { 
+    color: var(--ngc-neon); 
+    filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); 
+    transition: all 0.3s ease; 
+}
 
 /* BANNER DE INTRO */
 .ngc-banner { padding: 15px 20px; display: flex; flex-direction: column; gap: 8px; }
 .ngc-banner p { margin: 0; color: var(--ngc-text-muted); font-size: 0.85rem; line-height: 1.5; }
-.ngc-banner span { color: var(--ngc-neon); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+.ngc-banner span { color: var(--ngc-text-main); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+.ngc-banner span i { color: var(--ngc-neon); }
 
 /* --- ACORDEONES --- */
 summary {
@@ -57,40 +58,49 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); }
+/* CORRECCIÓN: Títulos nítidos sin sombra difusa */
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg); }
-.ngc-content b { color: var(--ngc-text); }
+
+/* CORRECCIÓN: Negritas legibles */
+.ngc-content b { color: var(--ngc-text-main); font-weight: 700; }
 
 /* LISTA DE PROVEEDORES */
 .suppliers-list { list-style-type: circle; padding-left: 20px; margin-top: 8px; }
 .suppliers-list li { margin-bottom: 5px; font-size: 0.85rem; }
 
-.icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
+.icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; color: var(--ngc-text-muted); transition: all 0.3s ease; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; width: 16px; height: 16px; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--ngc-neon)); }
+
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
+details[open] .icon-box i { color: var(--ngc-neon); }
 
 /* --- ENLACES EXTERNOS --- */
+/* CORRECCIÓN: Botones "Glass" elegantes que reaccionan al hover sutilmente */
 .ngc-link {
     display: inline-flex; align-items: center; gap: 8px; color: var(--ngc-neon);
-    text-decoration: none; margin-top: 12px; padding: 8px 14px;
-    background: var(--ngc-link-bg); border-radius: 8px; border: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    text-decoration: none; margin-top: 12px; padding: 10px 16px;
+    background: var(--ngc-glass); border-radius: 8px; border: 1px solid var(--ngc-privacy-border);
     font-size: 0.8rem; font-weight: 700; transition: all 0.3s ease; text-transform: uppercase;
 }
-.ngc-link:hover { background: var(--ngc-neon); color: white; box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.5); }
+.ngc-link:hover { 
+    border-color: var(--ngc-neon); 
+    background: rgba(var(--ngc-neon-rgb), 0.1); 
+    box-shadow: 0 4px 10px rgba(var(--ngc-neon-rgb), 0.2); 
+    transform: translateY(-2px);
+}
 
 /* --- CTA COMERCIAL INFERIOR --- */
+/* CORRECCIÓN: Mismo CTA limpio que en la página de Tips */
 .ngc-webs-cta {
-    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px;
     text-align: center; margin-top: 5px; 
-    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
-}
-[data-theme="light"] .ngc-webs-cta {
-    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-.ngc-webs-cta h3 { color: var(--ngc-neon); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+.ngc-webs-cta h3 { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
 .ngc-webs-cta p { font-size: 0.8rem; color: var(--ngc-text-muted); margin-bottom: 15px; }
 
 .btn-cta-wa {
@@ -105,13 +115,11 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      ADAPTACIÓN RESPONSIVE ESPECÍFICA                   */
 /* ======================================================= */
 @media (min-width: 1024px) {
-    /* Permitimos que el footer sea empujado al fondo */
     .col-derecha { 
         display: flex; 
         flex-direction: column; 
         min-height: calc(100vh - 80px); 
     }
-    
     .ngc-banner, details, .ngc-webs-cta { margin-bottom: 0; }
     .ngc-section-label { margin-top: 5px; margin-bottom: 0; }
 }
@@ -120,24 +128,20 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      REORDENAMIENTO EN MÓVILES (Webs)                   */
 /* ======================================================= */
 @media (max-width: 1023px) {
-    /* Eliminamos el 'display: contents' para evitar que se dupliquen los espacios con el flex-gap */
     .col-izquierda, .col-derecha {
         display: block; 
     }
     
-    /* Igualamos la separación exactamente a 12px (idéntico al .separador-bloque de la página principal) */
     .ngc-banner, details, .ngc-webs-cta {
         margin-bottom: 12px !important;
     }
     
-    /* Ajustamos los márgenes de las etiquetas para mantener la proporción visual */
     .ngc-section-label {
         margin-top: 12px !important;
         margin-bottom: 10px !important;
     }
 
-    /* Eliminamos los márgenes extra y el reordenamiento. El HTML ya empuja el footer al final de forma natural. */
     .footer-gnc-compact {
         margin-top: 0 !important;
     }
-}
+                 }
