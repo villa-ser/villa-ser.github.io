@@ -35,45 +35,36 @@
     <meta name="twitter:description" content="Servicios eléctricos integrales: tableros, luz de obra, planos y certificación bajo Ley 10.281. Soluciones seguras para residencias y comercios.">
     <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
 
-    
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
 
     <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
-<script>
-    (function() {
-        const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
-        const temaGuardado = localStorage.getItem('temaVillaser');
-        const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+    <script>
+        (function() {
+            const TIEMPO_CADUCIDAD = 30 * 60 * 1000;
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
 
-        let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
+            let temaFinal = 'dark';
 
-        // Si el usuario eligió un tema manualmente
-        if (temaGuardado && tiempoGuardado) {
-            const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-            
-            if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 30 minutos, respetamos su decisión
-                temaFinal = temaGuardado; 
-            } else {
-                // Si caducó, miramos qué pide el sistema
-                temaFinal = prefiereClaro ? 'light' : 'dark';
+            if (temaGuardado && tiempoGuardado) {
+                const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
+                if (tiempoPasado <= TIEMPO_CADUCIDAD) {
+                    temaFinal = temaGuardado; 
+                } else {
+                    temaFinal = prefiereClaro ? 'light' : 'dark';
+                }
+            } else if (prefiereClaro) {
+                temaFinal = 'light';
             }
-        } else if (prefiereClaro) {
-            // Si nunca eligió nada y su sistema es claro
-            temaFinal = 'light';
-        }
 
-        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
-        if (temaFinal === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-        } else {
-            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
-            document.documentElement.removeAttribute('data-theme');
-        }
-    })();
-</script>
-    
+            if (temaFinal === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
     
     <!-- Librerías de iconos -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
@@ -89,8 +80,8 @@
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-    <i data-lucide="home"></i>
-</a>
+        <i data-lucide="home"></i>
+    </a>
 
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
@@ -133,12 +124,12 @@
 
                 <div class="ngc-banner gpu-accel">
                     <div style="text-align: center; margin-bottom: 5px;">
-                        <i data-lucide="map-pin" style="color: var(--ngc-neon); width: 20px; height: 20px;"></i>
+                        <i data-lucide="map-pin" style="color: var(--ngc-text-muted); width: 20px; height: 20px;"></i>
                         <span style="display: inline; font-size: 0.85rem; letter-spacing: 2px;"> CÓRDOBA CAPITAL</span>
                     </div>
                     <p style="text-align: center; font-size: 0.9rem; margin-bottom: 10px;">
                         Toda instalación requiere planificación, materiales confiables y una ejecución bajo 
-                        <span class="neon">estrictas normas de seguridad (Ley 10.281)</span>.
+                        <strong>estrictas normas de seguridad (Ley 10.281)</strong>.
                     </p>
                     <button type="button" id="btn-presupuesto" class="ngc-btn-outline">
                         <i data-lucide="clipboard-list"></i> Pedir Presupuesto Rápido
@@ -173,18 +164,17 @@
                             <button type="submit" class="btn-submit" id="btnSubmit">
                                 <i data-lucide="send" style="width: 16px; margin-right: 5px;"></i> Enviar Consulta
                             </button>
-                            <!-- NUEVO MENSAJE DE PRIVACIDAD AQUÍ -->
                             <p class="form-privacy-note">
                                 <i class="fa-solid fa-lock"></i> Tus datos son privados y se utilizarán exclusivamente para responder a tu consulta. No compartimos información con terceros.
                             </p>
                         </form>
 
                         <div id="success-message">
-                            <div style="color: var(--gnc-success); font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; letter-spacing: 1px;">
+                            <div style="color: var(--success-green); font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; letter-spacing: 1px;">
                                 <i class="fa-solid fa-circle-check"></i> CONSULTA ENVIADA
                             </div>
-                            <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: var(--gnc-text);">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
-                            <button type="button" onclick="resetForm()" class="gnc-btn-outline" style="width: 100%;">Enviar otra consulta</button>
+                            <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: var(--ngc-text-main);">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
+                            <button type="button" onclick="resetForm()" class="ngc-btn-outline" style="width: 100%;">Enviar otra consulta</button>
                         </div>
                     </div>
                 </div>
@@ -207,10 +197,9 @@
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
                         <div class="ngc-content">
-                            <p>Verificación de la instalación conforme a las <span class="neon">normas de seguridad</span>. Incluye memoria técnica y gráfica con fotos.</p>
-                            <p>Documento obligatorio emitido exclusivamente por un <span class="neon">Electricista Habilitado (Categoría III)</span> para viviendas y comercios.</p>
+                            <p>Verificación de la instalación conforme a las <strong>normas de seguridad</strong>. Incluye memoria técnica y gráfica con fotos.</p>
+                            <p>Documento obligatorio emitido exclusivamente por un <strong>Electricista Habilitado (Categoría III)</strong> para viviendas y comercios.</p>
                             
-                            <!-- BOTONERA ALINEADA -->
                             <div class="action-buttons-group">
                                 <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20Apto%20Eléctrico." target="_blank" class="btn-micro-wa">
                                     <i class="fab fa-whatsapp"></i> Consultar
@@ -223,7 +212,6 @@
                                 </button>
                             </div>
 
-                            <!-- CAJA DE INFORMACIÓN EXTRA OCULTA -->
                             <div id="info-apto" class="extra-info-box oculto gpu-accel">
                                 <p>Según resolución del ERSeP, la Categoría III habilita a intervenir en instalaciones domiciliarias destinadas a vivienda unifamiliar y pequeñas instalaciones comerciales o industriales.</p>
                                 <p><strong>Límites técnicos:</strong> Se permite intervenir exclusivamente en Baja Tensión y con una potencia máxima de hasta 10kW.</p>
@@ -243,7 +231,7 @@
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
                         <div class="ngc-content">
-                            <p>El sistema de venas por donde llega la energía. Materiales deficientes o mal canalizados pueden producir <span class="neon">sobrecalentamiento o incendios</span>.</p>
+                            <p>El sistema de venas por donde llega la energía. Materiales deficientes o mal canalizados pueden producir <strong>sobrecalentamiento o incendios</strong>.</p>
                             
                             <div class="action-buttons-group">
                                 <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20consultarte%20por%20un%20trabajo%20de%20cableado." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
@@ -268,7 +256,7 @@
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
                         <div class="ngc-content">
-                            <p>Cortan el suministro si detectan una <span class="neon">fuga eléctrica</span>, siendo vitales para proteger la vida de las personas.</p>
+                            <p>Cortan el suministro si detectan una <strong>fuga eléctrica</strong>, siendo vitales para proteger la vida de las personas.</p>
                             
                             <div class="action-buttons-group">
                                 <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20o%20instalar%20un%20disyuntor." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
@@ -364,7 +352,7 @@
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
                         <div class="ngc-content">      
-                            <p>Sistema encargado de disipar fugas de corriente al suelo. Actúa junto al diferencial para <span class="neon">salvar vidas</span>.</p>
+                            <p>Sistema encargado de disipar fugas de corriente al suelo. Actúa junto al diferencial para <strong>salvar vidas</strong>.</p>
                             
                             <div class="action-buttons-group">
                                 <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20revisar%20la%20Puesta%20a%20Tierra." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
@@ -388,7 +376,7 @@
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
                         <div class="ngc-content">       
-                            <p>Armado, normalización y mantenimiento de tableros eléctricos. Protecciones contra <span class="neon">cortocircuitos y sobrecargas</span>.</p>
+                            <p>Armado, normalización y mantenimiento de tableros eléctricos. Protecciones contra <strong>cortocircuitos y sobrecargas</strong>.</p>
                             
                             <div class="action-buttons-group">
                                 <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20tengo%20un%20problema%20en%20el%20tablero." target="_blank" class="btn-micro-wa"><i class="fab fa-whatsapp"></i> Consultar</a>
@@ -413,12 +401,12 @@
                         </summary>
                         <div class="ngc-content">
                             <ul style="list-style-type: none; padding-left: 0; font-size: 0.85rem; line-height: 1.8;">
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Visita de inspección y diagnóstico</li>
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Búsqueda de fugas de corriente</li>
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Canalización externa (cablecanal)</li>
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Sensores de movimiento / fotocontroles</li>
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Porteros eléctricos y cerraduras</li>
-                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--gnc-neon); margin-right:5px;"></i> Empalmes subterráneos</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Visita de inspección y diagnóstico</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Búsqueda de fugas de corriente</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Canalización externa (cablecanal)</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Sensores de movimiento / fotocontroles</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Porteros eléctricos y cerraduras</li>
+                                <li><i data-lucide="check-circle-2" style="width:14px; color:var(--ngc-text-muted); margin-right:5px;"></i> Empalmes subterráneos</li>
                             </ul>
                         </div>
                     </details>
@@ -426,7 +414,6 @@
                 </div>
 
                <!-- FOOTER Y CRÉDITOS -->
-        
                  <div class="footer-gnc-compact gpu-accel">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
                         <i class="far fa-envelope"></i>
@@ -453,7 +440,6 @@
     </main>
 
     <script src="../js/global.js" defer></script>
-<script src="script.js" defer></script>
-
+    <script src="script.js" defer></script>
 </body>
 </html>
