@@ -159,22 +159,26 @@
                     </div>
                 </div>
 
-                <!-- SERVICIOS RÁPIDOS -->
+                                <!-- SERVICIOS RÁPIDOS -->
                 <div class="separador-bloque">
                     <div class="ngc-quick-services gpu-accel">
                         <button onclick="abrirModalServicio('apto')" class="quick-item">
-                            <i class="fa-solid fa-file-signature"></i>
+                            <!-- Aplicamos clase icon-exito (Verde) -->
+                            <i class="fa-solid fa-file-signature icon-exito"></i>
                             <span>Apto Eléctrico</span>
                         </button>
                         <button onclick="abrirModalServicio('fugas')" class="quick-item">
+                            <!-- Mantenemos tu clase icon-peligro (Rojo) -->
                             <i class="fa-solid fa-plug-circle-exclamation icon-peligro"></i>
                             <span>Fugas y Cortos</span>
                         </button>
                         <button onclick="abrirModalServicio('tableros')" class="quick-item">
-                            <i class="fa-solid fa-charging-station"></i>
+                            <!-- Aplicamos clase icon-alerta (Ámbar) -->
+                            <i class="fa-solid fa-charging-station icon-alerta"></i>
                             <span>Tableros</span>
                         </button>
                         <button onclick="abrirModalServicio('obra')" class="quick-item">
+                            <!-- Sin clase extra usa el Cian por defecto -->
                             <i class="fa-solid fa-helmet-safety"></i>
                             <span>Luz de Obra</span>
                         </button>
