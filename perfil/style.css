@@ -2,6 +2,18 @@
 /* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Perfil / Currículum)      */
 /* ============================================================== */
 
+/* 1. EL ESCUDO DEL TÍTULO PRINCIPAL (Bloquea herencias de global.css) */
+.ngc-main-title {
+    color: var(--ngc-text-main);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: none !important; /* Adiós al neón difuso */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
 /* --- VARIABLES ESPECÍFICAS DEL CV --- */
 :root {
     --ngc-cv-pill-bg: rgba(0, 0, 0, 0.4);
@@ -16,7 +28,6 @@
 .hidden-mobile { display: block; }
 
 /* --- TARJETA PRINCIPAL (CV) --- */
-/* CORRECCIÓN: Elevación elegante sin resplandor interior */
 .ngc-full-container {
     width: 100%; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 25px 20px;
@@ -26,7 +37,6 @@
 }
 
 /* --- FOTO MARCO PREMIUM --- */
-/* CORRECCIÓN: Eliminada animación RGB. Reemplazada por un marco de cristal sobrio y profesional */
 .ngc-photo-landscape {
     position: relative; width: 100%; border-radius: 12px; overflow: hidden; padding: 4px; 
     display: flex; justify-content: center; align-items: center; 
@@ -45,7 +55,6 @@
 /* --- TEXTOS DEL PERFIL --- */
 .ngc-content-area { width: 100%; text-align: left; }
 
-/* CORRECCIÓN: Nombre nítido y en el color principal de texto, sin text-shadow borroso */
 .ngc-user-name { 
     display: block; color: var(--ngc-text-main); font-size: 1.15rem; 
     font-weight: 800; margin-bottom: 6px; line-height: 1.2; letter-spacing: 1px; 
@@ -72,7 +81,6 @@
 .cv-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
 .cv-item:last-child { margin-bottom: 0; }
 
-/* CORRECCIÓN: Check verde limpio, institucional y sin sombra de neón */
 .cv-icon { color: var(--success-green); font-size: 1rem; margin-top: 2px; }
 
 .cv-item-text { display: flex; flex-direction: column; gap: 2px; }
@@ -80,7 +88,6 @@
 .cv-item-text span { font-size: 0.75rem; color: var(--ngc-text-muted); }
 
 /* CTA FORMAL */
-/* CORRECCIÓN: Diseño de botón ejecutivo, en cristal opaco, que reacciona con neón en hover */
 .btn-cta-formal {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
     width: 100%; padding: 12px; background: var(--ngc-glass);
@@ -91,12 +98,11 @@
 .btn-cta-formal:hover { 
     border-color: var(--ngc-neon); color: var(--ngc-neon);
     background: rgba(var(--ngc-neon-rgb), 0.1); 
-    box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.2); 
+    box-shadow: 0 6px 20px var(--card-shadow); /* Elevación física, sin resplandor radiactivo */
     transform: translateY(-2px);
 }
 
-/* --- BANNERS Y ACORDEONES (Ajustes Específicos) --- */
-/* CORRECCIÓN: Sin resplandor interno para mantener limpieza */
+/* --- BANNERS Y ACORDEONES --- */
 .ngc-banner, details {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
@@ -109,9 +115,9 @@
 .ngc-banner span i { color: var(--ngc-neon); }
 .ngc-banner p { margin: 0; color: var(--ngc-text-muted); font-size: 0.85rem; line-height: 1.5; }
 
-details:hover .icon-box i { color: var(--ngc-neon); filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); transition: all 0.3s ease; }
+/* CORRECCIÓN: Hover de iconos limpio, sin drop-shadow difuso */
+details:hover .icon-box i { color: var(--ngc-neon); transition: all 0.3s ease; }
 
-/* CORRECCIÓN: Elevación sutil por sombra oscura */
 details[open] { border-color: var(--ngc-neon); box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge); }
 
 summary {
@@ -121,7 +127,7 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: none !important; }
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.3s ease; background: var(--content-bg); }
 .ngc-content strong { color: var(--ngc-text-main); font-weight: 700;}
 
@@ -192,5 +198,4 @@ details[open] .icon-box i { color: var(--ngc-neon); }
     .footer-gnc-compact {
         margin-top: 0 !important;
     }
-    }
-
+}
