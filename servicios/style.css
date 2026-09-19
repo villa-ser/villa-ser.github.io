@@ -1,13 +1,42 @@
-/* --- CONTENEDORES PRINCIPALES --- */
+/* ======================================================= */
+/* 1. TÍTULO PRINCIPAL LIMPIO (Escudo contra global.css)   */
+/* ======================================================= */
+.ngc-main-title {
+    color: var(--ngc-text-main); 
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: none !important; /* Bloquea cualquier brillo que venga del global.css */
+}
+
+/* --- CONTENEDORES PRINCIPALES (Cristal Mate) --- */
 .servicios-container { display: flex; flex-direction: column; gap: 12px; }
 
-/* CORRECCIÓN: Borde sutil y sombra de elevación, sin resplandor neón interior */
+/* Unificación de Banners, Formularios y Acordeones al estilo Ejecutivo */
+.ngc-banner, details, .ngc-form-container {
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); 
+    border-radius: 12px;
+    width: 100%; 
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+}
+
+.ngc-banner { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
 details[open] {
     border-color: var(--ngc-neon);
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-.ngc-banner { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+details:hover summary .icon-box i {
+    color: var(--ngc-neon);
+    transition: color 0.3s ease;
+}
 
 /* --- ACORDEÓN --- */
 summary, .form-header {
@@ -17,10 +46,9 @@ summary, .form-header {
 }
 summary::-webkit-details-marker { display: none; }
 
-/* CORRECCIÓN: Textos sólidos sin sombras brillantes */
 .summary-title, .form-title {
     display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main);
-    transition: all 0.3s ease;
+    text-shadow: none !important;
 }
 
 .ngc-content, .form-body {
@@ -31,7 +59,6 @@ summary::-webkit-details-marker { display: none; }
 .ngc-content p { margin-bottom: 12px; color: var(--ngc-text-muted); }
 
 /* --- BOTONES Y FORMULARIOS --- */
-/* CORRECCIÓN: Botón "Pedir Presupuesto" neutro en reposo, neón en hover */
 .ngc-btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
     padding: 12px; background: transparent; border: 1px solid var(--ngc-privacy-border);
@@ -40,16 +67,15 @@ summary::-webkit-details-marker { display: none; }
 }
 .ngc-btn-outline:hover { 
     border-color: var(--ngc-neon); color: var(--ngc-neon);
-    background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.3); 
+    background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.2); 
 }
 
-/* CORRECCIÓN: Botón de envío principal, limpio y sólido */
 .btn-submit {
     display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px 10px;
     background: var(--ngc-glass); border: var(--ngc-border-glass); border-radius: 12px;
-    border-left: 4px solid var(--ngc-neon); color: var(--ngc-text); font-size: 0.85rem; font-weight: 700;
+    border-left: 4px solid var(--ngc-neon); color: var(--ngc-text-main); font-size: 0.85rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 .btn-submit:hover {
     background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon);
@@ -59,16 +85,15 @@ summary::-webkit-details-marker { display: none; }
 
 .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
 
-/* CORRECCIÓN: Etiquetas apagadas para no distraer del input */
 label { font-size: 0.75rem; text-transform: uppercase; color: var(--ngc-text-muted); letter-spacing: 1.5px; font-weight: 600; }
 
 input, textarea {
     width: 100%; padding: 12px 14px; background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border);
-    border-radius: 12px; color: var(--ngc-text); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
+    border-radius: 12px; color: var(--ngc-text-main); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
 }
 input:focus, textarea:focus { 
     border-color: var(--ngc-neon);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05), 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
 #success-message {
@@ -80,29 +105,16 @@ input:focus, textarea:focus {
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-text-main); }
 
-/* Mensaje de privacidad debajo del botón */
 .form-privacy-note {
-    font-size: 0.7rem;
-    color: var(--ngc-text-faded);
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 0;
-    line-height: 1.4;
-    font-weight: 500;
+    font-size: 0.7rem; color: var(--ngc-text-faded); text-align: center;
+    margin-top: 15px; margin-bottom: 0; line-height: 1.4; font-weight: 500;
 }
-
-.form-privacy-note i {
-    color: var(--ngc-neon);
-    margin-right: 5px;
-    opacity: 0.8;
-}
+.form-privacy-note i { color: var(--ngc-neon); margin-right: 5px; opacity: 0.8; }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* --- BOTONES DE ACCIÓN EN SERVICIOS (COTI, WHATSAPP, INFO) --- */
-.action-buttons-group {
-    display: flex; flex-direction: column; gap: 8px; margin-top: 15px; width: 100%;
-}
+.action-buttons-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; width: 100%; }
 
 @media (min-width: 480px) {
     .action-buttons-group { flex-direction: row; flex-wrap: wrap; }
@@ -111,15 +123,13 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
 .btn-micro-wa, .btn-micro-coti, .btn-micro-info { justify-content: center; width: 100%; margin-top: 0 !important; }
 
-/* El WhatsApp se mantiene verde por jerarquía principal */
 .btn-micro-wa {
     display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px;
     background: rgba(40, 167, 69, 0.1); border: 1px solid var(--success-green); border-radius: 8px;
     color: var(--success-green); font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease;
 }
-.btn-micro-wa:hover { background: var(--success-green); color: white; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
+.btn-micro-wa:hover { background: var(--success-green); color: white; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
 
-/* CORRECCIÓN: Botón secundario en cristal/neutro, ilumina en Hover */
 .btn-micro-coti {
     display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
     background: var(--ngc-glass); border: 1px solid var(--ngc-privacy-border); 
@@ -128,7 +138,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 }
 .btn-micro-coti:hover { 
     border-color: var(--ngc-neon); color: var(--ngc-neon); 
-    background: rgba(var(--ngc-neon-rgb), 0.1); box-shadow: 0 4px 10px rgba(var(--gnc-neon-rgb), 0.2); 
+    background: rgba(var(--ngc-neon-rgb), 0.1); box-shadow: 0 4px 10px rgba(var(--ngc-neon-rgb), 0.2); 
 }
 
 .btn-micro-info {
@@ -137,14 +147,13 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     border-radius: 8px; color: var(--ngc-text-muted); font-weight: 700; font-size: 0.8rem; 
     cursor: pointer; transition: all 0.3s ease;
 }
-.btn-micro-info:hover { border-color: var(--ngc-text); color: var(--ngc-text-main); background: rgba(255,255,255,0.05); }
+.btn-micro-info:hover { border-color: var(--ngc-text-main); color: var(--ngc-text-main); background: var(--input-bg); }
 
 .extra-info-box {
     margin-top: 15px; padding: 15px; border-left: 3px solid var(--warning-amber);
-    background: rgba(0, 0, 0, 0.25); border-radius: 0 12px 12px 0;
+    background: var(--quote-bg); border-radius: 0 12px 12px 0;
     font-size: 0.85rem; color: var(--ngc-text-muted); animation: slideDownFade 0.4s ease forwards;
 }
-[data-theme="light"] .extra-info-box { background: rgba(0, 0, 0, 0.05); }
 .extra-info-box p { margin-bottom: 8px; line-height: 1.5; color: var(--ngc-text-muted); }
 .extra-info-box p:last-child { margin-bottom: 0; }
 
@@ -153,17 +162,10 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- ANIMACIONES --- */
-@keyframes run-border { from { stroke-dashoffset: 0%; } to { stroke-dashoffset: -400%; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
 /* ======================================================= */
 /*      CORRECCIÓN DE ESPACIOS (Servicios)                 */
 /* ======================================================= */
-.servicios-container details {
-    margin-bottom: 0 !important;
-}
+.servicios-container details { margin-bottom: 0 !important; }
 
 /* ======================================================= */
 /*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
@@ -174,17 +176,18 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
     .col-izquierda, .col-derecha { display: block; }
     .ngc-banner, .ngc-form-container, .servicios-container { margin-bottom: 12px !important; }
+    .ngc-main-title { text-align: center; } /* Centrado en móviles */
     .footer-gnc-compact { margin-top: 0 !important; }
 }
 
 @media (min-width: 768px) {
-    .gnc-wrapper { max-width: 720px; padding: 25px; }
+    .ngc-wrapper { max-width: 720px; padding: 25px; }
     .switch-plate.switch-servicios { left: auto !important; right: 105px; }
 }
 
 @media (min-width: 1024px) {
     body { padding-top: 40px; align-items: flex-start; }
-    .gnc-wrapper { max-width: 1050px; }
+    .ngc-wrapper { max-width: 1050px; }
     .layout-desktop { display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; }
     
     .col-izquierda {
@@ -194,5 +197,5 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .col-izquierda::-webkit-scrollbar { width: 0px; }
     
     .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
-    .gnc-main-title { text-align: left; margin-bottom: 20px;}
+    .ngc-main-title { text-align: left; margin-bottom: 20px;} /* Alineado a la izquierda en PC */
 }
