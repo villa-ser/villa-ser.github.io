@@ -3,26 +3,24 @@
 /* ============================================================== */
 
 /* --- TÍTULOS Y ETIQUETAS ESPECÍFICAS --- */
+/* CORRECCIÓN: Etiqueta neutra, elegante y sutil. Ya no grita "¡hazme clic!" */
 .ngc-section-label {
-    /* Tipografía original */
-    font-size: 0.95rem; 
+    font-size: 0.8rem; 
     text-transform: uppercase; 
-    color: var(--success-green);
+    color: var(--ngc-text-muted);
     letter-spacing: 1.5px; 
     font-weight: 700;
-    text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2);
     
-    /* Efecto Glassmorphism (Idéntico a los botones) */
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
-    box-shadow: 0 4px 10px var(--card-shadow), var(--ngc-glass-edge);
+    border: 1px solid var(--ngc-privacy-border);
     
-    /* Estructura de "cápsula" */
-    border-radius: 8px; /* Bordes redondeados sutiles */
-    padding: 6px 16px;  /* Espacio interno para que el texto no toque los bordes */
-    width: fit-content; /* Hace que el fondo difuminado solo envuelva al texto y no ocupe todo el ancho */
-    margin: 20px 0 10px 0; /* Centrado vertical alineado a la izquierda */
+    border-radius: 8px; 
+    padding: 6px 16px;  
+    width: fit-content; 
+    margin: 20px 0 10px 0; 
+    box-shadow: 0 4px 10px var(--card-shadow);
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
@@ -30,21 +28,32 @@
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
     width: 100%; transition: all 0.3s ease;
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.05), var(--ngc-glass-edge);
+    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-details[open] { border-color: var(--ngc-neon); box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 20px rgba(var(--ngc-neon-rgb), 0.1), var(--ngc-glass-edge); }
-details:hover i { filter: drop-shadow(0 0 5px var(--ngc-neon)); transition: filter 0.3s ease; }
+/* CORRECCIÓN: Elevación por sombra oscura al abrir, sin resplandor neón interno */
+details[open] { 
+    border-color: var(--ngc-neon); 
+    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
+}
+
+/* El ícono se ilumina sutilmente al hacer hover, indicando interactividad */
+details:hover .icon-box i { 
+    color: var(--ngc-neon); 
+    filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); 
+    transition: all 0.3s ease; 
+}
 
 /* BANNER DE TIPS */
+/* CORRECCIÓN: Sombreado moderado, verde institucional */
 .ngc-banner-tips {
-    background: rgba(40, 167, 69, 0.1); 
-    border: 1px solid rgba(40, 167, 69, 0.3);
-    border-left: 4px solid var(--ngc-success);
+    background: rgba(40, 167, 69, 0.08); 
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    border-left: 4px solid var(--success-green);
     padding: 15px 20px;
-    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
+    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
-.ngc-banner-tips span:last-child { font-size: 0.85rem; line-height: 1.4; display: block; color: var(--ngc-text); }
+.ngc-banner-tips span:last-child { font-size: 0.85rem; line-height: 1.4; display: block; color: var(--ngc-text-muted); }
 
 /* --- ACORDEONES --- */
 summary {
@@ -54,27 +63,32 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); }
-.ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg); }
-.ngc-content b { color: var(--ngc-neon); font-weight: 600; }
+/* CORRECCIÓN: Título sólido, sin texto brillante difuminado */
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
 
-.icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
+.ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg); }
+
+/* CORRECCIÓN: Las palabras en negrita son legibles y serias, no cian fosforescente */
+.ngc-content b { color: var(--ngc-text-main); font-weight: 700; }
+
+.icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; color: var(--ngc-text-muted); transition: all 0.3s ease;}
 .chevron { transition: transform 0.3s ease; opacity: 0.6; width: 16px; height: 16px; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); filter: drop-shadow(0 0 5px var(--ngc-neon)); }
+
+/* Al abrir, el chevron y el ícono principal toman el color cian */
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
+details[open] .icon-box i { color: var(--ngc-neon); }
 
 /* --- CTA COMERCIAL INFERIOR --- */
+/* CORRECCIÓN: Fondo más limpio, sin competir tanto visualmente */
 .ngc-tips-cta {
-    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px;
     text-align: center; margin-top: 5px; 
-    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
-}
-[data-theme="light"] .ngc-tips-cta {
-    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(var(--ngc-neon-rgb), 0.15) 100%);
+    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-.ngc-tips-cta h3 { color: var(--ngc-neon); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+.ngc-tips-cta h3 { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
 .ngc-tips-cta p { font-size: 0.8rem; color: var(--ngc-text-muted); margin-bottom: 15px; }
 
 .btn-cta-wa {
@@ -97,23 +111,19 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      REORDENAMIENTO EN MÓVILES (Tips)                   */
 /* ======================================================= */
 @media (max-width: 1023px) {
-    /* Eliminamos 'display: contents' para evitar la suma del gap con los márgenes */
     .col-izquierda, .col-derecha {
         display: block; 
     }
     
-    /* Igualamos la separación exactamente a 12px (idéntico a la página principal) */
     .ngc-banner-tips, details, .ngc-tips-cta {
         margin-bottom: 12px !important;
     }
     
-    /* Ajustamos los márgenes de las etiquetas para mantener la proporción visual */
     .ngc-section-label {
         margin-top: 12px !important;
         margin-bottom: 10px !important;
     }
 
-    /* Evitamos empujes extra en el footer, respetando el flujo de la columna */
     .footer-gnc-compact {
         margin-top: 0 !important;
     }
