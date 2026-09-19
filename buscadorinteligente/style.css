@@ -5,13 +5,25 @@
 .oculto { display: none !important; }
 .separador-bloque { width: 100%; margin-bottom: 12px; }
 
-/* --- BANNER DE AVISO (Se mantiene igual, el ámbar está perfecto) --- */
+/* 1. EL ESCUDO DEL TÍTULO PRINCIPAL (Bloquea herencias de global.css) */
+.ngc-main-title {
+    color: var(--ngc-text-main);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: none !important; /* Adiós al neón difuso */
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+/* --- BANNER DE AVISO --- */
 .info-banner {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); 
     -webkit-backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); 
     border-left: 4px solid var(--warning-amber); padding: 15px;
     border-radius: 12px; margin-bottom: 15px; 
-    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); 
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); 
 }
 .banner-title {
     color: var(--warning-amber); font-size: 0.9rem; font-weight: 800;
@@ -21,7 +33,6 @@
 .banner-text { font-size: 0.8rem; color: var(--ngc-text-muted); line-height: 1.5; }
 .banner-text strong { color: var(--warning-amber); font-weight: 600; }
 
-/* CORRECCIÓN: Texto de estado neutro, no neón */
 .status-msg {
     text-align: center; font-size: 0.8rem; color: var(--ngc-text-muted);
     margin-bottom: 12px; font-weight: 600;
@@ -30,76 +41,74 @@
 /* --- INPUTS Y BÚSQUEDA --- */
 .input-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
 
-/* CORRECCIÓN: Quitamos el border-top cian para que sea un panel de cristal limpio */
 .input-group {
-    position: relative;
-    z-index: 999;
+    position: relative; z-index: 999;
     display: flex; flex-direction: column; background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
-    padding: 15px;
-    border-radius: 12px; box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); transition: all 0.3s;
+    padding: 15px; border-radius: 12px; 
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); 
+    transition: all 0.3s;
 }
 
-/* CORRECCIÓN: Etiqueta neutra para no competir con la acción */
 label {
     font-size: 0.8rem; text-transform: uppercase; color: var(--ngc-text-muted);
     font-weight: bold; margin-bottom: 10px; letter-spacing: 1px;
 }
+label i { color: var(--ngc-neon); }
 
 .search-box-row { display: flex; gap: 8px; width: 100%; margin-bottom: 15px; }
 .input-wrapper { position: relative; flex: 1; display: flex; }
 
-/* CORRECCIÓN: Borde base neutro. El neón solo aparece en el Focus */
+/* Input nítido, sin blur de neón interior */
 input[type="text"] {
     width: 100%; min-width: 0; background: var(--input-bg);
     border: 1px solid var(--ngc-privacy-border); border-radius: 8px;
-    color: var(--ngc-text); padding: 12px 10px; font-size: 0.95rem;
+    color: var(--ngc-text-main); padding: 12px 10px; font-size: 0.95rem;
     outline: none; transition: 0.3s; font-weight: 500;
 }
 input[type="text"]:focus { 
-    border-color: var(--ngc-neon); background: var(--detail-bg);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
+    border-color: var(--ngc-neon); background: var(--input-bg);
+    box-shadow: 0 4px 15px var(--card-shadow); 
 }
 input:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* SUGERENCIAS (DROPDOWN) */
 .suggestions-dropdown {
     position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px;
-    overflow-y: auto; background: var(--dropdown-bg); backdrop-filter: var(--ngc-blur);
-    -webkit-backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
+    overflow-y: auto; background: var(--quote-bg); backdrop-filter: var(--ngc-blur);
+    -webkit-backdrop-filter: var(--ngc-blur); border: 1px solid var(--ngc-privacy-border);
     border-radius: 8px; margin-top: 5px; list-style: none; padding: 0; z-index: 1000;
     box-shadow: 0 10px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 .suggestions-dropdown::-webkit-scrollbar { width: 6px; }
-.suggestions-dropdown::-webkit-scrollbar-thumb { background: rgba(var(--ngc-neon-rgb), 0.5); border-radius: 4px; }
+.suggestions-dropdown::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.5); border-radius: 4px; }
 .suggestions-dropdown li {
-    padding: 10px 15px; cursor: pointer; color: var(--ngc-text); font-size: 0.9rem;
+    padding: 10px 15px; cursor: pointer; color: var(--ngc-text-main); font-size: 0.9rem;
     border-bottom: 1px solid var(--ngc-privacy-border); transition: all 0.2s; font-weight: 500;
 }
 .suggestions-dropdown li:last-child { border-bottom: none; }
-.suggestions-dropdown li:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
+.suggestions-dropdown li:hover { background: var(--input-bg); color: var(--ngc-neon); }
 
-/* CORRECCIÓN: Botón sólido y elegante, se ilumina en Hover */
+/* Botón Buscar en cristal */
 .btn-search {
-    background: var(--ngc-btn-bg); color: var(--ngc-text-main); 
-    border: var(--ngc-border-glass); border-radius: 8px; padding: 0 15px; font-weight: 800;
-    font-size: 0.85rem; text-transform: uppercase; cursor: pointer;
-    transition: 0.3s; white-space: nowrap;
+    background: transparent; color: var(--ngc-text-main); 
+    border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 0 15px; font-weight: 800;
+    font-size: 0.85rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; white-space: nowrap;
 }
 .btn-search:hover:not(:disabled) { 
     border-color: var(--ngc-neon); color: var(--ngc-neon); 
+    background: rgba(var(--ngc-neon-rgb), 0.1);
     box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.2); 
 }
 .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* --- BÚSQUEDA RÁPIDA (TAGS) --- */
-.quick-tags-container { border-top: 1px dashed var(--ngc-privacy-border); padding-top: 10px; }
+.quick-tags-container { border-top: 1px solid var(--ngc-privacy-border); padding-top: 10px; }
 .quick-tag-label { font-size: 0.65rem; color: var(--ngc-text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; font-weight: 600;}
 .quick-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 
-/* CORRECCIÓN: Tags de cristal apagados por defecto */
 .tag {
-    font-size: 0.7rem; background: var(--ngc-glass); border: 1px solid var(--ngc-privacy-border);
+    font-size: 0.7rem; background: var(--quote-bg); border: 1px solid var(--ngc-privacy-border);
     color: var(--ngc-text-muted); padding: 5px 12px; border-radius: 20px; cursor: pointer;
     transition: all 0.2s ease; font-weight: 600;
 }
@@ -114,26 +123,24 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 .result-card {
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
     border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.3s ease;
-    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge); animation: fadeIn 0.4s ease;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); animation: fadeIn 0.4s ease;
 }
 
-/* CORRECCIÓN: Quitamos el resplandor de neón radiactivo. Usamos una sombra profunda. */
 .result-card:hover { 
-    background: var(--result-hover-bg); 
+    background: var(--quote-bg); 
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
     transform: translateY(-2px);
+    border-left: 4px solid var(--ngc-neon);
 }
 
 .result-header { display: flex; flex-direction: column; gap: 5px; }
-.result-concept { font-size: 0.95rem; font-weight: 700; color: var(--ngc-text); line-height: 1.3; }
+.result-concept { font-size: 0.95rem; font-weight: 700; color: var(--ngc-text-main); line-height: 1.3; }
 .price-container { display: flex; align-items: baseline; gap: 8px; }
 
-/* El verde del precio es perfecto, lo mantenemos intacto */
 .result-price { font-size: 1.25rem; font-weight: 800; color: var(--success-green); }
 .price-note { font-size: 0.65rem; color: var(--ngc-text-muted); text-transform: uppercase; font-weight: bold;}
 
-/* CORRECCIÓN: Línea sutil, no cian */
-.result-obs-preview { margin-top: 10px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 8px; }
+.result-obs-preview { margin-top: 10px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 8px; }
 .click-to-expand {
     display: block; font-size: 0.75rem; color: var(--warning-amber);
     font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
@@ -145,43 +152,46 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     display: none; margin-top: 10px; padding-top: 10px; font-size: 0.85rem; animation: fadeIn 0.3s ease;
 }
 .result-card.active .result-details { display: block; }
-.detail-row { margin-bottom: 8px; background: var(--detail-bg); padding: 10px; border-radius: 6px; color: var(--ngc-text); }
+.detail-row { margin-bottom: 8px; background: var(--input-bg); padding: 10px; border-radius: 6px; color: var(--ngc-text-main); }
 
-/* CORRECCIÓN: Etiquetas de detalle legibles, no de neón */
 .detail-label { color: var(--ngc-text-muted); font-weight: bold; text-transform: uppercase; font-size: 0.7rem; }
-
 .obs-row { border-left: 3px solid var(--warning-amber); }
 
-/* El botón de WhatsApp verde está perfecto */
 .wsp-section { margin-top: 15px; }
 .btn-whatsapp {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    background: transparent; border: 1px solid var(--success-green); color: var(--success-green);
+    background: rgba(40, 167, 69, 0.1); border: 1px solid var(--success-green); color: var(--success-green);
     text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold;
     font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; width: 100%;
 }
-.btn-whatsapp:hover { background: var(--success-green); color: white; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
+.btn-whatsapp:hover { background: var(--success-green); color: white; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); }
 
-.no-results { text-align: center; color: var(--ngc-text); font-size: 0.9rem; padding: 20px; font-weight: bold; background: var(--ngc-glass); border-radius: 12px; border: var(--ngc-border-glass); box-shadow: var(--ngc-glass-edge);}
+.no-results { 
+    text-align: center; color: var(--ngc-text-main); font-size: 0.9rem; padding: 20px; font-weight: bold; 
+    background: var(--ngc-glass); border-radius: 12px; border: var(--ngc-border-glass); box-shadow: var(--ngc-glass-edge);
+}
 
 /* --- CTA FIJO AL FINAL --- */
 .ngc-custom-quote {
     background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass); border-radius: 16px;
-    padding: 20px; text-align: center; box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
+    padding: 20px; text-align: center; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-/* CORRECCIÓN: Título blanco para dar seriedad */
 .quote-content h3 { color: var(--ngc-text-main); font-size: 1.1rem; text-transform: uppercase; margin-bottom: 8px; }
 .quote-content p { font-size: 0.85rem; color: var(--ngc-text-muted); margin-bottom: 15px; line-height: 1.4; }
 
+/* CTA WhatsApp sin resplandor tóxico exterior */
 .btn-submit {
     display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px;
-    background: var(--ngc-glass); border: var(--ngc-border-glass); border-radius: 12px;
-    border-left: 4px solid #25D366; color: var(--ngc-text); font-size: 0.85rem; font-weight: 700;
+    background: var(--ngc-glass); border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
+    border-left: 4px solid #25D366; color: var(--ngc-text-main); font-size: 0.85rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 1px; text-decoration: none; transition: all 0.3s ease;
 }
-.btn-submit:hover { background: rgba(37, 211, 102, 0.15); border-color: #25D366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); color: #25D366; }
+.btn-submit:hover { 
+    background: rgba(37, 211, 102, 0.1); border-color: #25D366; color: #25D366;
+    box-shadow: 0 6px 20px var(--card-shadow); transform: translateY(-2px);
+}
 
 /* --- CTA FLOTANTE MÓVIL --- */
 .cta-flotante-clone {
@@ -224,4 +234,4 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
     .info-banner, .input-section { margin-bottom: 12px !important; }
     .ngc-main-title + p { margin-bottom: 12px !important; }
     .footer-gnc-compact { margin-top: 0 !important; }
-}
+                   }
