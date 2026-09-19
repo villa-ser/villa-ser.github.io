@@ -107,12 +107,12 @@
     <main class="ngc-wrapper">
         <div class="layout-desktop">
             
-            <!-- COLUMNA IZQUIERDA (Controles sin caja de fondo) -->
+            <!-- COLUMNA IZQUIERDA -->
             <div class="col-izquierda">
                 
                 <!-- TÍTULO Y RESET -->
-                <div class="header-module form-group-transparent gpu-accel" style="margin-bottom: 25px;">
-                    <h2 style="font-size: 1.1rem;">Calculadora de Consumo</h2>
+                <div class="header-module form-group-transparent gpu-accel">
+                    <h2>Calculadora de Consumo</h2>
                     <button class="btn-reset" onclick="resetAll()">
                         <i class="fa-solid fa-rotate-right"></i> Reset
                     </button>
@@ -121,10 +121,10 @@
                 <!-- APARATO ELÉCTRICO (DINÁMICO) -->
                 <div class="form-group-transparent gpu-accel">
                     <!-- CAJA DE APARATO SELECCIONADO (Oculta por defecto) -->
-                    <div id="aparato-seleccionado-container" class="readonly-box oculto" style="border-color: var(--ngc-success);">
-                        <span style="display:block; font-size:0.65rem; color:var(--ngc-text-muted); margin-bottom:4px; letter-spacing:1px;">CONFIGURA ESTE APARATO:</span>
-                        <span id="aparato-seleccionado-nombre" style="color:var(--ngc-success); font-size: 1.05rem; display: block; margin-bottom: 2px;"></span>
-                        <span id="aparato-seleccionado-watts" style="display:block; font-size: 0.8rem; color:var(--ngc-text); font-weight: normal; text-transform:none;"></span>
+                    <div id="aparato-seleccionado-container" class="readonly-box oculto">
+                        <span class="readonly-label">CONFIGURA ESTE APARATO:</span>
+                        <span id="aparato-seleccionado-nombre" class="readonly-name"></span>
+                        <span id="aparato-seleccionado-watts" class="readonly-watts"></span>
                     </div>
 
                     <input type="hidden" id="aparato" value="0" data-text="">
@@ -140,7 +140,7 @@
                 </div>
 
                 <!-- SLIDERS (Ocultos por defecto) -->
-                <div id="sliders-container" class="form-group-transparent gpu-accel oculto" style="display: flex; flex-direction: column; gap: 15px;">
+                <div id="sliders-container" class="form-group-transparent gpu-accel oculto">
                     <div class="slider-group">
                         <div class="slider-header">
                             <label><i class="fa-regular fa-clock"></i> Uso Diario</label>
@@ -149,7 +149,7 @@
                         <input type="range" id="horas" class="gnc-range" min="1" max="24" value="4">
                     </div>
 
-                    <div class="slider-group">
+                    <div class="slider-group" style="margin-top: 15px;">
                         <div class="slider-header">
                             <label><i class="fa-regular fa-calendar-days"></i> Días a la semana</label>
                             <span class="slider-val" id="dias-val">7 días</span>
@@ -164,10 +164,10 @@
                 </button>
             </div>
 
-            <!-- COLUMNA DERECHA (Resultados ampliados) -->
+            <!-- COLUMNA DERECHA -->
             <div class="col-derecha">
                 
-                <!-- ENCABEZADO DE RESULTADOS: BOTONES APILADOS IZQUIERDA + BOTÓN +APARATO DERECHA -->
+                <!-- ENCABEZADO DE RESULTADOS -->
                 <div class="top-controls-row gpu-accel">
                     <div class="stacked-tarifa-toggle">
                         <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
@@ -179,11 +179,11 @@
                     </button>
                 </div>
                 
-                <!-- PANEL DE TOTALES (Ancho completo) -->
+                <!-- PANEL DE TOTALES -->
                 <div class="summary-panel gpu-accel">
                     <div>
                         <span class="res-label">CONSUMO ESTIMADO</span>
-                        <span class="total-val"><span id="total-kwh">0.00</span> <span style="font-size: 0.6rem; color: var(--ngc-text);">kWh/mes</span></span>
+                        <span class="total-val"><span id="total-kwh">0.00</span> <span class="res-unit">kWh/mes</span></span>
                     </div>
                     <div>
                         <span class="res-label">TOTAL FACTURA (Aprox)</span>
@@ -259,7 +259,7 @@
         </div>
     </main>
 
-    <!-- MODAL FLOTANTE DE LISTA DE APARATOS (ACORDEONES) -->
+    <!-- MODAL FLOTANTE DE LISTA DE APARATOS -->
     <div id="modal-aparatos" class="modal-overlay oculto gpu-accel">
         <div class="modal-content">
             <div class="modal-header">
@@ -281,7 +281,7 @@
                     <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
 
-                <!-- Cocina -->
+               <!-- Cocina -->
                 <div class="opt-group accordion-header" onclick="toggleAccordion('acc-cocina')">
                     Cocina <i class="fa-solid fa-chevron-down"></i>
                 </div>
@@ -349,12 +349,12 @@
             </div>
             
             <div class="modal-body" style="padding: 22px;">
-                <p id="modal-reco-desc" style="color: var(--ngc-text); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
+                <p id="modal-reco-desc" style="color: var(--ngc-text-main); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <button class="btn-add" onclick="usarRecomendacion()" style="margin: 0;">
                         <i class="fa-solid fa-check"></i> Usar Recomendación
                     </button>
-                    <button class="btn-aparato-trigger" onclick="ingresoManual()" style="margin: 0; padding: 14px;">
+                    <button class="btn-aparato-trigger-side" onclick="ingresoManual()" style="margin: 0; padding: 14px; min-height: auto;">
                         <i class="fa-solid fa-sliders"></i> Ingreso Manual
                     </button>
                 </div>
@@ -366,4 +366,4 @@
     <script src="script.js" defer></script>
     
 </body>
-</html>                                                                                                                                                                                                   
+    </html>
