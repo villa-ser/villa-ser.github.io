@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 formContacto.style.transition = "box-shadow 0.3s ease";
-                formContacto.style.boxShadow = "0 0 25px var(--gnc-neon)";
+                formContacto.style.boxShadow = "0 0 20px rgba(var(--ngc-neon-rgb), 0.3)";
                 setTimeout(() => {
-                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--gnc-neon-rgb), 0.05)";
+                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.05)";
                 }, 1200);
             }
         });
