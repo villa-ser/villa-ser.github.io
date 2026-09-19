@@ -1,13 +1,10 @@
-
-/* --- antiguo Css del boton cambio de modo --- */
-
 /* --- CONTENEDORES PRINCIPALES --- */
-
 .servicios-container { display: flex; flex-direction: column; gap: 12px; }
 
+/* CORRECCIÓN: Borde sutil y sombra de elevación, sin resplandor neón interior */
 details[open] {
     border-color: var(--ngc-neon);
-    box-shadow: 0 10px 30px var(--card-shadow), inset 0 0 25px rgba(var(--ngc-neon-rgb), 0.15), var(--ngc-glass-edge);
+    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
 .ngc-banner { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -20,9 +17,10 @@ summary, .form-header {
 }
 summary::-webkit-details-marker { display: none; }
 
+/* CORRECCIÓN: Textos sólidos sin sombras brillantes */
 .summary-title, .form-title {
     display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main);
-    text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.2); transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .ngc-content, .form-body {
@@ -33,53 +31,59 @@ summary::-webkit-details-marker { display: none; }
 .ngc-content p { margin-bottom: 12px; color: var(--ngc-text-muted); }
 
 /* --- BOTONES Y FORMULARIOS --- */
+/* CORRECCIÓN: Botón "Pedir Presupuesto" neutro en reposo, neón en hover */
 .ngc-btn-outline {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-    padding: 12px; background: transparent; border: 1px solid var(--ngc-neon);
-    border-radius: 12px; color: var(--ngc-neon); font-weight: 700; text-transform: uppercase;
+    padding: 12px; background: transparent; border: 1px solid var(--ngc-privacy-border);
+    border-radius: 12px; color: var(--ngc-text-main); font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer;
 }
-.ngc-btn-outline:hover { background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4); }
+.ngc-btn-outline:hover { 
+    border-color: var(--ngc-neon); color: var(--ngc-neon);
+    background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.3); 
+}
 
+/* CORRECCIÓN: Botón de envío principal, limpio y sólido */
 .btn-submit {
     display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px 10px;
     background: var(--ngc-glass); border: var(--ngc-border-glass); border-radius: 12px;
     border-left: 4px solid var(--ngc-neon); color: var(--ngc-text); font-size: 0.85rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
-    box-shadow: var(--ngc-glass-edge);
+    box-shadow: 0 4px 15px var(--card-shadow);
 }
 .btn-submit:hover {
     background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon);
-    box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.4), var(--ngc-glass-edge); color: var(--gnc-neon);
+    box-shadow: 0 6px 20px rgba(var(--ngc-neon-rgb), 0.3), var(--ngc-glass-edge); color: var(--ngc-neon);
+    transform: translateY(-2px);
 }
 
 .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
 
-label { font-size: 0.75rem; text-transform: uppercase; color: var(--ngc-neon); letter-spacing: 1.5px; font-weight: 600; }
+/* CORRECCIÓN: Etiquetas apagadas para no distraer del input */
+label { font-size: 0.75rem; text-transform: uppercase; color: var(--ngc-text-muted); letter-spacing: 1.5px; font-weight: 600; }
 
 input, textarea {
-    width: 100%; padding: 12px 14px; background: var(--ngc-bg-input); border: 1px solid rgba(var(--ngc-neon-rgb), 0.2);
+    width: 100%; padding: 12px 14px; background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border);
     border-radius: 12px; color: var(--ngc-text); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.3s; font-weight: 500;
 }
 input:focus, textarea:focus { 
     border-color: var(--ngc-neon);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.3);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
 #success-message {
     display: none; text-align: center; padding: 20px; background: rgba(40, 167, 69, 0.1);
-    border: 1px solid var(--ngc-success); border-radius: 12px; margin-top: 15px; animation: fadeIn 0.4s ease;
+    border: 1px solid var(--success-green); border-radius: 12px; margin-top: 15px; animation: fadeIn 0.4s ease;
 }
 
-.neon { color: var(--ngc-neon) !important; font-weight: 600; text-shadow: 0 0 5px rgba(var(--ngc-neon-rgb), 0.3); }
 .icon-box { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .chevron { transition: transform 0.3s ease; opacity: 0.6; }
-details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
+details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-text-main); }
 
 /* Mensaje de privacidad debajo del botón */
 .form-privacy-note {
     font-size: 0.7rem;
-    color: var(--ngc-text-faded); /* Usa tu variable global para que se vea sutil en ambos modos */
+    color: var(--ngc-text-faded);
     text-align: center;
     margin-top: 15px;
     margin-bottom: 0;
@@ -88,11 +92,10 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 }
 
 .form-privacy-note i {
-    color: var(--ngc-neon); /* El candadito brillará con el color de tu tema */
+    color: var(--ngc-neon);
     margin-right: 5px;
     opacity: 0.8;
 }
-
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -108,28 +111,33 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
 .btn-micro-wa, .btn-micro-coti, .btn-micro-info { justify-content: center; width: 100%; margin-top: 0 !important; }
 
+/* El WhatsApp se mantiene verde por jerarquía principal */
 .btn-micro-wa {
     display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px;
-    background: rgba(40, 167, 69, 0.1); border: 1px solid var(--ngc-success); border-radius: 8px;
-    color: var(--ngc-success); font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease;
+    background: rgba(40, 167, 69, 0.1); border: 1px solid var(--success-green); border-radius: 8px;
+    color: var(--success-green); font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: all 0.3s ease;
 }
-.btn-micro-wa:hover { background: var(--ngc-success); color: white; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
+.btn-micro-wa:hover { background: var(--success-green); color: white; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4); }
 
+/* CORRECCIÓN: Botón secundario en cristal/neutro, ilumina en Hover */
 .btn-micro-coti {
     display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
-    background: rgba(var(--ngc-neon-rgb), 0.1); border: 1px solid var(--ngc-neon); 
-    border-radius: 8px; color: var(--ngc-neon); font-weight: 700; font-size: 0.8rem; 
+    background: var(--ngc-glass); border: 1px solid var(--ngc-privacy-border); 
+    border-radius: 8px; color: var(--ngc-text-muted); font-weight: 700; font-size: 0.8rem; 
     text-decoration: none; transition: all 0.3s ease;
 }
-.btn-micro-coti:hover { background: var(--ngc-neon); color: var(--bg-body); box-shadow: 0 0 15px rgba(var(--gnc-neon-rgb), 0.5); }
+.btn-micro-coti:hover { 
+    border-color: var(--ngc-neon); color: var(--ngc-neon); 
+    background: rgba(var(--ngc-neon-rgb), 0.1); box-shadow: 0 4px 10px rgba(var(--gnc-neon-rgb), 0.2); 
+}
 
 .btn-micro-info {
     display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
-    background: transparent; border: 1px dashed var(--ngc-text-muted); 
+    background: transparent; border: 1px dashed var(--ngc-privacy-border); 
     border-radius: 8px; color: var(--ngc-text-muted); font-weight: 700; font-size: 0.8rem; 
     cursor: pointer; transition: all 0.3s ease;
 }
-.btn-micro-info:hover { border-color: var(--ngc-text); color: var(--ngc-text); background: rgba(255,255,255,0.05); }
+.btn-micro-info:hover { border-color: var(--ngc-text); color: var(--ngc-text-main); background: rgba(255,255,255,0.05); }
 
 .extra-info-box {
     margin-top: 15px; padding: 15px; border-left: 3px solid var(--warning-amber);
@@ -153,9 +161,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /* ======================================================= */
 /*      CORRECCIÓN DE ESPACIOS (Servicios)                 */
 /* ======================================================= */
-
-/* Como el contenedor ya usa 'gap: 12px', quitamos el margen de 
-   los acordeones para evitar que se sumen y generen 27px de espacio */
 .servicios-container details {
     margin-bottom: 0 !important;
 }
@@ -164,33 +169,17 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /*      ADAPTACIÓN RESPONSIVE (TABLET Y ESCRITORIO)        */
 /* ======================================================= */
 @media (max-width: 1023px) {
-    /* Comportamiento original del formulario en móvil */
     #formulario-contacto { display: none; }
     #formulario-contacto.form-visible { display: block; animation: slideDownFade 0.4s ease forwards; }
 
-    /* Restauramos el bloque para no sumar el gap del layout general */
-    .col-izquierda, .col-derecha {
-        display: block; 
-    }
-
-    /* Estandarizamos los márgenes a 12px exactos como en la página principal */
-    .ngc-banner, .ngc-form-container, .servicios-container {
-        margin-bottom: 12px !important;
-    }
-
-    /* Respetamos el flujo del footer sin empujes forzados */
-    .footer-gnc-compact {
-        margin-top: 0 !important;
-    }
+    .col-izquierda, .col-derecha { display: block; }
+    .ngc-banner, .ngc-form-container, .servicios-container { margin-bottom: 12px !important; }
+    .footer-gnc-compact { margin-top: 0 !important; }
 }
 
 @media (min-width: 768px) {
     .gnc-wrapper { max-width: 720px; padding: 25px; }
-    
-    .switch-plate.switch-servicios {
-        left: auto !important;
-        right: 105px; 
-    }
+    .switch-plate.switch-servicios { left: auto !important; right: 105px; }
 }
 
 @media (min-width: 1024px) {
@@ -204,8 +193,6 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
     
-    /* Mantenemos el footer al fondo de la columna */
     .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
-    
     .gnc-main-title { text-align: left; margin-bottom: 20px;}
 }
