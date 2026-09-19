@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Creamos una segunda capa de imagen dinámica
         const imgSuperpuesta = imgBase.cloneNode();
         imgSuperpuesta.style.position = 'absolute';
-        imgSuperpuesta.style.top = '3px';
-        imgSuperpuesta.style.left = '3px';
-        imgSuperpuesta.style.width = 'calc(100% - 6px)';
-        imgSuperpuesta.style.height = 'calc(100% - 6px)';
+        imgSuperpuesta.style.top = '4px';
+        imgSuperpuesta.style.left = '4px';
+        imgSuperpuesta.style.width = 'calc(100% - 8px)';
+        imgSuperpuesta.style.height = 'calc(100% - 8px)';
         imgSuperpuesta.style.zIndex = '2';
         imgSuperpuesta.style.opacity = '0';
         imgSuperpuesta.style.transition = 'opacity 1s ease-in-out';
