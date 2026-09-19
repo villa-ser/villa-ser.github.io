@@ -14,7 +14,7 @@
     <meta name="keywords" content="ley 10281 cordoba, seguridad electrica cordoba, normativa ERSeP, certificado electrico, instalaciones seguras">
     <meta name="author" content="Sergio Adrian Villagra">
 
-     <!-- Metadatos para compartir en Redes Sociales (WhatsApp, Facebook, etc.) -->
+     <!-- Metadatos para compartir en Redes Sociales -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Historia - Ley 10.281 | Villaser Electricista">
     <meta property="og:description" content="Conocé la importancia de la Ley 10.281 de Seguridad Eléctrica en Córdoba. Información clave sobre normativas vigentes y certificaciones ERSeP.">
@@ -29,7 +29,7 @@
     <meta property="og:image:height" content="600">
     <meta property="og:image:alt" content="Fotografía en blanco y negro de un electricista con lentes, serio frente a una pared de tiza con iconos de seguridad eléctrica y el texto VILLASER ELECTRICISTA.">
 
-    <!-- Twitter Cards (Refuerzo para WhatsApp y otras plataformas) -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Historia - Ley 10.281 | Villaser Electricista">
     <meta name="twitter:description" content="Conocé la importancia de la Ley 10.281 de Seguridad Eléctrica en Córdoba. Información clave sobre normativas vigentes y certificaciones ERSeP.">
@@ -37,61 +37,49 @@
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
-    
-    
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- 1. Estilos generales (compartidos) -->
+    <!-- Estilos generales y específicos -->
     <link rel="stylesheet" href="../css/global.css">
-    
-    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
-<script>
-    (function() {
-        const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
-        const temaGuardado = localStorage.getItem('temaVillaser');
-        const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+        (function() {
+            const TIEMPO_CADUCIDAD = 30 * 60 * 1000; 
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
 
-        let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
+            let temaFinal = 'dark'; 
 
-        // Si el usuario eligió un tema manualmente
-        if (temaGuardado && tiempoGuardado) {
-            const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-            
-            if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 30 minutos, respetamos su decisión
-                temaFinal = temaGuardado; 
-            } else {
-                // Si caducó, miramos qué pide el sistema
-                temaFinal = prefiereClaro ? 'light' : 'dark';
+            if (temaGuardado && tiempoGuardado) {
+                const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
+                if (tiempoPasado <= TIEMPO_CADUCIDAD) {
+                    temaFinal = temaGuardado; 
+                } else {
+                    temaFinal = prefiereClaro ? 'light' : 'dark';
+                }
+            } else if (prefiereClaro) {
+                temaFinal = 'light';
             }
-        } else if (prefiereClaro) {
-            // Si nunca eligió nada y su sistema es claro
-            temaFinal = 'light';
-        }
 
-        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
-        if (temaFinal === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-        } else {
-            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
-            document.documentElement.removeAttribute('data-theme');
-        }
-    })();
-</script>
-    
+            if (temaFinal === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
 </head>
 
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-    <i data-lucide="home"></i>
-</a>
+        <i data-lucide="home"></i>
+    </a>
 
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
@@ -108,12 +96,12 @@
         </div>
     </div>
 
-    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <!-- Llave 3D Minimalista -->
     <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
         <div class="switch-rocker"></div>
     </button>
 
-    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
+    <!-- Logo Flotante Superior -->
     <div class="hero-logo-icon">
         <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
         <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
@@ -130,14 +118,14 @@
             <!-- ========================================== -->
             <div class="col-izquierda">
 
-                <h1 class="ngc-main-title">Historia</h1>
+                <h1 class="ngc-main-title">Historia y Marco Legal</h1>
 
                 <div class="ngc-banner gpu-accel">
-                   <p>Debido a los aumentos en incidentes eléctricos y siendo muchos con lamentables finales trágicos, es que se acelera la sanción de la <b class="text-neon">Ley Nro. 10.281 de Seguridad Eléctrica de la Provincia de Córdoba</b>.</p>
-                   <p>Esta ley busca garantizar la seguridad de las instalaciones eléctricas en toda la provincia.</p>
+                   <p>Debido al incremento de incidentes con desenlaces críticos en la provincia, se acelera la sanción de la <strong>Ley Nro. 10.281 de Seguridad Eléctrica de Córdoba</strong>.</p>
+                   <p>Esta normativa establece un marco obligatorio para garantizar instalaciones seguras en residencias y comercios.</p>
                 </div>
 
-                <!-- ACORDEONES (Ahora con name="historia") -->
+                <!-- ACORDEONES -->
                 <details name="historia" class="ngc-accordion gpu-accel">
                     <summary>
                         <div class="summary-title">
@@ -147,10 +135,10 @@
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
                     <div class="ngc-content">
-                       <p><b>Normas claras:</b> Establece reglas para la instalación y mantenimiento de sistemas eléctricos.</p>
-                       <p><b>Prevención de accidentes:</b> Reduce el riesgo de incendios y otros problemas eléctricos.</p>
-                       <p><b>Control y sanciones:</b> Supervisa el cumplimiento de la ley y aplica multas a quienes no la respeten.</p>
-                       <p><b>Mejora de la calidad:</b> Promueve el uso de materiales y equipos de calidad.</p>
+                       <p><b>Normas claras:</b> Establece reglas estrictas para la ejecución y mantenimiento de sistemas eléctricos.</p>
+                       <p><b>Prevención de accidentes:</b> Mitiga drásticamente el riesgo de incendios y fallas dieléctricas.</p>
+                       <p><b>Control y sanciones:</b> Supervisa el cumplimiento normativo a través de entes reguladores.</p>
+                       <p><b>Calidad certificada:</b> Promueve la utilización exclusiva de insumos homologados (IRAM).</p>
                     </div>
                 </details>
 
@@ -163,10 +151,10 @@
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
                     <div class="ngc-content">
-                        <p>Si tenés una instalación eléctrica en Córdoba, deberás asegurarte de que cumpla con lo establecido en esta ley. Esto puede incluir:</p>
-                        <p>• <b>Revisar tu instalación:</b> Un profesional debe verificar que todo esté en orden.</p>
-                        <p>• <b>Utilizar materiales aprobados:</b> Adquirí productos que cumplan con las normas.</p>
-                        <p>• <b>Mantener tu instalación:</b> Realizá inspecciones periódicas y reparaciones si es necesario.</p>
+                        <p>Toda instalación eléctrica en Córdoba debe alinearse a las exigencias legales:</p>
+                        <p>• <b>Inspección técnica:</b> Verificación por profesional habilitado (Categoría III).</p>
+                        <p>• <b>Materiales aprobados:</b> Uso de componentes normados.</p>
+                        <p>• <b>Mantenimiento preventivo:</b> Revisiones periódicas del cuadro de protecciones.</p>
                     </div>
                 </details>
 
@@ -179,8 +167,8 @@
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
                     <div class="ngc-content">
-                        <p>La seguridad eléctrica es fundamental para <b>proteger</b> tu hogar o negocio y evitar accidentes.</p>
-                        <p>Además, contribuye a un uso más eficiente de la energía.</p>
+                        <p>La seguridad eléctrica salvaguarda la vida humana y el patrimonio inmobiliario.</p>
+                        <p>Asimismo, optimiza el rendimiento energético general del inmueble.</p>
                     </div>
                 </details>
 
@@ -188,13 +176,13 @@
                     <summary>
                         <div class="summary-title">
                             <div class="icon-box"><i data-lucide="search-code"></i></div>
-                            <span>¿Dónde encontrar más información?</span>
+                            <span>¿Dónde consultar más info?</span>
                         </div>
                         <i data-lucide="chevron-down" class="chevron"></i>
                     </summary>
                     <div class="ngc-content">
-                       <p>• <b>Entidades reguladoras:</b> Consultá al Ente Regulador de los Servicios Públicos de Córdoba <b>(ERSeP)</b>.</p>
-                       <p>• <b>Electricistas habilitados:</b> Buscá profesionales capacitados para asesorarte.</p>
+                       <p>• <b>Entidades reguladoras:</b> Ente Regulador de los Servicios Públicos <b>(ERSeP)</b>.</p>
+                       <p>• <b>Profesionales:</b> Padrón oficial de electricistas habilitados en la provincia.</p>
                     </div>
                 </details>
             </div>
@@ -204,10 +192,9 @@
             <!-- ========================================== -->
             <div class="col-derecha">
                 
-                <!-- BANNER DE CIERRE -->
-                <div class="ngc-banner gpu-accel" style="border-left-color: var(--ngc-success);">
-                    <p>La Ley 10.281 es una herramienta para garantizar la seguridad eléctrica en Córdoba.</p>
-                    <p><b class="text-neon">¡Cumplirla es esencial para tu tranquilidad!</b></p>
+                <!-- BANNER DE CIERRE INSTITUCIONAL -->
+                <div class="ngc-banner gpu-accel" style="border-left-color: var(--success-green);">
+                    <p>La Ley 10.281 no es un mero trámite burocrático: es la garantía técnica de que tu hogar es un espacio seguro.</p>
                 </div>
 
                 <!-- FORMULARIO DE CONSULTA -->
@@ -215,7 +202,7 @@
                     <div class="form-header">
                         <div class="form-title">
                             <div class="icon-box"><i data-lucide="send"></i></div>
-                            <span>Envíame tu consulta</span>
+                            <span>Consulta sobre Normativa / Trámites</span>
                         </div>
                     </div>
                     
@@ -224,34 +211,34 @@
                         
                         <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
                             <div class="field-group">
-                                <label>Nombre</label>
-                                <input type="text" name="entry.1265296596" placeholder="Tu nombre" required>
+                                <label>Nombre y Apellido</label>
+                                <input type="text" name="entry.1265296596" placeholder="¿Cómo te llamas?" required>
                             </div>
                             <div class="field-group">
-                                <label>WhatsApp</label>
+                                <label>Número de WhatsApp</label>
                                 <input type="tel" name="entry.252385466" placeholder="Ej: 351..." required>
                             </div>
                             <div class="field-group">
-                                <label>Consulta</label>
-                                <textarea name="entry.615194603" placeholder="Describe aquí el trabajo, duda o problema..." rows="4" required></textarea>
+                                <label>Consulta / Trámite</label>
+                                <textarea name="entry.615194603" placeholder="Detallá si necesitás apto eléctrico, asesoramiento o revisión..." rows="4" required></textarea>
                             </div>
                             <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
-                            <!-- NUEVO MENSAJE DE PRIVACIDAD AQUÍ -->
                             <p class="form-privacy-note">
                                 <i class="fa-solid fa-lock"></i> Tus datos son privados y se utilizarán exclusivamente para responder a tu consulta. No compartimos información con terceros.
                             </p>
                         </form>
 
                         <div id="success-message">
-                            <div style="color: var(--ngc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.2rem;">✓ CONSULTA ENVIADA</div>
-                            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px; color: var(--ngc-text);">Sergio se pondrá en contacto pronto.</p>
-                            <button onclick="resetForm()" class="btn-submit">Enviar otra consulta</button>
+                            <div style="color: var(--success-green); font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; letter-spacing: 1px;">
+                                <i class="fa-solid fa-circle-check"></i> CONSULTA ENVIADA
+                            </div>
+                            <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 20px; color: var(--ngc-text-main);">Gracias por comunicarte. Me pondré en contacto con vos por WhatsApp a la brevedad.</p>
+                            <button type="button" onclick="resetForm()" class="ngc-btn-outline" style="width: 100%;">Enviar otra consulta</button>
                         </div>
                     </div>
                 </div>
                 
                 <!-- FOOTER Y CRÉDITOS -->
-        
                  <div class="footer-gnc-compact gpu-accel">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
                         <i class="far fa-envelope"></i>
@@ -281,5 +268,5 @@
     <script src="../js/global.js" defer></script>
     <script src="script.js" defer></script>
 </body>
-</html>
-
+                                                                </html>
+                                                                
