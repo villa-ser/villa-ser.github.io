@@ -39,7 +39,7 @@ const recomendacionesData = {
     }
 };
 
-let aparatoActualRecomendado = null; // Para guardar la sugerencia actual
+let aparatoActualRecomendado = null;
 
 // ==========================================
 // 1. CARGA PRINCIPAL
@@ -93,24 +93,20 @@ function abrirModalAparatos() {
 
 function cerrarModalAparatos() {
     document.getElementById('modal-aparatos').classList.add('oculto');
-    // Resetea los acordeones al cerrar para que esté limpio la próxima vez
     setTimeout(() => {
         document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
     }, 300);
 }
 
-// NUEVO: Lógica del Acordeón
 function toggleAccordion(targetId) {
     const targetContent = document.getElementById(targetId);
     const targetHeader = targetContent.previousElementSibling;
     const isOpening = !targetContent.classList.contains('active');
 
-    // Cerrar todos
     document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
 
-    // Abrir el seleccionado si estaba cerrado
     if (isOpening) {
         targetContent.classList.add('active');
         targetHeader.classList.add('active');
@@ -126,24 +122,19 @@ function selectOption(val, text) {
     hiddenInput.setAttribute('data-text', text);
     nameDisplay.innerText = text;
     
-    // Ocultar botón inicial y mostrar contenedor de nombre de aparato
     document.getElementById('btn-aparato-trigger').classList.add('oculto');
     document.getElementById('aparato-seleccionado-container').classList.remove('oculto');
     
-    // --- LÓGICA DE RECOMENDACIÓN TÉCNICA ---
     if (recomendacionesData[text]) {
-        // El aparato tiene termostato/ciclo
         aparatoActualRecomendado = text;
-        wattsDisplay.innerText = val + " W de potencia (Nominal)"; // Etiqueta (Nominal)
+        wattsDisplay.innerText = val + " W de potencia (Nominal)"; 
         
         document.getElementById('reco-texto').innerText = `Configuración recomendada de ${recomendacionesData[text].horas} horas y ${recomendacionesData[text].dias} días.`;
         document.getElementById('recomendacion-container').classList.remove('oculto');
         
-        // Ocultar los deslizadores por defecto para que lean la sugerencia
         document.getElementById('sliders-container').classList.add('oculto');
         document.getElementById('btn-agregar-lista').classList.add('oculto');
     } else {
-        // Aparato normal sin ciclos (luces, tv, microondas)
         aparatoActualRecomendado = null;
         wattsDisplay.innerText = val + " W de potencia";
         
@@ -155,7 +146,6 @@ function selectOption(val, text) {
     cerrarModalAparatos();
 }
 
-// Cierra el modal de aparatos si se toca la zona oscura
 document.addEventListener("click", function(event) {
     const modalAparatos = document.getElementById('modal-aparatos');
     const modalReco = document.getElementById('modal-recomendacion');
@@ -180,7 +170,6 @@ function cerrarModalRecomendacion() {
 function usarRecomendacion() {
     if(!aparatoActualRecomendado || !recomendacionesData[aparatoActualRecomendado]) return;
     
-    // Setear los valores recomendados en los sliders (aunque estén ocultos, sirven para agregarItem)
     const h = recomendacionesData[aparatoActualRecomendado].horas;
     const d = recomendacionesData[aparatoActualRecomendado].dias;
     
@@ -189,14 +178,12 @@ function usarRecomendacion() {
     document.getElementById('dias').value = d;
     document.getElementById('dias-val').innerText = d + " días";
     
-    // Cerrar modal y simular clic en agregar
     cerrarModalRecomendacion();
     agregarItem();
 }
 
 function ingresoManual() {
     cerrarModalRecomendacion();
-    // Ocultar sugerencia y revelar deslizadores normales
     document.getElementById('recomendacion-container').classList.add('oculto');
     document.getElementById('sliders-container').classList.remove('oculto');
     document.getElementById('btn-agregar-lista').classList.remove('oculto');
@@ -220,7 +207,6 @@ function resetAll() {
     if(sliderHoras && labelHoras) { sliderHoras.value = 4; labelHoras.innerText = "4 hs"; }
     if(sliderDias && labelDias) { sliderDias.value = 7; labelDias.innerText = "7 días"; }
     
-    // LÓGICA DE VISIBILIDAD (VOLVER AL INICIO)
     const trigger = document.getElementById('btn-aparato-trigger');
     const containerSelected = document.getElementById('aparato-seleccionado-container');
     const recoContainer = document.getElementById('recomendacion-container');
@@ -251,11 +237,9 @@ function agregarItem() {
     
     listado.push({ id: Date.now(), nombre, kwhMensual });
     
-    // Resetear el selector después de agregar
     inputObj.value = "0";
     inputObj.setAttribute('data-text', "");
     
-    // Preparar UI para nuevo aparato
     document.getElementById('btn-aparato-trigger').classList.remove('oculto');
     document.getElementById('aparato-seleccionado-container').classList.add('oculto');
     document.getElementById('recomendacion-container').classList.add('oculto');
@@ -283,7 +267,7 @@ function render() {
             <div class="item-header">
                 <div class="item-info">
                     <strong>${item.nombre}</strong>
-                    <span style="display:block; opacity:0.8;"><i class="fa-solid fa-bolt" style="font-size:0.6rem;"></i> ${item.kwhMensual.toFixed(1)} kWh agregados</span>
+                    <span style="display:block; opacity:0.8; color: var(--ngc-text-muted);"><i class="fa-solid fa-bolt" style="font-size:0.6rem;"></i> ${item.kwhMensual.toFixed(1)} kWh agregados</span>
                 </div>
                 <button class="btn-delete" onclick="eliminar(${item.id})">
                     <i class="fa-regular fa-trash-can"></i>
@@ -397,7 +381,7 @@ function recalcularTotal() {
         const subText = tipoTarifa === "con_subsidio" ? "Categoría N2/N3 (Subsidio)" : "Categoría N1 (Sin Subsidio)";
         
         tierText.innerHTML = `
-            <i class="fa-solid fa-chart-line"></i> <span style="color: var(--ngc-text);">${textoEscalon}</span> 
+            <i class="fa-solid fa-chart-line" style="color: var(--ngc-text-main);"></i> <span style="color: var(--ngc-text-main);">${textoEscalon}</span> 
             <span style="opacity:0.8; font-size:0.65rem; display:block; margin-top:3px; color: var(--ngc-text-muted);">${subText}</span>
         `;
         
@@ -411,5 +395,5 @@ function recalcularTotal() {
     } else if (tierUI) {
         tierUI.classList.add('oculto');
     }
-                    }
-            
+            }
+    
