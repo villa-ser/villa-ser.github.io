@@ -2,20 +2,29 @@
 /* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Tips y Consejos)          */
 /* ============================================================== */
 
+/* 1. EL ESCUDO DEL TÍTULO PRINCIPAL (Bloquea herencias de global.css) */
+.ngc-main-title {
+    color: var(--ngc-text-main);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: none !important; /* Adiós al neón difuso */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
 /* --- TÍTULOS Y ETIQUETAS ESPECÍFICAS --- */
-/* CORRECCIÓN: Etiqueta neutra, elegante y sutil. Ya no grita "¡hazme clic!" */
 .ngc-section-label {
     font-size: 0.8rem; 
     text-transform: uppercase; 
     color: var(--ngc-text-muted);
     letter-spacing: 1.5px; 
     font-weight: 700;
-    
     background: var(--ngc-glass);
     backdrop-filter: var(--ngc-blur);
     -webkit-backdrop-filter: var(--ngc-blur);
     border: 1px solid var(--ngc-privacy-border);
-    
     border-radius: 8px; 
     padding: 6px 16px;  
     width: fit-content; 
@@ -28,30 +37,27 @@
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
     width: 100%; transition: all 0.3s ease;
-    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-/* CORRECCIÓN: Elevación por sombra oscura al abrir, sin resplandor neón interno */
 details[open] { 
     border-color: var(--ngc-neon); 
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-/* El ícono se ilumina sutilmente al hacer hover, indicando interactividad */
+/* CORRECCIÓN: Hover de íconos nítido, sin sombra neón difusa */
 details:hover .icon-box i { 
     color: var(--ngc-neon); 
-    filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); 
     transition: all 0.3s ease; 
 }
 
 /* BANNER DE TIPS */
-/* CORRECCIÓN: Sombreado moderado, verde institucional */
 .ngc-banner-tips {
-    background: rgba(40, 167, 69, 0.08); 
+    background: rgba(40, 167, 69, 0.05); 
     border: 1px solid rgba(40, 167, 69, 0.2);
     border-left: 4px solid var(--success-green);
     padding: 15px 20px;
-    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 .ngc-banner-tips span:last-child { font-size: 0.85rem; line-height: 1.4; display: block; color: var(--ngc-text-muted); }
 
@@ -63,48 +69,81 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 
-/* CORRECCIÓN: Título sólido, sin texto brillante difuminado */
-.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); }
+/* CORRECCIÓN: Título protegido de brillos externos */
+.summary-title { display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main); text-shadow: none !important; }
 
 .ngc-content { padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6; color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg); }
 
-/* CORRECCIÓN: Las palabras en negrita son legibles y serias, no cian fosforescente */
 .ngc-content b { color: var(--ngc-text-main); font-weight: 700; }
 
 .icon-box { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; color: var(--ngc-text-muted); transition: all 0.3s ease;}
 .chevron { transition: transform 0.3s ease; opacity: 0.6; width: 16px; height: 16px; }
 
-/* Al abrir, el chevron y el ícono principal toman el color cian */
 details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc-neon); }
 details[open] .icon-box i { color: var(--ngc-neon); }
 
 /* --- CTA COMERCIAL INFERIOR --- */
-/* CORRECCIÓN: Fondo más limpio, sin competir tanto visualmente */
 .ngc-tips-cta {
     background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); border-radius: 16px; padding: 20px;
     text-align: center; margin-top: 5px; 
-    box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
 .ngc-tips-cta h3 { color: var(--ngc-text-main); font-size: 1rem; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
 .ngc-tips-cta p { font-size: 0.8rem; color: var(--ngc-text-muted); margin-bottom: 15px; }
 
+/* CORRECCIÓN: Elevación física oscura, no resplandor verde tóxico */
 .btn-cta-wa {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
     background: #25D366; color: white; padding: 12px; border-radius: 12px;
     text-decoration: none; font-weight: 800; font-size: 0.85rem; text-transform: uppercase;
-    letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--card-shadow);
 }
-.btn-cta-wa:hover { background: #1ebe57; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5); transform: translateY(-2px); color: white;}
+.btn-cta-wa:hover { 
+    background: #1ebe57; 
+    box-shadow: 0 8px 25px var(--card-shadow); 
+    transform: translateY(-2px); 
+    color: white;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ======================================================= */
 /*      ADAPTACIÓN RESPONSIVE ESPECÍFICA                   */
 /* ======================================================= */
 @media (min-width: 1024px) {
+    body { padding-top: 40px; align-items: flex-start; }
+    
+    .layout-desktop {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .col-izquierda {
+        position: sticky;
+        top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    .col-izquierda::-webkit-scrollbar { width: 0px; }
+
+    .col-derecha {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 80px);
+    }
+
     .ngc-banner-tips, details, .ngc-tips-cta { margin-bottom: 0; }
-    .ngc-section-label { margin-top: 5px; margin-bottom: 0; }
+    .ngc-section-label { margin-top: 5px; margin-bottom: 10px; }
+    .ngc-main-title { text-align: left; }
 }
 
 /* ======================================================= */
