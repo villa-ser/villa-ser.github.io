@@ -2,17 +2,34 @@
 /* ESTILOS ESPECÍFICOS DE LA SUBPÁGINA (Historia / Ley 10.281)    */
 /* ============================================================== */
 
-/* --- CONTENEDORES Y ACORDEONES --- */
-.ngc-banner, details, .ngc-form-container {
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
-    width: 100%; transition: all 0.3s ease;
-    box-shadow: 0 5px 15px var(--card-shadow), var(--ngc-glass-edge);
+/* 1. EL ESCUDO DEL TÍTULO PRINCIPAL (Bloquea herencias de global.css) */
+.ngc-main-title {
+    color: var(--ngc-text-main);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: none !important; /* Adiós al neón difuso */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
 }
 
+/* --- CONTENEDORES Y ACORDEONES --- */
+.ngc-banner, details, .ngc-form-container {
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); 
+    border-left: 4px solid var(--ngc-neon); 
+    border-radius: 16px;
+    width: 100%; 
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+}
+
+/* CORRECCIÓN: Iconos nítidos en hover, sin resplandor difuso */
 details:hover .icon-box i, .ngc-form-container:hover .form-title i {
     color: var(--ngc-neon); 
-    filter: drop-shadow(0 0 5px rgba(var(--ngc-neon-rgb), 0.5)); 
     transition: all 0.3s ease;
 }
 
@@ -33,8 +50,10 @@ summary, .form-header {
 }
 summary::-webkit-details-marker { display: none; }
 
+/* CORRECCIÓN: Textos nítidos, protegidos del global */
 .summary-title, .form-title {
     display: flex; align-items: center; gap: 12px; color: var(--ngc-text-main);
+    text-shadow: none !important;
 }
 
 .ngc-content, .form-body {
@@ -54,9 +73,10 @@ input, textarea {
     font-size: 0.9rem; font-weight: 500;
 }
 
+/* CORRECCIÓN: Focus de campos limpio, sin emitir luz hacia afuera */
 input:focus, textarea:focus { 
-    border-color: var(--ngc-neon);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 10px rgba(var(--ngc-neon-rgb), 0.2);
+    border-color: var(--ngc-neon); background: var(--input-bg);
+    box-shadow: 0 4px 15px var(--card-shadow);
 }
 
 .btn-submit {
@@ -66,8 +86,10 @@ input:focus, textarea:focus {
     transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
+/* CORRECCIÓN: Botón elegante en hover, elevación física, no luz neón */
 .btn-submit:hover {
-    background: rgba(var(--ngc-neon-rgb), 0.15); border-color: var(--ngc-neon); box-shadow: 0 6px 20px rgba(var(--ngc-neon-rgb), 0.3), var(--ngc-glass-edge);
+    background: rgba(var(--ngc-neon-rgb), 0.1); border-color: var(--ngc-neon); 
+    box-shadow: 0 6px 20px var(--card-shadow);
     color: var(--ngc-neon); transform: translateY(-2px);
 }
 
@@ -87,7 +109,7 @@ input:focus, textarea:focus {
 }
 .ngc-btn-outline:hover { 
     border-color: var(--ngc-neon); color: var(--ngc-neon);
-    background: rgba(var(--ngc-neon-rgb), 0.15); box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.3); 
+    background: rgba(var(--ngc-neon-rgb), 0.1); box-shadow: 0 4px 15px rgba(var(--ngc-neon-rgb), 0.2); 
 }
 
 /* Mensaje de privacidad debajo del botón */
@@ -159,6 +181,8 @@ details[open] .icon-box i { color: var(--ngc-neon); }
     }
     
     .ngc-banner, details, .ngc-form-container { margin-bottom: 0; }
+    
+    /* El título vuelve a la izquierda en PC */
     .ngc-main-title { text-align: left; }
 }
               
