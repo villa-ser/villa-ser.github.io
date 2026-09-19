@@ -13,7 +13,7 @@
     <meta name="keywords" content="curriculum electricista, Sergio Villagra electricista, electricista categoria 3, matriculado ERSeP cordoba">
     <meta name="author" content="Sergio Adrian Villagra">
 
-    <!-- Metadatos para compartir en Redes Sociales (WhatsApp, Facebook, etc.) -->
+    <!-- Metadatos para compartir en Redes Sociales -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Perfil y Currículum - Sergio Villagra | Electricista Categoría III">
     <meta property="og:description" content="Trayectoria y certificaciones de Sergio Villagra, electricista matriculado Categoría III. Experiencia técnica y seguridad garantizada en Córdoba.">
@@ -28,7 +28,7 @@
     <meta property="og:image:height" content="600">
     <meta property="og:image:alt" content="Fotografía en blanco y negro de un electricista con lentes, serio frente a una pared de tiza con iconos de seguridad eléctrica y el texto VILLASER ELECTRICISTA.">
 
-    <!-- Twitter Cards (Refuerzo para WhatsApp y otras plataformas) -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Perfil y Currículum - Sergio Villagra | Electricista Categoría III">
     <meta name="twitter:description" content="Trayectoria y certificaciones de Sergio Villagra, electricista matriculado Categoría III. Experiencia técnica y seguridad garantizada en Córdoba.">
@@ -36,60 +36,49 @@
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
-    
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- 1. Estilos generales (compartidos) -->
+    <!-- Estilos generales y específicos -->
     <link rel="stylesheet" href="../css/global.css">
-    
-    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
-<script>
-    (function() {
-        const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
-        const temaGuardado = localStorage.getItem('temaVillaser');
-        const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+        (function() {
+            const TIEMPO_CADUCIDAD = 30 * 60 * 1000; 
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
 
-        let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
+            let temaFinal = 'dark'; 
 
-        // Si el usuario eligió un tema manualmente
-        if (temaGuardado && tiempoGuardado) {
-            const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-            
-            if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 30 minutos, respetamos su decisión
-                temaFinal = temaGuardado; 
-            } else {
-                // Si caducó, miramos qué pide el sistema
-                temaFinal = prefiereClaro ? 'light' : 'dark';
+            if (temaGuardado && tiempoGuardado) {
+                const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
+                if (tiempoPasado <= TIEMPO_CADUCIDAD) {
+                    temaFinal = temaGuardado; 
+                } else {
+                    temaFinal = prefiereClaro ? 'light' : 'dark';
+                }
+            } else if (prefiereClaro) {
+                temaFinal = 'light';
             }
-        } else if (prefiereClaro) {
-            // Si nunca eligió nada y su sistema es claro
-            temaFinal = 'light';
-        }
 
-        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
-        if (temaFinal === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-        } else {
-            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
-            document.documentElement.removeAttribute('data-theme');
-        }
-    })();
-</script>
-    
+            if (temaFinal === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
 </head>
 
 <body>
     <!-- CONTROLES FLOTANTES SUPERIORES -->
     <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-    <i data-lucide="home"></i>
-</a>
+        <i data-lucide="home"></i>
+    </a>
 
     <div class="menu-flotante-container">
         <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
@@ -106,12 +95,12 @@
         </div>
     </div>
 
-    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
+    <!-- Llave 3D Minimalista -->
     <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
         <div class="switch-rocker"></div>
     </button>
 
-    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
+    <!-- Logo Flotante Superior -->
     <div class="hero-logo-icon">
         <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
         <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
@@ -133,14 +122,14 @@
                 <!-- TARJETA CV -->
                 <div class="ngc-full-container gpu-accel">
                     
-                    <!-- Foto con luz perimetral -->
+                    <!-- Foto con marco premium estático -->
                     <div class="ngc-photo-landscape">
                         <img src="../img/perfil-color.avif" alt="Sergio Adrian Villagra">
                     </div>
                     
                     <!-- Datos Personales -->
                     <div class="ngc-content-area" style="text-align: center;">
-                        <span class="ngc-user-name active-cyan" style="font-size: 1.4rem;">Sergio A. Villagra</span>
+                        <span class="ngc-user-name" style="font-size: 1.4rem;">Sergio A. Villagra</span>
                         <div class="cv-personal-info">
                             <span><i class="fa-regular fa-id-card"></i> DNI 29.029.389</span>
                             <span><i class="fa-solid fa-cake-candles"></i> 45 Años</span>
@@ -201,7 +190,7 @@
                 
                 <div class="ngc-banner gpu-accel">
                     <span style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-timeline" style="color: var(--ngc-neon);"></i> Experiencia
+                        <i class="fa-solid fa-timeline"></i> Experiencia
                     </span>
                     <p>Desde mis inicios, busco la excelencia en cada conexión, priorizando la seguridad y el rigor técnico bajo la normativa vigente en cada obra.</p>
                 </div>
@@ -247,7 +236,6 @@
                 </details>
 
                 <!-- FOOTER Y CRÉDITOS -->
-        
                  <div class="footer-gnc-compact gpu-accel">
                     <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
                         <i class="far fa-envelope"></i>
@@ -274,6 +262,6 @@
     </main>
 
     <script src="../js/global.js" defer></script>
-<script src="script.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
-                          </html>
+</html>
