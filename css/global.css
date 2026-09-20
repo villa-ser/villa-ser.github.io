@@ -9,11 +9,9 @@
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
 
-    /* NUEVAS VARIABLES: Fondos sólidos para botones en modo oscuro */
     --ngc-btn-bg: #181818;
     --ngc-btn-hover: #242424;
 
-    /* Variables de Texto Originales */
     --ngc-text: #ffffff;
     --ngc-text-main: #ffffff; 
     --ngc-text-desc: rgba(255, 255, 255, 0.9);
@@ -33,7 +31,6 @@
     --warning-amber: #ffcc00;
     --error-red: #ff4b2b;
 
-    /* Inputs y Fondos internos */
     --input-bg: rgba(0, 0, 0, 0.6);
     --obs-bg: rgba(0,0,0,0.3);
     --detail-bg: rgba(0,0,0,0.5);
@@ -56,11 +53,9 @@
     --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
     --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
     
-    /* NUEVAS VARIABLES: Fondos sólidos para botones en modo claro */
     --ngc-btn-bg: #FFFFFF;
     --ngc-btn-hover: #F0F0F0;
 
-    /* Textos invertidos para modo día */
     --ngc-text: #111111;
     --ngc-text-main: #1a1a1a; 
     --ngc-text-desc: #333333;
@@ -80,7 +75,6 @@
     --warning-amber: #b58700;
     --error-red: #d93025;
     
-    /* Adaptación de cajas internas en modo claro */
     --input-bg: rgba(255, 255, 255, 0.4);
     --obs-bg: rgba(255, 255, 255, 0.5);
     --detail-bg: rgba(255, 255, 255, 0.5);
@@ -97,7 +91,6 @@
     
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* TRANSICIÓN DE FONDO FLUIDA */
 html {
     background-color: var(--bg-body);
     overscroll-behavior-y: none;
@@ -114,8 +107,6 @@ html::before, html::after {
     background-repeat: no-repeat;
     z-index: -1;
     transition: opacity 0.5s ease-in-out;
-    
-    /* MEJORA APLICADA: Aceleración GPU para eliminar temblores */
     transform: translateZ(0); 
     will-change: opacity, transform;
 }
@@ -136,13 +127,10 @@ html::after {
 body {
     margin: 0; padding: 80px 4px 4px 4px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--ngc-text); /* TEXTO BLANCO POR DEFECTO APLICADO */
+    color: var(--ngc-text); 
     width: 100%; 
-    
-    /* MEJORA APLICADA: Sincronizado con svh y asegurando posicionamiento */
     min-height: 100svh; 
     position: relative; 
-    
     overflow-x: hidden;
     display: flex; justify-content: center;
 }
@@ -163,7 +151,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* 1. Logo Flotante (Derecha Extrema con transición por CSS) */
+/* 1. Logo Flotante */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
@@ -183,17 +171,14 @@ body {
 .hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-neon-rect {
     width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
-    /* Reemplazamos los porcentajes por valores exactos: 60px de línea y 180px de espacio (Total = 240px) */
     stroke-dasharray: 60 180; 
     animation: run-border 3s linear infinite;
 }
 
 @keyframes run-border { 
-    /* Movemos el trazo exactamente 240px para que encaje a la perfección con el inicio del bucle */
     to { stroke-dashoffset: -240; } 
 }
 
-/* CLASE OCULTO CORREGIDA (Importante para que "Más info" funcione) */
 .oculto { display: none !important; }
 
 /* --- CONTROLES FLOTANTES SUPERIORES (Volver y Menú Explorar) --- */
@@ -235,19 +220,11 @@ body {
 .dropdown-flotante-content a i { color: var(--ngc-neon); }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
-/* --- ADAPTACIÓN RESPONSIVE DE CONTROLES FLOTANTES --- */
-@media (min-width: 768px) {
-    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
-    .menu-flotante-container { top: 25px; left: 105px; }
-    .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
-    .dropdown-flotante-content { top: 80px; width: 250px; }
-}
-
 /* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
 #btn-tema-servicios.switch-plate {
     position: fixed;
     top: 15px; 
-    right: 85px; /* Separación a la izquierda del logo */
+    right: 85px; 
     z-index: 9999;
     width: 40px;
     height: 60px;
@@ -278,9 +255,6 @@ body {
     position: relative;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
     transform-origin: center;
-}
-
-.switch-rocker {
     transform: perspective(200px) rotateX(-12deg);
     background: #2a2a2a;
     border: 1px solid #1a1a1a;
@@ -297,9 +271,8 @@ body {
 .switch-rocker::after {
     content: ''; position: absolute; width: 4px; height: 4px;
     border-radius: 50%; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
+    top: 4px; background: rgba(255, 255, 255, 0.15); box-shadow: none;
 }
-
-.switch-rocker::after { top: 4px; background: rgba(255, 255, 255, 0.15); box-shadow: none; }
 [data-theme="light"] .switch-rocker::after {
     top: auto; bottom: 4px; background: var(--ngc-neon); box-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.8);
 }
@@ -309,6 +282,7 @@ body {
     color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0;
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
 }
+
 /* ========================================= */
 /* FOOTER Y CRÉDITOS (GLOBAL)                */
 /* ========================================= */
@@ -322,7 +296,7 @@ body {
     backdrop-filter: var(--ngc-blur); 
     border: var(--ngc-border-glass);
     border-radius: 16px; 
-    margin-top: auto; /* Empuja el footer siempre al final */
+    margin-top: auto; 
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
@@ -333,12 +307,16 @@ body {
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--ngc-neon-rgb), 0.6));}
 .whatsapp-pulse { color: #28a745; animation: beat 0.7s infinite alternate; }
 
+.social-text {
+    display: none; /* Por defecto oculto en celular */
+}
+
 .ngc-site-credits {
     text-align: center; 
     font-size: 0.65rem; 
     color: var(--ngc-text-faded);
     margin-top: 15px; 
-    margin-bottom: 25px; /* Este es el margen exacto contra el borde inferior */
+    margin-bottom: 25px; 
     text-transform: uppercase; 
     letter-spacing: 1.5px;
 }
@@ -346,32 +324,92 @@ body {
 .ngc-site-credits span { color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700; }
 button.btn-share { background-color: transparent; border: none; outline: none; color: var(--ngc-text-desc); cursor: pointer; padding: 0; }
 
-/* --- ANIMACIÓN FOOTER --- */
 @keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
     
 /* --- EFECTO DE DESVANECIMIENTO SUPERIOR (SCROLL) --- */
 body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 110px; /* Cubre el alto de los botones (60px) + margen + zona de fade */
-    z-index: 9990; /* Justo por detrás de los botones flotantes (9999) */
-    pointer-events: none; /* Fundamental para que los clics pasen hacia el contenido de abajo */
-    
-    /* Efecto de cristal */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    
-    /* Máscara en gradiente: Sólido arriba, transparente abajo */
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 110px; 
+    z-index: 9990; pointer-events: none; 
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
     mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
 }
 
-/* Aceleración por hardware para desenfoques (Mejora el scroll) */
 .gpu-accel {
-    backface-visibility: hidden;
-    transform: translateZ(0);
+    backface-visibility: hidden; transform: translateZ(0);
+}
+
+/* ========================================================================= */
+/* ADAPTACIÓN RESPONSIVE DE CONTROLES FLOTANTES Y FOOTER (TABLET / ESCRITORIO) */
+/* ========================================================================= */
+@media (min-width: 768px) {
+    #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
+    .menu-flotante-container { top: 25px; left: 105px; }
+    .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
+    .dropdown-flotante-content { top: 80px; width: 250px; }
+}
+
+@media (min-width: 1024px) {
+    /* 1. NAVEGACIÓN SUPERIOR EN FILA (PC) */
+    #btn-menu-flotante { 
+        display: none !important; /* Oculta el botón Explorar en PC */
     }
     
+    .menu-flotante-container {
+        left: 110px;
+        right: 160px; /* Deja espacio exacto a la derecha para Switch y Logo */
+        width: auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .dropdown-flotante-content {
+        position: relative;
+        top: 0;
+        display: flex !important; /* Anula forzosamente la clase .oculto de Javascript */
+        flex-direction: row; /* Coloca los accesos en fila horizontal */
+        width: 100%;
+        height: 70px;
+        padding: 0 15px;
+        justify-content: space-evenly; /* Ocupa el ancho distribuyendo el espacio de forma limpia */
+        align-items: center;
+        background: var(--ngc-glass);
+        backdrop-filter: var(--ngc-blur);
+        border: var(--ngc-border-glass);
+        box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+        border-radius: 12px;
+    }
+
+    .dropdown-flotante-content a {
+        padding: 10px 15px;
+        border-radius: 8px;
+        white-space: nowrap; /* Evita que los nombres se partan en dos renglones */
+    }
+    
+    /* 2. FOOTER Y REDES SOCIALES DESPLEGADAS (PC) */
+    .footer-gnc-compact {
+        padding: 15px 20px;
+        gap: 15px;
+        flex-wrap: wrap; /* Protege de desbordes si la pantalla se comprime un poco */
+    }
+    
+    .btn-social {
+        width: auto;
+        padding: 0 20px;
+        border-radius: 25px; /* Estilo de botón en forma de píldora */
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--ngc-privacy-border);
+        gap: 10px; /* Separación entre el icono y el texto */
+    }
+    
+    [data-theme="light"] .btn-social {
+        background: rgba(255, 255, 255, 0.4);
+    }
+    
+    .social-text {
+        display: inline-block !important; /* En PC encendemos el texto */
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+}
