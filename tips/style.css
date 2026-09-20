@@ -33,13 +33,13 @@
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
-.ngc-banner, details {
+.ngc-banner-tips, details {
     background: var(--ngc-glass); 
     backdrop-filter: var(--ngc-blur); 
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); 
     /* ELIMINADO: border-left: 4px solid var(--ngc-neon); */
-    border-radius: 12px; /* Reducido de 16px a 12px para igualar a Servicios */
+    border-radius: 12px; /* Reducido a 12px */
     width: 100%; 
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
@@ -90,7 +90,9 @@ details[open] .icon-box i { color: var(--ngc-neon); }
 .ngc-tips-cta {
     background: var(--quote-bg);
     backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-radius: 16px; padding: 20px;
+    border: var(--ngc-border-glass); 
+    border-radius: 12px; /* ¡AQUÍ ESTABA EL 16px ESCONDIDO! Corregido a 12px */
+    padding: 20px;
     text-align: center; margin-top: 5px; 
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
