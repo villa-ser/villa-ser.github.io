@@ -1,4 +1,6 @@
-/* --- CONFIGURACIÓN GLOBAL Y VARIABLES --- */
+/* ======================================================= */
+/* --- CONFIGURACIÓN GLOBAL Y VARIABLES (ESTILO NGC) --- */
+/* ======================================================= */
 :root {
     --ngc-neon: #00d4ff; 
     --ngc-neon-rgb: 0, 212, 255;
@@ -88,7 +90,10 @@
     --ngc-bg-input: rgba(255, 255, 255, 0.4); 
     --content-bg: rgba(255, 255, 255, 0.5);
 }
-    
+
+/* ======================================================= */
+/* --- RESET, BODY Y FONDOS --- */
+/* ======================================================= */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -125,7 +130,8 @@ html::after {
 [data-theme="light"]::after { opacity: 1; }
 
 body {
-    margin: 0; padding: 80px 4px 4px 4px;
+    margin: 0; 
+    padding: 80px 4px 4px 4px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--ngc-text); 
     width: 100%; 
@@ -135,6 +141,18 @@ body {
     display: flex; justify-content: center;
 }
 
+/* --- EFECTO DE DESVANECIMIENTO SUPERIOR (SCROLL MÁSCARA) --- */
+body::before {
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 110px; 
+    z-index: 9990; pointer-events: none; 
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
+}
+
+/* ======================================================= */
+/* --- ESTRUCTURA PRINCIPAL (CONTENEDORES) --- */
+/* ======================================================= */
 .ngc-wrapper {
     display: flex; flex-direction: column; width: 100%; max-width: 500px; padding: 15px;
 }
@@ -151,37 +169,10 @@ body {
     margin-bottom: 15px;
 }
 
-/* 1. Logo Flotante */
-.hero-logo-icon {
-    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
-    border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
-    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
-}
-.logo-oscuro, .logo-claro {
-    position: absolute; 
-    top: 5px; left: 5px; 
-    width: calc(100% - 10px); height: calc(100% - 10px);
-    object-fit: contain; border-radius: 4px;
-    transition: opacity 0.4s ease-in-out;
-}
-.logo-claro { opacity: 0; }
-[data-theme="light"] .logo-oscuro { opacity: 0; }
-[data-theme="light"] .logo-claro { opacity: 1; }
-
-.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero-neon-rect {
-    width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
-    stroke-dasharray: 60 180; 
-    animation: run-border 3s linear infinite;
-}
-
-@keyframes run-border { 
-    to { stroke-dashoffset: -240; } 
-}
-
-.oculto { display: none !important; }
-
-/* --- CONTROLES FLOTANTES SUPERIORES (Volver y Menú Explorar) --- */
+/* ======================================================= */
+/* --- COMPONENTES FLOTANTES SUPERIORES (MÓVIL) --- */
+/* ======================================================= */
+/* 1. Botones Flotantes (General) */
 .btn-flotante-accion {
     position: fixed; top: 15px; z-index: 9999; height: 60px; border-radius: 8px;
     background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
@@ -197,14 +188,15 @@ body {
 
 #btn-ir-menu { width: 60px; left: 15px; }
 
+/* 2. Menú de Exploración */
+.menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
+.menu-flotante-container .btn-flotante-accion { position: static; }
+
 .btn-explorar {
     width: auto !important; padding: 0 20px; gap: 8px;
     font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
 }
 .btn-explorar span { display: inline-block; }
-
-.menu-flotante-container { position: fixed; top: 15px; left: 85px; z-index: 9999; }
-.menu-flotante-container .btn-flotante-accion { position: static; }
 
 .dropdown-flotante-content {
     position: absolute; top: 70px; left: 0; background: var(--ngc-glass);
@@ -220,62 +212,59 @@ body {
 .dropdown-flotante-content a i { color: var(--ngc-neon); }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
-/* --- LLAVE DE LUZ MINIMALISTA (TEMA) - LADO IZQUIERDO -- */
+/* 3. Interruptor de Tema (Switch Minimalista) */
 #btn-tema-servicios.switch-plate {
-    position: fixed;
-    top: 15px; 
-    right: 85px; 
-    z-index: 9999;
-    width: 40px;
-    height: 60px;
-    background: var(--ngc-glass);
-    backdrop-filter: var(--ngc-blur);
-    -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass);
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
-    transition: all 0.3s ease;
-    outline: none;
-    padding: 0;
+    position: fixed; top: 15px; right: 85px; z-index: 9999;
+    width: 40px; height: 60px;
+    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); border-radius: 8px;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+    transition: all 0.3s ease; outline: none; padding: 0;
 }
-
 #btn-tema-servicios.switch-plate:hover {
     border-color: rgba(var(--ngc-neon-rgb), 0.4);
     box-shadow: 0 4px 12px rgba(var(--ngc-neon-rgb), 0.15);
 }
-
 .switch-rocker {
-    width: 14px;
-    height: 28px;
-    border-radius: 4px;
-    position: relative;
+    width: 14px; height: 28px; border-radius: 4px; position: relative;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
-    transform-origin: center;
-    transform: perspective(200px) rotateX(-12deg);
-    background: #2a2a2a;
-    border: 1px solid #1a1a1a;
+    transform-origin: center; transform: perspective(200px) rotateX(-12deg);
+    background: #2a2a2a; border: 1px solid #1a1a1a;
     box-shadow: 0 3px 2px -1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);
 }
-
 [data-theme="light"] .switch-rocker {
-    transform: perspective(200px) rotateX(12deg);
-    background: #f4f4f4;
-    border: 1px solid #dcdcdc;
+    transform: perspective(200px) rotateX(12deg); background: #f4f4f4; border: 1px solid #dcdcdc;
     box-shadow: 0 -3px 2px -1px rgba(0,0,0,0.1), inset 0 -1px 1px rgba(255,255,255,0.5);
 }
-
 .switch-rocker::after {
-    content: ''; position: absolute; width: 4px; height: 4px;
-    border-radius: 50%; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
+    content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;
     top: 4px; background: rgba(255, 255, 255, 0.15); box-shadow: none;
 }
 [data-theme="light"] .switch-rocker::after {
     top: auto; bottom: 4px; background: var(--ngc-neon); box-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.8);
 }
+
+/* 4. Logo Flotante Animado */
+.hero-logo-icon {
+    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
+    border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+}
+.logo-oscuro, .logo-claro {
+    position: absolute; top: 5px; left: 5px; width: calc(100% - 10px); height: calc(100% - 10px);
+    object-fit: contain; border-radius: 4px; transition: opacity 0.4s ease-in-out;
+}
+.logo-claro { opacity: 0; }
+[data-theme="light"] .logo-oscuro { opacity: 0; }
+[data-theme="light"] .logo-claro { opacity: 1; }
+
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-neon-rect {
+    width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
+    stroke-dasharray: 60 180; animation: run-border 3s linear infinite;
+}
+@keyframes run-border { to { stroke-dashoffset: -240; } }
 
 .ngc-main-title {
     font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
@@ -283,20 +272,13 @@ body {
     text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.3); animation: fadeIn 0.6s ease;
 }
 
-/* ========================================= */
-/* FOOTER Y CRÉDITOS (GLOBAL)                */
-/* ========================================= */
+/* ======================================================= */
+/* --- FOOTER, CRÉDITOS Y REDES SOCIALES --- */
+/* ======================================================= */
 .footer-gnc-compact {
-    width: 100%; 
-    display: flex; 
-    justify-content: space-around; 
-    align-items: center; 
-    padding: 12px 0; 
-    background: var(--ngc-glass); 
-    backdrop-filter: var(--ngc-blur); 
-    border: var(--ngc-border-glass);
-    border-radius: 16px; 
-    margin-top: auto; 
+    width: 100%; display: flex; justify-content: space-around; align-items: center; 
+    padding: 12px 0; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); 
+    border: var(--ngc-border-glass); border-radius: 16px; margin-top: auto; 
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
@@ -306,110 +288,113 @@ body {
 }
 .btn-social:hover { color: var(--ngc-neon); transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--ngc-neon-rgb), 0.6));}
 .whatsapp-pulse { color: #28a745; animation: beat 0.7s infinite alternate; }
+@keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
 
-.social-text {
-    display: none; /* Por defecto oculto en celular */
-}
+/* Texto de las redes oculto en celulares */
+.social-text { display: none; }
 
 .ngc-site-credits {
-    text-align: center; 
-    font-size: 0.65rem; 
-    color: var(--ngc-text-faded);
-    margin-top: 15px; 
-    margin-bottom: 25px; 
-    text-transform: uppercase; 
-    letter-spacing: 1.5px;
+    text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded);
+    margin-top: 15px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1.5px;
 }
-
 .ngc-site-credits span { color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700; }
 button.btn-share { background-color: transparent; border: none; outline: none; color: var(--ngc-text-desc); cursor: pointer; padding: 0; }
 
-@keyframes beat { to { transform: scale(1.15); filter: drop-shadow(0 0 10px #28a745); } }
-    
-/* --- EFECTO DE DESVANECIMIENTO SUPERIOR (SCROLL) --- */
-body::before {
-    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 110px; 
-    z-index: 9990; pointer-events: none; 
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%);
-}
+/* ======================================================= */
+/* --- UTILIDADES --- */
+/* ======================================================= */
+.oculto { display: none !important; }
+.gpu-accel { backface-visibility: hidden; transform: translateZ(0); }
 
-.gpu-accel {
-    backface-visibility: hidden; transform: translateZ(0);
-}
+/* ======================================================= */
+/* --- RESPONSIVE DESIGN --- */
+/* ======================================================= */
 
-/* ========================================================================= */
-/* ADAPTACIÓN RESPONSIVE DE CONTROLES FLOTANTES Y FOOTER (TABLET / ESCRITORIO) */
-/* ========================================================================= */
+/* --- AJUSTES TABLET --- */
 @media (min-width: 768px) {
     #btn-ir-menu { top: 25px; left: 25px; width: 70px; height: 70px; font-size: 1.8rem; }
     .menu-flotante-container { top: 25px; left: 105px; }
     .menu-flotante-container .btn-explorar { height: 70px; font-size: 1.1rem; padding: 0 25px; }
     .dropdown-flotante-content { top: 80px; width: 250px; }
+    #btn-tema-servicios.switch-plate { top: 25px; right: 105px; height: 70px; }
+    .hero-logo-icon { top: 25px; right: 25px; width: 70px; height: 70px; }
 }
 
+/* --- AJUSTES ESCRITORIO (PC - ESTILO ALINEADO Y EXPANDIDO) --- */
 @media (min-width: 1024px) {
-    /* 1. NAVEGACIÓN SUPERIOR EN FILA (PC) */
-    #btn-menu-flotante { 
-        display: none !important; /* Oculta el botón Explorar en PC */
+    /* 1. Ajuste del cuerpo y espaciado para evitar que el menú tape el título */
+    body { 
+        padding-top: 100px !important; 
+        align-items: flex-start; 
     }
     
-    .menu-flotante-container {
-        left: 110px;
-        right: 160px; /* Deja espacio exacto a la derecha para Switch y Logo */
-        width: auto;
-        display: flex;
-        align-items: center;
+    .ngc-wrapper { 
+        max-width: 1200px; /* Ancho optimizado para PC */
+    }
+    
+    .layout-desktop { 
+        display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; 
+    }
+    
+    /* La columna izquierda queda fija debajo del nuevo menú superior */
+    .col-izquierda {
+        position: sticky; top: 100px; display: flex; flex-direction: column; gap: 0;
+        max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 5px;
+    }
+    .col-izquierda::-webkit-scrollbar { width: 0px; }
+    
+    .col-derecha { display: flex; flex-direction: column; }
+    
+    .ngc-main-title { text-align: left; margin-bottom: 20px; }
+
+    /* 2. Alineación de Menú Superior (Todos alineados a Top: 20px, Alto: 60px) */
+    #btn-menu-flotante { display: none !important; } /* Oculta botón Explorar */
+
+    #btn-ir-menu { 
+        top: 20px !important; left: 20px !important; width: 60px !important; height: 60px !important; font-size: 1.5rem !important; 
     }
 
+    .menu-flotante-container {
+        top: 20px !important; left: 95px !important; right: 155px !important; width: auto; display: flex; align-items: center;
+    }
+
+    /* Transformación del Dropdown en Barra Horizontal Fija */
     .dropdown-flotante-content {
-        position: relative;
-        top: 0;
-        display: flex !important; /* Anula forzosamente la clase .oculto de Javascript */
-        flex-direction: row; /* Coloca los accesos en fila horizontal */
-        width: 100%;
-        height: 70px;
-        padding: 0 15px;
-        justify-content: space-evenly; /* Ocupa el ancho distribuyendo el espacio de forma limpia */
-        align-items: center;
-        background: var(--ngc-glass);
-        backdrop-filter: var(--ngc-blur);
-        border: var(--ngc-border-glass);
-        box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
-        border-radius: 12px;
+        position: relative; top: 0 !important; display: flex !important; flex-direction: row;
+        width: 100%; height: 60px !important; padding: 0 10px; justify-content: space-evenly; align-items: center;
+        background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
+        box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); border-radius: 12px;
     }
 
     .dropdown-flotante-content a {
-        padding: 10px 15px;
-        border-radius: 8px;
-        white-space: nowrap; /* Evita que los nombres se partan en dos renglones */
+        padding: 8px 12px; border-radius: 8px; white-space: nowrap; font-size: 0.75rem; 
     }
-    
-    /* 2. FOOTER Y REDES SOCIALES DESPLEGADAS (PC) */
+
+    #btn-tema-servicios.switch-plate {
+        top: 20px !important; right: 95px !important; height: 60px !important;
+    }
+
+    .hero-logo-icon {
+        top: 20px !important; right: 20px !important; width: 60px !important; height: 60px !important;
+    }
+
+    /* 3. Footer a todo ancho y Botones Píldora */
     .footer-gnc-compact {
-        padding: 15px 20px;
-        gap: 15px;
-        flex-wrap: wrap; /* Protege de desbordes si la pantalla se comprime un poco */
+        width: 100%; padding: 15px 20px; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
     }
     
     .btn-social {
-        width: auto;
-        padding: 0 20px;
-        border-radius: 25px; /* Estilo de botón en forma de píldora */
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid var(--ngc-privacy-border);
-        gap: 10px; /* Separación entre el icono y el texto */
+        width: auto; padding: 8px 20px; border-radius: 25px; 
+        background: rgba(0, 0, 0, 0.2); border: 1px solid var(--ngc-privacy-border); gap: 10px; 
     }
     
     [data-theme="light"] .btn-social {
         background: rgba(255, 255, 255, 0.4);
     }
     
+    /* Mostrar texto de redes sociales al lado de los iconos */
     .social-text {
-        display: inline-block !important; /* En PC encendemos el texto */
-        font-size: 0.85rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+        display: inline-block !important; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;
     }
-}
+    }
+                                            
