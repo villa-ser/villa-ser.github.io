@@ -15,13 +15,13 @@
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
-.ngc-banner, details {
+/* CORRECCIÓN: ngc-form-container incluido para no perder el cristal */
+.ngc-banner, details, .ngc-form-container {
     background: var(--ngc-glass); 
     backdrop-filter: var(--ngc-blur); 
     -webkit-backdrop-filter: var(--ngc-blur);
     border: var(--ngc-border-glass); 
-    /* ELIMINADO: border-left: 4px solid var(--ngc-neon); */
-    border-radius: 12px; /* Reducido de 16px a 12px para igualar a Servicios */
+    border-radius: 12px; /* Reducido a 12px para igualar a Servicios */
     width: 100%; 
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
@@ -32,7 +32,8 @@ details[open] {
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-details:hover .icon-box i { 
+/* Íconos interactivos nítidos */
+details:hover .icon-box i, .ngc-form-container:hover .form-title i { 
     color: var(--ngc-neon); 
     transition: all 0.3s ease; 
 }
