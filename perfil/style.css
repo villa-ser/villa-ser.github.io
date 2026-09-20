@@ -30,9 +30,12 @@
 /* --- TARJETA PRINCIPAL (CV) --- */
 .ngc-full-container {
     width: 100%; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-radius: 16px; padding: 25px 20px;
-    border-left: 4px solid var(--ngc-neon); display: flex; flex-direction: column; gap: 20px;
-    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge); 
+    border: var(--ngc-border-glass); 
+    border-radius: 12px; /* Reducido a 12px */
+    /* Eliminado el border-left grueso para unificar */
+    padding: 25px 20px;
+    display: flex; flex-direction: column; gap: 20px;
+    box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); /* Sombra estándar */
     margin-bottom: 15px;
 }
 
