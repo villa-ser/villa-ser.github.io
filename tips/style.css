@@ -33,19 +33,23 @@
 }
 
 /* --- CONTENEDORES CON ESTILO NGC --- */
-.ngc-banner-tips, details {
-    background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); -webkit-backdrop-filter: var(--ngc-blur);
-    border: var(--ngc-border-glass); border-left: 4px solid var(--ngc-neon); border-radius: 16px;
-    width: 100%; transition: all 0.3s ease;
+.ngc-banner, details {
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
+    -webkit-backdrop-filter: var(--ngc-blur);
+    border: var(--ngc-border-glass); 
+    /* ELIMINADO: border-left: 4px solid var(--ngc-neon); */
+    border-radius: 12px; /* Reducido de 16px a 12px para igualar a Servicios */
+    width: 100%; 
+    transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
 }
 
 details[open] { 
-    border-color: var(--ngc-neon); 
+    border-color: var(--ngc-neon); /* Solo dibuja una línea fina y elegante al abrir */
     box-shadow: 0 8px 25px var(--card-shadow), var(--ngc-glass-edge);
 }
 
-/* CORRECCIÓN: Hover de íconos nítido, sin sombra neón difusa */
 details:hover .icon-box i { 
     color: var(--ngc-neon); 
     transition: all 0.3s ease; 
