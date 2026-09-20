@@ -114,14 +114,27 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* --- BOTONES DE ACCIÓN EN SERVICIOS (COTI, WHATSAPP, INFO) --- */
-.action-buttons-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; width: 100%; }
-
-@media (min-width: 480px) {
-    .action-buttons-group { flex-direction: row; flex-wrap: wrap; }
-    .btn-micro-wa, .btn-micro-coti, .btn-micro-info { flex: 1; min-width: 130px; }
+.action-buttons-group { 
+    display: flex; 
+    flex-direction: row; /* FORZA a que estén uno al lado del otro en celular */
+    gap: 6px; /* Gap levemente reducido para aprovechar el espacio */
+    margin-top: 15px; 
+    width: 100%; 
 }
 
-.btn-micro-wa, .btn-micro-coti, .btn-micro-info { justify-content: center; width: 100%; margin-top: 0 !important; }
+@media (min-width: 480px) {
+    .action-buttons-group { flex-wrap: wrap; }
+    .btn-micro-wa, .btn-micro-coti, .btn-micro-info { min-width: 130px; }
+}
+
+.btn-micro-wa, .btn-micro-coti, .btn-micro-info { 
+    flex: 1; /* Obliga a que se dividan el ancho de la pantalla en partes iguales */
+    justify-content: center; 
+    width: auto; /* Reemplaza el width: 100% que causaba que se apilaran */
+    margin-top: 0 !important; 
+    padding: 8px 4px !important; /* Ajuste para que los textos largos entren sin desbordar */
+    font-size: 0.75rem !important; /* Letra levemente ajustada para celulares chicos */
+}
 
 .btn-micro-wa {
     display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px;
