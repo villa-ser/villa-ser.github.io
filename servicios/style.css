@@ -198,17 +198,3 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
     .switch-plate.switch-servicios { left: auto !important; right: 105px; }
 }
 
-@media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: flex-start; }
-    .ngc-wrapper { max-width: 1050px; }
-    .layout-desktop { display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; }
-    
-    .col-izquierda {
-        position: sticky; top: 40px; display: flex; flex-direction: column; gap: 0;
-        max-height: calc(100vh - 80px); overflow-y: auto; padding-right: 5px;
-    }
-    .col-izquierda::-webkit-scrollbar { width: 0px; }
-    
-    .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
-    .ngc-main-title { text-align: left; margin-bottom: 20px;} /* Alineado a la izquierda en PC */
-}
