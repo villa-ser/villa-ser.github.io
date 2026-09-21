@@ -147,43 +147,49 @@ details[open] .icon-box i { color: var(--ngc-neon); }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ======================================================= */
-/*      ADAPTACIÓN RESPONSIVE ESPECÍFICA (ESCRITORIO)      */
-/* ======================================================= */
+/* ========================================================================= */
+/* RECUPERAMOS LA VERSIÓN PC (Forzando el ancho de 1200px y las dos columnas) */
+/* ========================================================================= */
 @media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: flex-start; }
-    .ngc-wrapper { max-width: 1050px; }
-    
-    .layout-desktop {
-        display: grid;
-        grid-template-columns: 420px 1fr;
-        gap: 30px;
-        align-items: start;
+    /* 1. Forzamos el ancho al mismo tamaño que la página de inicio */
+    .ngc-wrapper { 
+        max-width: 1200px !important; 
     }
-
+    
+    /* 2. Recuperamos la estructura de dos columnas exactas */
+    .layout-desktop { 
+        display: grid !important; 
+        grid-template-columns: 420px 1fr !important; 
+        gap: 30px; 
+        align-items: start; 
+    }
+    
+    /* 3. Columna izquierda fija (Formulario) */
     .col-izquierda {
-        position: sticky;
-        top: 40px;
-        display: flex;
-        flex-direction: column;
+        position: sticky !important; 
+        top: 100px !important; 
+        display: flex; 
+        flex-direction: column; 
         gap: 15px;
-        max-height: calc(100vh - 80px);
-        overflow-y: auto;
+        max-height: calc(100vh - 120px) !important; 
+        overflow-y: auto; 
         padding-right: 5px;
     }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
-
-    .col-derecha {
-        display: flex;
-        flex-direction: column;
+    
+    /* 4. Columna derecha (Historia) */
+    .col-derecha { 
+        display: flex; 
+        flex-direction: column; 
         gap: 15px;
-        min-height: calc(100vh - 80px);
+    }
+    
+    .ngc-main-title { 
+        text-align: left; 
+        margin-bottom: 20px;
     }
     
     .ngc-banner, details, .ngc-form-container { margin-bottom: 0; }
-    
-    /* El título vuelve a la izquierda en PC */
-    .ngc-main-title { text-align: left; }
 }
               
 /* ======================================================= */
