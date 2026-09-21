@@ -116,40 +116,52 @@ details[open] .icon-box i { color: var(--ngc-neon); }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ======================================================= */
-/*      ADAPTACIÓN RESPONSIVE ESPECÍFICA                   */
-/* ======================================================= */
+/* ========================================================================= */
+/* RECUPERAMOS LA VERSIÓN PC (Forzando el ancho de 1200px y las dos columnas) */
+/* ========================================================================= */
 @media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: flex-start; }
-    
-    .layout-desktop {
-        display: grid;
-        grid-template-columns: 420px 1fr;
-        gap: 30px;
-        align-items: start;
+    /* 1. Forzamos el ancho al mismo tamaño que la página de inicio */
+    .ngc-wrapper { 
+        max-width: 1200px !important; 
     }
-
+    
+    /* 2. Recuperamos la estructura de dos columnas exactas */
+    .layout-desktop { 
+        display: grid !important; 
+        grid-template-columns: 420px 1fr !important; 
+        gap: 30px; 
+        align-items: start; 
+    }
+    
+    /* 3. Columna izquierda fija */
     .col-izquierda {
-        position: sticky;
-        top: 40px;
-        display: flex;
-        flex-direction: column;
+        position: sticky !important; 
+        top: 100px !important; 
+        display: flex; 
+        flex-direction: column; 
         gap: 15px;
-        max-height: calc(100vh - 80px);
-        overflow-y: auto;
+        max-height: calc(100vh - 120px) !important; 
+        overflow-y: auto; 
         padding-right: 5px;
     }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
-
-    .col-derecha {
-        display: flex;
-        flex-direction: column;
-        min-height: calc(100vh - 80px);
+    
+    /* 4. Columna derecha (Tips) con GAP para separar los acordeones */
+    .col-derecha { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; /* <-- Esto separa los elementos automáticamente */
     }
-
-    .ngc-banner-tips, details, .ngc-tips-cta { margin-bottom: 0; }
-    .ngc-section-label { margin-top: 5px; margin-bottom: 10px; }
-    .ngc-main-title { text-align: left; }
+    
+    .ngc-main-title { 
+        text-align: left; 
+        margin-bottom: 20px;
+    }
+    
+    .ngc-section-label { 
+        margin-top: 15px; 
+        margin-bottom: 5px; 
+    }
 }
 
 /* ======================================================= */
