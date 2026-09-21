@@ -389,17 +389,18 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         top: 20px !important; right: 20px !important; width: 60px !important; height: 60px !important;
     }
 
-    /* 3. Footer a todo ancho y Botones Píldora */
+        /* 3. Footer a todo ancho y Botones Píldora */
     .footer-gnc-compact {
         width: 100%; padding: 15px 20px; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
     }
     
-    .btn-social {
+    /* Agregamos button.btn-share para obligar al botón a usar este formato */
+    .btn-social, button.btn-share {
         width: auto; padding: 8px 20px; border-radius: 25px; 
         background: rgba(0, 0, 0, 0.2); border: 1px solid var(--ngc-privacy-border); gap: 10px; 
     }
     
-    [data-theme="light"] .btn-social {
+    [data-theme="light"] .btn-social, [data-theme="light"] button.btn-share {
         background: rgba(255, 255, 255, 0.4);
     }
     
