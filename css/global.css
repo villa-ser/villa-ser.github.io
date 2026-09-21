@@ -155,7 +155,9 @@ body::before {
 /* ======================================================= */
 .ngc-wrapper {
     display: flex; flex-direction: column; width: 100%; max-width: 500px; padding: 15px;
+    flex: 1; /* ESTO FUERZA A QUE LLEGUE HASTA EL FONDO DE LA PANTALLA */
 }
+
 .layout-desktop {
     display: flex; flex-direction: column; width: 100%; gap: 15px;
 }
@@ -325,7 +327,6 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     /* 1. Ajuste del cuerpo y espaciado para evitar que el menú tape el título */
     body { 
         padding-top: 100px !important; 
-        align-items: flex-start; 
     }
     
     .ngc-wrapper { 
