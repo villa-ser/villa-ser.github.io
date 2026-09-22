@@ -214,6 +214,20 @@ body::before {
 .dropdown-flotante-content a i { color: var(--ngc-neon); }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
+/* --- ESTADO ACTIVO (Pestaña Actual) --- */
+.dropdown-flotante-content a.activo {
+    background: rgba(var(--ngc-neon-rgb), 0.2);
+    color: var(--ngc-neon);
+    border: 1px solid rgba(var(--ngc-neon-rgb), 0.5);
+    box-shadow: 0 0 10px rgba(var(--ngc-neon-rgb), 0.15), inset 0 0 8px rgba(var(--ngc-neon-rgb), 0.1);
+    pointer-events: none; /* Evita que el usuario haga clic en la página donde ya está */
+}
+
+/* Brillo extra para el icono de la página activa */
+.dropdown-flotante-content a.activo i {
+    text-shadow: 0 0 8px rgba(var(--ngc-neon-rgb), 0.8);
+}
+
 /* 3. Interruptor de Tema (Switch Minimalista) */
 #btn-tema-servicios.switch-plate {
     position: fixed; top: 15px; right: 85px; z-index: 9999;
