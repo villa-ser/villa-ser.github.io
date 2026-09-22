@@ -111,10 +111,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-});
+
+    // =========================================================
+    // 5. AUTO-MARCAR LA SECCIÓN ACTUAL EN EL MENÚ
+    // =========================================================
+    const enlacesMenu = document.querySelectorAll('#dropdown-flotante a');
+    
+    // Obtenemos la URL actual limpia (sin parámetros como ?servicio=apto)
+    const urlActual = window.location.href.split('?')[0];
+
+    enlacesMenu.forEach(enlace => {
+        // Convertimos el href relativo del HTML a una URL absoluta para comparar
+        const urlDestino = enlace.href.split('?')[0];
+        
+        // Si la URL de la página actual coincide con la del botón
+        if (urlActual === urlDestino) {
+            enlace.classList.add('activo');
+        }
+    });
+
+}); // AQUÍ CIERRA EL DOMContentLoaded
 
 // =========================================================
-// 5. FUNCIÓN COMPARTIR (Dinámica y Global)
+// 6. FUNCIÓN COMPARTIR (Dinámica y Global)
 // (Debe ir fuera del DOMContentLoaded para que el HTML la pueda llamar)
 // =========================================================
 function compartirWeb() {
