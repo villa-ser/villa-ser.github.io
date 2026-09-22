@@ -244,23 +244,48 @@
     .quick-item span { font-size: 0.75rem; }
 }
 
+/* ======================================================= */
+/*      ADAPTACIÓN RESPONSIVE (PC) - PÁGINA RAÍZ           */
+/* ======================================================= */
 @media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: center; }
-    .main-wrapper { max-width: 1050px; }
-    
-    .layout-desktop {
-        display: grid; grid-template-columns: 380px 1fr; gap: 30px; align-items: start; 
+    /* 1. Forzamos el ancho a 1200px (Soporta .ngc-wrapper o .main-wrapper por si acaso) */
+    .ngc-wrapper, .main-wrapper { 
+        max-width: 1200px !important; 
     }
-    .col-izquierda { position: sticky; top: 40px; display: flex; flex-direction: column; gap: 15px; }
-    .col-derecha { display: flex; flex-direction: column; gap: 15px; }
-    .separador-bloque { margin-bottom: 0; } 
-
+    
+    /* 2. Recuperamos la estructura simétrica de dos columnas (420px como las demás) */
+    .layout-desktop {
+        display: grid !important; 
+        grid-template-columns: 420px 1fr !important; 
+        gap: 30px; 
+        align-items: start; 
+    }
+    
+    /* 3. Columna izquierda (Perfil) fija con el nuevo margen de 100px */
+    .col-izquierda { 
+        position: sticky !important; 
+        top: 100px !important; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+        max-height: calc(100vh - 120px) !important; 
+        overflow-y: auto; 
+        padding-right: 5px; 
+    }
+    .col-izquierda::-webkit-scrollbar { width: 0px; }
+    
+    .col-derecha { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+    }
+    
+    /* 4. Ajustes estéticos heredados de tu archivo original */
+    .separador-bloque, .ngc-privacy-card { margin-bottom: 0 !important; } 
     .hero-description { font-size: 0.9rem; margin-bottom: 30px; }
-    .ngc-privacy-card { margin-bottom: 0; }
     .ngc-quick-services { padding: 25px 15px; }
     .quick-item span { font-size: 0.8rem; }
     .cta-icon { font-size: 2.5rem; }
     .cta-text h3 { font-size: 1.2rem; }
     .cta-text p { font-size: 0.9rem; }
-    }
-               
+}
