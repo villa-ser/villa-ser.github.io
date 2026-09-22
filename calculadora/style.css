@@ -292,12 +292,43 @@ label i { margin-right: 5px; color: var(--ngc-neon); }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ======================================================= */
+/*      ADAPTACIÓN RESPONSIVE (PC) - CALCULADORA           */
+/* ======================================================= */
 @media (min-width: 1024px) {
-    body { padding-top: 40px; align-items: flex-start; }
-    .layout-desktop { display: grid; grid-template-columns: 420px 1fr; gap: 30px; align-items: start; }
-    .col-izquierda { position: sticky; top: 40px; display: flex; flex-direction: column; gap: 0; max-height: calc(100vh - 80px); overflow-y: auto; padding-right: 5px; }
+    /* 1. Expandimos la calculadora al ancho completo del sitio */
+    .ngc-wrapper { 
+        max-width: 1200px !important; 
+    }
+    
+    /* 2. Columnas idénticas al resto del sitio web */
+    .layout-desktop { 
+        display: grid !important; 
+        grid-template-columns: 420px 1fr !important; 
+        gap: 30px; 
+        align-items: start; 
+    }
+    
+    /* 3. Columna izquierda (Controles) fija bajo el menú */
+    .col-izquierda { 
+        position: sticky !important; 
+        top: 100px !important; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 0; 
+        max-height: calc(100vh - 120px) !important; 
+        overflow-y: auto; 
+        padding-right: 5px; 
+    }
     .col-izquierda::-webkit-scrollbar { width: 0px; }
-    .col-derecha { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
+    
+    /* 4. Columna derecha (Resultados) expandida */
+    .col-derecha { 
+        display: flex; 
+        flex-direction: column; 
+        min-height: calc(100vh - 120px); 
+    }
+    
     .ngc-module { margin-bottom: 15px; }
 }
 
