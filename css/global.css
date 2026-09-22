@@ -288,6 +288,13 @@ body::before {
 [data-theme="light"] .logo-oscuro { opacity: 0; }
 [data-theme="light"] .logo-claro { opacity: 1; }
 
+.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-neon-rect {
+    width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
+    stroke-dasharray: 60 180; animation: run-border 3s linear infinite;
+}
+@keyframes run-border { to { stroke-dashoffset: -240; } }
+
 .ngc-main-title {
     font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
     color: var(--ngc-neon); text-align: center; margin: 5px 0 10px 0;
@@ -368,48 +375,51 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
     
     .ngc-main-title { text-align: left; margin-bottom: 20px; }
 
-    /* 2. Alineación de Menú Superior (Todos alineados a Top: 20px, Alto: 60px) */
+    /* 2. Alineación de Menú Superior (Centrado Inteligente a 1200px) */
     #btn-menu-flotante { display: none !important; } /* Oculta botón Explorar */
 
     #btn-ir-menu { 
-        top: 20px !important; left: 20px !important; width: 60px !important; height: 60px !important; font-size: 1.5rem !important; 
+        top: 20px !important; 
+        /* Se ancla al borde izquierdo del contenedor de 1200px */
+        left: max(15px, calc(50% - 600px + 15px)) !important; 
+        width: 60px !important; height: 60px !important; font-size: 1.5rem !important; 
+    }
+
+    .hero-logo-icon {
+        top: 20px !important; 
+        /* Se ancla al borde derecho del contenedor de 1200px */
+        right: max(15px, calc(50% - 600px + 15px)) !important; 
+        width: 60px !important; height: 60px !important;
+    }
+
+    #btn-tema-servicios.switch-plate {
+        top: 20px !important; 
+        /* Se coloca al lado del logo */
+        right: max(85px, calc(50% - 600px + 85px)) !important; 
+        height: 60px !important;
     }
 
     .menu-flotante-container {
-        top: 20px !important; left: 95px !important; right: 155px !important; width: auto; display: flex; align-items: center;
+        top: 20px !important; 
+        /* Ocupa exactamente el espacio libre entre el botón Home y el Interruptor */
+        left: max(85px, calc(50% - 600px + 85px)) !important; 
+        right: max(135px, calc(50% - 600px + 135px)) !important; 
+        width: auto; display: flex; align-items: center;
     }
 
-        /* Transformación del Dropdown en Barra Horizontal Fija */
+    /* Transformación del Dropdown en Barra Horizontal Fija */
     .dropdown-flotante-content {
-        position: relative; 
-        top: 0 !important; 
-        display: flex !important; 
-        flex-direction: row;
-        width: 100% !important; /* <-- ESTE ES EL ESCUDO SALVADOR */
-        height: 60px !important; 
-        padding: 0 10px; 
-        justify-content: space-evenly; 
-        align-items: center;
-        background: var(--ngc-glass); 
-        backdrop-filter: var(--ngc-blur); 
-        border: var(--ngc-border-glass);
-        box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); 
-        border-radius: 12px;
+        position: relative; top: 0 !important; display: flex !important; flex-direction: row;
+        width: 100% !important; height: 60px !important; padding: 0 10px; justify-content: space-evenly; align-items: center;
+        background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); border: var(--ngc-border-glass);
+        box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge); border-radius: 12px;
     }
 
     .dropdown-flotante-content a {
         padding: 8px 12px; border-radius: 8px; white-space: nowrap; font-size: 0.75rem; 
     }
 
-    #btn-tema-servicios.switch-plate {
-        top: 20px !important; right: 95px !important; height: 60px !important;
-    }
-
-    .hero-logo-icon {
-        top: 20px !important; right: 20px !important; width: 60px !important; height: 60px !important;
-    }
-
-        /* 3. Footer a todo ancho y Botones Píldora */
+    /* 3. Footer a todo ancho y Botones Píldora */
     .footer-gnc-compact {
         width: 100%; padding: 15px 20px; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
     }
@@ -429,4 +439,4 @@ button.btn-share { background-color: transparent; border: none; outline: none; c
         display: inline-block !important; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;
     }
     }
-                                            
+    
