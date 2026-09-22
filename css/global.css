@@ -247,12 +247,25 @@ body::before {
     top: auto; bottom: 4px; background: var(--ngc-neon); box-shadow: 0 0 6px rgba(var(--ngc-neon-rgb), 0.8);
 }
 
-/* 4. Logo Flotante Animado */
+/* 4. Logo Flotante (Efecto Interactivo Elegante) */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
-    border-radius: 8px; background: var(--ngc-glass); backdrop-filter: var(--ngc-blur); padding: 5px;
+    border-radius: 8px; 
+    background: var(--ngc-glass); 
+    backdrop-filter: var(--ngc-blur); 
+    padding: 5px;
     box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+    border: 1px solid transparent; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Transición muy suave */
 }
+
+/* Efecto al pasar el mouse: Brillo estático de conexión eléctrica */
+.hero-logo-icon:hover {
+    border-color: rgba(var(--ngc-neon-rgb), 0.5);
+    box-shadow: 0 4px 15px var(--card-shadow), 0 0 15px rgba(var(--ngc-neon-rgb), 0.3), var(--ngc-glass-edge);
+    transform: translateY(-2px); /* Se eleva un poquito */
+}
+
 .logo-oscuro, .logo-claro {
     position: absolute; top: 5px; left: 5px; width: calc(100% - 10px); height: calc(100% - 10px);
     object-fit: contain; border-radius: 4px; transition: opacity 0.4s ease-in-out;
@@ -260,13 +273,6 @@ body::before {
 .logo-claro { opacity: 0; }
 [data-theme="light"] .logo-oscuro { opacity: 0; }
 [data-theme="light"] .logo-claro { opacity: 1; }
-
-.hero-neon-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero-neon-rect {
-    width: 100%; height: 100%; fill: none; stroke: var(--ngc-neon); stroke-width: 3px;
-    stroke-dasharray: 60 180; animation: run-border 3s linear infinite;
-}
-@keyframes run-border { to { stroke-dashoffset: -240; } }
 
 .ngc-main-title {
     font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
