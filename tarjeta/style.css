@@ -14,7 +14,6 @@
   --card-shadow: rgba(0, 0, 0, 0.4);
 }
 
-/* --- VARIABLES MODO DÍA --- */
 [data-theme="light"] {
   --gnc-neon: #0056d6; 
   --gnc-neon-rgb: 0, 86, 214;
@@ -41,7 +40,6 @@ body {
   background: var(--bg-body-color) var(--bg-image) no-repeat center top fixed !important;
   background-size: cover !important;
   margin: 0;
-  /* Espaciado para móvil (top, right/left, bottom) -> Así arranca desde arriba */
   padding: 30px 20px 40px; 
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--gnc-text);
@@ -52,7 +50,6 @@ body {
   transition: color 0.4s ease;
 }
 
-/* --- LLAVE DE LUZ --- */
 .switch-plate {
   position: fixed;
   top: 15px;
@@ -119,7 +116,6 @@ body {
   box-shadow: 0 0 6px rgba(var(--gnc-neon-rgb), 0.8);
 }
 
-/* --- CONTENEDOR PRINCIPAL MÓVIL / BASE --- */
 .ecard-container {
   width: 100%;
   max-width: 450px;
@@ -137,7 +133,6 @@ body {
   display: flex;
 }
 
-/* --- CABECERA --- */
 #headerSection {
   text-align: center;
   transition: all 0.4s ease;
@@ -169,7 +164,6 @@ h1 {
   margin-top: 5px;
 }
 
-/* --- BOTONES --- */
 #mainButtons {
   display: flex;
   flex-direction: column;
@@ -237,7 +231,6 @@ h1 {
 .btn-whatsapp .icon-whatsapp { color: var(--gnc-success); }
 .btn-link:hover .btn-icon { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
 
-/* --- COMPARTIR Y AGENDAR --- */
 .share-container {
   margin-top: 10px;
   display: flex;
@@ -273,7 +266,6 @@ h1 {
   transform: translateY(-2px);
 }
 
-/* --- FORMULARIO MÓVIL / INICIAL --- */
 #formSection {
   display: none; 
   margin-top: 0px;
@@ -396,7 +388,6 @@ input:focus, textarea:focus {
   font-weight: bold;
 }
 
-/* --- CRÉDITOS --- */
 .ngc-site-credits {
     text-align: center;
     font-size: 0.65rem;
@@ -413,7 +404,6 @@ input:focus, textarea:focus {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-
 /* ==========================================
    ADAPTACIÓN PC (ESCRITORIO >= 992px)
    ========================================== */
@@ -428,51 +418,43 @@ input:focus, textarea:focus {
     display: grid;
     grid-template-columns: 380px 1fr;
     gap: 30px;
-    align-items: stretch; 
+    align-items: stretch; /* Iguala la altura de las columnas */
     text-align: left;
   }
 
   #headerSection { display: block !important; }
   #mainButtons { display: flex !important; }
   
-  /* Aquí transmitimos la altura ininterrumpidamente hacia abajo */
-  .ecard-right-panel {
-      display: block !important;
-      height: 100%;
-  }
-
+  /* Garantizamos que el lado derecho sea un bloque flexible de 100% altura */
   #formSection { 
       display: flex !important; 
       flex-direction: column;
       margin-top: 0;
-      height: 100%; 
+      height: auto; 
   }
 
   .form-container {
-      flex: 1; 
+      flex: 1; /* Esto hace que el formulario se estire completando el alto de la columna izquierda */
       display: flex;
       flex-direction: column;
-      height: 100%; 
   }
   
   #consultForm {
       flex: 1;
       display: flex;
       flex-direction: column;
-      height: 100%; 
   }
 
   .textarea-group {
-      flex: 1;
+      flex: 1; /* El grupo de la consulta absorbe el vacío intermedio */
       display: flex;
       flex-direction: column;
-      margin-bottom: 20px; 
+      margin-bottom: 15px; 
   }
   
   .textarea-group textarea {
-      flex: 1; 
-      height: 100%; 
-      resize: none; /* EVITA QUE EL USUARIO ARRASTRE Y ROMPA EL DISEÑO PERFECTO */
+      flex: 1; /* Estira físicamente el cajón de texto */
+      resize: none; /* Bloquea el redimensionado manual en PC para cuidar el diseño */
   }
 
   .btn-submit {
@@ -480,7 +462,6 @@ input:focus, textarea:focus {
       padding: 10px 24px; 
       font-size: 0.75rem;
       margin-left: auto; 
-      margin-top: auto; 
       display: block; 
   }
 
@@ -512,5 +493,5 @@ input:focus, textarea:focus {
       flex: 1;
       margin-bottom: 16px;
   }
-      }
-    
+  }
+                          
