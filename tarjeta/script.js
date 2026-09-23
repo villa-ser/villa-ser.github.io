@@ -39,22 +39,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// === FUNCIONES DEL FORMULARIO (LÓGICA PARA MÓVIL Y PC) ===
+
 function showForm() {
-  // Comportamiento móvil en caso de que abran el modal/vista móvil si se requiere
+  // En móviles: oculta encabezado/botones y muestra el formulario
+  document.getElementById('headerSection').style.display = 'none';
+  document.getElementById('mainButtons').style.display = 'none';
+  
   const fs = document.getElementById('formSection');
-  if (fs) fs.scrollIntoView({ behavior: 'smooth' });
+  fs.style.display = 'block';
+  fs.style.animation = 'fadeIn 0.5s ease';
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function hideFormMobile() {
+  // En móviles: restaura encabezado/botones y oculta el formulario
+  document.getElementById('headerSection').style.display = 'block';
+  document.getElementById('mainButtons').style.display = 'flex';
+  document.getElementById('formSection').style.display = 'none';
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleSubmit() {
   const btn = document.getElementById('btnSubmit');
   if (btn) btn.classList.add('loading');
+  
   setTimeout(() => {
     const formEl = document.getElementById('consultForm');
     const msgEl = document.getElementById('success-message');
+    
     if (formEl) formEl.style.display = 'none';
     if (msgEl) msgEl.style.display = 'block';
     if (btn) btn.classList.remove('loading');
@@ -64,12 +79,23 @@ function handleSubmit() {
 function resetFormState() {
   const formEl = document.getElementById('consultForm');
   const msgEl = document.getElementById('success-message');
+  
+  // Limpia y vuelve a mostrar los campos
   if (formEl) {
     formEl.reset();
     formEl.style.display = 'block';
   }
-  if (msgEl) msgEl.style.display = 'none';
+  if (msgEl) {
+    msgEl.style.display = 'none';
+  }
+  
+  // Si el usuario está en celular, lo regresamos al menú principal tras terminar
+  if (window.innerWidth < 992) {
+      hideFormMobile();
+  }
 }
+
+// === FUNCIONES DE COMPARTIR Y CONTACTO ===
 
 function descargarVCard() {
   const vcard = `BEGIN:VCARD
