@@ -14,7 +14,6 @@
     
     <link rel="icon" type="image/png" href="../img/tarjeta.avif">
     
-    <!-- Metadatos para compartir en Redes Sociales -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Tarjeta - Sergio Villagra - Electricista - Córdoba">
     <meta property="og:description" content="Contactá a Sergio Villagra, electricista habilitado Categoría III. Guardá esta tarjeta virtual para asesoramiento técnico y urgencias en Córdoba.">
@@ -26,13 +25,11 @@
     <meta property="og:image:width" content="600">
     <meta property="og:image:height" content="600">
 
-    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Tarjeta - Sergio Villagra - Electricista - Córdoba">
     <meta name="twitter:description" content="Contactá a Sergio Villagra, electricista habilitado Categoría III. Guardá esta tarjeta virtual para asesoramiento técnico y urgencias en Córdoba.">
     <meta name="twitter:image" content="https://villaser.com.ar/img/tarjeta.avif">
 
-    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
             const TIEMPO_CADUCIDAD = 30 * 60 * 1000;
@@ -68,13 +65,11 @@
 </head>
 <body>
 
-<!-- BOTÓN LLAVE DE LUZ (CAMBIO DE TEMA) -->
 <button id="btn-tema-sutil" class="switch-plate gpu-accel" aria-label="Cambiar tema día/noche">
     <div class="switch-rocker"></div>
 </button>
 
 <main class="ecard-container">
-  <!-- COLUMNA IZQUIERDA (EN PC) / BLOQUE PRINCIPAL (EN MÓVIL) -->
   <div class="ecard-left-panel">
     <div id="headerSection">
       <h1>Sergio Villagra</h1>
@@ -104,9 +99,8 @@
       </a>
       <a href="https://villaser.com.ar" target="_blank" class="btn-link">
         Página Web
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
       </a>
-      <!-- Este botón solo se ve en móvil para abrir el formulario -->
       <div onclick="showForm()" class="btn-link btn-form-trigger mobile-only">
         Formulario de Contacto
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -126,7 +120,6 @@
     </div>
   </div>
 
-  <!-- COLUMNA DERECHA (EN PC) / FORMULARIO (OCULTO EN MÓVIL POR DEFECTO) -->
   <div class="ecard-right-panel" id="formSection">
     <div class="form-container">
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
@@ -160,11 +153,9 @@
         <button onclick="resetFormState()" class="btn-submit btn-reset">Finalizar / Nueva consulta</button>
       </div>
     </div>
-    <!-- Botón para cerrar formulario y volver en Móvil -->
     <div onclick="hideFormMobile()" class="btn-back-text mobile-only">← Volver al menú principal</div>
   </div>
 
-  <!-- CRÉDITOS DE AUTOR Y AÑO -->
   <div class="ngc-site-credits">
       &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
   </div>
