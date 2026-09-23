@@ -47,7 +47,7 @@ function showForm() {
   document.getElementById('mainButtons').style.display = 'none';
   
   const fs = document.getElementById('formSection');
-  fs.style.display = 'block';
+  fs.style.display = 'block'; /* Cambiamos a block para no romper flex global, el css lo maneja */
   fs.style.animation = 'fadeIn 0.5s ease';
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,7 +71,15 @@ function handleSubmit() {
     const msgEl = document.getElementById('success-message');
     
     if (formEl) formEl.style.display = 'none';
-    if (msgEl) msgEl.style.display = 'block';
+    
+    if (msgEl) {
+        // En PC mantenemos el stretch del flex, en móvil display block
+        msgEl.style.display = 'flex';
+        msgEl.style.flexDirection = 'column';
+        msgEl.style.justifyContent = 'center';
+        msgEl.style.height = '100%';
+    }
+    
     if (btn) btn.classList.remove('loading');
   }, 1500);
 }
@@ -83,7 +91,7 @@ function resetFormState() {
   // Limpia y vuelve a mostrar los campos
   if (formEl) {
     formEl.reset();
-    formEl.style.display = 'block';
+    formEl.style.display = 'flex'; // Volvemos a flex para el diseño de PC
   }
   if (msgEl) {
     msgEl.style.display = 'none';
@@ -92,6 +100,7 @@ function resetFormState() {
   // Si el usuario está en celular, lo regresamos al menú principal tras terminar
   if (window.innerWidth < 992) {
       hideFormMobile();
+      if(formEl) formEl.style.display = 'block'; // Aseguramos reset visual movil
   }
 }
 
