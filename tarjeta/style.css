@@ -469,3 +469,61 @@ button.btn-share {
     font-family: inherit;
     cursor: pointer;
 }
+
+/* ==========================================
+   ADAPTACIÓN BRUTAL PARA PC (ESCRITORIO)
+   Solo se activa en pantallas mayores a 992px
+   ========================================== */
+
+@media (min-width: 992px) {
+  body {
+    /* 1. Obligamos al fondo a mostrar siempre la base donde están tu logo y foto */
+    background-position: center bottom !important;
+    /* 2. Alineamos la tarjeta hacia arriba para que no estorbe abajo */
+    align-items: flex-start !important;
+    padding-top: 6vh !important; 
+  }
+
+  .ecard-container {
+    /* Hacemos la tarjeta un poco más ancha para aprovechar el monitor */
+    max-width: 650px;
+    /* Le damos un margen inferior enorme para proteger visualmente tu foto y logo */
+    margin-bottom: 25vh; 
+  }
+
+  /* 3. Transformamos la lista de botones en un panel de 2 columnas */
+  #mainButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  /* El botón de WhatsApp es el rey, lo dejamos ocupando todo el ancho arriba */
+  .btn-whatsapp {
+    grid-column: 1 / -1;
+  }
+
+  /* El botón de formulario también ocupa todo el ancho abajo para cerrar el bloque */
+  .btn-form-trigger {
+    grid-column: 1 / -1;
+  }
+
+  /* Acomodamos los botones de compartir y agendar lado a lado */
+  .share-container {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  .btn-share {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* El formulario de contacto también lo adaptamos para que no sea tan largo */
+  textarea { 
+    min-height: 120px; /* Más corto en PC porque la pantalla es más ancha */
+  }
+}
