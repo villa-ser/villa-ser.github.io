@@ -39,10 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// === FUNCIONES DEL FORMULARIO (LÓGICA PARA MÓVIL Y PC) ===
-
 function showForm() {
-  // En móviles: oculta encabezado/botones y muestra el formulario
   document.getElementById('headerSection').style.display = 'none';
   document.getElementById('mainButtons').style.display = 'none';
   
@@ -54,7 +51,6 @@ function showForm() {
 }
 
 function hideFormMobile() {
-  // En móviles: restaura encabezado/botones y oculta el formulario
   document.getElementById('headerSection').style.display = 'block';
   document.getElementById('mainButtons').style.display = 'flex';
   document.getElementById('formSection').style.display = 'none';
@@ -87,7 +83,6 @@ function resetFormState() {
   const formEl = document.getElementById('consultForm');
   const msgEl = document.getElementById('success-message');
   
-  // Limpia y vuelve a mostrar los campos
   if (formEl) {
     formEl.reset();
     formEl.style.display = 'flex'; 
@@ -96,14 +91,11 @@ function resetFormState() {
     msgEl.style.display = 'none';
   }
   
-  // Si el usuario está en celular, lo regresamos al menú principal tras terminar
   if (window.innerWidth < 992) {
       hideFormMobile();
       if(formEl) formEl.style.display = 'block'; 
   }
 }
-
-// === FUNCIONES DE COMPARTIR Y CONTACTO ===
 
 function descargarVCard() {
   const vcard = `BEGIN:VCARD
