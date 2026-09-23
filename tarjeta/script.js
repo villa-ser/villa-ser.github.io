@@ -12,13 +12,11 @@ function aplicarTema(esClaro) {
     }
 }
 
-// Inicialización instantánea basada en localStorage o preferencias del SO
 if (userTheme === 'light') {
     aplicarTema(true);
 } else if (userTheme === 'dark') {
     aplicarTema(false);
 } else {
-    // Automático según el sistema operativo
     aplicarTema(!sistemaOscuro.matches);
 }
 
@@ -42,36 +40,37 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function showForm() {
-  document.getElementById('headerSection').style.display = 'none';
-  document.getElementById('mainButtons').style.display = 'none';
+  // Comportamiento móvil en caso de que abran el modal/vista móvil si se requiere
   const fs = document.getElementById('formSection');
-  fs.style.display = 'flex';
-  fs.style.animation = 'fadeIn 0.5s ease';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (fs) fs.scrollIntoView({ behavior: 'smooth' });
 }
 
-function hideForm() {
-  document.getElementById('headerSection').style.display = 'block';
-  document.getElementById('mainButtons').style.display = 'flex';
-  document.getElementById('formSection').style.display = 'none';
-  const btn = document.getElementById('btnSubmit');
-  btn.classList.remove('loading');
-  document.getElementById('consultForm').reset();
-  document.getElementById('consultForm').style.display = 'block';
-  document.getElementById('success-message').style.display = 'none';
+function hideFormMobile() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleSubmit() {
   const btn = document.getElementById('btnSubmit');
-  btn.classList.add('loading');
+  if (btn) btn.classList.add('loading');
   setTimeout(() => {
-    document.getElementById('consultForm').style.display = 'none';
-    document.getElementById('success-message').style.display = 'block';
-    btn.classList.remove('loading');
+    const formEl = document.getElementById('consultForm');
+    const msgEl = document.getElementById('success-message');
+    if (formEl) formEl.style.display = 'none';
+    if (msgEl) msgEl.style.display = 'block';
+    if (btn) btn.classList.remove('loading');
   }, 1500);
 }
 
-// Función para generar y descargar el contacto en formato vCard
+function resetFormState() {
+  const formEl = document.getElementById('consultForm');
+  const msgEl = document.getElementById('success-message');
+  if (formEl) {
+    formEl.reset();
+    formEl.style.display = 'block';
+  }
+  if (msgEl) msgEl.style.display = 'none';
+}
+
 function descargarVCard() {
   const vcard = `BEGIN:VCARD
 VERSION:3.0
@@ -80,7 +79,7 @@ ORG:Electricista Habilitado Cat III
 TEL;TYPE=CELL,VOICE,PREF:+5493513559347
 EMAIL:contacto@villaser.com.ar
 URL:https://villaser.com.ar
-NOTE:Idóneo Registro Nro. 20290293899 - 14027
+NOTE:Idóneo Registro Nro. 29029389 - 14027
 END:VCARD`;
 
   const blob = new Blob([vcard], { type: 'text/vcard' });
@@ -105,10 +104,9 @@ function compartirTarjeta() {
       text: '¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado Cat III):',
       url: 'https://villaser.com.ar/tarjeta/index.html'
     })
-    .then(() => console.log('Compartido con éxito'))
     .catch((error) => console.log('Error al compartir', error));
   } else {
-    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado): https://villaser.com.ar/tarjeta.html");
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent("¡Hola! Te comparto el contacto de Sergio Villagra (Electricista Habilitado): https://villaser.com.ar/tarjeta/index.html");
     window.open(whatsappUrl, '_blank');
   }
 }
