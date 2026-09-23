@@ -475,12 +475,32 @@ input:focus, textarea:focus {
       resize: none; 
   }
 
+    /* --- FILA INFERIOR DEL FORMULARIO (Texto izq, Botón der) --- */
+  .form-action-row {
+      display: flex;
+      flex-direction: row-reverse; /* El botón pasa a la derecha, el texto a la izquierda */
+      align-items: center; /* Centrados verticalmente */
+      justify-content: space-between;
+      gap: 15px;
+  }
+
+  .form-action-row .form-privacy-note {
+      margin: 0; /* Quitamos márgenes para que se alinee perfecto con el botón */
+      text-align: left;
+      line-height: 1.4;
+      flex: 1; /* Toma el espacio disponible */
+  }
+
   .btn-submit {
       width: fit-content; 
       padding: 10px 24px; 
       font-size: 0.75rem;
       margin-left: auto; 
       display: block; 
+  }
+
+  .form-action-row .btn-submit {
+      margin: 0; /* Evita que el margen automático rompa el flexbox */
   }
 
   .mobile-only {
