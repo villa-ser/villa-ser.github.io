@@ -275,7 +275,8 @@ h1 {
 
 /* --- FORMULARIO MÓVIL / INICIAL --- */
 #formSection {
-  margin-top: 20px;
+  display: none; /* Por defecto oculto en celular */
+  margin-top: 0px;
 }
 
 .form-container {
@@ -327,7 +328,7 @@ input:focus, textarea:focus {
 
 .btn-submit {
   position: relative;
-  width: 100%;
+  width: 100%; /* Ancho completo en móviles */
   padding: 14px;
   background: rgba(var(--gnc-neon-rgb), 0.15);
   backdrop-filter: var(--gnc-blur);
@@ -369,8 +370,8 @@ input:focus, textarea:focus {
 .form-privacy-note {
     font-size: 0.65rem;
     color: var(--gnc-text-muted); 
-    text-align: center;
-    margin-top: 12px;
+    text-align: left;
+    margin-top: 15px;
     line-height: 1.3;
 }
 
@@ -411,9 +412,9 @@ input:focus, textarea:focus {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+
 /* ==========================================
    ADAPTACIÓN PC (ESCRITORIO >= 992px)
-   Layout split: Izquierda botones / Derecha Formulario
    ========================================== */
 @media (min-width: 992px) {
   body {
@@ -421,12 +422,20 @@ input:focus, textarea:focus {
   }
 
   .ecard-container {
-    max-width: 900px;
+    max-width: 900px; /* Ancho para las dos columnas */
     display: grid;
     grid-template-columns: 380px 1fr;
     gap: 30px;
     align-items: start;
     text-align: left;
+  }
+
+  /* Forzamos a que todo esté visible en PC aunque haya quedado oculto por JS en el celu */
+  #headerSection { display: block !important; }
+  #mainButtons { display: flex !important; }
+  #formSection { 
+      display: block !important; 
+      margin-top: 0;
   }
 
   .ecard-left-panel {
@@ -435,26 +444,37 @@ input:focus, textarea:focus {
     justify-content: flex-start;
   }
 
-  .ecard-right-panel {
-    margin-top: 0;
-  }
-
-  /* Ocultamos el botón "Formulario de contacto" en PC porque ya está abierto a la derecha */
+  /* Ocultamos elementos exclusivos del móvil */
   .mobile-only {
     display: none !important;
   }
 
-  h1, .subtitle {
-    text-align: left;
-  }
-  
-  .share-container {
-    justify-content: flex-start;
-  }
+  h1, .subtitle { text-align: left; }
+  .share-container { justify-content: flex-start; }
 
   .ngc-site-credits {
     grid-column: 1 / -1;
     text-align: center;
     margin-top: 20px;
+  }
+
+  /* --- GRID PARA EL FORMULARIO (Nombres y WhatsApp al lado) --- */
+  .form-row {
+      display: flex;
+      gap: 15px;
+  }
+  
+  .form-row .field-group {
+      flex: 1;
+      margin-bottom: 16px; /* Mantiene el mismo margen inferior */
+  }
+
+  /* --- BOTÓN ENVIAR REDUCIDO EN PC --- */
+  .btn-submit {
+      width: fit-content; /* Toma solo el espacio del texto */
+      padding: 10px 24px; /* Parecido a los botones de compartir/agendar */
+      font-size: 0.75rem;
+      margin-left: auto; /* Lo empuja hacia la derecha elegantemente */
+      display: block; 
   }
 }
