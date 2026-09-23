@@ -417,26 +417,44 @@ input:focus, textarea:focus {
     max-width: 900px; 
     display: grid;
     grid-template-columns: 380px 1fr;
-    gap: 30px;
-    align-items: stretch; /* Iguala la altura de las columnas */
+    grid-template-rows: auto 1fr; /* Separa el título de los botones en dos filas */
+    column-gap: 30px;
+    align-items: stretch; 
     text-align: left;
   }
 
-  #headerSection { display: block !important; }
-  #mainButtons { display: flex !important; }
+  /* Magia: desintegramos el panel izquierdo para controlar título y botones por separado */
+  .ecard-left-panel {
+    display: contents; 
+  }
+
+  #headerSection { 
+    grid-column: 1 / 2;
+    grid-row: 1 / 2; /* Fila 1: Arriba a la izquierda */
+    display: block !important; 
+    margin-bottom: 25px; 
+  }
+
+  #mainButtons { 
+    grid-column: 1 / 2;
+    grid-row: 2 / 3; /* Fila 2: Abajo a la izquierda */
+    display: flex !important; 
+  }
   
-  /* Garantizamos que el lado derecho sea un bloque flexible de 100% altura */
   #formSection { 
-      display: flex !important; 
-      flex-direction: column;
-      margin-top: 0;
-      height: auto; 
+    grid-column: 2 / 3;
+    grid-row: 2 / 3; /* Fila 2: Comparte la misma fila de los botones, alineándose perfecto */
+    display: flex !important; 
+    flex-direction: column;
+    margin-top: 0;
+    height: 100%; 
   }
 
   .form-container {
-      flex: 1; /* Esto hace que el formulario se estire completando el alto de la columna izquierda */
+      flex: 1; 
       display: flex;
       flex-direction: column;
+      height: 100%; 
   }
   
   #consultForm {
@@ -446,15 +464,15 @@ input:focus, textarea:focus {
   }
 
   .textarea-group {
-      flex: 1; /* El grupo de la consulta absorbe el vacío intermedio */
+      flex: 1; /* Obliga al cuadro de texto a absorber todo el espacio sobrante */
       display: flex;
       flex-direction: column;
       margin-bottom: 15px; 
   }
   
   .textarea-group textarea {
-      flex: 1; /* Estira físicamente el cajón de texto */
-      resize: none; /* Bloquea el redimensionado manual en PC para cuidar el diseño */
+      flex: 1; 
+      resize: none; 
   }
 
   .btn-submit {
@@ -463,12 +481,6 @@ input:focus, textarea:focus {
       font-size: 0.75rem;
       margin-left: auto; 
       display: block; 
-  }
-
-  .ecard-left-panel {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
   }
 
   .mobile-only {
@@ -493,5 +505,4 @@ input:focus, textarea:focus {
       flex: 1;
       margin-bottom: 16px;
   }
-  }
-                          
+}
