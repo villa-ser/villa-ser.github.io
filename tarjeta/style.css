@@ -47,7 +47,6 @@ body {
   color: var(--gnc-text);
   display: flex;
   justify-content: center;
-  /* SE ELIMINÓ align-items: center; PARA QUE EN MÓVIL FLUYA HACIA ARRIBA NORMALMENTE */
   overflow-x: hidden;
   min-height: 100vh;
   transition: color 0.4s ease;
@@ -420,7 +419,6 @@ input:focus, textarea:focus {
    ========================================== */
 @media (min-width: 992px) {
   body {
-    /* Aquí sí lo centramos en PC para que el panel flote bonito en la pantalla grande */
     align-items: center !important; 
     padding: 20px;
   }
@@ -430,51 +428,59 @@ input:focus, textarea:focus {
     display: grid;
     grid-template-columns: 380px 1fr;
     gap: 30px;
-    align-items: stretch; /* ESTA LÍNEA ES LA MAGIA: Obliga a ambas columnas a medir lo mismo */
+    align-items: stretch; 
     text-align: left;
   }
 
-  /* Forzamos a que todo esté visible en PC */
   #headerSection { display: block !important; }
   #mainButtons { display: flex !important; }
   
+  /* Aquí transmitimos la altura ininterrumpidamente hacia abajo */
+  .ecard-right-panel {
+      display: block !important;
+      height: 100%;
+  }
+
   #formSection { 
       display: flex !important; 
       flex-direction: column;
       margin-top: 0;
+      height: 100%; 
   }
 
-  /* --- CÓDIGO PARA QUE EL FORMULARIO RELLENE EXACTAMENTE LA ALTURA --- */
   .form-container {
-      flex-grow: 1; /* El contenedor del formulario se estira */
+      flex: 1; 
       display: flex;
       flex-direction: column;
+      height: 100%; 
   }
   
   #consultForm {
-      flex-grow: 1;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      height: 100%; 
   }
 
-  /* Hacemos que la caja de texto absorba el espacio sobrante */
   .textarea-group {
-      flex-grow: 1;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      margin-bottom: 20px; 
   }
   
   .textarea-group textarea {
-      flex-grow: 1; /* Esto estira el textarea hasta abajo */
+      flex: 1; 
+      height: 100%; 
+      resize: none; /* EVITA QUE EL USUARIO ARRASTRE Y ROMPA EL DISEÑO PERFECTO */
   }
 
-  /* --- BOTÓN ENVIAR REDUCIDO EN PC Y ALINEADO ABAJO --- */
   .btn-submit {
       width: fit-content; 
       padding: 10px 24px; 
       font-size: 0.75rem;
       margin-left: auto; 
-      margin-top: 15px;
+      margin-top: auto; 
       display: block; 
   }
 
@@ -497,7 +503,6 @@ input:focus, textarea:focus {
     margin-top: 20px;
   }
 
-  /* --- GRID PARA EL FORMULARIO (Nombres y WhatsApp al lado) --- */
   .form-row {
       display: flex;
       gap: 15px;
@@ -507,5 +512,5 @@ input:focus, textarea:focus {
       flex: 1;
       margin-bottom: 16px;
   }
-                  }
-  
+      }
+    
