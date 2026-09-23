@@ -27,21 +27,21 @@
     <meta property="og:image:width" content="600">
     <meta property="og:image:height" content="600">
 
-    <!-- Twitter Cards (Refuerzo para WhatsApp y otras plataformas) -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Tarjeta - Sergio Villagra - Electricista - Córdoba">
     <meta name="twitter:description" content="Contactá a Sergio Villagra, electricista habilitado Categoría III. Guardá esta tarjeta virtual para asesoramiento técnico y urgencias en Córdoba.">
     <meta name="twitter:image" content="https://villaser.com.ar/img/tarjeta.avif">
 
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
+    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
-            const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
+            const TIEMPO_CADUCIDAD = 30 * 60 * 1000;
             const temaGuardado = localStorage.getItem('temaVillaser');
             const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
             const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
 
-            let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
+            let temaFinal = 'dark';
 
             if (temaGuardado && tiempoGuardado) {
                 const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
@@ -65,7 +65,6 @@
     <link rel="apple-touch-icon" href="../img/icono-miniatura.png">
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Vinculación al archivo CSS de la tarjeta -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -76,55 +75,60 @@
 </button>
 
 <main class="ecard-container">
-  <div id="headerSection">
-    <h1>Sergio Villagra</h1>
-    <div class="subtitle">
-      Electricista Habilitado Cat III<br>
-      Idóneo Registro Nro.<br>
-      <span class="nro-registro">29029389 - 14027</span>
+  <!-- COLUMNA IZQUIERDA (EN PC) / BLOQUE PRINCIPAL (EN MÓVIL) -->
+  <div class="ecard-left-panel">
+    <div id="headerSection">
+      <h1>Sergio Villagra</h1>
+      <div class="subtitle">
+        Electricista Habilitado Cat III<br>
+        Idóneo Registro Nro.<br>
+        <span class="nro-registro">29029389 - 14027</span>
+      </div>
     </div>
-  </div>
 
-  <div id="mainButtons">
-    <a href="https://wa.me/+543513559347/?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-link btn-whatsapp">
-      WhatsApp
-      <svg class="btn-icon icon-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.473 2.237 2.24 3.466 5.214 3.466 8.377-.003 6.582-5.339 11.93-11.872 11.93-2.016-.002-3.998-.511-5.741-1.48L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.451 5.405.002 9.801-4.394 9.803-9.802.001-2.62-1.02-5.084-2.876-6.941-1.856-1.856-4.321-2.873-6.938-2.874-5.407 0-9.803 4.397-9.806 9.806-.001 1.631.447 3.224 1.298 4.634L1.313 22.6l4.054-1.063c1.025.56 1.8.84 1.28.317zm12.356-5.838c-.33-.165-1.951-.963-2.251-1.072-.3-.11-.518-.165-.736.165-.218.33-.844 1.072-1.034 1.292-.19.219-.379.247-.708.082-1.033-.518-1.722-.93-2.413-2.112-.51-.874-.158-1.341.174-1.67.298-.296.659-.77.742-.963.082-.192.041-.361-.02-.525-.062-.164-.518-1.25-.709-1.71-.186-.448-.376-.387-.517-.395-.133-.007-.285-.008-.437-.008-.152 0-.401.057-.61.285-.21.228-.8.781-.8 1.906 0 1.125.818 2.21 1.053 2.522.06.08 1.583 2.418 3.834 3.393.535.232.953.371 1.28.475.537.171 1.024.147 1.409.09.43-.063 1.332-.544 1.519-1.07.188-.526.188-.977.131-1.072-.057-.095-.218-.15-.548-.315z"/></svg>
-    </a>
-    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-link">
-      Facebook
-      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-    </a>
-    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-link">
-      Instagram
-      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-    </a>
-    <a href="mailto:contacto@villaser.com.ar" class="btn-link">
-      E-mail
-      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-    </a>
-    <a href="https://villaser.com.ar" target="_blank" class="btn-link">
-      Página Web
-      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-    </a>
-    <div onclick="showForm()" class="btn-link btn-form-trigger">
-      Formulario de Contacto
-      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-    </div>
-    
-    <div class="share-container">
-      <button type="button" onclick="compartirTarjeta()" class="btn-share">
+    <div id="mainButtons">
+      <a href="https://wa.me/+543513559347/?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-link btn-whatsapp">
+        WhatsApp
+        <svg class="btn-icon icon-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.473 2.237 2.24 3.466 5.214 3.466 8.377-.003 6.582-5.339 11.93-11.872 11.93-2.016-.002-3.998-.511-5.741-1.48L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.451 5.405.002 9.801-4.394 9.803-9.802.001-2.62-1.02-5.084-2.876-6.941-1.856-1.856-4.321-2.873-6.938-2.874-5.407 0-9.803 4.397-9.806 9.806-.001 1.631.447 3.224 1.298 4.634L1.313 22.6l4.054-1.063c1.025.56 1.8.84 1.28.317zm12.356-5.838c-.33-.165-1.951-.963-2.251-1.072-.3-.11-.518-.165-.736.165-.218.33-.844 1.072-1.034 1.292-.19.219-.379.247-.708.082-1.033-.518-1.722-.93-2.413-2.112-.51-.874-.158-1.341.174-1.67.298-.296.659-.77.742-.963.082-.192.041-.361-.02-.525-.062-.164-.518-1.25-.709-1.71-.186-.448-.376-.387-.517-.395-.133-.007-.285-.008-.437-.008-.152 0-.401.057-.61.285-.21.228-.8.781-.8 1.906 0 1.125.818 2.21 1.053 2.522.06.08 1.583 2.418 3.834 3.393.535.232.953.371 1.28.475.537.171 1.024.147 1.409.09.43-.063 1.332-.544 1.519-1.07.188-.526.188-.977.131-1.072-.057-.095-.218-.15-.548-.315z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-link">
+        Facebook
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+      <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-link">
+        Instagram
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+      </a>
+      <a href="mailto:contacto@villaser.com.ar" class="btn-link">
+        E-mail
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </a>
+      <a href="https://villaser.com.ar" target="_blank" class="btn-link">
+        Página Web
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      </a>
+      <!-- Este botón solo se ve en móvil para abrir el formulario flotante/sección -->
+      <div onclick="showForm()" class="btn-link btn-form-trigger mobile-only">
+        Formulario de Contacto
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+      </div>
+      
+      <div class="share-container">
+        <button type="button" onclick="compartirTarjeta()" class="btn-share">
            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-              Compartir
-      </button>
+           Compartir
+        </button>
 
-      <button type="button" onclick="descargarVCard()" class="btn-share">
+        <button type="button" onclick="descargarVCard()" class="btn-share">
            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-              Agendar
-      </button>
+           Agendar
+        </button>
+      </div>
     </div>
   </div>
 
-  <div id="formSection">
+  <!-- COLUMNA DERECHA (EN PC) / FORMULARIO SIEMPRE ABIERTO -->
+  <div class="ecard-right-panel" id="formSection">
     <div class="form-container">
       <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
       <form id="consultForm" action="https://docs.google.com/forms/d/e/1FAIpQLSefu24jgGz2PYu2KkhI5Rh5jd9D7sS22uE9s3QgXPhiLqUKbA/formResponse" method="POST" target="hidden_iframe" onsubmit="handleSubmit();">
@@ -141,26 +145,24 @@
           <textarea name="entry.615194603" placeholder="Describe aquí el trabajo o problema eléctrico..." required></textarea>
         </div>
         <button type="submit" class="btn-submit" id="btnSubmit">Enviar Consulta</button>
-          <!-- NUEVO MENSAJE DE PRIVACIDAD AQUÍ -->
-          <p class="form-privacy-note">
-              <i class="fa-solid fa-lock"></i> Tus datos son privados y se utilizarán exclusivamente para responder a tu consulta. No compartimos información con terceros.
-          </p>
+        <p class="form-privacy-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Tus datos son privados y se utilizarán exclusivamente para responder a tu consulta.
+        </p>
       </form>
       
       <div id="success-message">
         <div style="color: var(--gnc-success); font-weight: 600; margin-bottom: 10px; font-size: 1.4rem;">✓ CONSULTA ENVIADA</div>
         <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 25px;">Sergio se pondrá en contacto pronto.</p>
-        <button onclick="hideForm()" class="btn-submit">Finalizar</button>
+        <button onclick="resetFormState()" class="btn-submit">Nueva consulta</button>
       </div>
     </div>
-    <div onclick="hideForm()" class="btn-back-text">← Cancelar y volver al menú</div>
+    <div onclick="hideFormMobile()" class="btn-back-text mobile-only">← Volver al menú principal</div>
   </div>
 
   <!-- CRÉDITOS DE AUTOR Y AÑO -->
   <div class="ngc-site-credits">
       &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
   </div>
-
 </main>
 
 <script src="../js/global.js" defer></script>
