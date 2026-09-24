@@ -110,14 +110,16 @@
     </div>
 
     <main class="ngc-wrapper">
+        
+        <!-- TÍTULO MOVIDO AFUERA PARA CENTRAR Y ALINEAR COLUMNAS -->
+        <h1 class="ngc-main-title">Mis Servicios</h1>
+        
         <div class="layout-desktop">
             
             <!-- ========================================== -->
             <!-- COLUMNA IZQUIERDA (Intro y Form - Fija PC) -->
             <!-- ========================================== -->
             <div class="col-izquierda">
-                
-                <h1 class="ngc-main-title">Mis Servicios</h1>
 
                 <div class="ngc-banner gpu-accel">
                     <div style="text-align: center; margin-bottom: 5px;">
@@ -129,7 +131,11 @@
                         <strong>estrictas normas de seguridad (Ley 10.281)</strong>.
                     </p>
                     <button type="button" id="btn-presupuesto" class="ngc-btn-outline">
-                        <i data-lucide="clipboard-list"></i> Pedir Presupuesto Rápido
+                        <i data-lucide="clipboard-list"></i> Pedir Presupuesto
+                    </button>
+                    <!-- NUEVO BOTÓN DE BENEFICIO -->
+                    <button type="button" id="btn-beneficio" class="ngc-btn-outline" style="margin-top: 5px; background: rgba(0, 212, 255, 0.05); border-color: var(--ngc-neon); color: var(--ngc-neon);">
+                        <i data-lucide="ticket"></i> Solicitar Visita Bonificada
                     </button>
                 </div>
 
@@ -156,7 +162,7 @@
                             </div>
                             <div class="field-group">
                                 <label>Detalle del trabajo o problema</label>
-                                <textarea name="entry.615194603" placeholder="Contame qué necesitas o qué falla presenta la instalación..." rows="3" required></textarea> 
+                                <textarea name="entry.615194603" placeholder="Contame qué necesitas o qué falla presenta la instalación..." rows="4" required></textarea> 
                             </div>
                             <button type="submit" class="btn-submit" id="btnSubmit">
                                 <i data-lucide="send" style="width: 16px; margin-right: 5px;"></i> Enviar Consulta
@@ -348,7 +354,7 @@
                             </div>
                             <i data-lucide="chevron-down" class="chevron"></i>
                         </summary>
-                        <div class="ngc-content">      
+                        <div class="ngc-content">   
                             <p>Sistema encargado de disipar fugas de corriente al suelo. Actúa junto al diferencial para <strong>salvar vidas</strong>.</p>
                             
                             <div class="action-buttons-group">
