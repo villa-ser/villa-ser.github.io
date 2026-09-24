@@ -40,7 +40,8 @@ body {
   background: var(--bg-body-color) var(--bg-image) no-repeat center top fixed !important;
   background-size: cover !important;
   margin: 0;
-  padding: 30px 20px 40px; 
+  padding: 30px 20px 60px; 
+  position: relative;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--gnc-text);
   display: flex;
@@ -389,11 +390,13 @@ input:focus, textarea:focus {
 }
 
 .ngc-site-credits {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
     text-align: center;
     font-size: 0.65rem;
     color: var(--gnc-text-muted);
-    margin-top: 30px;
-    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
@@ -509,12 +512,6 @@ input:focus, textarea:focus {
 
   h1, .subtitle { text-align: left; }
   .share-container { justify-content: flex-start; }
-
-  .ngc-site-credits {
-    grid-column: 1 / -1;
-    text-align: center;
-    margin-top: 20px;
-  }
 
   .form-row {
       display: flex;
