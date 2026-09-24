@@ -5,10 +5,12 @@
     color: var(--ngc-text-main); 
     font-size: 1.6rem;
     font-weight: 800;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     letter-spacing: 1px;
     text-transform: uppercase;
     text-shadow: none !important; /* Bloquea cualquier brillo que venga del global.css */
+    text-align: center; /* Título centrado siempre */
+    width: 100%;
 }
 
 /* --- CONTENEDORES PRINCIPALES (Cristal Mate) --- */
@@ -51,8 +53,15 @@ summary::-webkit-details-marker { display: none; }
     text-shadow: none !important;
 }
 
-.ngc-content, .form-body {
+/* Ajuste específico para el contenedor del contenido regular vs el formulario */
+.ngc-content {
     padding: 5px 20px 20px 20px; font-size: 0.9rem; line-height: 1.6;
+    color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg);
+}
+
+.form-body {
+    padding: 5px 20px 30px 20px; /* Padding inferior aumentado a 30px para dar respiro */
+    font-size: 0.9rem; line-height: 1.6;
     color: var(--ngc-text-muted); animation: fadeIn 0.4s ease; background: var(--content-bg);
 }
 
@@ -107,7 +116,8 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
 .form-privacy-note {
     font-size: 0.7rem; color: var(--ngc-text-faded); text-align: center;
-    margin-top: 15px; margin-bottom: 0; line-height: 1.4; font-weight: 500;
+    margin-top: 15px; margin-bottom: 5px; /* Margen inferior para que no quede pegado al contenedor */
+    line-height: 1.4; font-weight: 500;
 }
 .form-privacy-note i { color: var(--ngc-neon); margin-right: 5px; opacity: 0.8; }
 
@@ -116,8 +126,8 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 /* --- BOTONES DE ACCIÓN EN SERVICIOS (COTI, WHATSAPP, INFO) --- */
 .action-buttons-group { 
     display: flex; 
-    flex-direction: row; /* FORZA a que estén uno al lado del otro en celular */
-    gap: 6px; /* Gap levemente reducido para aprovechar el espacio */
+    flex-direction: row; 
+    gap: 6px; 
     margin-top: 15px; 
     width: 100%; 
 }
@@ -128,12 +138,12 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 }
 
 .btn-micro-wa, .btn-micro-coti, .btn-micro-info { 
-    flex: 1; /* Obliga a que se dividan el ancho de la pantalla en partes iguales */
+    flex: 1; 
     justify-content: center; 
-    width: auto; /* Reemplaza el width: 100% que causaba que se apilaran */
+    width: auto; 
     margin-top: 0 !important; 
-    padding: 8px 4px !important; /* Ajuste para que los textos largos entren sin desbordar */
-    font-size: 0.75rem !important; /* Letra levemente ajustada para celulares chicos */
+    padding: 8px 4px !important; 
+    font-size: 0.75rem !important; 
 }
 
 .btn-micro-wa {
@@ -189,7 +199,7 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
 
     .col-izquierda, .col-derecha { display: block; }
     .ngc-banner, .ngc-form-container, .servicios-container { margin-bottom: 12px !important; }
-    .ngc-main-title { text-align: center; } /* Centrado en móviles */
+    .ngc-main-title { text-align: center; } 
     .footer-gnc-compact { margin-top: 0 !important; }
 }
 
@@ -234,8 +244,5 @@ details[open] .chevron { transform: rotate(180deg); opacity: 1; color: var(--ngc
         flex-direction: column; 
     }
     
-    .ngc-main-title { 
-        text-align: left; 
-        margin-bottom: 20px;
-    }
+    /* Nota: Se eliminó el "text-align: left" que rompía el centrado del título principal aquí */
 }
