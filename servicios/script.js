@@ -1,27 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Visibilidad del Formulario (Móvil vs PC)
     const btnPresupuesto = document.getElementById('btn-presupuesto');
+    const btnBeneficio = document.getElementById('btn-beneficio');
     const formContacto = document.getElementById('formulario-contacto');
 
+    // Función auxiliar para mover el scroll hacia el formulario con efecto neón
+    const animarFormulario = () => {
+        if (window.innerWidth < 1024) {
+            formContacto.classList.add('form-visible');
+        }
+        
+        setTimeout(() => {
+            formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100); 
+
+        if (window.innerWidth >= 1024) {
+            formContacto.style.transition = "box-shadow 0.3s ease";
+            formContacto.style.boxShadow = "0 0 20px rgba(var(--ngc-neon-rgb), 0.5)"; // Resplandor al seleccionarlo
+            setTimeout(() => {
+                formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.05)";
+            }, 1200);
+        }
+    };
+
+    // Evento Botón Estándar (Presupuesto)
     if (btnPresupuesto && formContacto) {
         btnPresupuesto.addEventListener('click', (e) => {
             e.preventDefault();
+            animarFormulario();
+        });
+    }
+
+    // Evento Nuevo Botón (Visita Bonificada)
+    if (btnBeneficio && formContacto) {
+        btnBeneficio.addEventListener('click', (e) => {
+            e.preventDefault();
             
-            if (window.innerWidth < 1024) {
-                formContacto.classList.toggle('form-visible');
-                if (formContacto.classList.contains('form-visible')) {
-                    setTimeout(() => {
-                        formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100); 
-                }
-            } else {
-                formContacto.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                formContacto.style.transition = "box-shadow 0.3s ease";
-                formContacto.style.boxShadow = "0 0 20px rgba(var(--ngc-neon-rgb), 0.3)";
-                setTimeout(() => {
-                    formContacto.style.boxShadow = "0 10px 30px var(--card-shadow), inset 0 0 15px rgba(var(--ngc-neon-rgb), 0.05)";
-                }, 1200);
+            // Autocompletar el campo de texto con un mensaje que convierte ventas
+            const textarea = document.querySelector('textarea[name="entry.615194603"]');
+            if(textarea) {
+                textarea.value = "【 VISITA TÉCNICA BONIFICADA 】\nHola Sergio. Solicito una visita técnica en mi domicilio para evaluar mis instalaciones y recibir un presupuesto o asesoramiento profesional sin cargo.";
             }
+
+            animarFormulario();
         });
     }
 });
@@ -33,7 +54,7 @@ function toggleInfo(id) {
         infoBox.classList.toggle('oculto');
         
         if (!infoBox.classList.contains('oculto')) {
-            infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--gnc-neon-rgb), 0.1)";
+            infoBox.style.boxShadow = "inset 0 0 10px rgba(var(--ngc-neon-rgb), 0.1)";
             setTimeout(() => { infoBox.style.boxShadow = "none"; }, 500);
         }
     }
