@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestión Interna | Villaser</title>
+    
+    <!-- Fuentes e Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS (Asumiendo que tienes un global.css y este particular) -->
+    <!-- <link rel="stylesheet" href="../css/global.css"> -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Librería SheetJS (Temporal hasta migrar a Firebase) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Script de ejecución inmediata para el tema (Evita parpadeo) -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- CONTROLES FLOTANTES SUPERIORES (Estilo Villaser) -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
+        <div class="switch-rocker"></div>
+    </button>
+
+    <div class="hero-logo-icon" aria-label="Logo Villaser" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
+        <!-- Ícono de usuario con el estilo del logo flotante -->
+        <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
+        
+        <div id="userDropdown" class="dropdown-flotante-content oculto" style="top: 70px; right: 0; left: auto; width: 180px; position: absolute;">
+            <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="ngc-wrapper">
+        
+        <!-- CABECERA -->
+        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 20px;">
+            <p class="ngc-title" style="margin-bottom: 10px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
+            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2.2rem; margin-bottom: 20px;">Villaser Gestión</h1>
+            
+            <div class="ngc-footer-badge" style="margin-bottom: 0;">
+                <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
+                Sistema Activo
+            </div>
+        </div>
+
+        <!-- PANTALLA DE LOGIN -->
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 20px; border-left: 4px solid var(--ngc-neon);">
+            <h2 class="privacy-title" style="margin-bottom: 20px; font-size: 1.2rem;">Acceso al Sistema</h2>
+            
+            <div class="form-group">
+                <input type="text" id="username" class="ngc-input" placeholder="Usuario" autocomplete="off">
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <input type="password" id="password" class="ngc-input" placeholder="Contraseña">
+            </div>
+            
+            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 20px;" onclick="verificarCredenciales()">
+                <i class="fa-solid fa-lock-open"></i> Ingresar
+            </button>
+            
+            <p id="errorMessage" class="error-text oculto" style="margin-top: 15px; color: var(--error-red); font-size: 0.85rem; font-weight: bold;">
+                <i class="fa-solid fa-circle-exclamation"></i> Datos erróneos, ingresar nuevamente
+            </p>
+        </div>
+
+        <!-- PANTALLA DE BIENVENIDA -->
+        <div id="welcomeScreen" class="oculto" style="text-align: center; margin-top: 50px;">
+            <h2 class="welcome-text hero-name" style="color: var(--ngc-neon); font-size: 2.5rem; text-transform: uppercase;">¡Bienvenido!</h2>
+        </div>
+
+        <!-- INTERFAZ PRINCIPAL DE LA APP -->
+        <div id="appScreen" class="oculto" style="width: 100%;">
+            
+            <button id="menuToggleBtn" class="ngc-cta-banner gpu-accel" style="width: 100%; text-align: left; border: none; cursor: pointer;" onclick="toggleMenu()">
+                <div class="cta-banner-content">
+                    <i class="fa-solid fa-layer-group cta-icon"></i>
+                    <div class="cta-text">
+                        <h3>Menú Principal</h3>
+                        <p>Ocultar / Mostrar módulos</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-down cta-arrow" id="menu-arrow" style="transition: transform 0.3s;"></i>
+                </div>
+            </button>
+
+            <!-- GRILLA DE MÓDULOS -->
+            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 20px;">
+                <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
+                <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
+                <button class="ngc-btn btn-module" id="btnVerClientes"><i class="fa-solid fa-users-viewfinder"></i> Ver Clientes</button>
+                <button class="ngc-btn btn-module" id="btnNuevoCliente"><i class="fa-solid fa-user-plus"></i> Nuevo Cliente</button>
+                <button class="ngc-btn btn-module" id="btnCatalogos"><i class="fa-solid fa-book-open"></i> Catálogos</button>
+                <button class="ngc-btn btn-module" id="btnFotos"><i class="fa-solid fa-camera"></i> Fotos</button>
+                <button class="ngc-btn btn-module"><i class="fa-brands fa-whatsapp"></i> Compartir WTS</button>
+                <button class="ngc-btn btn-module" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano de Obra</button>
+                <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Técnico</button>
+                <button class="ngc-btn btn-module" id="btnPresupuestoPC"><i class="fa-solid fa-desktop"></i> Ppto. PC</button>
+                <button class="ngc-btn btn-module" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Materiales PC</button>
+                <button class="ngc-btn btn-module" id="btnPotenciaPC"><i class="fa-solid fa-bolt"></i> Potencia PC</button>
+                <button class="ngc-btn btn-module" id="btnPresupuestoPC2"><i class="fa-solid fa-file-invoice"></i> Ppto. PC 2</button>
+                <button class="ngc-btn btn-module" id="btnPreguntas"><i class="fa-solid fa-circle-question"></i> Preguntas</button>
+                <button class="ngc-btn btn-module" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
+                <button class="ngc-btn btn-module" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+  </html>
 
