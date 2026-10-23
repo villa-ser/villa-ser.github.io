@@ -71,11 +71,15 @@
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
-            <p id="errorMessage" class="error-text oculto" style="margin-top: 15px; color: var(--error-red); font-size: 0.85rem; font-weight: bold;">
-                <i class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent">Datos erróneos</span>
+            <button id="registerBtn" class="ngc-btn" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;" onclick="crearCuenta()">
+                <i class="fa-solid fa-user-plus"></i> Crear Cuenta
+            </button>
+            
+            <p id="errorMessage" class="error-text oculto" style="margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center;">
+                <i id="errorIcon" class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent"></span>
             </p>
 
-            <div style="margin-top: 20px; font-size: 0.8rem;">
+            <div style="margin-top: 20px; font-size: 0.8rem; text-align: center;">
                 <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
             </div>
         </div>
@@ -124,4 +128,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
