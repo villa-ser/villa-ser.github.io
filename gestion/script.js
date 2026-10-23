@@ -52,10 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.onAuthStateChanged(user => {
         if (user) {
             if (registrandoCuenta) {
-                // Si el sistema detecta que estamos creando la cuenta, no hace nada todavía
                 return;
             }
-            // Elimina la validación estricta. Entra directo.
             document.getElementById('errorMessage').classList.add('oculto');
             mostrarAppPrincipal(user.email);
         } else {
@@ -74,6 +72,23 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 // FUNCIONES DE CONTROL DE UI
 // ==========================================
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleIcon = document.getElementById('togglePasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+        toggleIcon.style.color = 'var(--ngc-neon)';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+        toggleIcon.style.color = 'var(--ngc-text-faded)';
+    }
+}
 
 function mostrarMensaje(texto, tipo) {
     const errorMsg = document.getElementById('errorMessage');
@@ -117,14 +132,21 @@ function crearCuenta() {
 
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // Enviar correo de bienvenida/validación de fondo
             userCredential.user.sendEmailVerification().catch(e => console.log(e));
             
-            // Cerrar la sesión instantáneamente para mostrarle el mensaje al usuario de que se creó con éxito
             auth.signOut().then(() => {
                 registrandoCuenta = false;
                 mostrarMensaje("¡Cuenta creada! Se envió un correo a tu bandeja. Ya puedes ingresar.", "exito");
                 document.getElementById('passwordInput').value = '';
+                
+                // Reiniciar el ícono del ojito si estaba visible
+                const passwordInput = document.getElementById('passwordInput');
+                const toggleIcon = document.getElementById('togglePasswordIcon');
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+                toggleIcon.style.color = 'var(--ngc-text-faded)';
+                
                 mostrarPantallaLogin();
             });
         })
@@ -147,12 +169,19 @@ function iniciarSesion() {
         return;
     }
 
-    // Ocultar mensaje durante el proceso
     document.getElementById('errorMessage').classList.add('oculto');
 
     auth.signInWithEmailAndPassword(email, password)
         .catch((error) => {
             document.getElementById('passwordInput').value = '';
+            
+            // Reiniciar el ojito si da error
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+            document.getElementById('passwordInput').type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+            toggleIcon.style.color = 'var(--ngc-text-faded)';
+
             let msg = "Error al ingresar. Revisa los datos.";
             
             if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -204,13 +233,11 @@ function mostrarAppPrincipal(emailUsuario) {
     document.getElementById('loginScreen').classList.add('oculto');
     document.getElementById('mainHeader').classList.add('oculto');
     
-    // Mostramos correo en el menú flotante
     const emailDisplay = document.getElementById('userEmailDisplay');
     if (emailDisplay) emailDisplay.innerText = emailUsuario;
     
     document.getElementById('userMenuWrapper').style.display = 'flex';
     
-    // Animación de bienvenida
     const welcomeScreen = document.getElementById('welcomeScreen');
     welcomeScreen.classList.remove('oculto');
     welcomeScreen.querySelector('.welcome-text').classList.add('animate-welcome');
@@ -233,7 +260,6 @@ function toggleUserMenu() {
     dropdown.classList.toggle('oculto');
 }
 
-// Cerrar dropdown al tocar fuera
 document.addEventListener('click', (e) => {
     const wrapper = document.getElementById('userMenuWrapper');
     const dropdown = document.getElementById('userDropdown');
@@ -242,7 +268,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// NAVEGACIÓN DE MÓDULOS
 const rutas = {
     'btnPresupuesto': './presupuesto/index.html',
     'btnMateriales': './materiales/index.html',
@@ -264,3 +289,4 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
+                    
