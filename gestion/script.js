@@ -1,7 +1,23 @@
+// ==========================================
+// 1. CONFIGURACIÓN DE FIREBASE (Con tus datos)
+// ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+  authDomain: "villaser-gestion.firebaseapp.com",
+  projectId: "villaser-gestion",
+  storageBucket: "villaser-gestion.firebasestorage.app",
+  messagingSenderId: "1032102638132",
+  appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061",
+  measurementId: "G-CS6MWCYNFD"
+};
 
-document.addEventListener("DOMContentLoaded", async () => {
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. SISTEMA DE TEMA (Idéntico a Villaser Raíz)
+    // 2. SISTEMA DE TEMA (Idéntico a Villaser Raíz)
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     
     function sincronizarTema() {
@@ -32,63 +48,137 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 2. SISTEMA DE SESIÓN (Lógica Excel Temporal)
-    if (localStorage.getItem('villaser_sesion_activa') === 'true') {
-        document.getElementById('loginScreen').classList.add('oculto');
-        document.getElementById('mainHeader').classList.add('oculto');
-        document.getElementById('appScreen').classList.remove('oculto');
-        document.getElementById('userMenuWrapper').style.display = 'flex';
-    }
+    // 3. VIGILANTE DE ESTADO DE AUTENTICACIÓN FIREBASE
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // El usuario ya está logueado
+            mostrarAppPrincipal(user.email);
+        } else {
+            // No hay usuario, mostramos pantalla de login
+            document.getElementById('loginScreen').classList.remove('oculto');
+            document.getElementById('mainHeader').classList.remove('oculto');
+            document.getElementById('appScreen').classList.add('oculto');
+            document.getElementById('userMenuWrapper').style.display = 'none';
+        }
+    });
 
-    try {
-        const response = await fetch('clave.xlsx');
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        window.credenciales = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    } catch (error) {
-        console.error("Error al cargar credenciales", error);
-    }
+    // Permitir Enter para iniciar sesión
+    document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            iniciarSesion();
+        }
+    });
 });
 
-// FUNCIONES DE LOGIN Y MENÚS
-function verificarCredenciales() {
-    const userIn = document.getElementById('username').value.trim();
-    const passIn = document.getElementById('password').value.trim();
+// ==========================================
+// FUNCIONES DE FIREBASE (LOGIN, LOGOUT, RECOVERY)
+// ==========================================
+
+function iniciarSesion() {
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value.trim();
     const errorMsg = document.getElementById('errorMessage');
-    let accesoConcedido = false;
+    const errorText = document.getElementById('errorTextContent');
 
-    for (let i = 1; i < window.credenciales.length; i++) {
-        const fila = window.credenciales[i];
-        if (fila && fila.length >= 2) {
-            if (String(fila[0]).trim() === userIn && String(fila[1]).trim() === passIn) {
-                accesoConcedido = true;
-                break;
-            }
-        }
-    }
-
-    if (accesoConcedido) {
-        localStorage.setItem('villaser_sesion_activa', 'true');
-        errorMsg.classList.add('oculto');
-        
-        document.getElementById('loginScreen').classList.add('oculto');
-        document.getElementById('mainHeader').classList.add('oculto');
-        document.getElementById('userMenuWrapper').style.display = 'flex';
-        
-        const welcomeScreen = document.getElementById('welcomeScreen');
-        welcomeScreen.classList.remove('oculto');
-        welcomeScreen.querySelector('.welcome-text').classList.add('animate-welcome');
-        
-        setTimeout(() => {
-            welcomeScreen.classList.add('oculto');
-            document.getElementById('appScreen').classList.remove('oculto');
-        }, 2500);
-        
-    } else {
+    if (!email || !password) {
+        errorText.innerText = "Completa correo y contraseña.";
         errorMsg.classList.remove('oculto');
-        document.getElementById('password').value = '';
+        return;
     }
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Éxito. El listener onAuthStateChanged tomará el control.
+            errorMsg.classList.add('oculto');
+        })
+        .catch((error) => {
+            // Manejo de errores amigable
+            errorMsg.classList.remove('oculto');
+            errorMsg.style.color = "var(--error-red)";
+            document.getElementById('passwordInput').value = '';
+            
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorText.innerText = "Usuario no registrado.";
+                    break;
+                case 'auth/wrong-password':
+                    errorText.innerText = "Contraseña incorrecta.";
+                    break;
+                case 'auth/invalid-email':
+                    errorText.innerText = "Formato de correo no válido.";
+                    break;
+                case 'auth/too-many-requests':
+                    errorText.innerText = "Demasiados intentos. Intenta más tarde.";
+                    break;
+                default:
+                    errorText.innerText = "Error al ingresar. Revisa los datos.";
+                    console.error(error);
+            }
+        });
+}
+
+function cerrarSesion() {
+    auth.signOut().then(() => {
+        window.location.reload();
+    }).catch((error) => {
+        console.error("Error al cerrar sesión", error);
+    });
+}
+
+function recuperarPassword() {
+    const email = document.getElementById('emailInput').value.trim();
+    const errorMsg = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorTextContent');
+
+    if (!email) {
+        errorMsg.style.color = "var(--error-red)";
+        errorText.innerText = "Ingresa tu correo para recuperar la contraseña.";
+        errorMsg.classList.remove('oculto');
+        return;
+    }
+
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            errorMsg.classList.remove('oculto');
+            errorMsg.style.color = "var(--success-green)";
+            errorText.innerText = `Correo enviado a ${email}. Revisa tu bandeja.`;
+        })
+        .catch((error) => {
+            errorMsg.classList.remove('oculto');
+            errorMsg.style.color = "var(--error-red)";
+            if (error.code === 'auth/user-not-found') {
+                errorText.innerText = "No existe cuenta con este correo.";
+            } else {
+                errorText.innerText = "Error al enviar correo de recuperación.";
+                console.error(error);
+            }
+        });
+}
+
+
+// ==========================================
+// FUNCIONES DE UI Y MENÚS
+// ==========================================
+
+function mostrarAppPrincipal(emailUsuario) {
+    document.getElementById('loginScreen').classList.add('oculto');
+    document.getElementById('mainHeader').classList.add('oculto');
+    
+    // Mostramos correo en el menú flotante
+    const emailDisplay = document.getElementById('userEmailDisplay');
+    if (emailDisplay) emailDisplay.innerText = emailUsuario;
+    
+    document.getElementById('userMenuWrapper').style.display = 'flex';
+    
+    // Animación de bienvenida
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    welcomeScreen.classList.remove('oculto');
+    welcomeScreen.querySelector('.welcome-text').classList.add('animate-welcome');
+    
+    setTimeout(() => {
+        welcomeScreen.classList.add('oculto');
+        document.getElementById('appScreen').classList.remove('oculto');
+    }, 2500);
 }
 
 function toggleMenu() {
@@ -103,12 +193,7 @@ function toggleUserMenu() {
     dropdown.classList.toggle('oculto');
 }
 
-function cerrarSesion() {
-    localStorage.removeItem('villaser_sesion_activa');
-    window.location.reload();
-}
-
-// CERRAR DROPDOWN AL TOCAR FUERA
+// Cerrar dropdown al tocar fuera
 document.addEventListener('click', (e) => {
     const wrapper = document.getElementById('userMenuWrapper');
     const dropdown = document.getElementById('userDropdown');
@@ -117,7 +202,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// EVENTOS DE BOTONES (NAVEGACIÓN)
+// NAVEGACIÓN DE MÓDULOS
 const rutas = {
     'btnPresupuesto': './presupuesto/index.html',
     'btnMateriales': './materiales/index.html',
@@ -139,3 +224,4 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
+        
