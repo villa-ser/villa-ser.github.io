@@ -8,14 +8,15 @@
     <!-- Fuentes e Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- CSS (Asumiendo que tienes un global.css y este particular) -->
-    <!-- <link rel="stylesheet" href="../css/global.css"> -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Librería SheetJS (Temporal hasta migrar a Firebase) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- Script de ejecución inmediata para el tema (Evita parpadeo) -->
+    <!-- Firebase App (el núcleo) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser');
@@ -28,21 +29,20 @@
 </head>
 <body>
 
-    <!-- CONTROLES FLOTANTES SUPERIORES (Estilo Villaser) -->
+    <!-- CONTROLES FLOTANTES SUPERIORES -->
     <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
         <div class="switch-rocker"></div>
     </button>
 
-    <div class="hero-logo-icon" aria-label="Logo Villaser" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
-        <!-- Ícono de usuario con el estilo del logo flotante -->
+    <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
         <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
         
         <div id="userDropdown" class="dropdown-flotante-content oculto" style="top: 70px; right: 0; left: auto; width: 180px; position: absolute;">
+            <p id="userEmailDisplay" style="color: var(--ngc-text-faded); font-size: 0.7rem; padding: 5px 10px; margin: 0; text-align: center; word-break: break-all; border-bottom: 1px solid var(--ngc-privacy-border);"></p>
             <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <main class="ngc-wrapper">
         
         <!-- CABECERA -->
@@ -61,19 +61,23 @@
             <h2 class="privacy-title" style="margin-bottom: 20px; font-size: 1.2rem;">Acceso al Sistema</h2>
             
             <div class="form-group">
-                <input type="text" id="username" class="ngc-input" placeholder="Usuario" autocomplete="off">
+                <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
             <div class="form-group" style="margin-top: 15px;">
-                <input type="password" id="password" class="ngc-input" placeholder="Contraseña">
+                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña">
             </div>
             
-            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 20px;" onclick="verificarCredenciales()">
+            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 20px;" onclick="iniciarSesion()">
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
             <p id="errorMessage" class="error-text oculto" style="margin-top: 15px; color: var(--error-red); font-size: 0.85rem; font-weight: bold;">
-                <i class="fa-solid fa-circle-exclamation"></i> Datos erróneos, ingresar nuevamente
+                <i class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent">Datos erróneos</span>
             </p>
+
+            <div style="margin-top: 20px; font-size: 0.8rem;">
+                <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+            </div>
         </div>
 
         <!-- PANTALLA DE BIENVENIDA -->
@@ -120,5 +124,4 @@
 
     <script src="script.js"></script>
 </body>
-  </html>
-
+</html>
