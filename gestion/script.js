@@ -54,8 +54,17 @@ document.addEventListener("DOMContentLoaded", () => {
             if (registrandoCuenta) {
                 return;
             }
-            document.getElementById('errorMessage').classList.add('oculto');
-            mostrarAppPrincipal(user.email);
+            
+            // VALIDACIÓN ESTRICTA: Solo entra si verificó el mail
+            if (user.emailVerified) {
+                document.getElementById('errorMessage').classList.add('oculto');
+                mostrarAppPrincipal(user.email);
+            } else {
+                auth.signOut().then(() => {
+                    mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
+                    mostrarPantallaLogin();
+                });
+            }
         } else {
             mostrarPantallaLogin();
         }
@@ -132,11 +141,12 @@ function crearCuenta() {
 
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
+            // El idioma del correo se configura desde la Consola de Firebase
             userCredential.user.sendEmailVerification().catch(e => console.log(e));
             
             auth.signOut().then(() => {
                 registrandoCuenta = false;
-                mostrarMensaje("¡Cuenta creada! Se envió un correo a tu bandeja. Ya puedes ingresar.", "exito");
+                mostrarMensaje("¡Cuenta creada! Se envió un correo de validación a tu bandeja o spam.", "exito");
                 document.getElementById('passwordInput').value = '';
                 
                 // Reiniciar el ícono del ojito si estaba visible
@@ -289,4 +299,4 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
-                    
+            
