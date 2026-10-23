@@ -15,7 +15,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Variable para distinguir cuando el sistema está creando una cuenta y no cerrando sesión abruptamente
+// Variable para controlar el flujo de creación sin mostrar pantallas prematuras
 let registrandoCuenta = false;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,19 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // VIGILANTE DE ESTADO DE AUTENTICACIÓN FIREBASE
     auth.onAuthStateChanged(user => {
         if (user) {
-            // Verifica si el correo ha sido validado (click en el enlace del mail)
-            if (user.emailVerified) {
-                document.getElementById('errorMessage').classList.add('oculto');
-                mostrarAppPrincipal(user.email);
-            } else {
-                // Si el usuario acaba de registrarse, dejamos el mensaje de éxito de crearCuenta()
-                if (!registrandoCuenta) {
-                    auth.signOut().then(() => {
-                        mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
-                        mostrarPantallaLogin();
-                    });
-                }
+            if (registrandoCuenta) {
+                // Si el sistema detecta que estamos creando la cuenta, no hace nada todavía
+                return;
             }
+            // Elimina la validación estricta. Entra directo.
+            document.getElementById('errorMessage').classList.add('oculto');
+            mostrarAppPrincipal(user.email);
         } else {
             mostrarPantallaLogin();
         }
@@ -123,16 +117,16 @@ function crearCuenta() {
 
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // Enviar correo de validación
-            userCredential.user.sendEmailVerification()
-                .then(() => {
-                    // Cerrar la sesión forzosamente para que valide primero
-                    auth.signOut().then(() => {
-                        mostrarMensaje("¡Cuenta creada! Revisa tu correo electrónico para validar la cuenta antes de ingresar.", "exito");
-                        document.getElementById('passwordInput').value = '';
-                        registrandoCuenta = false;
-                    });
-                });
+            // Enviar correo de bienvenida/validación de fondo
+            userCredential.user.sendEmailVerification().catch(e => console.log(e));
+            
+            // Cerrar la sesión instantáneamente para mostrarle el mensaje al usuario de que se creó con éxito
+            auth.signOut().then(() => {
+                registrandoCuenta = false;
+                mostrarMensaje("¡Cuenta creada! Se envió un correo a tu bandeja. Ya puedes ingresar.", "exito");
+                document.getElementById('passwordInput').value = '';
+                mostrarPantallaLogin();
+            });
         })
         .catch((error) => {
             registrandoCuenta = false;
