@@ -63,8 +63,11 @@
             <div class="form-group">
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
-            <div class="form-group" style="margin-top: 15px;">
-                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña">
+            
+            <!-- CONTENEDOR DE CONTRASEÑA CON OJITO -->
+            <div class="form-group" style="margin-top: 15px; position: relative;">
+                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña" style="padding-right: 45px;">
+                <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
             </div>
             
             <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 20px;" onclick="iniciarSesion()">
@@ -122,6 +125,11 @@
                 <button class="ngc-btn btn-module" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
                 <button class="ngc-btn btn-module" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
             </div>
+        </div>
+
+        <!-- CRÉDITOS DEL SITIO -->
+        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 35px; text-transform: uppercase; letter-spacing: 1.5px;">
+            &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
 
     </main>
