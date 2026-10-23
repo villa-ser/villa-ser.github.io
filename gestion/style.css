@@ -1,1 +1,144 @@
+/* ============================================================== */
+/* ESTILOS VILLASER GESTIÓN (Integración de Tema Raíz)            */
+/* ============================================================== */
 
+:root {
+    --ngc-neon: #00d4ff; 
+    --ngc-neon-rgb: 0, 212, 255;
+    --ngc-glass: rgba(0, 0, 0, 0.5); 
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
+    --ngc-btn-bg: #181818;
+    --ngc-btn-hover: #242424;
+    --ngc-text: #ffffff;
+    --ngc-text-main: #ffffff; 
+    --ngc-text-desc: rgba(255, 255, 255, 0.9);
+    --ngc-text-faded: rgba(255, 255, 255, 0.4);
+    --bg-body: #121212;
+    --ngc-privacy-border: rgba(255, 255, 255, 0.1);
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --success-green: #28a745;
+    --error-red: #ff4b2b;
+    --ngc-bg-input: rgba(0, 0, 0, 0.6);
+}
+    
+[data-theme="light"] {
+    --ngc-neon: #0056d6; 
+    --ngc-neon-rgb: 0, 86, 214;
+    --ngc-glass: rgba(255, 255, 255, 0.6); 
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.6);
+    --ngc-glass-edge: inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+    --ngc-btn-bg: #FFFFFF;
+    --ngc-btn-hover: #F0F0F0;
+    --ngc-text: #111111;
+    --ngc-text-main: #1a1a1a; 
+    --ngc-text-desc: #333333;
+    --ngc-text-faded: #888888;
+    --bg-body: #d6dbe0;
+    --ngc-privacy-border: rgba(0, 0, 0, 0.15);
+    --card-shadow: rgba(0, 0, 0, 0.15);
+    --success-green: #1e7e34;
+    --error-red: #d93025;
+    --ngc-bg-input: rgba(255, 255, 255, 0.4); 
+}
+
+/* ================== ESTRUCTURA BASE ================== */
+body {
+    margin: 0; padding: 80px 4px 20px 4px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--ngc-text); 
+    display: flex; justify-content: center;
+    min-height: 100svh;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.ngc-wrapper {
+    display: flex; flex-direction: column; align-items: center; 
+    width: 100%; max-width: 500px; padding: 15px;
+}
+
+/* ================== COMPONENTES NGC ================== */
+.gnc-hero-card, .ngc-privacy-card, .ngc-cta-banner {
+    background: var(--ngc-glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: var(--ngc-border-glass); border-radius: 16px; padding: 25px 20px;
+    box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
+    width: 100%; box-sizing: border-box; transition: all 0.3s ease;
+}
+
+.ngc-input {
+    width: 100%; padding: 15px; background: var(--ngc-bg-input);
+    border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
+    color: var(--ngc-text-main); font-size: 1rem; outline: none; transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.ngc-input:focus {
+    border-color: var(--ngc-neon); box-shadow: 0 0 10px rgba(var(--ngc-neon-rgb), 0.3);
+}
+
+.ngc-button-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
+}
+
+.ngc-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column;
+    padding: 15px 10px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
+    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.8rem; font-weight: 600;
+    text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--card-shadow); text-align: center;
+}
+
+.ngc-btn i { font-size: 1.4rem; color: var(--ngc-neon); margin-bottom: 5px; }
+
+.ngc-btn:hover {
+    background: var(--ngc-btn-hover); transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(var(--ngc-neon-rgb), 0.2);
+}
+
+/* ================== CONTROLES FLOTANTES ================== */
+.hero-logo-icon {
+    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
+    border-radius: 8px; background: var(--ngc-glass); backdrop-filter: blur(15px);
+    border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
+    transition: all 0.3s ease; display: flex; justify-content: center; align-items: center;
+}
+
+.switch-plate {
+    position: fixed; top: 15px; right: 85px; z-index: 9999; width: 40px; height: 60px;
+    background: var(--ngc-glass); backdrop-filter: blur(15px);
+    border: var(--ngc-border-glass); border-radius: 8px; display: flex; justify-content: center;
+    align-items: center; cursor: pointer; box-shadow: 0 4px 15px var(--card-shadow); outline: none; padding: 0;
+}
+
+.switch-rocker {
+    width: 14px; height: 28px; border-radius: 4px; position: relative;
+    transform: perspective(200px) rotateX(-12deg); background: #2a2a2a; border: 1px solid #1a1a1a;
+    transition: transform 0.3s ease;
+}
+[data-theme="light"] .switch-rocker {
+    transform: perspective(200px) rotateX(12deg); background: #f4f4f4; border: 1px solid #dcdcdc;
+}
+
+.dropdown-flotante-content {
+    background: var(--ngc-glass); backdrop-filter: blur(15px); border: var(--ngc-border-glass);
+    border-radius: 12px; box-shadow: 0 10px 25px var(--card-shadow); padding: 8px;
+}
+.dropdown-flotante-content a {
+    color: var(--ngc-text-main); text-decoration: none; padding: 10px; display: flex;
+    align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px;
+}
+.dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
+
+/* ================== ANIMACIONES & UTILIDADES ================== */
+.oculto { display: none !important; }
+
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+@keyframes fade-in-out {
+  0% { opacity: 0; transform: scale(0.8); }
+  20% { opacity: 1; transform: scale(1.1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+.animate-welcome { animation: fade-in-out 2.5s forwards; }
+      
