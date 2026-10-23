@@ -1,23 +1,26 @@
 // ==========================================
-// 1. CONFIGURACIÓN DE FIREBASE (Con tus datos)
+// 1. CONFIGURACIÓN DE FIREBASE
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
-  authDomain: "villaser-gestion.firebaseapp.com",
-  projectId: "villaser-gestion",
-  storageBucket: "villaser-gestion.firebasestorage.app",
-  messagingSenderId: "1032102638132",
-  appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061",
-  measurementId: "G-CS6MWCYNFD"
+    apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+    authDomain: "villaser-gestion.firebaseapp.com",
+    projectId: "villaser-gestion",
+    storageBucket: "villaser-gestion.firebasestorage.app",
+    messagingSenderId: "1032102638132",
+    appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061",
+    measurementId: "G-CS6MWCYNFD"
 };
 
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
+// Variable para distinguir cuando el sistema está creando una cuenta y no cerrando sesión abruptamente
+let registrandoCuenta = false;
+
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 2. SISTEMA DE TEMA (Idéntico a Villaser Raíz)
+    // SISTEMA DE TEMA 
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     
     function sincronizarTema() {
@@ -29,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
             else document.documentElement.removeAttribute('data-theme');
             return;
         }
-
         if (prefiereClaro) document.documentElement.setAttribute('data-theme', 'light');
         else document.documentElement.removeAttribute('data-theme');
     }
@@ -40,25 +42,30 @@ document.addEventListener("DOMContentLoaded", () => {
         btnTemaServicios.addEventListener('click', () => {
             const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
             const nuevoTema = esActualClaro ? 'dark' : 'light';
-            
             if (nuevoTema === 'light') document.documentElement.setAttribute('data-theme', 'light');
             else document.documentElement.removeAttribute('data-theme');
-            
             localStorage.setItem('temaVillaser', nuevoTema);
         });
     }
 
-    // 3. VIGILANTE DE ESTADO DE AUTENTICACIÓN FIREBASE
+    // VIGILANTE DE ESTADO DE AUTENTICACIÓN FIREBASE
     auth.onAuthStateChanged(user => {
         if (user) {
-            // El usuario ya está logueado
-            mostrarAppPrincipal(user.email);
+            // Verifica si el correo ha sido validado (click en el enlace del mail)
+            if (user.emailVerified) {
+                document.getElementById('errorMessage').classList.add('oculto');
+                mostrarAppPrincipal(user.email);
+            } else {
+                // Si el usuario acaba de registrarse, dejamos el mensaje de éxito de crearCuenta()
+                if (!registrandoCuenta) {
+                    auth.signOut().then(() => {
+                        mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
+                        mostrarPantallaLogin();
+                    });
+                }
+            }
         } else {
-            // No hay usuario, mostramos pantalla de login
-            document.getElementById('loginScreen').classList.remove('oculto');
-            document.getElementById('mainHeader').classList.remove('oculto');
-            document.getElementById('appScreen').classList.add('oculto');
-            document.getElementById('userMenuWrapper').style.display = 'none';
+            mostrarPantallaLogin();
         }
     });
 
@@ -71,49 +78,97 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// FUNCIONES DE FIREBASE (LOGIN, LOGOUT, RECOVERY)
+// FUNCIONES DE CONTROL DE UI
 // ==========================================
+
+function mostrarMensaje(texto, tipo) {
+    const errorMsg = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorTextContent');
+    const errorIcon = document.getElementById('errorIcon');
+
+    errorText.innerText = texto;
+    errorMsg.classList.remove('oculto');
+
+    if (tipo === "exito") {
+        errorMsg.style.color = "var(--success-green)";
+        errorIcon.className = "fa-solid fa-circle-check";
+    } else {
+        errorMsg.style.color = "var(--error-red)";
+        errorIcon.className = "fa-solid fa-circle-exclamation";
+    }
+}
+
+function mostrarPantallaLogin() {
+    document.getElementById('loginScreen').classList.remove('oculto');
+    document.getElementById('mainHeader').classList.remove('oculto');
+    document.getElementById('appScreen').classList.add('oculto');
+    document.getElementById('userMenuWrapper').style.display = 'none';
+}
+
+
+// ==========================================
+// FUNCIONES DE FIREBASE (AUTH)
+// ==========================================
+
+function crearCuenta() {
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value.trim();
+
+    if (!email || !password) {
+        mostrarMensaje("Completa correo y contraseña para crear la cuenta.", "error");
+        return;
+    }
+
+    registrandoCuenta = true;
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Enviar correo de validación
+            userCredential.user.sendEmailVerification()
+                .then(() => {
+                    // Cerrar la sesión forzosamente para que valide primero
+                    auth.signOut().then(() => {
+                        mostrarMensaje("¡Cuenta creada! Revisa tu correo electrónico para validar la cuenta antes de ingresar.", "exito");
+                        document.getElementById('passwordInput').value = '';
+                        registrandoCuenta = false;
+                    });
+                });
+        })
+        .catch((error) => {
+            registrandoCuenta = false;
+            let msg = "Error al crear la cuenta.";
+            if (error.code === 'auth/email-already-in-use') msg = "Este correo ya se encuentra registrado.";
+            if (error.code === 'auth/weak-password') msg = "La contraseña debe tener al menos 6 caracteres.";
+            if (error.code === 'auth/invalid-email') msg = "Formato de correo no válido.";
+            mostrarMensaje(msg, "error");
+        });
+}
 
 function iniciarSesion() {
     const email = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value.trim();
-    const errorMsg = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorTextContent');
 
     if (!email || !password) {
-        errorText.innerText = "Completa correo y contraseña.";
-        errorMsg.classList.remove('oculto');
+        mostrarMensaje("Completa correo y contraseña.", "error");
         return;
     }
 
+    // Ocultar mensaje durante el proceso
+    document.getElementById('errorMessage').classList.add('oculto');
+
     auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Éxito. El listener onAuthStateChanged tomará el control.
-            errorMsg.classList.add('oculto');
-        })
         .catch((error) => {
-            // Manejo de errores amigable
-            errorMsg.classList.remove('oculto');
-            errorMsg.style.color = "var(--error-red)";
             document.getElementById('passwordInput').value = '';
+            let msg = "Error al ingresar. Revisa los datos.";
             
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    errorText.innerText = "Usuario no registrado.";
-                    break;
-                case 'auth/wrong-password':
-                    errorText.innerText = "Contraseña incorrecta.";
-                    break;
-                case 'auth/invalid-email':
-                    errorText.innerText = "Formato de correo no válido.";
-                    break;
-                case 'auth/too-many-requests':
-                    errorText.innerText = "Demasiados intentos. Intenta más tarde.";
-                    break;
-                default:
-                    errorText.innerText = "Error al ingresar. Revisa los datos.";
-                    console.error(error);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                msg = "Correo o contraseña incorrectos.";
+            } else if (error.code === 'auth/too-many-requests') {
+                msg = "Demasiados intentos. Intenta más tarde.";
+            } else if (error.code === 'auth/invalid-email') {
+                msg = "Formato de correo no válido.";
             }
+            mostrarMensaje(msg, "error");
         });
 }
 
@@ -127,37 +182,28 @@ function cerrarSesion() {
 
 function recuperarPassword() {
     const email = document.getElementById('emailInput').value.trim();
-    const errorMsg = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorTextContent');
 
     if (!email) {
-        errorMsg.style.color = "var(--error-red)";
-        errorText.innerText = "Ingresa tu correo para recuperar la contraseña.";
-        errorMsg.classList.remove('oculto');
+        mostrarMensaje("Ingresa tu correo arriba y presiona recuperar.", "error");
         return;
     }
 
     auth.sendPasswordResetEmail(email)
         .then(() => {
-            errorMsg.classList.remove('oculto');
-            errorMsg.style.color = "var(--success-green)";
-            errorText.innerText = `Correo enviado a ${email}. Revisa tu bandeja.`;
+            mostrarMensaje(`Enlace de recuperación enviado a ${email}.`, "exito");
         })
         .catch((error) => {
-            errorMsg.classList.remove('oculto');
-            errorMsg.style.color = "var(--error-red)";
             if (error.code === 'auth/user-not-found') {
-                errorText.innerText = "No existe cuenta con este correo.";
+                mostrarMensaje("No existe una cuenta con este correo.", "error");
             } else {
-                errorText.innerText = "Error al enviar correo de recuperación.";
-                console.error(error);
+                mostrarMensaje("Error al enviar el correo. Intenta de nuevo.", "error");
             }
         });
 }
 
 
 // ==========================================
-// FUNCIONES DE UI Y MENÚS
+// FUNCIONES DEL MENÚ PRINCIPAL
 // ==========================================
 
 function mostrarAppPrincipal(emailUsuario) {
@@ -224,4 +270,3 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
-        
