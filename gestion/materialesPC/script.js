@@ -3,12 +3,10 @@
 // =======================================================
 const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM';
 const URL_MAT = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Materiales`;
-const URL_CLI = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=NombresClientes`;
 
-let dataMat = [], dataCli = [];
+let dataMat = [];
 let listaItems = []; // Array central que guarda el estado de la lista
 
-const selCliente = document.getElementById('selCliente');
 const selects = [
     document.getElementById('sel0'), document.getElementById('sel1'), 
     document.getElementById('sel2'), document.getElementById('sel3'), 
@@ -16,33 +14,26 @@ const selects = [
 ];
 
 // =======================================================
-// 2. INICIALIZACIÓN, TEMA Y MEMORIA
+// 2. INICIALIZACIÓN Y MEMORIA
 // =======================================================
 window.onload = async () => {
-    // A. Detectar Tema Visual
-    const temaGuardado = localStorage.getItem('temaVillaser');
-    const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-    if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
-    
-    // B. Cargar Cerebro Cliente Global y Borrador local
+    // A. Cargar Cerebro Cliente Global
     cargarClienteGlobal();
+    
+    // B. Cargar Borrador local si existe
     cargarEstadoGuardado();
     
-    // C. Cargar Base de datos
+    // C. Cargar Base de datos de materiales
     await init();
 };
 
 async function init() {
     try {
-        const [resMat, resCli] = await Promise.all([fetch(URL_MAT), fetch(URL_CLI)]);
+        const resMat = await fetch(URL_MAT);
         dataMat = parseCSV(await resMat.text());
-        dataCli = parseCSV(await resCli.text());
         
-        document.getElementById('status').style.display = "none";
+        document.getElementById('status').classList.add('oculto');
         
-        poblarClientes(dataCli);
         fillSelect(0, [...new Set(dataMat.map(item => item.c0))].filter(v => v));
         selects[0].disabled = false;
 
@@ -66,7 +57,6 @@ function parseCSV(text) {
 }
 
 function setupEventListeners() {
-    selCliente.addEventListener('change', fillClientData);
     selects.forEach((sel, index) => {
         sel.addEventListener('change', () => updateDropdown(index + 1));
     });
@@ -84,13 +74,15 @@ function cargarClienteGlobal() {
         if (cliente.nombre) { document.getElementById('cliNombre').value = cliente.nombre; recuperado = true; }
         if (cliente.direccion) { document.getElementById('cliDir').value = cliente.direccion; recuperado = true; }
         if (cliente.proyecto) { document.getElementById('cliObs').value = cliente.proyecto; recuperado = true; }
+        // Agregamos teléfono si viniera de otro módulo que sí lo tenga
         if (cliente.telefono) { document.getElementById('cliTel').value = cliente.telefono; recuperado = true; }
         
         const estadoStr = localStorage.getItem('materiales_estado_actual');
         const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
         
+        // Muestra notificación si no hay ítems ya guardados en el borrador de materiales
         if (recuperado && (!estado.items || estado.items.length === 0)) {
-            mostrarToast("Datos del cliente recuperados");
+            mostrarToast("Datos del proyecto recuperados");
         }
     }
 }
@@ -108,13 +100,16 @@ function guardarClienteGlobal() {
 
 function mostrarToast(mensaje) {
     const toast = document.getElementById('toastCliente');
-    document.getElementById('toastMsg').innerText = mensaje;
+    toast.querySelector('strong').innerText = mensaje;
     toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 100);
-    setTimeout(() => {
-        toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400);
-    }, 5000);
+    setTimeout(() => cerrarToast(), 5000);
+}
+
+function cerrarToast() {
+    const toast = document.getElementById('toastCliente');
+    toast.classList.remove('mostrar');
+    setTimeout(() => toast.classList.add('oculto'), 400);
 }
 
 // =======================================================
@@ -142,9 +137,9 @@ function cargarEstadoGuardado() {
         
         listaItems = estado.items || [];
         if (listaItems.length > 0) {
-            document.getElementById('section-client').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('btnNuevoListado').classList.remove('hidden');
+            document.getElementById('section-client').classList.add('oculto');
+            document.getElementById('main-content').classList.remove('oculto');
+            document.getElementById('btnNuevoListado').classList.remove('oculto');
             renderItems();
         }
     }
@@ -158,44 +153,18 @@ function nuevoListado() {
         document.getElementById('cliObs').value = '';
         listaItems = [];
         guardarEstado();
+        guardarClienteGlobal();
         
-        document.getElementById('main-content').classList.add('hidden');
-        document.getElementById('section-client').classList.remove('hidden');
-        document.getElementById('btnNuevoListado').classList.add('hidden');
+        document.getElementById('main-content').classList.add('oculto');
+        document.getElementById('section-client').classList.remove('oculto');
+        document.getElementById('btnNuevoListado').classList.add('oculto');
         renderItems();
     }
 }
 
 // =======================================================
-// 5. LÓGICA DE MATERIALES Y CLIENTES
+// 5. LÓGICA DE MATERIALES
 // =======================================================
-function poblarClientes(lista) {
-    selCliente.innerHTML = '<option value="">-- SELECCIONE CLIENTE --</option>';
-    lista.forEach(c => { 
-        const opt = document.createElement('option');
-        opt.value = dataCli.indexOf(c);
-        opt.textContent = c.c0;
-        selCliente.appendChild(opt);
-    });
-}
-
-function filtrarClientes() {
-    const textoBuscado = document.getElementById('buscarCliente').value.toLowerCase();
-    const listaFiltrada = dataCli.filter(c => c.c0.toLowerCase().includes(textoBuscado));
-    poblarClientes(listaFiltrada);
-    fillClientData();
-}
-
-function fillClientData() {
-    const idx = selCliente.value;
-    if (idx === "") return;
-    const c = dataCli[idx];
-    document.getElementById('cliNombre').value = c.c0;
-    document.getElementById('cliTel').value = c.c1;
-    document.getElementById('cliDir').value = c.c2;
-    document.getElementById('cliObs').value = c.c3;
-}
-
 function updateDropdown(index) {
     for (let i = index; i < selects.length; i++) { 
         selects[i].innerHTML = '<option value="">-- Selección --</option>';
@@ -277,11 +246,14 @@ function addClientToList() {
     b.innerHTML = "<i class='fa-solid fa-check'></i> ¡LISTO!"; 
     b.style.background = 'var(--success-green)';
     b.style.color = '#fff';
+    b.style.borderColor = 'var(--success-green)';
     
     setTimeout(() => { 
-        document.getElementById('section-client').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('btnNuevoListado').classList.remove('hidden');
+        document.getElementById('section-client').classList.add('oculto');
+        document.getElementById('main-content').classList.remove('oculto');
+        document.getElementById('btnNuevoListado').classList.remove('oculto');
+        b.innerHTML = "<i class='fa-solid fa-play'></i> Iniciar Lista";
+        b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
     }, 500);
 }
 
@@ -348,7 +320,6 @@ function btnAlert(id, htmlOriginal) {
 // 7. COMPOSICIÓN Y GENERACIÓN DE PDF PROFESIONAL
 // =======================================================
 function sincronizarVistaPreviaPDF() {
-    // Traer datos corporativos guardados en Configuración Global (App Principal)
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
     const profSlogan = localStorage.getItem('villaser_conf_slogan') || '¡Electricidad Segura, Hogar Tranquilo!';
@@ -436,7 +407,7 @@ function takeScreenshot() {
     deletes.forEach(b => b.style.visibility = 'hidden');
     
     const nameToUse = document.getElementById('cliNombre').value || "Lista";
-    const isLightMode = document.body.classList.contains('light-mode');
+    const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
     const bgColor = isLightMode ? "#ffffff" : "#181818";
     area.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
     area.style.border = "none";
@@ -488,9 +459,10 @@ function importFromTxt(event) {
         });
         
         event.target.value = ""; guardarEstado(); renderItems();
-        document.getElementById('section-client').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('btnNuevoListado').classList.remove('hidden');
+        guardarClienteGlobal();
+        document.getElementById('section-client').classList.add('oculto');
+        document.getElementById('main-content').classList.remove('oculto');
+        document.getElementById('btnNuevoListado').classList.remove('oculto');
         mostrarToast("Borrador cargado correctamente");
     };
     reader.readAsText(file);
@@ -509,7 +481,10 @@ function sendWSP() {
     });
     
     let cleanNumber = tel.replace(/\D/g, '');
-    if (!cleanNumber) { alert("El cliente no tiene teléfono asignado, completa ese campo primero."); return; }
+    if (!cleanNumber) { 
+        alert("El cliente no tiene teléfono asignado, agrégalo en los datos del proyecto."); 
+        return; 
+    }
 
     if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
     else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
