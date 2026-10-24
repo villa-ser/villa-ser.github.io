@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Metas para WebApp -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212">
+    <link rel="manifest" href="manifest.json">
+    
     <title>Gestión Interna | Villaser</title>
     
-    <!-- Fuentes e Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase App (el núcleo) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser');
@@ -29,7 +29,7 @@
 </head>
 <body>
 
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
+    <!-- CONTROLES FLOTANTES -->
     <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
         <div class="switch-rocker"></div>
     </button>
@@ -39,6 +39,10 @@
         
         <div id="userDropdown" class="dropdown-flotante-content oculto" style="top: 70px; right: 0; left: auto; width: 180px; position: absolute;">
             <p id="userEmailDisplay" style="color: var(--ngc-text-faded); font-size: 0.7rem; padding: 5px 10px; margin: 0; text-align: center; word-break: break-all; border-bottom: 1px solid var(--ngc-privacy-border);"></p>
+            
+            <!-- NUEVO ACCESO A CONFIGURACIÓN -->
+            <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
+            
             <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
@@ -64,7 +68,6 @@
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
             
-            <!-- CONTENEDOR DE CONTRASEÑA CON OJITO -->
             <div class="form-group" style="margin-top: 15px; position: relative;">
                 <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña" style="padding-right: 45px;">
                 <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
@@ -127,7 +130,31 @@
             </div>
         </div>
 
-        <!-- CRÉDITOS DEL SITIO -->
+        <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
+        <div id="modalConfig" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+            <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 400px; position: relative;">
+                <button onclick="cerrarConfiguracion()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Datos de la Empresa</h3>
+                <p style="font-size: 0.75rem; color: var(--ngc-text-faded); text-align: center; margin-bottom: 20px;">Estos datos se usarán para generar tus reportes y PDFs.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
+                    <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
+                    <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
+                    
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); margin-top: 10px;">Logo de la empresa (Máx 500KB)</label>
+                    <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
+                    <img id="logoPreview" src="" style="max-height: 80px; object-fit: contain; margin: 5px auto; display: none;">
+                    
+                    <button class="ngc-btn" style="margin-top: 15px;" onclick="guardarConfiguracion()">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Datos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRÉDITOS -->
         <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 35px; text-transform: uppercase; letter-spacing: 1.5px;">
             &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
