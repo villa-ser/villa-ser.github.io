@@ -142,3 +142,13 @@ body {
 }
 .animate-welcome { animation: fade-in-out 2.5s forwards; }
       
+/* Corrección de color texto Menú Principal */
+.cta-banner-content h3 {
+    color: var(--ngc-text-main) !important;
+}
+.cta-banner-content p {
+    color: var(--ngc-text-faded) !important;
+}
+.cta-arrow {
+    color: var(--ngc-text-main) !important;
+}
