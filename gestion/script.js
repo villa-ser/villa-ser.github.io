@@ -11,16 +11,12 @@ const firebaseConfig = {
     measurementId: "G-CS6MWCYNFD"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
-// Variable para controlar el flujo de creación sin mostrar pantallas prematuras
 let registrandoCuenta = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    // SISTEMA DE TEMA 
     const btnTemaServicios = document.getElementById('btn-tema-servicios');
     
     function sincronizarTema() {
@@ -48,14 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // VIGILANTE DE ESTADO DE AUTENTICACIÓN FIREBASE
     auth.onAuthStateChanged(user => {
         if (user) {
-            if (registrandoCuenta) {
-                return;
-            }
-            
-            // VALIDACIÓN ESTRICTA: Solo entra si verificó el mail
+            if (registrandoCuenta) return;
             if (user.emailVerified) {
                 document.getElementById('errorMessage').classList.add('oculto');
                 mostrarAppPrincipal(user.email);
@@ -70,31 +61,43 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Permitir Enter para iniciar sesión
     document.getElementById('passwordInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            iniciarSesion();
+        if (e.key === 'Enter') iniciarSesion();
+    });
+
+    // Cargar previsualización de imagen al seleccionarla
+    document.getElementById('confLogo').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 500000) { // 500 KB Max
+                alert("La imagen es muy pesada. Debe ser menor a 500KB.");
+                this.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('logoPreview').src = event.target.result;
+                document.getElementById('logoPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         }
     });
 });
 
 // ==========================================
-// FUNCIONES DE CONTROL DE UI
+// FUNCIONES DE CONTROL DE UI & CONFIGURACIÓN
 // ==========================================
 
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('passwordInput');
     const toggleIcon = document.getElementById('togglePasswordIcon');
-    
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
+        toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
         toggleIcon.style.color = 'var(--ngc-neon)';
     } else {
         passwordInput.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
+        toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
         toggleIcon.style.color = 'var(--ngc-text-faded)';
     }
 }
@@ -103,10 +106,8 @@ function mostrarMensaje(texto, tipo) {
     const errorMsg = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorTextContent');
     const errorIcon = document.getElementById('errorIcon');
-
     errorText.innerText = texto;
     errorMsg.classList.remove('oculto');
-
     if (tipo === "exito") {
         errorMsg.style.color = "var(--success-green)";
         errorIcon.className = "fa-solid fa-circle-check";
@@ -123,6 +124,46 @@ function mostrarPantallaLogin() {
     document.getElementById('userMenuWrapper').style.display = 'none';
 }
 
+// -- NUEVO: Funciones del Panel de Configuración --
+function abrirConfiguracion() {
+    // Cargar datos previos si existen
+    document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
+    document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
+    document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
+    
+    const logoGuardado = localStorage.getItem('villaser_conf_logo');
+    if (logoGuardado) {
+        document.getElementById('logoPreview').src = logoGuardado;
+        document.getElementById('logoPreview').style.display = 'block';
+    }
+    
+    document.getElementById('modalConfig').classList.remove('oculto');
+    document.getElementById('userDropdown').classList.add('oculto');
+}
+
+function cerrarConfiguracion() {
+    document.getElementById('modalConfig').classList.add('oculto');
+}
+
+function guardarConfiguracion() {
+    const nombre = document.getElementById('confNombre').value.trim();
+    const slogan = document.getElementById('confSlogan').value.trim();
+    const telefono = document.getElementById('confTelefono').value.trim();
+    const logoPreview = document.getElementById('logoPreview').src;
+
+    localStorage.setItem('villaser_conf_nombre', nombre);
+    localStorage.setItem('villaser_conf_slogan', slogan);
+    localStorage.setItem('villaser_conf_telefono', telefono);
+    
+    // Solo guarda el logo si no está vacío o no es un link genérico
+    if (logoPreview && logoPreview.startsWith('data:image')) {
+        localStorage.setItem('villaser_conf_logo', logoPreview);
+    }
+
+    alert("¡Datos de empresa guardados correctamente!");
+    cerrarConfiguracion();
+}
+
 
 // ==========================================
 // FUNCIONES DE FIREBASE (AUTH)
@@ -133,39 +174,29 @@ function crearCuenta() {
     const password = document.getElementById('passwordInput').value.trim();
 
     if (!email || !password) {
-        mostrarMensaje("Completa correo y contraseña para crear la cuenta.", "error");
+        mostrarMensaje("Completa correo y contraseña.", "error");
         return;
     }
 
     registrandoCuenta = true;
-
     auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // El idioma del correo se configura desde la Consola de Firebase
             userCredential.user.sendEmailVerification().catch(e => console.log(e));
-            
             auth.signOut().then(() => {
                 registrandoCuenta = false;
-                mostrarMensaje("¡Cuenta creada! Se envió un correo de validación a tu bandeja o spam.", "exito");
+                mostrarMensaje("¡Cuenta creada! Se envió correo de validación.", "exito");
                 document.getElementById('passwordInput').value = '';
-                
-                // Reiniciar el ícono del ojito si estaba visible
-                const passwordInput = document.getElementById('passwordInput');
-                const toggleIcon = document.getElementById('togglePasswordIcon');
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-                toggleIcon.style.color = 'var(--ngc-text-faded)';
-                
+                document.getElementById('passwordInput').type = 'password';
+                document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
+                document.getElementById('togglePasswordIcon').style.color = 'var(--ngc-text-faded)';
                 mostrarPantallaLogin();
             });
         })
         .catch((error) => {
             registrandoCuenta = false;
             let msg = "Error al crear la cuenta.";
-            if (error.code === 'auth/email-already-in-use') msg = "Este correo ya se encuentra registrado.";
-            if (error.code === 'auth/weak-password') msg = "La contraseña debe tener al menos 6 caracteres.";
-            if (error.code === 'auth/invalid-email') msg = "Formato de correo no válido.";
+            if (error.code === 'auth/email-already-in-use') msg = "Correo ya registrado.";
+            if (error.code === 'auth/weak-password') msg = "Mínimo 6 caracteres.";
             mostrarMensaje(msg, "error");
         });
 }
@@ -178,60 +209,33 @@ function iniciarSesion() {
         mostrarMensaje("Completa correo y contraseña.", "error");
         return;
     }
-
     document.getElementById('errorMessage').classList.add('oculto');
 
     auth.signInWithEmailAndPassword(email, password)
         .catch((error) => {
             document.getElementById('passwordInput').value = '';
-            
-            // Reiniciar el ojito si da error
-            const toggleIcon = document.getElementById('togglePasswordIcon');
             document.getElementById('passwordInput').type = 'password';
-            toggleIcon.classList.remove('fa-eye-slash');
-            toggleIcon.classList.add('fa-eye');
-            toggleIcon.style.color = 'var(--ngc-text-faded)';
-
-            let msg = "Error al ingresar. Revisa los datos.";
+            document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
             
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                msg = "Correo o contraseña incorrectos.";
-            } else if (error.code === 'auth/too-many-requests') {
-                msg = "Demasiados intentos. Intenta más tarde.";
-            } else if (error.code === 'auth/invalid-email') {
-                msg = "Formato de correo no válido.";
-            }
+            let msg = "Error al ingresar. Revisa los datos.";
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = "Datos incorrectos.";
             mostrarMensaje(msg, "error");
         });
 }
 
 function cerrarSesion() {
-    auth.signOut().then(() => {
-        window.location.reload();
-    }).catch((error) => {
-        console.error("Error al cerrar sesión", error);
-    });
+    auth.signOut().then(() => window.location.reload());
 }
 
 function recuperarPassword() {
     const email = document.getElementById('emailInput').value.trim();
-
     if (!email) {
         mostrarMensaje("Ingresa tu correo arriba y presiona recuperar.", "error");
         return;
     }
-
     auth.sendPasswordResetEmail(email)
-        .then(() => {
-            mostrarMensaje(`Enlace de recuperación enviado a ${email}.`, "exito");
-        })
-        .catch((error) => {
-            if (error.code === 'auth/user-not-found') {
-                mostrarMensaje("No existe una cuenta con este correo.", "error");
-            } else {
-                mostrarMensaje("Error al enviar el correo. Intenta de nuevo.", "error");
-            }
-        });
+        .then(() => mostrarMensaje(`Recuperación enviada a ${email}.`, "exito"))
+        .catch(() => mostrarMensaje("Error al enviar el correo.", "error"));
 }
 
 
@@ -266,14 +270,19 @@ function toggleMenu() {
 }
 
 function toggleUserMenu() {
-    const dropdown = document.getElementById('userDropdown');
-    dropdown.classList.toggle('oculto');
+    document.getElementById('userDropdown').classList.toggle('oculto');
 }
+
+// Cierra modal de configuración al tocar fondo
+document.getElementById('modalConfig').addEventListener('click', function(e) {
+    if(e.target === this) cerrarConfiguracion();
+});
 
 document.addEventListener('click', (e) => {
     const wrapper = document.getElementById('userMenuWrapper');
     const dropdown = document.getElementById('userDropdown');
-    if (wrapper && !wrapper.contains(e.target) && !dropdown.classList.contains('oculto')) {
+    const modal = document.getElementById('modalConfig');
+    if (wrapper && !wrapper.contains(e.target) && !dropdown.classList.contains('oculto') && modal.classList.contains('oculto')) {
         dropdown.classList.add('oculto');
     }
 });
@@ -299,4 +308,4 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
-            
+                                          
