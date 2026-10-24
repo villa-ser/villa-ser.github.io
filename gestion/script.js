@@ -14,6 +14,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 let registrandoCuenta = false;
+let cargaInicial = true; // Controla que el splash screen solo demore al abrir la app
 
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -44,20 +45,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // GESTIÓN DEL ESTADO DE AUTENTICACIÓN Y SPLASH SCREEN
     auth.onAuthStateChanged(user => {
-        if (user) {
-            if (registrandoCuenta) return;
-            if (user.emailVerified) {
-                document.getElementById('errorMessage').classList.add('oculto');
-                mostrarAppPrincipal(user.email);
+        const procesarAcceso = () => {
+            if (user) {
+                if (registrandoCuenta) return;
+                if (user.emailVerified) {
+                    document.getElementById('errorMessage').classList.add('oculto');
+                    mostrarAppPrincipal(user.email);
+                } else {
+                    auth.signOut().then(() => {
+                        mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
+                        mostrarPantallaLogin();
+                    });
+                }
             } else {
-                auth.signOut().then(() => {
-                    mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
-                    mostrarPantallaLogin();
-                });
+                mostrarPantallaLogin();
             }
+        };
+
+        if (cargaInicial) {
+            // Mantiene la pantalla de carga (Splash) por 2.5 segundos solo al abrir la app
+            setTimeout(() => {
+                const splash = document.getElementById('customSplashScreen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.classList.add('oculto'), 500); // Ocultar tras transición
+                }
+                procesarAcceso();
+                cargaInicial = false;
+            }, 2500);
         } else {
-            mostrarPantallaLogin();
+            // Si el usuario acaba de loguearse manualmente, procesa el acceso instantáneo
+            procesarAcceso();
         }
     });
 
@@ -125,7 +145,6 @@ function mostrarPantallaLogin() {
 }
 
 function abrirConfiguracion() {
-    // Cargar datos previos si existen
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
     document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
@@ -154,7 +173,6 @@ function guardarConfiguracion() {
     localStorage.setItem('villaser_conf_slogan', slogan);
     localStorage.setItem('villaser_conf_telefono', telefono);
     
-    // Solo guarda el logo si no está vacío o no es un link genérico
     if (logoPreview && logoPreview.startsWith('data:image')) {
         localStorage.setItem('villaser_conf_logo', logoPreview);
     }
@@ -250,22 +268,7 @@ function mostrarAppPrincipal(emailUsuario) {
     if (emailDisplay) emailDisplay.innerText = emailUsuario;
     
     document.getElementById('userMenuWrapper').style.display = 'flex';
-    
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    welcomeScreen.classList.remove('oculto');
-    welcomeScreen.querySelector('.welcome-text').classList.add('animate-welcome');
-    
-    setTimeout(() => {
-        welcomeScreen.classList.add('oculto');
-        document.getElementById('appScreen').classList.remove('oculto');
-    }, 2500);
-}
-
-function toggleMenu() {
-    const grid = document.getElementById('menuGrid');
-    const arrow = document.getElementById('menu-arrow');
-    grid.classList.toggle('oculto');
-    arrow.style.transform = grid.classList.contains('oculto') ? 'rotate(0deg)' : 'rotate(180deg)';
+    document.getElementById('appScreen').classList.remove('oculto');
 }
 
 function toggleUserMenu() {
@@ -311,8 +314,6 @@ Object.keys(rutas).forEach(id => {
 // ==========================================
 // CONFIGURACIÓN PWA (Instalación)
 // ==========================================
-
-// 1. Registrar el Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -321,19 +322,15 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// 2. Capturar el evento de instalación
 let eventoInstalacion;
 const btnInstalar = document.getElementById('btn-instalar'); 
 
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevenir el comportamiento por defecto de Chrome
     e.preventDefault();
     eventoInstalacion = e;
-    
-    // Mostrar nuestro botón personalizado en el menú
     if (btnInstalar) {
         btnInstalar.classList.remove('oculto'); 
-        btnInstalar.style.display = 'flex'; // Cambiado a flex para no romper el CSS del dropdown
+        btnInstalar.style.display = 'flex'; 
     }
 });
 
@@ -341,20 +338,13 @@ if (btnInstalar) {
     btnInstalar.addEventListener('click', async (e) => {
         e.preventDefault();
         if (!eventoInstalacion) return;
-        
-        // Mostrar el prompt nativo de instalación
         eventoInstalacion.prompt();
-        
-        // Esperar la respuesta del usuario
         const { outcome } = await eventoInstalacion.userChoice;
         if (outcome === 'accepted') {
-            console.log('El usuario instaló la aplicación');
-            // Ocultar el botón una vez instalada
             btnInstalar.classList.add('oculto');
             btnInstalar.style.display = 'none';
         }
-        
         eventoInstalacion = null;
     });
-        }
-        
+                }
+    
