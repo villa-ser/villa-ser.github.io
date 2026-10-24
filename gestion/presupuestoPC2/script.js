@@ -17,15 +17,14 @@ const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 const buscadorTrabajo = document.getElementById('buscadorTrabajo');
 const sugerenciasTrabajo = document.getElementById('sugerenciasTrabajo');
-
-// Diccionarios de búsqueda
 const palabrasVacias = new Set(["electrico", "electrica", "el", "la", "los", "las", "un", "una", "unos", "unas", "a", "ante", "con", "contra", "de", "desde", "en", "entre", "hacia", "hasta", "para", "por", "sin", "sobre", "y", "e", "ni", "o", "u", "pero", "mas", "como", "si", "que", "yo", "tu", "el", "ella", "nosotros", "este", "ese", "aquel", "esta", "esa", "esto", "eso", "muy", "mucho", "poco", "mas", "menos", "nuevo", "viejo", "solo"]);
 
 // ==========================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN Y MEMORIA DEL CLIENTE
 // ==========================================
 window.onload = () => {
-    cargarEstadoGuardado();
+    cargarClienteGlobal(); // Busca si hay un cliente activo de otro módulo
+    cargarEstadoGuardado(); // Luego carga el borrador local (si existe)
     fetchData();
 };
 
@@ -69,9 +68,52 @@ function setupEventListeners() {
     });
 }
 
-// ==========================================
-// ESTADO LOCAL (Borrador)
-// ==========================================
+// --- SINCRONIZACIÓN DE CLIENTES (NUEVO) ---
+function cargarClienteGlobal() {
+    const clienteStr = localStorage.getItem('villaser_cliente_global');
+    if (clienteStr) {
+        const cliente = JSON.parse(clienteStr);
+        let recuperado = false;
+        
+        if (cliente.nombre) { document.getElementById('cliNombre').value = cliente.nombre; recuperado = true; }
+        if (cliente.direccion) { document.getElementById('cliDireccion').value = cliente.direccion; recuperado = true; }
+        if (cliente.proyecto) { document.getElementById('cliProyecto').value = cliente.proyecto; recuperado = true; }
+        
+        // Muestra notificación si no hay ítems ya guardados en el borrador de presupuestos
+        const estadoStr = localStorage.getItem('presupuesto_estado_actual');
+        const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
+        
+        if (recuperado && estado.items.length === 0) {
+            mostrarToastCliente();
+        }
+    }
+}
+
+function guardarClienteGlobal() {
+    // Almacena universalmente para que los demás módulos lo lean
+    const clienteObj = {
+        nombre: document.getElementById('cliNombre').value.trim(),
+        direccion: document.getElementById('cliDireccion').value.trim(),
+        proyecto: document.getElementById('cliProyecto').value.trim()
+    };
+    localStorage.setItem('villaser_cliente_global', JSON.stringify(clienteObj));
+    guardarEstado(); // Guarda también el borrador de este módulo
+}
+
+function mostrarToastCliente() {
+    const toast = document.getElementById('toastCliente');
+    toast.classList.remove('oculto');
+    setTimeout(() => toast.classList.add('mostrar'), 100);
+    setTimeout(() => cerrarToast(), 5000); // Auto ocultar a los 5s
+}
+
+function cerrarToast() {
+    const toast = document.getElementById('toastCliente');
+    toast.classList.remove('mostrar');
+    setTimeout(() => toast.classList.add('oculto'), 400);
+}
+
+// --- BORRADOR LOCAL DE PRESUPUESTOS ---
 function guardarEstado() {
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
@@ -88,10 +130,11 @@ function cargarEstadoGuardado() {
     const estadoStr = localStorage.getItem('presupuesto_estado_actual');
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
-        document.getElementById('cliNombre').value = estado.cliNombre || '';
-        document.getElementById('cliDireccion').value = estado.cliDireccion || '';
-        document.getElementById('cliProyecto').value = estado.cliProyecto || '';
-        document.getElementById('obsGenerales').value = estado.obsGenerales || '';
+        // Si hay datos locales, sobreescriben al global solo para el render de este borrador
+        if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
+        if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
+        if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
+        if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
         listaItems = estado.items || [];
         if (estado.nro) nroPresupuestoGlobal = estado.nro;
     }
@@ -106,6 +149,7 @@ function nuevoPresupuesto() {
         listaItems = [];
         nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
         guardarEstado();
+        guardarClienteGlobal();
         
         document.getElementById('step-trabajo').classList.add('oculto');
         document.getElementById('step-cliente').classList.remove('oculto');
@@ -123,7 +167,7 @@ function iniciarPresupuesto() {
     document.getElementById('step-cliente').classList.add('oculto');
     document.getElementById('step-trabajo').classList.remove('oculto');
     document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-    guardarEstado();
+    guardarClienteGlobal();
     renderTabla();
 }
 
@@ -139,10 +183,7 @@ function step(id, val) {
 function poblarTemas() { 
     selTema.innerHTML = '<option value="">-- SELECCIONE RUBRO --</option>';
     [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { 
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        selTema.appendChild(opt);
+        const opt = document.createElement('option'); opt.value = t; opt.textContent = t; selTema.appendChild(opt);
     }); 
 }
 
@@ -156,19 +197,13 @@ function cambioTema() {
     if(t) {
         selConcepto.disabled = false;
         dbPrecios.filter(i => i.tema === t).forEach(i => { 
-            const opt = document.createElement('option');
-            opt.value = i.concepto;
-            opt.textContent = i.concepto;
-            selConcepto.appendChild(opt);
+            const opt = document.createElement('option'); opt.value = i.concepto; opt.textContent = i.concepto; selConcepto.appendChild(opt);
         }); 
-    } else {
-        selConcepto.disabled = true;
-    }
+    } else { selConcepto.disabled = true; }
 }
 
 function limpiarEdicionesTemporales() {
-    conceptoEditado = null;
-    precioEditado = null;
+    conceptoEditado = null; precioEditado = null;
     document.getElementById('badgeConcepto').style.display = 'none';
     document.getElementById('badgePrecio').style.display = 'none';
     document.getElementById('btnEditConcepto').style.display = 'none';
@@ -182,14 +217,11 @@ function cargarDetallePrecios() {
     
     if(item) { 
         document.getElementById('unitarioLabel').innerText = `Unit: $ ${item.precio.toLocaleString('es-AR')}`; 
-        inputObs.value = item.notas; 
-        notasOriginales = item.notas; 
-        inputObs.readOnly = true; 
+        inputObs.value = item.notas; notasOriginales = item.notas; inputObs.readOnly = true; 
         document.getElementById('btnEditConcepto').style.display = 'inline-block';
         document.getElementById('btnEditPrecio').style.display = 'inline-block';
     } else {
-        document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
-        inputObs.value = "";
+        document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; inputObs.value = "";
     }
 }
 
@@ -199,8 +231,7 @@ function editarConceptoTemporal() {
     const valorBase = conceptoEditado !== null ? conceptoEditado : itemActual.concepto;
     const nuevoTexto = prompt("Editar nombre del trabajo:", valorBase);
     if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-        conceptoEditado = nuevoTexto.trim();
-        document.getElementById('badgeConcepto').style.display = 'block';
+        conceptoEditado = nuevoTexto.trim(); document.getElementById('badgeConcepto').style.display = 'block';
     }
 }
 
@@ -235,16 +266,11 @@ function agregarTrabajo() {
           
     listaItems.push({ id: Date.now(), concepto: finalConcepto, obs: document.getElementById('obsManual').value, qty, total: finalTotal, unitario: finalPrecio, desc });
     
-    guardarEstado();
-    renderTabla(); 
+    guardarEstado(); renderTabla(); 
     
-    document.getElementById('obsManual').value = ""; 
-    document.getElementById('cantidad').value = 1; 
-    document.getElementById('porcentajeDesc').value = 0;
-    buscadorTrabajo.value = "";
-    selConcepto.value = ""; 
-    limpiarEdicionesTemporales();
-    document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
+    document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; document.getElementById('porcentajeDesc').value = 0;
+    buscadorTrabajo.value = ""; selConcepto.value = ""; 
+    limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
 // ==========================================
@@ -287,22 +313,16 @@ function renderTabla() {
     sincronizarVistaPreviaPDF();
 }
 
-function borrarItem(id) { 
-    listaItems = listaItems.filter(i => i.id !== id); 
-    guardarEstado(); renderTabla(); 
-}
+function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guardarEstado(); renderTabla(); }
 
 function actualizarPDFHeaders() {
-    // Aquí EXTRAEMOS los datos configurados en el panel del menú principal
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
     const profSlogan = localStorage.getItem('villaser_conf_slogan') || '';
     const profLogo = localStorage.getItem('villaser_conf_logo') || '';
-    // Correo (puedes añadir este campo al config luego, lo simulamos para el PDF)
-    const profEmail = localStorage.getItem('villaser_conf_email') || '';
+    const profEmail = localStorage.getItem('villaser_conf_email') || ''; // Para el futuro si se guarda
 
     document.getElementById('headerMembrete').innerText = profNombre.toUpperCase();
-    
     document.getElementById('pdf-slogan').innerText = profSlogan;
     document.getElementById('pdf-tel').innerText = profTel ? `📞 ${profTel}` : '';
     document.getElementById('pdf-email').innerText = profEmail ? `✉️ ${profEmail}` : '';
@@ -311,13 +331,9 @@ function actualizarPDFHeaders() {
     const txtPdf = document.getElementById('pdf-text-logo');
     
     if (profLogo && profLogo.startsWith('data:image')) {
-        imgPdf.src = profLogo;
-        imgPdf.style.display = 'block';
-        txtPdf.style.display = 'none';
+        imgPdf.src = profLogo; imgPdf.style.display = 'block'; txtPdf.style.display = 'none';
     } else {
-        imgPdf.style.display = 'none';
-        txtPdf.innerText = profNombre.toUpperCase();
-        txtPdf.style.display = 'block';
+        imgPdf.style.display = 'none'; txtPdf.innerText = profNombre.toUpperCase(); txtPdf.style.display = 'block';
     }
 }
 
@@ -362,7 +378,7 @@ function sincronizarVistaPreviaPDF() {
 }
 
 // ==========================================
-// EXPORTACIÓN, IMPORTACIÓN Y CAPTURA
+// EXPORTACIÓN Y CAPTURA
 // ==========================================
 function exportarJSON() {
     if (listaItems.length === 0) return alert("No hay datos para exportar.");
@@ -372,11 +388,8 @@ function exportarJSON() {
     const url = URL.createObjectURL(blob);
     const cliNombre = document.getElementById('cliNombre').value.split(' ')[0] || 'Cliente';
     
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Presupuesto_${cliNombre}_Backup.json`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href = url; a.download = `Presupuesto_${cliNombre}_Backup.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 function importarJSON(e) {
@@ -388,6 +401,9 @@ function importarJSON(e) {
             const data = JSON.parse(ev.target.result);
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
+            
+            // Si importan un JSON viejo, también lo guardamos como el cliente activo actual
+            guardarClienteGlobal();
             
             document.getElementById('step-cliente').classList.add('oculto');
             document.getElementById('step-trabajo').classList.remove('oculto');
@@ -433,11 +449,10 @@ async function generarPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    try {
-        await html2pdf().set(opt).from(element).save();
-    } catch (error) { alert("Error al generar el PDF."); } 
+    try { await html2pdf().set(opt).from(element).save(); } catch (error) { alert("Error al generar el PDF."); } 
     finally { if (window.innerWidth < 992) element.style.display = 'none'; }
 }
+
 function enviarWhatsApp() { 
     const tel = prompt("Ingresá el número de WhatsApp del cliente (Ej: 3511234567):");
     if(!tel) return;
@@ -448,30 +463,19 @@ function enviarWhatsApp() {
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
 }
 
-async function copiarTitulo() {
-    const n = document.getElementById('cliNombre').value.split(' ')[0] || 'Cliente';
-    const f = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
-    const texto = `${n}_Presupuesto_${f}`;
-    try { await navigator.clipboard.writeText(texto); alert("Título copiado"); } 
-    catch (err) { alert("Navegador no soporta copiado"); }
-}
-
 // ==========================================
 // MOTOR DE BÚSQUEDA AVANZADO
 // ==========================================
 function normalizarFonetica(texto) {
     return texto.split(/\s+/).map(p => {
-        p = p.replace(/ll/g, "y").replace(/y/g, "i").replace(/v/g, "b").replace(/z/g, "s")
-             .replace(/ce/g, "se").replace(/ci/g, "si").replace(/ch/g, "x").replace(/h/g, "").replace(/x/g, "ch");       
+        p = p.replace(/ll/g, "y").replace(/y/g, "i").replace(/v/g, "b").replace(/z/g, "s").replace(/ce/g, "se").replace(/ci/g, "si").replace(/ch/g, "x").replace(/h/g, "").replace(/x/g, "ch");       
         if (p.length > 4 && p.endsWith("es")) p = p.slice(0, -2);
         else if (p.length > 3 && p.endsWith("s")) p = p.slice(0, -1);
         return p;
     }).join(" ");
 }
 
-function obtenerPalabrasClave(texto) {
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(p => p.length > 0);
-}
+function obtenerPalabrasClave(texto) { return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(p => p.length > 0); }
 
 function construirDiccionarioSugerencias() {
     let palabras = new Set();
@@ -522,9 +526,7 @@ function manejarBuscador() {
             pBuscadas.forEach(pb => {
                 const pbFon = normalizarFonetica(pb);
                 for (let pc of pConcepto) {
-                    if (pc === pb || normalizarFonetica(pc) === pbFon || distanciaLevenshtein(pb, pc) <= 1) {
-                        matchCount++; break;
-                    }
+                    if (pc === pb || normalizarFonetica(pc) === pbFon || distanciaLevenshtein(pb, pc) <= 1) { matchCount++; break; }
                 }
             });
             if (matchCount > 0 && matchCount >= pBuscadas.length - 1) score += 20;
@@ -542,16 +544,11 @@ function manejarBuscador() {
             const li = document.createElement('li');
             li.innerHTML = `<strong>${res.item.concepto}</strong> <br><small style="color:var(--ngc-neon)">${res.item.tema} - $${res.item.precio}</small>`;
             li.onclick = () => {
-                selTema.value = res.item.tema;
-                cambioTema(); 
-                selConcepto.value = res.item.concepto;
-                cargarDetallePrecios(); 
-                buscadorTrabajo.value = "";
-                sugerenciasTrabajo.classList.add("oculto");
-                document.getElementById('cantidad').focus();
+                selTema.value = res.item.tema; cambioTema(); selConcepto.value = res.item.concepto; cargarDetallePrecios(); 
+                buscadorTrabajo.value = ""; sugerenciasTrabajo.classList.add("oculto"); document.getElementById('cantidad').focus();
             };
             sugerenciasTrabajo.appendChild(li);
         });
     }
     sugerenciasTrabajo.classList.remove("oculto");
-              }
+            }
