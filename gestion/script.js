@@ -1,6 +1,3 @@
-// ==========================================
-// 1. CONFIGURACIÓN DE FIREBASE
-// ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
     authDomain: "villaser-gestion.firebaseapp.com",
@@ -94,10 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// ==========================================
-// FUNCIONES DE CONTROL DE UI & CONFIGURACIÓN
-// ==========================================
-
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('passwordInput');
     const toggleIcon = document.getElementById('togglePasswordIcon');
@@ -136,7 +129,7 @@ function mostrarPantallaLogin() {
 
 function abrirConfiguracion() {
     const temaActual = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    document.getElementById('confTema').value = temaActual;
+    document.getElementById(`tema_${temaActual}`).checked = true;
 
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
@@ -173,10 +166,6 @@ function guardarConfiguracion() {
     alert("¡Configuración guardada correctamente!");
     cerrarConfiguracion();
 }
-
-// ==========================================
-// FUNCIONES DE FIREBASE (AUTH)
-// ==========================================
 
 function crearCuenta() {
     const email = document.getElementById('emailInput').value.trim();
@@ -246,10 +235,6 @@ function recuperarPassword() {
         .then(() => mostrarMensaje(`Recuperación enviada a ${email}.`, "exito"))
         .catch(() => mostrarMensaje("Error al enviar el correo.", "error"));
 }
-
-// ==========================================
-// FUNCIONES DEL MENÚ PRINCIPAL
-// ==========================================
 
 function mostrarAppPrincipal(emailUsuario) {
     document.getElementById('loginScreen').classList.add('oculto');
@@ -333,4 +318,5 @@ if (btnInstalar) {
         }
         eventoInstalacion = null;
     });
-}
+        }
+    
