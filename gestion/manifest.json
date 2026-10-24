@@ -9,12 +9,12 @@
     {
       "src": "icono.avif",
       "sizes": "192x192",
-      "type": "image/avif"
+      "type": "./image/avif"
     },
     {
       "src": "icono2.avif",
       "sizes": "512x512",
-      "type": "image/avif"
+      "type": "./image/avif"
     }
   ]
 }
