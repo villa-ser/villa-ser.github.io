@@ -35,10 +35,6 @@
     </div>
 
     <!-- CONTROLES FLOTANTES -->
-    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
-        <div class="switch-rocker"></div>
-    </button>
-
     <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
         <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
         
@@ -97,7 +93,7 @@
         <!-- INTERFAZ PRINCIPAL DE LA APP -->
         <div id="appScreen" class="oculto" style="width: 100%;">
             
-            <!-- GRILLA DE MÓDULOS (Siempre visible) -->
+            <!-- GRILLA DE MÓDULOS -->
             <div id="menuGrid" class="ngc-button-grid" style="margin-top: 20px;">
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
@@ -123,20 +119,27 @@
             <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 400px; position: relative;">
                 <button onclick="cerrarConfiguracion()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
                 
-                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Datos de la Empresa</h3>
-                <p style="font-size: 0.75rem; color: var(--ngc-text-faded); text-align: center; margin-bottom: 20px;">Estos datos se usarán para generar tus reportes y PDFs.</p>
+                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
                 
-                <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                    
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
+                    <select id="confTema" class="ngc-input" onchange="cambiarTemaManual(this.value)" style="margin-bottom: 10px;">
+                        <option value="dark">Modo Oscuro</option>
+                        <option value="light">Modo Claro</option>
+                    </select>
+
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
                     <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
                     <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
                     <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
                     
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); margin-top: 10px;">Logo de la empresa (Máx 500KB)</label>
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); margin-top: 5px;">Logo de la empresa (Máx 500KB)</label>
                     <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
                     <img id="logoPreview" src="" style="max-height: 80px; object-fit: contain; margin: 5px auto; display: none;">
                     
                     <button class="ngc-btn" style="margin-top: 15px;" onclick="guardarConfiguracion()">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Datos
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
                     </button>
                 </div>
             </div>
