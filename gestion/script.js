@@ -333,13 +333,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Mostrar nuestro botón personalizado en el menú
     if (btnInstalar) {
         btnInstalar.classList.remove('oculto'); 
-        btnInstalar.style.display = 'block'; 
+        btnInstalar.style.display = 'flex'; // Cambiado a flex para no romper el CSS del dropdown
     }
 });
 
 if (btnInstalar) {
     btnInstalar.addEventListener('click', async (e) => {
-        e.preventDefault(); // Evita que la página salte al hacer clic en el enlace '#'
+        e.preventDefault();
         if (!eventoInstalacion) return;
         
         // Mostrar el prompt nativo de instalación
