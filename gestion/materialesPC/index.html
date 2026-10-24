@@ -16,54 +16,71 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
+
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- TOAST NOTIFICACIÓN -->
-    <div id="toastCliente" class="toast-flotante oculto">
-        <i class="fa-solid fa-user-check"></i> <span id="toastMsg">Cliente recuperado</span>
+    <div id="toastCliente" class="ngc-toast oculto gpu-accel">
+        <i class="fa-solid fa-user-check"></i>
+        <div class="toast-content">
+            <strong>Cliente Recuperado</strong>
+            <p>Se cargaron los datos del último informe. Modifícalos si es un proyecto nuevo.</p>
+        </div>
+        <button class="toast-close" onclick="cerrarToast()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
     <div class="layout-wrapper">
         <main class="container ngc-wrapper">
             
             <!-- BOTÓN VOLVER AL MENÚ -->
-            <nav class="top-nav" style="width: 100%; margin-bottom: 15px;">
-                <button class="ngc-btn btn-back" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal" style="background: transparent;">
+            <nav class="top-nav" style="width: 100%; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal" style="background: transparent; border: none; padding: 0;">
                     <i class="fa-solid fa-arrow-left"></i> Menú
+                </button>
+                <div style="font-size: 0.8rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                    <i class="fa-solid fa-boxes-stacked"></i> Materiales
+                </div>
+                <button id="btnNuevoListado" class="ngc-btn-icon danger oculto" onclick="nuevoListado()" title="Nueva Lista" style="background: transparent; border: none; padding: 0; color: var(--error-red);">
+                    <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </nav>
 
-            <div id="status" aria-live="polite" style="color: var(--ngc-neon); font-size: 0.8rem; text-align: center; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">
-                <i class="fa-solid fa-spinner fa-spin"></i> Sincronizando Catálogo...
+            <div id="status" class="ngc-card loading-state">
+                <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
+                <br>Sincronizando Catálogo...
             </div>
             
             <!-- SECCIÓN CLIENTE -->
-            <section id="section-client" class="ngc-privacy-card">
-                <h4 class="ngc-title" style="margin-top:0; margin-bottom: 15px;"><i class="fa-solid fa-user-tag"></i> Datos del Cliente</h4>
+            <section id="section-client" class="ngc-privacy-card gpu-accel">
+                <h4 class="ngc-title" style="margin-top:0; margin-bottom: 15px;"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Tus datos de profesional se añadirán automáticamente al PDF.</p>
                 
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                    <input type="text" id="buscarCliente" class="ngc-input" placeholder="Buscar en BD..." oninput="filtrarClientes()" style="flex: 1; padding: 10px;">
-                    <select id="selCliente" class="ngc-input native-select" style="flex: 1.5; padding: 10px;">
-                        <option value="">Cargando...</option>
-                    </select>
-                </div>
-
-                <input type="text" id="cliNombre" class="ngc-input" placeholder="Nombre del Cliente" style="margin-bottom: 8px; padding: 12px;">
+                <input type="text" id="cliNombre" class="ngc-input" placeholder="Nombre del Cliente" style="margin-bottom: 8px; padding: 12px;" onchange="guardarClienteGlobal()">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" id="cliTel" class="ngc-input" placeholder="Teléfono" style="padding: 12px;">
-                    <input type="text" id="cliDir" class="ngc-input" placeholder="Dirección" style="padding: 12px;">
+                    <input type="text" id="cliTel" class="ngc-input" placeholder="Teléfono" style="padding: 12px;" onchange="guardarClienteGlobal()">
+                    <input type="text" id="cliDir" class="ngc-input" placeholder="Dirección" style="padding: 12px;" onchange="guardarClienteGlobal()">
                 </div>
-                <input type="text" id="cliObs" class="ngc-input" placeholder="Observaciones / Proyecto" style="padding: 12px;">
+                <input type="text" id="cliObs" class="ngc-input" placeholder="Observaciones / Proyecto" style="padding: 12px;" onchange="guardarClienteGlobal()">
                 
                 <button id="btnCli" class="ngc-btn" style="width: 100%; margin-top: 15px; border-color: var(--ngc-neon); color: var(--ngc-neon);" onclick="addClientToList()">
-                    <i class="fa-solid fa-check"></i> Iniciar Lista
+                    <i class="fa-solid fa-play"></i> Iniciar Lista
                 </button>
             </section>
 
             <!-- SECCIÓN PRINCIPAL -->
-            <section id="main-content" class="hidden" style="width: 100%;">
+            <section id="main-content" class="oculto" style="width: 100%;">
                 
-                <div class="ngc-privacy-card" style="margin-bottom: 15px; padding: 15px;">
+                <div class="ngc-privacy-card gpu-accel" style="margin-bottom: 15px; padding: 15px;">
                     <label style="font-size: 0.75rem; color: var(--ngc-text-faded); margin-bottom: 5px; display: block; text-transform: uppercase; font-weight: bold;">Nota Rápida General</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="obsGenerales" class="ngc-input" placeholder="Ej: Materiales para Planta Alta..." style="flex:1; padding: 12px;">
@@ -71,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="ngc-privacy-card" style="padding: 15px;">
+                <div class="ngc-privacy-card gpu-accel" style="padding: 15px;">
                     <h4 class="ngc-title" style="margin-top:0; margin-bottom:15px;"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</h4>
                     
                     <select id="sel0" class="ngc-input native-select" disabled style="margin-bottom: 8px; padding: 12px;">
@@ -118,39 +135,36 @@
                 </div>
 
                 <!-- ÁREA DE CAPTURA ORIGINAL -->
-                <div id="captureSection" class="ngc-privacy-card" style="margin-top: 15px; padding: 15px 10px; background: var(--ngc-btn-bg);">
+                <div id="captureSection" class="ngc-privacy-card gpu-accel" style="margin-top: 15px; padding: 15px 10px; background: var(--ngc-btn-bg);">
                     <header class="list-header-title" style="color: var(--ngc-neon); font-weight: bold; text-align: center; border-bottom: 1px solid rgba(var(--ngc-neon-rgb),0.3); padding-bottom: 8px; margin-bottom: 12px; font-size: 0.9rem; letter-spacing: 1px;">MATERIALES SOLICITADOS</header>
                     <div id="itemsContainer"></div>
                 </div>
 
-                <!-- BOTONES ZONA CALIENTE -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
-                    <button id="btnGenerarPDF" class="ngc-btn" onclick="generarPDF()" style="grid-column: span 2; border-color: #ff4b2b; color: #ff4b2b; padding: 18px; font-size: 1.05rem;">
+                <!-- ACCIONES PRINCIPALES (Jerarquía UX) -->
+                <div class="action-grid-main" style="margin-top: 20px; display: grid; grid-template-columns: 1fr; gap: 10px;">
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()" style="padding: 18px; font-size: 1.05rem;">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
-                    <button class="ngc-btn" onclick="sendWSP()" style="grid-column: span 2; border-color: #28a745; color: #28a745; padding: 18px; font-size: 1.05rem;">
-                        <i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp
-                    </button>
-                    <button class="ngc-btn" onclick="takeScreenshot()" style="grid-column: span 2; border-color: var(--ngc-neon); color: var(--ngc-neon); padding: 15px;">
-                        <i class="fa-solid fa-camera"></i> Descargar Resumen (Imagen)
+                    <button class="ngc-btn" onclick="sendWSP()" style="color: var(--success-green); border-color: var(--success-green); padding: 18px; font-size: 1.05rem;">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar a Cliente
                     </button>
                 </div>
+
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
+                    <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
+                </button>
                 
-                <!-- ZONA FRÍA (Backup y reinicio) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; margin-bottom: 20px;">
-                    <button id="btnExport" class="ngc-btn" onclick="exportToTxt()" style="color: #ff9800; border-color: #ff9800; background: transparent; border-style: dashed; padding: 12px; font-size: 0.75rem;">
+                <!-- UTILIDADES / BACKUP -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; margin-bottom: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button id="btnExport" class="ngc-btn-small" onclick="exportToTxt()" style="color: #ff9800; border-color: #ff9800; background: transparent; border-style: dashed; padding: 12px; font-size: 0.75rem; justify-content: center;">
                         <i class="fa-solid fa-download"></i> Guardar Borrador
                     </button>
-                    <button id="btnImport" class="ngc-btn" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; background: transparent; border-style: dashed; padding: 12px; font-size: 0.75rem;">
+                    <button id="btnImport" class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; background: transparent; border-style: dashed; padding: 12px; font-size: 0.75rem; justify-content: center;">
                         <i class="fa-solid fa-folder-open"></i> Abrir Borrador
                     </button>
                     <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
                 </div>
 
-                <button class="ngc-btn hidden" onclick="nuevoListado()" id="btnNuevoListado" style="width: 100%; margin-bottom: 20px; border-color: var(--error-red); color: var(--error-red); background: rgba(255, 75, 43, 0.05);">
-                    <i class="fa-solid fa-trash-can"></i> Iniciar Nueva Lista
-                </button>
-                
             </section>
         </main>
 
@@ -212,5 +226,4 @@
 
     <script src="script.js"></script>
 </body>
-  </html>
-  
+</html>
