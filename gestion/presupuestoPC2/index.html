@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    
+    <title>Presupuestos | Villaser Gestión</title>
+    
+    <!-- Librerías para captura y PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Iconos y CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <i class="fa-solid fa-arrow-left"></i> Menú
+            </button>
+            <div style="font-size: 0.8rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Presupuestos
+            </div>
+            <button id="btnNuevoPresupuesto" class="ngc-btn-icon danger" onclick="nuevoPresupuesto()" title="Nuevo Presupuesto">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </nav>
+
+        <!-- INDICADOR DE CARGA -->
+        <div id="loading" class="ngc-card loading-state">
+            <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
+            <br>Sincronizando Base de Datos...
+        </div>
+        
+        <div id="app" class="oculto">
+            
+            <!-- DATOS DEL CLIENTE / PROYECTO -->
+            <section id="step-cliente" class="ngc-card gpu-accel">
+                <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Tus datos de profesional se añadirán automáticamente al PDF.</p>
+                
+                <div class="row-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarEstado()">
+                </div>
+                
+                <div class="row-group-stretch">
+                    <div class="flex-1">
+                        <label>Dirección</label>
+                        <input type="text" id="cliDireccion" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarEstado()">
+                    </div>
+                    <div class="flex-1">
+                        <label>Nombre del Proyecto</label>
+                        <input type="text" id="cliProyecto" class="ngc-input" placeholder="Ej: Remodelación Cocina" onchange="guardarEstado()">
+                    </div>
+                </div>
+                
+                <button id="btnLoadCli" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarPresupuesto()">
+                    <i class="fa-solid fa-play"></i> Comenzar Carga de Ítems
+                </button>
+            </section>
+
+            <!-- ZONA DE TRABAJO -->
+            <section id="step-trabajo" class="oculto flex-column gap-15">
+
+                <div class="ngc-card gpu-accel">
+                    <h4 class="ngc-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
+                    
+                    <!-- BUSCADOR INTELIGENTE -->
+                    <div class="row-group" style="position: relative;">
+                        <label><i class="fa-solid fa-magnifying-glass" style="color: var(--ngc-neon);"></i> Buscador Inteligente</label>
+                        <input type="text" id="buscadorTrabajo" class="ngc-input" placeholder="Buscar concepto (Ej: pilar, tablero...)" autocomplete="off">
+                        <ul id="sugerenciasTrabajo" class="suggestions-dropdown oculto"></ul>
+                    </div>
+
+                    <div style="text-align: center; margin: 15px 0; color: var(--ngc-text-faded); font-size: 0.75rem; text-transform: uppercase; font-weight: bold;">
+                        — O selecciona manualmente —
+                    </div>
+
+                    <div class="row-group">
+                        <label>Rubro</label>
+                        <select id="selTema" class="ngc-input native-select">
+                            <option value="">-- SELECCIONE RUBRO --</option>
+                        </select>
+                    </div>
+
+                    <div class="row-group">
+                        <label>Trabajo</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <select id="selConcepto" class="ngc-input native-select" disabled>
+                                <option value="">-- SELECCIONE TRABAJO --</option>
+                            </select>
+                            <button type="button" id="btnEditConcepto" class="ngc-btn-icon" onclick="editarConceptoTemporal()" style="display: none;" title="Editar Título Temporalmente">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
+                        <small id="badgeConcepto" style="color: var(--ngc-warning); font-size: 0.75rem; display: none; margin-top: 5px; font-weight: bold;">(Título Editado Temporalmente)</small>
+                    </div>
+
+                    <!-- CANTIDADES Y DESCUENTOS -->
+                    <div class="row-group-stretch" style="margin-top: 15px;">
+                        <div class="flex-1">
+                            <label>Cantidad</label>
+                            <div class="stepper">
+                                <button type="button" class="btn-step" onclick="step('cantidad', -1)">-</button>
+                                <input type="number" id="cantidad" class="ngc-input-step" value="1" min="1">
+                                <button type="button" class="btn-step" onclick="step('cantidad', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label>Desc %</label>
+                            <div class="stepper">
+                                <button type="button" class="btn-step" onclick="step('porcentajeDesc', -5)">-</button>
+                                <input type="number" id="porcentajeDesc" class="ngc-input-step" value="0" min="0" max="100">
+                                <button type="button" class="btn-step" onclick="step('porcentajeDesc', 5)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTAS DEL ITEM -->
+                    <div class="obs-header" style="margin-top: 20px;">
+                        <label style="margin: 0;">Notas del Ítem</label>
+                        <div class="obs-actions">
+                            <button type="button" class="ngc-btn-small" onclick="habilitarEdicionObs()"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="ngc-btn-small" onclick="volverNotasOriginales()"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button type="button" class="ngc-btn-small danger" onclick="borrarTodasNotas()"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <textarea id="obsManual" class="ngc-input" placeholder="Notas aclaratorias..." readonly style="height: 100px; resize: none;"></textarea>
+
+                    <div class="row-group-stretch" style="margin-top: 15px; align-items: center;">
+                        <div style="flex: 1; display: flex; flex-direction: column;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div id="unitarioLabel" style="font-size: 1.1rem; color: var(--ngc-warning); font-weight: bold;">
+                                    Unit: $ 0,00
+                                </div>
+                                <button type="button" id="btnEditPrecio" class="ngc-btn-icon" onclick="editarPrecioTemporal()" style="display: none;" title="Editar Precio">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </div>
+                            <small id="badgePrecio" style="color: var(--ngc-warning); font-size: 0.75rem; display: none; margin-top: 2px; font-weight: bold;">(Precio Editado)</small>
+                        </div>
+                        <div style="flex: 1;">
+                            <button id="btnAddItem" class="ngc-btn" style="width: 100%;" onclick="agregarTrabajo()">
+                                <i class="fa-solid fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>       
+                
+                <div class="ngc-card gpu-accel">
+                    <label>Notas Globales del Presupuesto</label>
+                    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Válido por 10 días..." style="height: 75px; resize: none;" oninput="guardarEstado(); renderTabla();"></textarea>
+                </div>
+                
+                <div id="zonaCaptura" class="capture-zone gpu-accel">
+                    <header class="header-brand" id="headerMembrete">PRESUPUESTO</header>
+                    <table id="tablaMain"><tbody id="cuerpoTabla"></tbody></table>
+                    <div class="total-display" id="totalDisplay">TOTAL: $ 0,00</div>
+                </div>
+                
+                <div class="ngc-button-grid" style="margin-top: 15px;">
+                    <button id="btnCopyTitle" class="ngc-btn" onclick="copiarTitulo()">
+                        <i class="fa-regular fa-copy"></i> Copiar Título
+                    </button>
+                    <button class="ngc-btn" onclick="tomarCaptura()">
+                        <i class="fa-solid fa-image"></i> Bajar Imagen
+                    </button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()" style="width: 100%;">
+                        <i class="fa-solid fa-file-pdf"></i> Generar PDF
+                    </button>
+                </div>
+                
+                <!-- Acciones de guardado en el dispositivo como backup -->
+                <div class="action-grid-footer" style="margin-top: 15px;">
+                    <button class="ngc-btn" onclick="exportarJSON()" style="color: var(--ngc-warning); border-color: var(--ngc-warning);">
+                        <i class="fa-solid fa-download"></i> Guardar
+                    </button>
+                    <button class="ngc-btn" onclick="document.getElementById('fileInput').click()" style="color: var(--ngc-neon); border-color: var(--ngc-neon);">
+                        <i class="fa-solid fa-folder-open"></i> Abrir
+                    </button>
+                    <button class="ngc-btn" onclick="enviarWhatsApp()" style="color: var(--success-green); border-color: var(--success-green);">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar
+                    </button>
+                    <input type="file" id="fileInput" style="display:none" accept=".json" onchange="importarJSON(event)">
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- PANEL DERECHO: VISTA PREVIA PDF (Visible solo en PC) -->
+    <aside class="preview-panel">
+        <div id="plantilla-pdf">
+            <div class="pdf-container">
+                <header class="pdf-header">
+                    <div class="pdf-info-box">
+                        <div class="pdf-row"><b>Nro Presupuesto</b> <span id="pdf-nro">PEM-0000</span></div>
+                        <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
+                        <div class="pdf-row"><b>Cliente</b> <span id="pdf-cliente"></span></div>
+                        <div class="pdf-row"><b>Dirección</b> <span id="pdf-direccion"></span></div>
+                        <div class="pdf-row"><b>Proyecto</b> <span id="pdf-proyecto"></span></div>
+                    </div>
+                    <div class="pdf-logo-box">
+                        <img id="pdf-img-logo" src="" alt="Logo" style="max-width: 100%; max-height: 70px; display: none; margin-left: auto;">
+                        <h2 id="pdf-text-logo" style="margin: 0; color: #0088aa; display: none;"></h2>
+                    </div>
+                </header>
+
+                <table class="pdf-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Concepto</th>
+                            <th>Cantidad</th>
+                            <th>Valor</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdf-tbody">
+                        <!-- Se llena con JS -->
+                    </tbody>
+                </table>
+
+                <div class="pdf-body-lower">
+                    <div class="pdf-notas-box">
+                        <h3>Notas Aclaratorias</h3>
+                        <div id="pdf-notas" class="pdf-notas-content"></div>
+                    </div>
+                    <div class="pdf-totales-box">
+                        <div class="pdf-total-row"><span>Subtotal</span> <b id="pdf-subtotal"></b></div>
+                        <div class="pdf-total-row"><span>Descuentos</span> <b id="pdf-descuentos" style="color: #c00;"></b></div>
+                        <div class="pdf-total-row final-total"><span>Total</span> <b id="pdf-total"></b></div>
+                    </div>
+                </div>
+
+               <footer class="pdf-footer">
+                    <div class="pdf-pagos">
+                        <h4>Condiciones</h4>
+                        <p>Los precios están sujetos a modificaciones.<br>Validez del presupuesto: 10 días.</p>
+                    </div>
+                    <div class="pdf-right-footer">
+                        <div class="pdf-slogan" id="pdf-slogan"></div>
+                        <div class="pdf-contacto"><span id="pdf-email"></span></div>
+                        <div class="pdf-contacto"><span id="pdf-tel"></span></div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+                                  </html>
+                                  
