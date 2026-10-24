@@ -124,7 +124,6 @@ function mostrarPantallaLogin() {
     document.getElementById('userMenuWrapper').style.display = 'none';
 }
 
-// -- NUEVO: Funciones del Panel de Configuración --
 function abrirConfiguracion() {
     // Cargar datos previos si existen
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
@@ -308,7 +307,7 @@ Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
-                                          
+
 // ==========================================
 // CONFIGURACIÓN PWA (Instalación)
 // ==========================================
@@ -317,43 +316,45 @@ Object.keys(rutas).forEach(id => {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('ServiceWorker registrado:', reg.scope))
-            .catch(err => console.log('Error en ServiceWorker:', err));
+            .then(reg => console.log('ServiceWorker registrado con éxito:', reg.scope))
+            .catch(err => console.log('Error al registrar ServiceWorker:', err));
     });
 }
 
-// 2. Capturar el evento de instalación para mostrar un botón personalizado
+// 2. Capturar el evento de instalación
 let eventoInstalacion;
-// Asegúrate de tener un botón en tu HTML con id="btn-instalar" (ej. en tu menú)
 const btnInstalar = document.getElementById('btn-instalar'); 
 
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Previene que Chrome muestre el mini-aviso por defecto
+    // Prevenir el comportamiento por defecto de Chrome
     e.preventDefault();
-    // Guarda el evento para dispararlo luego
     eventoInstalacion = e;
     
-    // Muestra el botón de instalar si existe en el HTML
+    // Mostrar nuestro botón personalizado en el menú
     if (btnInstalar) {
-        btnInstalar.classList.remove('oculto'); // o btnInstalar.style.display = 'block';
+        btnInstalar.classList.remove('oculto'); 
+        btnInstalar.style.display = 'block'; 
     }
 });
 
 if (btnInstalar) {
-    btnInstalar.addEventListener('click', async () => {
+    btnInstalar.addEventListener('click', async (e) => {
+        e.preventDefault(); // Evita que la página salte al hacer clic en el enlace '#'
         if (!eventoInstalacion) return;
         
-        // Muestra la ventana nativa de instalación
+        // Mostrar el prompt nativo de instalación
         eventoInstalacion.prompt();
         
-        // Espera la respuesta del usuario
+        // Esperar la respuesta del usuario
         const { outcome } = await eventoInstalacion.userChoice;
         if (outcome === 'accepted') {
-            console.log('El usuario aceptó instalar la app');
+            console.log('El usuario instaló la aplicación');
+            // Ocultar el botón una vez instalada
+            btnInstalar.classList.add('oculto');
+            btnInstalar.style.display = 'none';
         }
         
-        // Limpiamos el evento y ocultamos el botón
         eventoInstalacion = null;
-        btnInstalar.classList.add('oculto');
     });
-}
+        }
+        
