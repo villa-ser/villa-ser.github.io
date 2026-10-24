@@ -14,38 +14,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 let registrandoCuenta = false;
-let cargaInicial = true; // Controla que el splash screen solo demore al abrir la app
+let cargaInicial = true; 
+
+function sincronizarTema() {
+    const temaGuardado = localStorage.getItem('temaVillaser');
+    const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    if (temaGuardado) {
+        if (temaGuardado === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else document.documentElement.removeAttribute('data-theme');
+        return;
+    }
+    if (prefiereClaro) document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+}
+
+function cambiarTemaManual(nuevoTema) {
+    if (nuevoTema === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('temaVillaser', nuevoTema);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    const btnTemaServicios = document.getElementById('btn-tema-servicios');
-    
-    function sincronizarTema() {
-        const temaGuardado = localStorage.getItem('temaVillaser');
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-        if (temaGuardado) {
-            if (temaGuardado === 'light') document.documentElement.setAttribute('data-theme', 'light');
-            else document.documentElement.removeAttribute('data-theme');
-            return;
-        }
-        if (prefiereClaro) document.documentElement.setAttribute('data-theme', 'light');
-        else document.documentElement.removeAttribute('data-theme');
-    }
-
     sincronizarTema();
 
-    if (btnTemaServicios) {
-        btnTemaServicios.addEventListener('click', () => {
-            const esActualClaro = document.documentElement.getAttribute('data-theme') === 'light';
-            const nuevoTema = esActualClaro ? 'dark' : 'light';
-            if (nuevoTema === 'light') document.documentElement.setAttribute('data-theme', 'light');
-            else document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('temaVillaser', nuevoTema);
-        });
-    }
-
-    // GESTIÓN DEL ESTADO DE AUTENTICACIÓN Y SPLASH SCREEN
     auth.onAuthStateChanged(user => {
         const procesarAcceso = () => {
             if (user) {
@@ -65,18 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (cargaInicial) {
-            // Mantiene la pantalla de carga (Splash) por 2.5 segundos solo al abrir la app
             setTimeout(() => {
                 const splash = document.getElementById('customSplashScreen');
                 if (splash) {
                     splash.style.opacity = '0';
-                    setTimeout(() => splash.classList.add('oculto'), 500); // Ocultar tras transición
+                    setTimeout(() => splash.classList.add('oculto'), 500); 
                 }
                 procesarAcceso();
                 cargaInicial = false;
             }, 2500);
         } else {
-            // Si el usuario acaba de loguearse manualmente, procesa el acceso instantáneo
             procesarAcceso();
         }
     });
@@ -85,11 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === 'Enter') iniciarSesion();
     });
 
-    // Cargar previsualización de imagen al seleccionarla
     document.getElementById('confLogo').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 500000) { // 500 KB Max
+            if (file.size > 500000) { 
                 alert("La imagen es muy pesada. Debe ser menor a 500KB.");
                 this.value = '';
                 return;
@@ -145,6 +135,9 @@ function mostrarPantallaLogin() {
 }
 
 function abrirConfiguracion() {
+    const temaActual = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    document.getElementById('confTema').value = temaActual;
+
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
     document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
@@ -177,10 +170,9 @@ function guardarConfiguracion() {
         localStorage.setItem('villaser_conf_logo', logoPreview);
     }
 
-    alert("¡Datos de empresa guardados correctamente!");
+    alert("¡Configuración guardada correctamente!");
     cerrarConfiguracion();
 }
-
 
 // ==========================================
 // FUNCIONES DE FIREBASE (AUTH)
@@ -255,7 +247,6 @@ function recuperarPassword() {
         .catch(() => mostrarMensaje("Error al enviar el correo.", "error"));
 }
 
-
 // ==========================================
 // FUNCIONES DEL MENÚ PRINCIPAL
 // ==========================================
@@ -275,7 +266,6 @@ function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
 }
 
-// Cierra modal de configuración al tocar fondo
 document.getElementById('modalConfig').addEventListener('click', function(e) {
     if(e.target === this) cerrarConfiguracion();
 });
@@ -311,9 +301,6 @@ Object.keys(rutas).forEach(id => {
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
 
-// ==========================================
-// CONFIGURACIÓN PWA (Instalación)
-// ==========================================
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -346,5 +333,4 @@ if (btnInstalar) {
         }
         eventoInstalacion = null;
     });
-                }
-    
+}
