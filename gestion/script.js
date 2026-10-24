@@ -309,3 +309,51 @@ Object.keys(rutas).forEach(id => {
     if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
                                           
+// ==========================================
+// CONFIGURACIÓN PWA (Instalación)
+// ==========================================
+
+// 1. Registrar el Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('ServiceWorker registrado:', reg.scope))
+            .catch(err => console.log('Error en ServiceWorker:', err));
+    });
+}
+
+// 2. Capturar el evento de instalación para mostrar un botón personalizado
+let eventoInstalacion;
+// Asegúrate de tener un botón en tu HTML con id="btn-instalar" (ej. en tu menú)
+const btnInstalar = document.getElementById('btn-instalar'); 
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Previene que Chrome muestre el mini-aviso por defecto
+    e.preventDefault();
+    // Guarda el evento para dispararlo luego
+    eventoInstalacion = e;
+    
+    // Muestra el botón de instalar si existe en el HTML
+    if (btnInstalar) {
+        btnInstalar.classList.remove('oculto'); // o btnInstalar.style.display = 'block';
+    }
+});
+
+if (btnInstalar) {
+    btnInstalar.addEventListener('click', async () => {
+        if (!eventoInstalacion) return;
+        
+        // Muestra la ventana nativa de instalación
+        eventoInstalacion.prompt();
+        
+        // Espera la respuesta del usuario
+        const { outcome } = await eventoInstalacion.userChoice;
+        if (outcome === 'accepted') {
+            console.log('El usuario aceptó instalar la app');
+        }
+        
+        // Limpiamos el evento y ocultamos el botón
+        eventoInstalacion = null;
+        btnInstalar.classList.add('oculto');
+    });
+}
