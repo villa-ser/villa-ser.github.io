@@ -4,9 +4,11 @@ const CACHE_NAME = 'villaser-cache-v1';
 const urlsToCache = [
     './',
     './index.html',
-    './app.js',
+    './script.js',      // ¡Corregido de app.js a script.js!
+    './style.css',      // Recomendado para que mantenga el diseño offline
     './manifest.json',
-    './icono.avif'
+    './icono.avif',
+    './icono2.avif'     // Agregado porque lo pusiste en el manifest
 ];
 
 // Instala el Service Worker y guarda en caché
