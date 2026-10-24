@@ -124,10 +124,12 @@
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
                     
                     <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
-                    <select id="confTema" class="ngc-input" onchange="cambiarTemaManual(this.value)" style="margin-bottom: 10px;">
-                        <option value="dark">Modo Oscuro</option>
-                        <option value="light">Modo Claro</option>
-                    </select>
+                    <div class="theme-switch-wrapper">
+                        <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
+                        <label for="tema_dark" class="theme-switch-label">OSCURO</label>
+                        <input type="radio" id="tema_light" name="tema_app" value="light" onchange="cambiarTemaManual('light')" style="display:none">
+                        <label for="tema_light" class="theme-switch-label">CLARO</label>
+                    </div>
 
                     <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
                     <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
