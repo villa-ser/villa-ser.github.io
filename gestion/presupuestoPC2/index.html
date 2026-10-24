@@ -7,16 +7,13 @@
     
     <title>Presupuestos | Villaser Gestión</title>
     
-    <!-- Librerías para captura y PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    <!-- Iconos y CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Script de ejecución inmediata para el tema -->
     <script>
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser');
@@ -29,15 +26,25 @@
 </head>
 <body>
 
+<!-- NOTIFICACIÓN FLOTANTE (Memoria de Cliente) -->
+<div id="toastCliente" class="ngc-toast oculto gpu-accel">
+    <i class="fa-solid fa-user-check"></i>
+    <div class="toast-content">
+        <strong>Cliente Recuperado</strong>
+        <p>Se cargaron los datos del último informe. Modifícalos si es un proyecto nuevo.</p>
+    </div>
+    <button class="toast-close" onclick="cerrarToast()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
 <div class="layout-wrapper">
     <main class="container">
         
         <!-- BARRA DE NAVEGACIÓN -->
-        <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <nav class="top-nav">
             <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
                 <i class="fa-solid fa-arrow-left"></i> Menú
             </button>
-            <div style="font-size: 0.8rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+            <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
                 <i class="fa-solid fa-file-invoice-dollar"></i> Presupuestos
             </div>
             <button id="btnNuevoPresupuesto" class="ngc-btn-icon danger" onclick="nuevoPresupuesto()" title="Nuevo Presupuesto">
@@ -60,17 +67,17 @@
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
-                    <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarEstado()">
+                    <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()">
                 </div>
                 
                 <div class="row-group-stretch">
                     <div class="flex-1">
                         <label>Dirección</label>
-                        <input type="text" id="cliDireccion" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarEstado()">
+                        <input type="text" id="cliDireccion" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
                     </div>
                     <div class="flex-1">
                         <label>Nombre del Proyecto</label>
-                        <input type="text" id="cliProyecto" class="ngc-input" placeholder="Ej: Remodelación Cocina" onchange="guardarEstado()">
+                        <input type="text" id="cliProyecto" class="ngc-input" placeholder="Ej: Remodelación Cocina" onchange="guardarClienteGlobal()">
                     </div>
                 </div>
                 
@@ -178,34 +185,31 @@
                     <div class="total-display" id="totalDisplay">TOTAL: $ 0,00</div>
                 </div>
                 
-                <div class="ngc-button-grid" style="margin-top: 15px;">
-                    <button id="btnCopyTitle" class="ngc-btn" onclick="copiarTitulo()">
-                        <i class="fa-regular fa-copy"></i> Copiar Título
-                    </button>
-                    <button class="ngc-btn" onclick="tomarCaptura()">
-                        <i class="fa-solid fa-image"></i> Bajar Imagen
-                    </button>
-                </div>
-                
-                <div style="margin-top: 15px;">
-                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()" style="width: 100%;">
+                <!-- ACCIONES PRINCIPALES (Jerarquía UX) -->
+                <div class="action-grid-main" style="margin-top: 20px;">
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
+                    <button class="ngc-btn" onclick="enviarWhatsApp()" style="color: var(--success-green); border-color: var(--success-green);">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar a Cliente
+                    </button>
                 </div>
                 
-                <!-- Acciones de guardado en el dispositivo como backup -->
-                <div class="action-grid-footer" style="margin-top: 15px;">
-                    <button class="ngc-btn" onclick="exportarJSON()" style="color: var(--ngc-warning); border-color: var(--ngc-warning);">
-                        <i class="fa-solid fa-download"></i> Guardar
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="tomarCaptura()">
+                    <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
+                </button>
+
+                <!-- UTILIDADES / BACKUP -->
+                <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button class="ngc-btn-small" onclick="exportarJSON()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center;">
+                        <i class="fa-solid fa-download"></i> Guardar Backup JSON
                     </button>
-                    <button class="ngc-btn" onclick="document.getElementById('fileInput').click()" style="color: var(--ngc-neon); border-color: var(--ngc-neon);">
-                        <i class="fa-solid fa-folder-open"></i> Abrir
-                    </button>
-                    <button class="ngc-btn" onclick="enviarWhatsApp()" style="color: var(--success-green); border-color: var(--success-green);">
-                        <i class="fa-brands fa-whatsapp"></i> Enviar
+                    <button class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: var(--ngc-neon); border-color: var(--ngc-neon); width: 100%; justify-content: center;">
+                        <i class="fa-solid fa-folder-open"></i> Abrir Backup JSON
                     </button>
                     <input type="file" id="fileInput" style="display:none" accept=".json" onchange="importarJSON(event)">
                 </div>
+
             </section>
         </div>
     </main>
@@ -273,5 +277,4 @@
 
 <script src="script.js"></script>
 </body>
-                                  </html>
-                                  
+</html>
