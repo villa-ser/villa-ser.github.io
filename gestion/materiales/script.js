@@ -1,11 +1,8 @@
-// =======================================================
-// 1. CONFIGURACIÓN Y ESTADO
-// =======================================================
 const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM';
 const URL_MAT = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Materiales`;
 
 let dataMat = [];
-let listaItems = []; // Array central que guarda el estado de la lista
+let listaItems = []; 
 
 const selects = [
     document.getElementById('sel0'), document.getElementById('sel1'), 
@@ -13,17 +10,8 @@ const selects = [
     document.getElementById('sel4'), document.getElementById('sel5')
 ];
 
-// =======================================================
-// 2. INICIALIZACIÓN Y MEMORIA
-// =======================================================
 window.onload = async () => {
-    // A. Cargar Cerebro Cliente Global
-    cargarClienteGlobal();
-    
-    // B. Cargar Borrador local si existe
-    cargarEstadoGuardado();
-    
-    // C. Cargar Base de datos de materiales
+    inicializarClienteMemoria();
     await init();
 };
 
@@ -33,6 +21,7 @@ async function init() {
         dataMat = parseCSV(await resMat.text());
         
         document.getElementById('status').classList.add('oculto');
+        document.getElementById('section-client').classList.remove('oculto');
         
         fillSelect(0, [...new Set(dataMat.map(item => item.c0))].filter(v => v));
         selects[0].disabled = false;
@@ -44,7 +33,6 @@ async function init() {
     }
 }
 
-// Limpieza profunda de comillas y espacios de Google Sheets
 function parseCSV(text) {
     return text.split('\n').slice(1).map(line => {
         const cells = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => {
@@ -62,65 +50,47 @@ function setupEventListeners() {
     });
 }
 
-// =======================================================
-// 3. SINCRONIZACIÓN DE CLIENTES (GLOBAL)
-// =======================================================
-function cargarClienteGlobal() {
+// --- MODAL DE MEMORIA GLOBAL ---
+function inicializarClienteMemoria() {
     const clienteStr = localStorage.getItem('villaser_cliente_global');
-    if (clienteStr) {
-        const cliente = JSON.parse(clienteStr);
-        let recuperado = false;
-        
-        if (cliente.nombre) { document.getElementById('cliNombre').value = cliente.nombre; recuperado = true; }
-        if (cliente.direccion) { document.getElementById('cliDir').value = cliente.direccion; recuperado = true; }
-        if (cliente.proyecto) { document.getElementById('cliObs').value = cliente.proyecto; recuperado = true; }
-        // Agregamos teléfono si viniera de otro módulo que sí lo tenga
-        if (cliente.telefono) { document.getElementById('cliTel').value = cliente.telefono; recuperado = true; }
-        
-        const estadoStr = localStorage.getItem('materiales_estado_actual');
-        const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
-        
-        // Muestra notificación si no hay ítems ya guardados en el borrador de materiales
-        if (recuperado && (!estado.items || estado.items.length === 0)) {
-            mostrarToast("Datos del proyecto recuperados");
-        }
+    const estadoStr = localStorage.getItem('materiales_estado_actual');
+    const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
+
+    if (clienteStr && estado.items.length === 0 && !estado.cliNombre) {
+        window.clienteTemporal = JSON.parse(clienteStr);
+        document.getElementById('modalRecuperarCliente').classList.remove('oculto');
+    } else {
+        cargarEstadoGuardado();
     }
+}
+
+function usarClienteMemoria() {
+    document.getElementById('cliNombre').value = window.clienteTemporal.nombre || '';
+    document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || '';
+    document.getElementById('cliProyecto').value = window.clienteTemporal.proyecto || '';
+    guardarClienteGlobal();
+    document.getElementById('modalRecuperarCliente').classList.add('oculto');
+}
+
+function limpiarClienteMemoria() {
+    document.getElementById('modalRecuperarCliente').classList.add('oculto');
 }
 
 function guardarClienteGlobal() {
     const clienteObj = {
         nombre: document.getElementById('cliNombre').value.trim(),
-        direccion: document.getElementById('cliDir').value.trim(),
-        proyecto: document.getElementById('cliObs').value.trim(),
-        telefono: document.getElementById('cliTel').value.trim()
+        direccion: document.getElementById('cliDireccion').value.trim(),
+        proyecto: document.getElementById('cliProyecto').value.trim()
     };
     localStorage.setItem('villaser_cliente_global', JSON.stringify(clienteObj));
     guardarEstado(); 
 }
 
-function mostrarToast(mensaje) {
-    const toast = document.getElementById('toastCliente');
-    toast.querySelector('strong').innerText = mensaje;
-    toast.classList.remove('oculto');
-    setTimeout(() => toast.classList.add('mostrar'), 100);
-    setTimeout(() => cerrarToast(), 5000);
-}
-
-function cerrarToast() {
-    const toast = document.getElementById('toastCliente');
-    toast.classList.remove('mostrar');
-    setTimeout(() => toast.classList.add('oculto'), 400);
-}
-
-// =======================================================
-// 4. MEMORIA CONTINUA (Borrador Local)
-// =======================================================
 function guardarEstado() {
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
-        cliTel: document.getElementById('cliTel').value,
-        cliDir: document.getElementById('cliDir').value,
-        cliObs: document.getElementById('cliObs').value,
+        cliDireccion: document.getElementById('cliDireccion').value,
+        cliProyecto: document.getElementById('cliProyecto').value,
         items: listaItems
     };
     localStorage.setItem('materiales_estado_actual', JSON.stringify(estado));
@@ -131,14 +101,14 @@ function cargarEstadoGuardado() {
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
         if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
-        if (estado.cliTel) document.getElementById('cliTel').value = estado.cliTel;
-        if (estado.cliDir) document.getElementById('cliDir').value = estado.cliDir;
-        if (estado.cliObs) document.getElementById('cliObs').value = estado.cliObs;
+        if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
+        if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
         
         listaItems = estado.items || [];
         if (listaItems.length > 0) {
             document.getElementById('section-client').classList.add('oculto');
             document.getElementById('main-content').classList.remove('oculto');
+            document.getElementById('main-content').classList.add('flex-column');
             document.getElementById('btnNuevoListado').classList.remove('oculto');
             renderItems();
         }
@@ -148,9 +118,8 @@ function cargarEstadoGuardado() {
 function nuevoListado() {
     if(confirm("¿Estás seguro de iniciar una nueva lista? Se borrará el borrador actual.")) {
         document.getElementById('cliNombre').value = '';
-        document.getElementById('cliTel').value = '';
-        document.getElementById('cliDir').value = '';
-        document.getElementById('cliObs').value = '';
+        document.getElementById('cliDireccion').value = '';
+        document.getElementById('cliProyecto').value = '';
         listaItems = [];
         guardarEstado();
         guardarClienteGlobal();
@@ -162,9 +131,6 @@ function nuevoListado() {
     }
 }
 
-// =======================================================
-// 5. LÓGICA DE MATERIALES
-// =======================================================
 function updateDropdown(index) {
     for (let i = index; i < selects.length; i++) { 
         selects[i].innerHTML = '<option value="">-- Selección --</option>';
@@ -198,9 +164,6 @@ function changeQty(v) {
     input.value = Math.max(1, parseInt(input.value || 0) + v);
 }
 
-// =======================================================
-// 6. GESTIÓN DE LA LISTA VISUAL
-// =======================================================
 function renderItems() {
     const container = document.getElementById('itemsContainer');
     container.innerHTML = '';
@@ -227,16 +190,15 @@ function addClientToList() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if (!nombre) { alert("Por favor, ingrese el nombre del cliente."); document.getElementById('cliNombre').focus(); return; }
     
-    const tel = document.getElementById('cliTel').value;
-    const dir = document.getElementById('cliDir').value;
+    const dir = document.getElementById('cliDireccion').value;
     const fecha = new Date().toLocaleDateString('es-AR');
     
     guardarClienteGlobal();
-    listaItems = listaItems.filter(i => i.type !== 'CLI'); // Solo un cliente a la vez
+    listaItems = listaItems.filter(i => i.type !== 'CLI'); 
     
     listaItems.unshift({ 
         id: Date.now(), type: 'CLI', 
-        raw: `CLI\t${nombre}\t${tel}\t${dir}`, 
+        raw: `CLI\t${nombre}\t${dir}`, 
         html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${fecha} - ${nombre}</strong>` 
     });
     
@@ -244,13 +206,12 @@ function addClientToList() {
     
     const b = document.getElementById('btnCli'); 
     b.innerHTML = "<i class='fa-solid fa-check'></i> ¡LISTO!"; 
-    b.style.background = 'var(--success-green)';
-    b.style.color = '#fff';
-    b.style.borderColor = 'var(--success-green)';
+    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
     
     setTimeout(() => { 
         document.getElementById('section-client').classList.add('oculto');
         document.getElementById('main-content').classList.remove('oculto');
+        document.getElementById('main-content').classList.add('flex-column');
         document.getElementById('btnNuevoListado').classList.remove('oculto');
         b.innerHTML = "<i class='fa-solid fa-play'></i> Iniciar Lista";
         b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
@@ -316,9 +277,6 @@ function btnAlert(id, htmlOriginal) {
     setTimeout(() => { b.innerHTML = htmlOriginal; b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; }, 800);
 }
 
-// =======================================================
-// 7. COMPOSICIÓN Y GENERACIÓN DE PDF PROFESIONAL
-// =======================================================
 function sincronizarVistaPreviaPDF() {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
@@ -337,7 +295,7 @@ function sincronizarVistaPreviaPDF() {
     }
 
     let clienteNombre = document.getElementById('cliNombre').value || "Cliente";
-    let clienteTel = document.getElementById('cliTel').value || "";
+    let clienteDireccion = document.getElementById('cliDireccion').value || document.getElementById('cliProyecto').value || "-";
     let notasAcumuladas = "";
     
     const tbody = document.getElementById('pdf-tbody');
@@ -347,18 +305,18 @@ function sincronizarVistaPreviaPDF() {
     listaItems.forEach((i) => {
         const raw = i.raw.split('\t');
         if (raw[0] === 'CLI') {
-            clienteNombre = raw[1]; clienteTel = raw[2];
+            clienteNombre = raw[1]; clienteDireccion = raw[2];
         } else if (raw[0] === 'OBS') {
             notasAcumuladas += `• ${raw[1]}<br>`;
         } else if (raw[0] === 'ITM') {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="text-align: center; font-weight: bold;">${raw[1]}</td><td style="text-align: center;">${raw[2].substring(0,4).toUpperCase()}</td><td>${raw[3]}</td><td style="font-size: 10.5px; color: #555;">${raw[4] || '-'}</td>`;
+            tr.innerHTML = `<td style="text-align: center; font-weight: bold;">${raw[1]}</td><td style="text-align: center;">${raw[2].substring(0,4).toUpperCase()}</td><td>${raw[3]}</td><td style="font-size: 10.5px; color: #555; text-align: left;">${raw[4] || '-'}</td>`;
             tbody.appendChild(tr);
         }
     });
 
     if (document.getElementById('pdf-cliente')) document.getElementById('pdf-cliente').innerText = clienteNombre;
-    if (document.getElementById('pdf-tel')) document.getElementById('pdf-tel').innerText = clienteTel;
+    if (document.getElementById('pdf-direccion')) document.getElementById('pdf-direccion').innerText = clienteDireccion;
     if (document.getElementById('pdf-fecha')) document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
     
     if (document.getElementById('pdf-slogan')) document.getElementById('pdf-slogan').innerText = profSlogan;
@@ -398,9 +356,6 @@ async function generarPDF() {
     finally { if (window.innerWidth < 992) element.style.display = 'none'; }
 }
 
-// =======================================================
-// 8. EXPORTACIÓN TXT Y CAPTURAS E IMÁGENES
-// =======================================================
 function takeScreenshot() {
     const area = document.getElementById('captureSection');
     const deletes = area.querySelectorAll('.btn-delete');
@@ -429,9 +384,8 @@ function exportToTxt() {
     const blob = new Blob([content], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = (document.getElementById('cliNombre').value.trim() || "Lista") + "_Borrador_Villaser.txt";
+    link.download = (document.getElementById('cliNombre').value.trim() || "Lista") + "_Borrador.txt";
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    mostrarToast("Borrador descargado con éxito");
 }
 
 function importFromTxt(event) {
@@ -448,8 +402,7 @@ function importFromTxt(event) {
             const raw = line.split('\t');
             if (raw[0] === 'CLI') {
                 document.getElementById('cliNombre').value = raw[1] || '';
-                document.getElementById('cliTel').value = raw[2] || '';
-                document.getElementById('cliDir').value = raw[3] || '';
+                document.getElementById('cliDireccion').value = raw[2] || '';
                 listaItems.push({ id: Date.now() + Math.random(), type: 'CLI', raw: line, html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${new Date().toLocaleDateString('es-AR')} - ${raw[1]}</strong>` });
             } else if (raw[0] === 'OBS') {
                 listaItems.push({ id: Date.now() + Math.random(), type: 'OBS', raw: line, html: `<i style="color:var(--ngc-text-main); opacity:0.8;">Nota: ${raw[1]}</i>` });
@@ -462,14 +415,16 @@ function importFromTxt(event) {
         guardarClienteGlobal();
         document.getElementById('section-client').classList.add('oculto');
         document.getElementById('main-content').classList.remove('oculto');
+        document.getElementById('main-content').classList.add('flex-column');
         document.getElementById('btnNuevoListado').classList.remove('oculto');
-        mostrarToast("Borrador cargado correctamente");
     };
     reader.readAsText(file);
 }
 
 function sendWSP() {
-    const tel = document.getElementById('cliTel').value.trim();
+    const tel = prompt("Ingresá el número de WhatsApp del cliente (Ej: 3511234567):");
+    if(!tel) return;
+
     if (listaItems.length <= 1) { alert("Agrega materiales primero."); return; }
     
     let text = "*VILLASER - MATERIALES SOLICITADOS*\n";
@@ -481,14 +436,10 @@ function sendWSP() {
     });
     
     let cleanNumber = tel.replace(/\D/g, '');
-    if (!cleanNumber) { 
-        alert("El cliente no tiene teléfono asignado, agrégalo en los datos del proyecto."); 
-        return; 
-    }
-
     if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
     else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
     
     window.location.href = `whatsapp://send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`;
     setTimeout(() => { if (document.hasFocus()) window.open(`https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`, '_blank'); }, 500);
-}
+                }
+                                                              
