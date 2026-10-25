@@ -36,12 +36,11 @@
     --ngc-bg-input: rgba(255, 255, 255, 0.8); 
 }
 
-/* ================== ESTRUCTURA BASE (PWA TÉCNICAS) ================== */
+/* ================== ESTRUCTURA BASE (PWA TÉCNICA) ================== */
 * { 
     box-sizing: border-box; 
     margin: 0; 
     padding: 0;
-    /* Elimina el resaltado azul en botones al tocar en Android */
     -webkit-tap-highlight-color: transparent; 
 }
 
@@ -52,25 +51,39 @@ body {
     display: flex; 
     flex-direction: column;
     align-items: center;
-    /* 100svh calcula la altura exacta descontando la barra de navegación del móvil */
     min-height: 100svh;
-    padding: 15px 15px 5px 15px; /* Margen inferior mínimo para asentar la app */
-    overflow-y: auto; /* Permite scroll SOLO si el teclado virtual se abre en el Login */
-    overscroll-behavior-y: none; /* Elimina el efecto rebote (pull-to-refresh) nativo */
-    user-select: none; /* Evita que se seleccione texto al tocar botones rápido */
+    padding: 0 15px; 
+    overflow-y: auto; 
+    overscroll-behavior-y: none; 
+    user-select: none; 
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Permitir selección de texto SOLO en los campos de escritura */
 input, textarea { user-select: auto; }
 
 .ngc-wrapper {
     display: flex; 
     flex-direction: column; 
+    justify-content: center; /* 🎯 MAGIA 1: Centra el LOGIN perfectamente */
     align-items: center; 
     width: 100%; 
     max-width: 500px;
-    flex: 1; /* Obliga al wrapper a ocupar todo el alto disponible del body */
+    flex: 1; /* 🎯 MAGIA 2: Obliga al wrapper a ocupar el 100% de la altura disponible */
+}
+
+/* ================== DISTRIBUCIÓN PANTALLAS (LOGIN VS APP) ================== */
+#mainHeader, #loginScreen {
+    /* Al estar display: flex y justify-content: center en el wrapper,
+       estas cajas se centran solas en medio de la pantalla */
+    margin-top: 10px !important; 
+    margin-bottom: 10px !important;
+}
+
+#appScreen {
+    width: 100%;
+    margin-top: auto !important; /* 🎯 MAGIA 3: Empuja la grilla hacia el fondo (Pulgar) */
+    margin-bottom: 15px !important; 
+    padding-top: 85px !important; /* 🛡️ SAFE AREA BRUTAL: Escudo invisible que impide que los botones toquen el perfil superior */
 }
 
 /* ================== COMPONENTES Y TARJETAS ================== */
@@ -85,10 +98,7 @@ input, textarea { user-select: auto; }
     transition: all 0.3s ease;
 }
 
-.login-box { 
-    margin-top: 15px; 
-    border-left: 4px solid var(--ngc-neon); 
-}
+.login-box { border-left: 4px solid var(--ngc-neon); }
 
 /* ================== INPUTS Y BOTONES ================== */
 .form-group { margin-bottom: 12px; }
@@ -104,63 +114,54 @@ input, textarea { user-select: auto; }
     display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 14px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
     border-radius: 12px; color: var(--ngc-text-main); font-size: 0.9rem; font-weight: 700;
-    text-transform: uppercase; cursor: pointer; transition: 0.3s; 
-    box-shadow: 0 4px 15px var(--card-shadow);
+    text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px var(--card-shadow);
 }
 .ngc-btn i { font-size: 1.2rem; color: var(--ngc-neon); }
 .ngc-btn:active { transform: scale(0.97); }
 
 /* ================== MENÚ FLOTANTE Y CABECERA ================== */
 .hero-logo-icon {
-    position: fixed; top: 12px; right: 15px; z-index: 9999; 
-    width: 48px; height: 48px; 
+    position: fixed; top: 15px; right: 15px; z-index: 9999; 
+    width: 50px; height: 50px; 
     border-radius: 12px; background: var(--ngc-glass); backdrop-filter: blur(15px);
     border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow);
     display: flex; justify-content: center; align-items: center; cursor: pointer;
 }
 .hero-logo-icon i { font-size: 1.4rem; color: var(--ngc-neon); }
 
+/* Menú Sólido Profesional */
 .dropdown-flotante-content {
-    /* Menú sólido sin transparencias para máxima legibilidad */
-    position: absolute; top: 58px; right: 0; width: 190px;
+    position: absolute; top: 60px; right: 0; width: 190px;
     background: var(--bg-body); border: 2px solid var(--ngc-neon);
-    border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); padding: 8px; z-index: 10000;
+    border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.85); padding: 8px; z-index: 10000;
 }
-[data-theme="light"] .dropdown-flotante-content { box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+[data-theme="light"] .dropdown-flotante-content { background: #ffffff; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+.dropdown-email { color: var(--ngc-text-faded); font-size: 0.75rem; text-align: center; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid var(--ngc-privacy-border); word-break: break-all; }
 .dropdown-flotante-content a { color: var(--ngc-text-main); text-decoration: none; padding: 12px 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; }
+.dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
-/* ================== GRILLA DE MÓDULOS (THUMB ZONE) ================== */
-.app-container { 
-    width: 100%; 
-    /* MAGIA MATEMÁTICA: auto toma el espacio libre superior y empuja TODO hacia abajo */
-    margin-top: auto; 
-    margin-bottom: 5px; /* Separación mínima del borde inferior de la pantalla */
-    padding-top: 15px; /* Safe Area por si el celular es muy pequeño, evita tocar el botón perfil */
-}
-
+/* ================== GRILLA DE MÓDULOS ================== */
 .ngc-button-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
 }
 
 .btn-module {
     flex-direction: column; 
-    height: 72px; padding: 8px 4px; /* Altura matemáticamente calculada para evitar scroll */
+    height: 72px; padding: 8px 4px;
     font-size: 0.65rem; text-align: center; font-weight: 600;
 }
 .btn-module i { font-size: 1.6rem; margin-bottom: 3px; }
 
-/* ================== MODALES (CONFIGURACIÓN & TÉRMINOS) ================== */
+/* ================== MODAL DE CONFIGURACIÓN ================== */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
     z-index: 100000; display: flex; justify-content: center; align-items: center; padding: 15px;
 }
 .modal-content { position: relative; max-width: 400px; padding: 25px 20px; }
-/* Si el modal es muy largo (ej. Términos), habilita scroll interno sin mover la app */
-#modalTerminos .ngc-privacy-card { overflow-y: auto; max-height: 85vh; } 
 
-/* TOGGLE SWITCH PROFESIONAL */
-.theme-switch-wrapper { display: flex; background: var(--bg-body); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; margin-bottom: 5px; }
+/* TOGGLE SWITCH DE TEMA */
+.theme-switch-wrapper { display: flex; background: var(--bg-body); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
 .theme-switch-label { flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: var(--ngc-text-faded); transition: 0.3s; }
 input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon); color: #000 !important; }
 
@@ -169,12 +170,13 @@ input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon);
 .hero-name { color: var(--ngc-neon); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }
 .ngc-footer-badge { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--success-green); color: var(--success-green); }
 .pulse-icon { animation: pulse 2s infinite; font-size: 0.5rem; vertical-align: middle; margin-right: 5px; }
+.forgot-link { display: block; text-align: center; margin-top: 20px; color: var(--ngc-neon); font-size: 0.85rem; text-decoration: none; font-weight: 600; }
 .ngc-site-credits { font-size: 0.7rem; color: var(--ngc-text-faded); margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 100%; }
 .ngc-site-credits span { color: var(--ngc-neon); font-weight: bold; }
 .error-text { margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--error-red); }
 
 /* ================== ANIMACIONES & GPU ================== */
 .oculto { display: none !important; }
-.gpu-accel { backface-visibility: hidden; transform: translateZ(0); } /* Fuerza renderizado por Hardware */
+.gpu-accel { backface-visibility: hidden; transform: translateZ(0); } 
 
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
