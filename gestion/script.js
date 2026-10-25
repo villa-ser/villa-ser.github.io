@@ -83,12 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
 const rutas = {
     'btnPresupuesto': './presupuesto/index.html',
     'btnMateriales': './materiales/index.html',
+    'btnInformeTecnico': './informes/index.html',
     'btnVerClientes': './ver_clientes/index.html',
     'btnNuevoCliente': './nuevo_cliente/index.html',
     'btnCatalogos': './catalogos/index.html',
     'btnFotos': './fotos/index.html',
     'btnCostos': './costos/index.html',
-    'btnInformeTecnico': './informe_tecnico/index.html',
     'btnPresupuestoPC': './presupuestoPC/index.html',
     'btnMaterialesPC': './materialesPC/index.html',
     'btnPotenciaPC': './potencia/index.html',
