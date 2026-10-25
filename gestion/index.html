@@ -51,8 +51,8 @@
         
         <!-- CABECERA -->
         <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px;">
-            <p class="ngc-title" style="margin-bottom: 5px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
-            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;">Villaser Gestión</h1>
+            <p class="ngc-title" style="margin-bottom: 2px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
+            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2rem; margin-bottom: 5px;">Villaser Gestión</h1>
             
             <div class="ngc-footer-badge" style="margin-bottom: 0;">
                 <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
@@ -61,23 +61,23 @@
         </div>
 
         <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 10px; border-left: 4px solid var(--ngc-neon);">
-            <h2 class="privacy-title" style="margin-bottom: 15px; font-size: 1.2rem;">Acceso al Sistema</h2>
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 8px; border-left: 4px solid var(--ngc-neon);">
+            <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.2rem;">Acceso al Sistema</h2>
             
             <div class="form-group">
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
             
-            <div class="form-group" style="margin-top: 15px; position: relative;">
+            <div class="form-group" style="margin-top: 10px; position: relative;">
                 <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña" style="padding-right: 45px;">
                 <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
             </div>
             
-            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarSesion()">
+            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 12px;" onclick="iniciarSesion()">
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
-            <button id="registerBtn" class="ngc-btn" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;" onclick="crearCuenta()">
+            <button id="registerBtn" class="ngc-btn" style="width: 100%; margin-top: 8px; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;" onclick="crearCuenta()">
                 <i class="fa-solid fa-user-plus"></i> Crear Cuenta
             </button>
             
@@ -85,7 +85,7 @@
                 <i id="errorIcon" class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent"></span>
             </p>
 
-            <div style="margin-top: 15px; font-size: 0.8rem; text-align: center;">
+            <div style="margin-top: 12px; font-size: 0.8rem; text-align: center;">
                 <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
             </div>
         </div>
@@ -94,7 +94,7 @@
         <div id="appScreen" class="oculto" style="width: 100%;">
             
             <!-- GRILLA DE MÓDULOS -->
-            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 10px;">
+            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 8px;">
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
                 <button class="ngc-btn btn-module" id="btnVerClientes"><i class="fa-solid fa-users-viewfinder"></i> Ver Clientes</button>
@@ -121,7 +121,7 @@
                 
                 <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
                 
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
                     
                     <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
                     <div class="theme-switch-wrapper">
@@ -136,11 +136,11 @@
                     <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
                     <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
                     
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left; margin-top: 5px;">Logo de la empresa (Máx 500KB)</label>
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left; margin-top: 2px;">Logo de la empresa (Máx 500KB)</label>
                     <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
-                    <img id="logoPreview" src="" style="max-height: 80px; object-fit: contain; margin: 5px auto; display: none;">
+                    <img id="logoPreview" src="" style="max-height: 70px; object-fit: contain; margin: 2px auto; display: none;">
                     
-                    <button class="ngc-btn" style="margin-top: 10px;" onclick="guardarConfiguracion()">
+                    <button class="ngc-btn" style="margin-top: 5px;" onclick="guardarConfiguracion()">
                         <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
                     </button>
                 </div>
@@ -148,7 +148,7 @@
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 10px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1.5px;">
+        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 8px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1.5px;">
             &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
 
@@ -156,4 +156,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
