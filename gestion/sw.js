@@ -1,4 +1,4 @@
-const CACHE_NAME = 'villaser-cache-v4';
+const CACHE_NAME = 'villaser-cache-v6';
 
 const urlsToCache = [
     './',
@@ -6,7 +6,7 @@ const urlsToCache = [
     './script.js',
     './style.css',
     './manifest.json',
-    './icono.png',
+    './icono1.png',
     './icono2.png'
 ];
 
@@ -18,7 +18,7 @@ self.addEventListener('install', event => {
             return Promise.allSettled(
                 urlsToCache.map(url => {
                     return cache.add(url).catch(error => {
-                        console.log('Recurso omitido para caché:', url);
+                        console.log('Recurso omitido o no encontrado para caché:', url);
                     });
                 })
             );
