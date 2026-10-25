@@ -1,5 +1,5 @@
 /* ============================================================== */
-/* ESTILOS VILLASER GESTIÓN (PWA Nativa)                          */
+/* ESTILOS VILLASER GESTIÓN (PWA Nativa Optimizada)               */
 /* ============================================================== */
 
 :root {
@@ -93,40 +93,49 @@ body {
 .ngc-btn i { font-size: 1.2rem; color: var(--ngc-neon); }
 .ngc-btn:active { transform: scale(0.97); }
 
-/* ================== GRILLA DE MÓDULOS (APP DRAWER) ================== */
-.app-container { width: 100%; margin-top: 15px; }
-
-.ngc-button-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;
-}
-
-.btn-module {
-    flex-direction: column; height: 85px; padding: 10px 5px;
-    font-size: 0.65rem; text-align: center; font-weight: 600;
-}
-.btn-module i { font-size: 1.8rem; margin-bottom: 5px; }
-
-.btn-full-width { grid-column: 1 / -1; height: 50px; flex-direction: row; font-size: 0.8rem; }
-.dashed-border { border-style: dashed; background: transparent; }
-.dashed-border i { margin-bottom: 0; }
-
 /* ================== MENÚ FLOTANTE Y CABECERA ================== */
 .hero-logo-icon {
-    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 50px; height: 50px;
+    position: fixed; top: 12px; right: 15px; z-index: 9999; 
+    /* Dimensiones estándar de botones táctiles (Apple/Android UI) */
+    width: 48px; height: 48px; 
     border-radius: 12px; background: var(--ngc-glass); backdrop-filter: blur(15px);
     border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow);
     display: flex; justify-content: center; align-items: center; cursor: pointer;
 }
-.hero-logo-icon i { font-size: 1.5rem; color: var(--ngc-neon); }
+.hero-logo-icon i { font-size: 1.4rem; color: var(--ngc-neon); }
 
 .dropdown-flotante-content {
-    position: absolute; top: 60px; right: 0; width: 190px;
+    /* Posicionado exacto debajo del botón flotante */
+    position: absolute; top: 58px; right: 0; width: 190px;
     background: var(--bg-body); border: 2px solid var(--ngc-neon);
     border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); padding: 8px; z-index: 10000;
 }
 [data-theme="light"] .dropdown-flotante-content { box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
 .dropdown-email { color: var(--ngc-text-faded); font-size: 0.75rem; text-align: center; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid var(--ngc-privacy-border); word-break: break-all; }
 .dropdown-flotante-content a { color: var(--ngc-text-main); text-decoration: none; padding: 12px 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; }
+
+/* ================== GRILLA DE MÓDULOS (APP DRAWER) ================== */
+.app-container { 
+    width: 100%; 
+    /* SAFE AREA BRUTAL: 70px de colchón para que la grilla jamás pise al botón flotante */
+    margin-top: 70px; 
+}
+
+.ngc-button-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
+}
+
+.btn-module {
+    flex-direction: column; 
+    /* Altura matemática compensada (72px) para absorber el Safe Area sin crear Scroll */
+    height: 72px; padding: 8px 4px;
+    font-size: 0.65rem; text-align: center; font-weight: 600;
+}
+.btn-module i { font-size: 1.6rem; margin-bottom: 3px; }
+
+.btn-full-width { grid-column: 1 / -1; height: 48px; flex-direction: row; font-size: 0.8rem; }
+.dashed-border { border-style: dashed; background: transparent; }
+.dashed-border i { margin-bottom: 0; }
 
 /* ================== MODAL DE CONFIGURACIÓN & SWITCH ================== */
 .modal-overlay {
@@ -160,7 +169,7 @@ input:checked + .toggle-slider:before { transform: translateX(24px); }
 .ngc-footer-badge { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--success-green); color: var(--success-green); }
 .pulse-icon { animation: pulse 2s infinite; font-size: 0.5rem; vertical-align: middle; margin-right: 5px; }
 .forgot-link { display: block; text-align: center; margin-top: 20px; color: var(--ngc-neon); font-size: 0.85rem; text-decoration: none; font-weight: 600; }
-.ngc-site-credits { font-size: 0.7rem; color: var(--ngc-text-faded); margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+.ngc-site-credits { font-size: 0.7rem; color: var(--ngc-text-faded); margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
 .ngc-site-credits span { color: var(--ngc-neon); font-weight: bold; }
 .error-text { margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--error-red); }
 
@@ -169,3 +178,4 @@ input:checked + .toggle-slider:before { transform: translateX(24px); }
 .splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #4a4a4a; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
 .splash-logo { width: 150px; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    
