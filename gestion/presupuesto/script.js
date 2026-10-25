@@ -1,11 +1,7 @@
-// ==========================================
-// CONFIGURACIÓN Y ESTADO
-// ==========================================
 const SHEET_ID = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
 const URL_PRECIOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
 
 let dbPrecios = [];
-let diccionarioSugerencias = [];
 let listaItems = [];
 let notasOriginales = "";
 let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
@@ -15,16 +11,9 @@ let precioEditado = null;
 
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
-const buscadorTrabajo = document.getElementById('buscadorTrabajo');
-const sugerenciasTrabajo = document.getElementById('sugerenciasTrabajo');
-const palabrasVacias = new Set(["electrico", "electrica", "el", "la", "los", "las", "un", "una", "unos", "unas", "a", "ante", "con", "contra", "de", "desde", "en", "entre", "hacia", "hasta", "para", "por", "sin", "sobre", "y", "e", "ni", "o", "u", "pero", "mas", "como", "si", "que", "yo", "tu", "el", "ella", "nosotros", "este", "ese", "aquel", "esta", "esa", "esto", "eso", "muy", "mucho", "poco", "mas", "menos", "nuevo", "viejo", "solo"]);
 
-// ==========================================
-// INICIALIZACIÓN Y MEMORIA DEL CLIENTE
-// ==========================================
 window.onload = () => {
-    cargarClienteGlobal(); // Busca si hay un cliente activo de otro módulo
-    cargarEstadoGuardado(); // Luego carga el borrador local (si existe)
+    inicializarClienteMemoria();
     fetchData();
 };
 
@@ -41,7 +30,6 @@ async function fetchData() {
             notas: r.c[3]?.v || '' 
         }));
         
-        construirDiccionarioSugerencias();
         poblarTemas();
         setupEventListeners();
         
@@ -49,7 +37,6 @@ async function fetchData() {
         document.getElementById('app').classList.remove('oculto');
 
         if (listaItems.length > 0) iniciarPresupuesto();
-
     } catch (e) { 
         document.getElementById('loading').innerHTML = `⚠️ Error de conexión a la base de datos.<br><br><button class="ngc-btn" onclick="location.reload()">Reintentar</button>`;
         console.error(e);
@@ -59,61 +46,44 @@ async function fetchData() {
 function setupEventListeners() {
     selTema.addEventListener('change', cambioTema);
     selConcepto.addEventListener('change', cargarDetallePrecios);
-    
-    buscadorTrabajo.addEventListener("input", manejarBuscador);
-    document.addEventListener("click", (e) => {
-        if(e.target !== buscadorTrabajo && !sugerenciasTrabajo.contains(e.target)) {
-            sugerenciasTrabajo.classList.add("oculto");
-        }
-    });
 }
 
-// --- SINCRONIZACIÓN DE CLIENTES (NUEVO) ---
-function cargarClienteGlobal() {
+// --- MODAL DE MEMORIA GLOBAL ---
+function inicializarClienteMemoria() {
     const clienteStr = localStorage.getItem('villaser_cliente_global');
-    if (clienteStr) {
-        const cliente = JSON.parse(clienteStr);
-        let recuperado = false;
-        
-        if (cliente.nombre) { document.getElementById('cliNombre').value = cliente.nombre; recuperado = true; }
-        if (cliente.direccion) { document.getElementById('cliDireccion').value = cliente.direccion; recuperado = true; }
-        if (cliente.proyecto) { document.getElementById('cliProyecto').value = cliente.proyecto; recuperado = true; }
-        
-        // Muestra notificación si no hay ítems ya guardados en el borrador de presupuestos
-        const estadoStr = localStorage.getItem('presupuesto_estado_actual');
-        const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
-        
-        if (recuperado && estado.items.length === 0) {
-            mostrarToastCliente();
-        }
+    const estadoStr = localStorage.getItem('presupuesto_estado_actual');
+    const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
+
+    if (clienteStr && estado.items.length === 0 && !estado.cliNombre) {
+        window.clienteTemporal = JSON.parse(clienteStr);
+        document.getElementById('modalRecuperarCliente').classList.remove('oculto');
+    } else {
+        cargarEstadoGuardado();
     }
 }
 
+function usarClienteMemoria() {
+    document.getElementById('cliNombre').value = window.clienteTemporal.nombre || '';
+    document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || '';
+    document.getElementById('cliProyecto').value = window.clienteTemporal.proyecto || '';
+    guardarClienteGlobal();
+    document.getElementById('modalRecuperarCliente').classList.add('oculto');
+}
+
+function limpiarClienteMemoria() {
+    document.getElementById('modalRecuperarCliente').classList.add('oculto');
+}
+
 function guardarClienteGlobal() {
-    // Almacena universalmente para que los demás módulos lo lean
     const clienteObj = {
         nombre: document.getElementById('cliNombre').value.trim(),
         direccion: document.getElementById('cliDireccion').value.trim(),
         proyecto: document.getElementById('cliProyecto').value.trim()
     };
     localStorage.setItem('villaser_cliente_global', JSON.stringify(clienteObj));
-    guardarEstado(); // Guarda también el borrador de este módulo
+    guardarEstado(); 
 }
 
-function mostrarToastCliente() {
-    const toast = document.getElementById('toastCliente');
-    toast.classList.remove('oculto');
-    setTimeout(() => toast.classList.add('mostrar'), 100);
-    setTimeout(() => cerrarToast(), 5000); // Auto ocultar a los 5s
-}
-
-function cerrarToast() {
-    const toast = document.getElementById('toastCliente');
-    toast.classList.remove('mostrar');
-    setTimeout(() => toast.classList.add('oculto'), 400);
-}
-
-// --- BORRADOR LOCAL DE PRESUPUESTOS ---
 function guardarEstado() {
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
@@ -130,7 +100,6 @@ function cargarEstadoGuardado() {
     const estadoStr = localStorage.getItem('presupuesto_estado_actual');
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
-        // Si hay datos locales, sobreescriben al global solo para el render de este borrador
         if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
         if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
         if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
@@ -171,9 +140,6 @@ function iniciarPresupuesto() {
     renderTabla();
 }
 
-// ==========================================
-// FUNCIONES DE ÍTEMS Y CÁLCULOS
-// ==========================================
 function step(id, val) { 
     const el = document.getElementById(id); 
     let newValue = parseInt(el.value || 0) + val;
@@ -269,13 +235,10 @@ function agregarTrabajo() {
     guardarEstado(); renderTabla(); 
     
     document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; document.getElementById('porcentajeDesc').value = 0;
-    buscadorTrabajo.value = ""; selConcepto.value = ""; 
+    selConcepto.value = ""; 
     limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
-// ==========================================
-// RENDERIZADO VISUAL Y CREADOR PDF
-// ==========================================
 function renderTabla() {
     const tbody = document.getElementById('cuerpoTabla'); 
     tbody.innerHTML = ''; 
@@ -320,7 +283,7 @@ function actualizarPDFHeaders() {
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
     const profSlogan = localStorage.getItem('villaser_conf_slogan') || '';
     const profLogo = localStorage.getItem('villaser_conf_logo') || '';
-    const profEmail = localStorage.getItem('villaser_conf_email') || ''; // Para el futuro si se guarda
+    const profEmail = localStorage.getItem('villaser_conf_email') || '';
 
     document.getElementById('headerMembrete').innerText = profNombre.toUpperCase();
     document.getElementById('pdf-slogan').innerText = profSlogan;
@@ -339,7 +302,6 @@ function actualizarPDFHeaders() {
 
 function sincronizarVistaPreviaPDF() {
     actualizarPDFHeaders();
-
     document.getElementById('pdf-nro').innerText = nroPresupuestoGlobal;
     document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
     document.getElementById('pdf-cliente').innerText = document.getElementById('cliNombre').value || 'Sin Nombre';
@@ -377,9 +339,6 @@ function sincronizarVistaPreviaPDF() {
     document.getElementById('pdf-notas').innerHTML = notasAcumuladas ? notasAcumuladas.replace(/\n/g, '<br>') : 'Sin notas aclaratorias.';
 }
 
-// ==========================================
-// EXPORTACIÓN Y CAPTURA
-// ==========================================
 function exportarJSON() {
     if (listaItems.length === 0) return alert("No hay datos para exportar.");
     const estado = JSON.parse(localStorage.getItem('presupuesto_estado_actual') || '{}');
@@ -401,10 +360,7 @@ function importarJSON(e) {
             const data = JSON.parse(ev.target.result);
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
-            
-            // Si importan un JSON viejo, también lo guardamos como el cliente activo actual
             guardarClienteGlobal();
-            
             document.getElementById('step-cliente').classList.add('oculto');
             document.getElementById('step-trabajo').classList.remove('oculto');
             document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
@@ -461,94 +417,5 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-}
-
-// ==========================================
-// MOTOR DE BÚSQUEDA AVANZADO
-// ==========================================
-function normalizarFonetica(texto) {
-    return texto.split(/\s+/).map(p => {
-        p = p.replace(/ll/g, "y").replace(/y/g, "i").replace(/v/g, "b").replace(/z/g, "s").replace(/ce/g, "se").replace(/ci/g, "si").replace(/ch/g, "x").replace(/h/g, "").replace(/x/g, "ch");       
-        if (p.length > 4 && p.endsWith("es")) p = p.slice(0, -2);
-        else if (p.length > 3 && p.endsWith("s")) p = p.slice(0, -1);
-        return p;
-    }).join(" ");
-}
-
-function obtenerPalabrasClave(texto) { return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(p => p.length > 0); }
-
-function construirDiccionarioSugerencias() {
-    let palabras = new Set();
-    dbPrecios.forEach(item => {
-        let tokens = item.concepto.replace(/[^\wáéíóúüñÁÉÍÓÚÜÑ]/g, ' ').split(/\s+/);
-        tokens.forEach(word => {
-            let w = word.toLowerCase();
-            if (w.length >= 3 && !palabrasVacias.has(w)) palabras.add(w);
-        });
-    });
-    diccionarioSugerencias = Array.from(palabras);
-}
-
-function distanciaLevenshtein(a, b) {
-    const matriz = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-    for (let i = 0; i <= a.length; i++) matriz[i][0] = i;
-    for (let j = 0; j <= b.length; j++) matriz[0][j] = j;
-    for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-            const costo = a[i - 1] === b[j - 1] ? 0 : 1;
-            matriz[i][j] = Math.min(matriz[i - 1][j] + 1, matriz[i][j - 1] + 1, matriz[i - 1][j - 1] + costo);
-        }
-    }
-    return matriz[a.length][b.length];
-}
-
-function manejarBuscador() {
-    const texto = buscadorTrabajo.value.trim().toLowerCase();
-    sugerenciasTrabajo.innerHTML = '';
-    if (texto.length < 3) { sugerenciasTrabajo.classList.add("oculto"); return; }
-
-    const busquedaFonetica = normalizarFonetica(texto);
-    const resultados = [];
-
-    dbPrecios.forEach(item => {
-        const conceptoNorm = item.concepto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        const conceptoFon = normalizarFonetica(conceptoNorm);
-        
-        let score = 0;
-        if (conceptoNorm.includes(texto)) score += 50;
-        else if (conceptoFon.includes(busquedaFonetica)) score += 30;
-        
-        if (score === 0) {
-            const pBuscadas = obtenerPalabrasClave(texto);
-            const pConcepto = obtenerPalabrasClave(item.concepto);
-            let matchCount = 0;
-            
-            pBuscadas.forEach(pb => {
-                const pbFon = normalizarFonetica(pb);
-                for (let pc of pConcepto) {
-                    if (pc === pb || normalizarFonetica(pc) === pbFon || distanciaLevenshtein(pb, pc) <= 1) { matchCount++; break; }
-                }
-            });
-            if (matchCount > 0 && matchCount >= pBuscadas.length - 1) score += 20;
-        }
-        if (score > 0) resultados.push({ item, score });
-    });
-
-    resultados.sort((a, b) => b.score - a.score);
-    const topResultados = resultados.slice(0, 10);
-
-    if (topResultados.length === 0) {
-        sugerenciasTrabajo.innerHTML = '<li style="color:var(--ngc-text-faded);">No se encontraron coincidencias</li>';
-    } else {
-        topResultados.forEach(res => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${res.item.concepto}</strong> <br><small style="color:var(--ngc-neon)">${res.item.tema} - $${res.item.precio}</small>`;
-            li.onclick = () => {
-                selTema.value = res.item.tema; cambioTema(); selConcepto.value = res.item.concepto; cargarDetallePrecios(); 
-                buscadorTrabajo.value = ""; sugerenciasTrabajo.classList.add("oculto"); document.getElementById('cantidad').focus();
-            };
-            sugerenciasTrabajo.appendChild(li);
-        });
-    }
-    sugerenciasTrabajo.classList.remove("oculto");
             }
+        
