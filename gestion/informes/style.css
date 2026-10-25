@@ -1,0 +1,333 @@
+/* ============================================================== */
+/* ESTILOS VILLASER - MÓDULO INFORME TÉCNICO                      */
+/* ============================================================== */
+
+:root {
+    --ngc-neon: #00d4ff;
+    --ngc-neon-rgb: 0, 212, 255;
+    --ngc-glass: rgba(0, 0, 0, 0.5);
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    --ngc-btn-bg: #181818;
+    --text: #ffffff;
+    --text-faded: rgba(255, 255, 255, 0.5);
+    --bg-body: #121212;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --success: #28a745;
+    --danger: #ff4444;
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --input-bg: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] {
+    --ngc-neon: #0056d6;
+    --ngc-neon-rgb: 0, 86, 214;
+    --ngc-glass: rgba(255, 255, 255, 0.85);
+    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.5);
+    --ngc-btn-bg: #ffffff;
+    --text: #1a1a1a;
+    --text-faded: #666666;
+    --bg-body: #e0e5ec;
+    --border-color: rgba(0, 0, 0, 0.15);
+    --card-shadow: rgba(0, 0, 0, 0.15);
+    --input-bg: rgba(255, 255, 255, 0.8);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden, .oculto {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+
+/* ================== NAVEGACIÓN ================== */
+.top-nav {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.btn-back {
+    background: transparent;
+    border: none;
+    color: var(--ngc-neon);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+}
+
+/* ================== TARJETAS ================== */
+.card {
+    background: var(--ngc-glass);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: var(--ngc-border-glass);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 8px 25px var(--card-shadow);
+}
+
+.card h4 {
+    color: var(--ngc-neon);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+/* ================== INPUTS Y TEXTAREAS ================== */
+input, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--ngc-neon);
+}
+
+label {
+    font-size: 0.85rem;
+    color: var(--text-faded);
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+/* ================== BOTONES ================== */
+.btn-add-custom {
+    padding: 14px;
+    background: var(--ngc-btn-bg);
+    border: var(--ngc-border-glass);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add-custom:active {
+    transform: scale(0.97);
+}
+
+.btn-client { color: var(--ngc-neon); border-color: var(--ngc-neon); }
+.btn-pdf { background: var(--danger); color: white; border: none; }
+.btn-wsp { color: var(--success); border-color: var(--success); }
+.btn-cap { color: var(--ngc-neon); border-color: var(--ngc-neon); }
+.btn-copy { color: #ff9800; border-color: #ff9800; }
+.btn-export { border-style: dashed; font-size: 0.75rem; }
+.btn-import { border-style: dashed; font-size: 0.75rem; }
+
+.btn-success-active {
+    background: var(--success) !important;
+    color: #fff !important;
+    border-color: var(--success) !important;
+}
+
+/* ================== ÁREA DE CAPTURA ================== */
+.capture-area {
+    background: var(--ngc-btn-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.list-header-title {
+    color: var(--ngc-neon);
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* ================== PÁRRAFOS LISTA ================== */
+.parrafo-item {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    position: relative;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.parrafo-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.parrafo-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-edit-p { color: #ff9800; }
+.btn-del-p { color: var(--danger); }
+
+/* ================== GRIDS ================== */
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn-grid-actions-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.btn-full { grid-column: span 2; }
+
+/* ================== TOAST MEMORIA ================== */
+.toast-flotante {
+    position: fixed; 
+    top: 20px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: rgba(20, 20, 20, 0.95); 
+    border: 1px solid var(--ngc-neon);
+    border-radius: 8px; 
+    padding: 12px 15px; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0,212,255,0.2); 
+    z-index: 1000;
+    color: #fff; 
+    width: 90%; 
+    max-width: 400px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+body.light-mode .toast-flotante {
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
+}
+.toast-flotante.oculto { 
+    opacity: 0; 
+    pointer-events: none; 
+    transform: translate(-50%, -20px); 
+}
+.toast-icon { font-size: 1.5rem; }
+.toast-content { flex: 1; }
+.toast-content strong { color: var(--ngc-neon); font-size: 0.9rem; display: block; margin-bottom: 2px; }
+.toast-content p { margin: 0; font-size: 0.75rem; opacity: 0.8; }
+.toast-close { background: transparent; border: none; color: inherit; cursor: pointer; font-size: 1.2rem; opacity: 0.7; }
+
+/* ================== PLANTILLA PDF (A4) ================== */
+.pdf-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    color: black;
+    font-family: Arial, sans-serif;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.pdf-header {
+    border-bottom: 2px solid #0088aa;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.pdf-info-box {
+    width: 60%;
+}
+
+.pdf-row {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.pdf-row b { color: #555; display: inline-block; width: 70px; }
+
+.pdf-logo-box {
+    width: 35%;
+    text-align: right;
+}
+
+.pdf-body-content {
+    min-height: 500px;
+}
+
+.pdf-informe-texto {
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+.pdf-informe-texto p {
+    margin-bottom: 10px;
+    text-indent: 20px;
+}
+
+.pdf-footer {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #666;
+}
+
+.pdf-right-footer { text-align: right; }
+.pdf-slogan { font-weight: bold; color: #0088aa; margin-bottom: 4px; font-size: 12px; }
+.pdf-contacto { margin-bottom: 2px; }
+  
