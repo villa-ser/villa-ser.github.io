@@ -10,7 +10,9 @@ const firebaseConfig = {
     appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061",
     measurementId: "G-CS6MWCYNFD"
 };
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 let registrandoCuenta = false;
 let cargaInicial = true;
@@ -27,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     mostrarAppPrincipal(user.email);
                 } else {
                     auth.signOut().then(() => {
-                        mostrarMensaje("Debes verificar tu correo para ingresar.", "error");
+                        mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
                         mostrarPantallaLogin();
                     });
                 }
@@ -45,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 procesarAcceso();
                 cargaInicial = false;
-            }, 1500); // 1.5 seg para mostrar el logo
+            }, 1500); 
         } else {
             procesarAcceso();
         }
@@ -66,8 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             const reader = new FileReader();
             reader.onload = function(event) {
-                document.getElementById('logoPreview').src = event.target.result;
-                document.getElementById('logoPreview').classList.remove('oculto');
+                const preview = document.getElementById('logoPreview');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
@@ -75,9 +78,37 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// FUNCIONES DE CONTROL DE UI & CONFIGURACIÓN
+// 2. ENRUTAMIENTO Y ACCESO A MÓDULOS
 // ==========================================
+const rutas = {
+    'btnPresupuesto': './presupuesto/index.html',
+    'btnMateriales': './materiales/index.html',
+    'btnVerClientes': './ver_clientes/index.html',
+    'btnNuevoCliente': './nuevo_cliente/index.html',
+    'btnCatalogos': './catalogos/index.html',
+    'btnFotos': './fotos/index.html',
+    'btnCostos': './costos/index.html',
+    'btnInformeTecnico': './informe_tecnico/index.html',
+    'btnPresupuestoPC': './presupuestoPC/index.html',
+    'btnMaterialesPC': './materialesPC/index.html',
+    'btnPotenciaPC': './potencia/index.html',
+    'btnPresupuestoPC2': './presupuestoPC2/index.html',
+    'btnPreguntas': './preguntas/index.html',
+    'btnProveedores': './proveedores/index.html'
+};
 
+Object.keys(rutas).forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener('click', () => {
+            window.location.href = rutas[id];
+        });
+    }
+});
+
+// ==========================================
+// 3. FUNCIONES DE CONTROL DE UI & CONFIGURACIÓN
+// ==========================================
 function togglePasswordVisibility() {
     const passwordInput = document.getElementById('passwordInput');
     const toggleIcon = document.getElementById('togglePasswordIcon');
@@ -132,25 +163,35 @@ function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
 }
 
-// --- LÓGICA CORREGIDA DEL MODAL CONFIG ---
+// Cierra menú flotante al tocar fuera
+document.addEventListener('click', (e) => { 
+    const wrapper = document.getElementById('userMenuWrapper'); 
+    const dropdown = document.getElementById('userDropdown'); 
+    const modal = document.getElementById('modalConfig'); 
+    if (wrapper && !wrapper.contains(e.target) && !dropdown.classList.contains('oculto') && (modal ? modal.classList.contains('oculto') : true)) { 
+        dropdown.classList.add('oculto'); 
+    } 
+});
+
+// --- LÓGICA DE CONFIGURACIÓN ---
 function abrirConfiguracion() {
-    // 1. Cargar Textos
+    // Cargar textos
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
     document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
 
-    // 2. Cargar Logo
+    // Cargar logo guardado
     const logoGuardado = localStorage.getItem('villaser_conf_logo');
     if (logoGuardado) {
         document.getElementById('logoPreview').src = logoGuardado;
-        document.getElementById('logoPreview').classList.remove('oculto');
+        document.getElementById('logoPreview').style.display = 'block';
     }
 
-    // 3. Sincronizar el Switch con el Tema Actual
+    // Sincronizar estado del switch del tema (Modo Noche / Modo Claro)
     const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
-    document.getElementById('checkboxTema').checked = esClaro;
+    const checkboxTema = document.getElementById('checkboxTema');
+    if(checkboxTema) checkboxTema.checked = esClaro;
 
-    // 4. Mostrar Modal
     document.getElementById('modalConfig').classList.remove('oculto');
     document.getElementById('userDropdown').classList.add('oculto');
 }
@@ -190,9 +231,8 @@ function guardarConfiguracion() {
 }
 
 // ==========================================
-// FUNCIONES DE FIREBASE (AUTH)
+// 4. FUNCIONES DE FIREBASE (AUTH)
 // ==========================================
-
 function crearCuenta() {
     const email = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value.trim();
@@ -263,4 +303,45 @@ function recuperarPassword() {
     auth.sendPasswordResetEmail(email)
         .then(() => mostrarMensaje(`Recuperación enviada a ${email}.`, "exito"))
         .catch(() => mostrarMensaje("Error al enviar el correo.", "error"));
-            }
+}
+
+// ==========================================
+// 5. CONFIGURACIÓN PWA (INSTALACIÓN)
+// ==========================================
+if ('serviceWorker' in navigator) { 
+    window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('./sw.js') 
+        .then(reg => console.log('ServiceWorker registrado con éxito:', reg.scope)) 
+        .catch(err => console.log('Error al registrar ServiceWorker:', err)); 
+    }); 
+}
+
+let eventoInstalacion; 
+const btnInstalar = document.getElementById('btn-instalar');
+
+window.addEventListener('beforeinstallprompt', (e) => { 
+    e.preventDefault(); 
+    eventoInstalacion = e;
+    if (btnInstalar) {
+        btnInstalar.classList.remove('oculto'); 
+        btnInstalar.style.display = 'block'; 
+    }
+});
+
+if (btnInstalar) { 
+    btnInstalar.addEventListener('click', async (e) => { 
+        e.preventDefault(); 
+        if (!eventoInstalacion) return;
+        
+        eventoInstalacion.prompt();
+        const { outcome } = await eventoInstalacion.userChoice;
+        
+        if (outcome === 'accepted') {
+            console.log('El usuario instaló la aplicación');
+            btnInstalar.classList.add('oculto');
+            btnInstalar.style.display = 'none';
+        }
+        
+        eventoInstalacion = null;
+    }); 
+        }
