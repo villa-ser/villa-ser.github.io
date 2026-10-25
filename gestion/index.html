@@ -50,9 +50,9 @@
     <main class="ngc-wrapper">
         
         <!-- CABECERA -->
-        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 20px;">
-            <p class="ngc-title" style="margin-bottom: 10px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
-            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2.2rem; margin-bottom: 20px;">Villaser Gestión</h1>
+        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px;">
+            <p class="ngc-title" style="margin-bottom: 5px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
+            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2.2rem; margin-bottom: 10px;">Villaser Gestión</h1>
             
             <div class="ngc-footer-badge" style="margin-bottom: 0;">
                 <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
@@ -61,8 +61,8 @@
         </div>
 
         <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 20px; border-left: 4px solid var(--ngc-neon);">
-            <h2 class="privacy-title" style="margin-bottom: 20px; font-size: 1.2rem;">Acceso al Sistema</h2>
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 10px; border-left: 4px solid var(--ngc-neon);">
+            <h2 class="privacy-title" style="margin-bottom: 15px; font-size: 1.2rem;">Acceso al Sistema</h2>
             
             <div class="form-group">
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
@@ -73,7 +73,7 @@
                 <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
             </div>
             
-            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 20px;" onclick="iniciarSesion()">
+            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarSesion()">
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
@@ -81,11 +81,11 @@
                 <i class="fa-solid fa-user-plus"></i> Crear Cuenta
             </button>
             
-            <p id="errorMessage" class="error-text oculto" style="margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center;">
+            <p id="errorMessage" class="error-text oculto" style="margin-top: 10px; font-size: 0.85rem; font-weight: bold; text-align: center;">
                 <i id="errorIcon" class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent"></span>
             </p>
 
-            <div style="margin-top: 20px; font-size: 0.8rem; text-align: center;">
+            <div style="margin-top: 15px; font-size: 0.8rem; text-align: center;">
                 <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
             </div>
         </div>
@@ -94,7 +94,7 @@
         <div id="appScreen" class="oculto" style="width: 100%;">
             
             <!-- GRILLA DE MÓDULOS -->
-            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 20px;">
+            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 10px;">
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
                 <button class="ngc-btn btn-module" id="btnVerClientes"><i class="fa-solid fa-users-viewfinder"></i> Ver Clientes</button>
@@ -148,7 +148,7 @@
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 35px; text-transform: uppercase; letter-spacing: 1.5px;">
+        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 15px; text-transform: uppercase; letter-spacing: 1.5px;">
             &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
 
