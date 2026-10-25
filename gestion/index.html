@@ -29,12 +29,12 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA (SPLASH SCREEN PERSONALIZADO) -->
+    <!-- PANTALLA DE CARGA -->
     <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #4a4a4a; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
         <img src="./icono2.png" alt="Cargando Villaser..." style="width: 160px; height: auto; animation: pulse 2s infinite;">
     </div>
 
-    <!-- CONTROLES FLOTANTES -->
+    <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
     <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
         <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
         
@@ -121,9 +121,9 @@
                 
                 <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
                 
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
                     
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
                     <div class="theme-switch-wrapper">
                         <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
                         <label for="tema_dark" class="theme-switch-label">OSCURO</label>
@@ -131,16 +131,16 @@
                         <label for="tema_light" class="theme-switch-label">CLARO</label>
                     </div>
 
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
                     <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
                     <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
                     <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
                     
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); margin-top: 5px;">Logo de la empresa (Máx 500KB)</label>
+                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left; margin-top: 5px;">Logo de la empresa (Máx 500KB)</label>
                     <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
                     <img id="logoPreview" src="" style="max-height: 80px; object-fit: contain; margin: 5px auto; display: none;">
                     
-                    <button class="ngc-btn" style="margin-top: 15px;" onclick="guardarConfiguracion()">
+                    <button class="ngc-btn" style="margin-top: 10px;" onclick="guardarConfiguracion()">
                         <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
                     </button>
                 </div>
@@ -148,7 +148,7 @@
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 15px; text-transform: uppercase; letter-spacing: 1.5px;">
+        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 10px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1.5px;">
             &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
 
