@@ -30,21 +30,16 @@
 <body>
 
     <!-- PANTALLA DE CARGA -->
-    <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
-        <img src="./ico512.png" alt="Cargando Villaser..." style="width: 160px; height: auto; animation: pulse 2s infinite;">
+    <div id="customSplashScreen" class="splash-screen gpu-accel">
+        <img src="./icono2.png" alt="Cargando Villaser..." class="splash-logo">
     </div>
 
-    <!-- CONTROLES FLOTANTES SUPERIORES (Interruptor y Perfil) -->
-    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche" onclick="toggleThemeManual()">
-        <div class="switch-rocker"></div>
-    </button>
-
-    <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
-        <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
+    <!-- MENÚ DE USUARIO FLOTANTE (Solo visible con sesión iniciada) -->
+    <div class="hero-logo-icon gpu-accel" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none;" onclick="toggleUserMenu()">
+        <i class="fa-solid fa-user-tie"></i>
         
-        <div id="userDropdown" class="dropdown-flotante-content oculto" style="top: 70px; right: 0; left: auto; width: 180px; position: absolute;">
-            <p id="userEmailDisplay" style="color: var(--ngc-text-faded); font-size: 0.7rem; padding: 5px 10px; margin: 0; text-align: center; word-break: break-all; border-bottom: 1px solid var(--ngc-privacy-border);"></p>
-            
+        <div id="userDropdown" class="dropdown-flotante-content oculto">
+            <p id="userEmailDisplay" class="dropdown-email"></p>
             <a href="#" id="btn-instalar" class="oculto"><i class="fa-solid fa-download"></i> Instalar App</a>
             <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
             <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
@@ -54,120 +49,111 @@
     <main class="ngc-wrapper">
         
         <!-- CABECERA -->
-        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px; padding: 12px 15px;">
-            <p class="ngc-title" style="margin-bottom: 2px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
-            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px;">Villaser Gestión</h1>
-            
-            <div class="ngc-footer-badge" style="margin-bottom: 0;">
-                <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
-                Sistema Activo
+        <div class="gnc-hero-card gpu-accel" id="mainHeader">
+            <p class="ngc-title">Plataforma Oficial</p>
+            <h1 class="hero-name">Villaser Gestión</h1>
+            <div class="ngc-footer-badge">
+                <i class="fa-solid fa-circle pulse-icon"></i> Sistema Activo
             </div>
         </div>
 
-        <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 8px; border-left: 4px solid var(--ngc-neon); padding: 15px;">
-            <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.1rem;">Acceso al Sistema</h2>
+        <!-- PANTALLA DE LOGIN (Centrada y Proporcional) -->
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel login-box">
+            <h2 class="privacy-title">Acceso al Sistema</h2>
             
             <div class="form-group">
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
             
-            <div class="form-group" style="margin-top: 10px; position: relative;">
-                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña" style="padding-right: 45px;">
-                <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
+            <div class="form-group input-icon-wrapper">
+                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña">
+                <i class="fa-solid fa-eye input-icon" id="togglePasswordIcon" onclick="togglePasswordVisibility()"></i>
             </div>
             
-            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 12px;" onclick="iniciarSesion()">
+            <button id="loginBtn" class="ngc-btn primary-btn" onclick="iniciarSesion()">
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
-            <button id="registerBtn" class="ngc-btn" style="width: 100%; margin-top: 8px; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;" onclick="crearCuenta()">
+            <button id="registerBtn" class="ngc-btn secondary-btn" onclick="crearCuenta()">
                 <i class="fa-solid fa-user-plus"></i> Crear Cuenta
             </button>
             
-            <p id="errorMessage" class="error-text oculto" style="margin-top: 10px; font-size: 0.85rem; font-weight: bold; text-align: center;">
+            <p id="errorMessage" class="error-text oculto">
                 <i id="errorIcon" class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent"></span>
             </p>
 
-            <div style="margin-top: 12px; font-size: 0.8rem; text-align: center;">
-                <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
-            </div>
+            <a href="#" class="forgot-link" onclick="recuperarPassword(); return false;">¿Olvidaste tu contraseña?</a>
         </div>
 
-        <!-- INTERFAZ PRINCIPAL DE LA APP -->
-        <div id="appScreen" class="oculto" style="width: 100%;">
-            
-            <!-- GRILLA DE MÓDULOS (NUEVA DISTRIBUCIÓN 3 COLUMNAS) -->
-            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 8px;">
-                <!-- Fila 1: Núcleo Financiero -->
+        <!-- INTERFAZ PRINCIPAL DE LA APP (Grilla 3 Columnas) -->
+        <div id="appScreen" class="oculto app-container">
+            <div id="menuGrid" class="ngc-button-grid">
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
                 <button class="ngc-btn btn-module" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano de Obra</button>
                 
-                <!-- Fila 2: Gestión de Clientes -->
                 <button class="ngc-btn btn-module" id="btnVerClientes"><i class="fa-solid fa-users-viewfinder"></i> Ver Clientes</button>
                 <button class="ngc-btn btn-module" id="btnNuevoCliente"><i class="fa-solid fa-user-plus"></i> Nuevo Cliente</button>
                 <button class="ngc-btn btn-module"><i class="fa-brands fa-whatsapp"></i> Enviar WTS</button>
                 
-                <!-- Fila 3: Herramientas de Campo -->
                 <button class="ngc-btn btn-module" id="btnCatalogos"><i class="fa-solid fa-book-open"></i> Catálogos</button>
                 <button class="ngc-btn btn-module" id="btnFotos"><i class="fa-solid fa-camera"></i> Fotos</button>
                 <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Téc.</button>
                 
-                <!-- Fila 4: Informática y Redes -->
                 <button class="ngc-btn btn-module" id="btnPresupuestoPC"><i class="fa-solid fa-desktop"></i> Ppto. PC</button>
                 <button class="ngc-btn btn-module" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Mat. PC</button>
                 <button class="ngc-btn btn-module" id="btnPotenciaPC"><i class="fa-solid fa-bolt"></i> Potencia PC</button>
                 
-                <!-- Fila 5: Otros -->
                 <button class="ngc-btn btn-module" id="btnPresupuestoPC2"><i class="fa-solid fa-file-invoice"></i> Ppto. PC 2</button>
                 <button class="ngc-btn btn-module" id="btnPreguntas"><i class="fa-solid fa-circle-question"></i> Preguntas</button>
                 <button class="ngc-btn btn-module" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
                 
-                <!-- Botón Expansivo Inferior -->
-                <button class="ngc-btn btn-module btn-full-width" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
-            </div>
-        </div>
-
-        <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
-        <div id="modalConfig" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-            <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 400px; position: relative;">
-                <button onclick="cerrarConfiguracion()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-                
-                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
-                
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
-                    <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
-                    <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
-                    <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
-                    
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left; margin-top: 2px;">Logo de la empresa (Máx 500KB)</label>
-                    <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
-                    <img id="logoPreview" src="" style="max-height: 70px; object-fit: contain; margin: 2px auto; display: none;">
-                    
-                    <button class="ngc-btn" style="margin-top: 5px;" onclick="guardarConfiguracion()">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
-                    </button>
-                </div>
+                <button class="ngc-btn btn-module btn-full-width dashed-border"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
             </div>
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.6rem; color: var(--ngc-text-faded); margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px;">
-            &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
+        <div class="ngc-site-credits">
+            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
         </div>
 
     </main>
 
+    <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
+    <div id="modalConfig" class="modal-overlay oculto">
+        <div class="ngc-privacy-card modal-content gpu-accel">
+            <button onclick="cerrarConfiguracion()" class="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h3 class="modal-title"><i class="fa-solid fa-id-card"></i> Configuración</h3>
+            
+            <div class="modal-body">
+                <!-- NUEVO SWITCH DE TEMA PROFESIONAL -->
+                <div class="config-row-switch">
+                    <label class="config-label"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Claro</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="checkboxTema" onchange="cambiarTemaDesdeConfig()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="divider"></div>
+
+                <label class="config-label"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
+                <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
+                <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
+                <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
+                
+                <label class="config-label upload-label">Logo de la empresa (Máx 500KB)</label>
+                <input type="file" id="confLogo" class="ngc-input file-input" accept="image/*">
+                <img id="logoPreview" src="" class="logo-preview oculto">
+                
+                <button class="ngc-btn primary-btn mt-10" onclick="guardarConfiguracion()">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
-    <script>
-        function toggleThemeManual() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('temaVillaser', newTheme);
-        }
-    </script>
 </body>
 </html>
