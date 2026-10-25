@@ -46,7 +46,7 @@
 body {
     margin: 0; 
     /* Reducción máxima del padding inferior para evitar scroll */
-    padding: 60px 4px 5px 4px; 
+    padding: 40px 4px 5px 4px; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-body);
     color: var(--ngc-text); 
