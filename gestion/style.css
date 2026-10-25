@@ -45,34 +45,36 @@
 /* ================== ESTRUCTURA BASE ================== */
 body {
     margin: 0; 
-    /* Reducción máxima del padding inferior para evitar scroll */
-    padding: 40px 4px 5px 4px; 
+    /* Padding reducido radicalmente para evitar cualquier scroll vertical */
+    padding: 15px 4px 5px 4px; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-body);
     color: var(--ngc-text); 
     display: flex; justify-content: center;
     min-height: 100svh;
     transition: background-color 0.4s ease, color 0.4s ease;
+    overflow-x: hidden;
 }
 
 .ngc-wrapper {
     display: flex; flex-direction: column; align-items: center; 
     width: 100%; max-width: 500px; 
-    padding: 5px; /* Reducido para ahorrar espacio */
+    padding: 0px 5px; /* Reducido para ahorrar espacio horizontal y vertical */
 }
 
 /* ================== COMPONENTES NGC ================== */
 .gnc-hero-card, .ngc-privacy-card, .ngc-cta-banner {
     background: var(--ngc-glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 20px;
+    border: var(--ngc-border-glass); border-radius: 16px; 
+    padding: 10px 15px; /* Padding interior reducido para acortar las tarjetas */
     box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
     width: 100%; box-sizing: border-box; transition: all 0.3s ease;
 }
 
 .ngc-input {
-    width: 100%; padding: 12px; background: var(--ngc-bg-input);
+    width: 100%; padding: 10px 12px; background: var(--ngc-bg-input);
     border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
-    color: var(--ngc-text-main); font-size: 1rem; outline: none; transition: all 0.3s ease;
+    color: var(--ngc-text-main); font-size: 0.95rem; outline: none; transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
@@ -81,18 +83,20 @@ body {
 }
 
 .ngc-button-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; 
+    gap: 8px; /* Separación más compacta entre botones */
+    width: 100%;
 }
 
 .ngc-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column;
-    padding: 12px 10px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
-    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.8rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column;
+    padding: 10px 8px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
+    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.75rem; font-weight: 600;
     text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow); text-align: center;
 }
 
-.ngc-btn i { font-size: 1.4rem; color: var(--ngc-neon); margin-bottom: 5px; }
+.ngc-btn i { font-size: 1.3rem; color: var(--ngc-neon); margin-bottom: 3px; }
 
 .ngc-btn:hover {
     background: var(--ngc-btn-hover); transform: translateY(-2px);
@@ -101,25 +105,27 @@ body {
 
 /* ================== MENÚ DE USUARIO DESPLEGABLE ================== */
 .hero-logo-icon {
-    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
+    position: fixed; top: 12px; right: 12px; z-index: 9999; width: 55px; height: 55px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: blur(15px);
     border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
     transition: all 0.3s ease; display: flex; justify-content: center; align-items: center;
 }
 
-/* MENÚ SÓLIDO: Sin transparencias para que se lea perfecto */
+/* MENÚ SÓLIDO: Eliminada la transparencia, agregado color y borde para perfecta legibilidad */
 .dropdown-flotante-content {
-    background: var(--bg-body);
-    backdrop-filter: none; /* Quitamos el cristal */
-    border: 2px solid var(--ngc-neon); /* Borde fuerte */
+    background: var(--bg-body) !important; /* Fuerza color base puro (negro/blanco) */
+    backdrop-filter: none !important; /* Elimina difuminado del fondo */
+    -webkit-backdrop-filter: none !important;
+    border: 2px solid var(--ngc-neon) !important; /* Borde más visible */
     border-radius: 12px; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9); /* Sombra intensa para despegarlo */
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95) !important; /* Sombra intensa para despegarlo */
     padding: 8px;
-    z-index: 99999;
+    z-index: 999999 !important; /* Asegura que tape por encima todo (hasta otras ventanas) */
 }
+
 [data-theme="light"] .dropdown-flotante-content {
-    background: #ffffff;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    background: #ffffff !important;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4) !important;
 }
 
 .dropdown-flotante-content a {
@@ -132,11 +138,11 @@ body {
 .theme-switch-wrapper {
     display: flex; width: 100%; background: var(--ngc-bg-input);
     border: 1px solid var(--ngc-privacy-border); border-radius: 8px; 
-    overflow: hidden; margin-top: 5px; margin-bottom: 10px;
+    overflow: hidden; margin-top: 2px; margin-bottom: 8px;
 }
 .theme-switch-label {
-    flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; 
-    font-weight: bold; color: var(--ngc-text-faded); cursor: pointer; transition: 0.3s;
+    flex: 1; text-align: center; padding: 8px; font-size: 0.75rem; 
+    font-weight: bold; color: var(--ngc-text-faded); cursor: pointer; transition: 0.3s; margin: 0;
 }
 input[type="radio"]:checked + .theme-switch-label {
     background: var(--ngc-neon); color: #000;
@@ -153,4 +159,3 @@ input[type="radio"]:checked + .theme-switch-label {
   100% { opacity: 0; transform: scale(1.2); }
 }
 .animate-welcome { animation: fade-in-out 2.5s forwards; }
-    
