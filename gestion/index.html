@@ -34,7 +34,11 @@
         <img src="./ico512.png" alt="Cargando Villaser..." style="width: 160px; height: auto; animation: pulse 2s infinite;">
     </div>
 
-    <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
+    <!-- CONTROLES FLOTANTES SUPERIORES (Interruptor y Perfil) -->
+    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche" onclick="toggleThemeManual()">
+        <div class="switch-rocker"></div>
+    </button>
+
     <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
         <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
         
@@ -50,9 +54,9 @@
     <main class="ngc-wrapper">
         
         <!-- CABECERA -->
-        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px;">
+        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px; padding: 12px 15px;">
             <p class="ngc-title" style="margin-bottom: 2px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
-            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2rem; margin-bottom: 5px;">Villaser Gestión</h1>
+            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 1.8rem; margin-bottom: 5px;">Villaser Gestión</h1>
             
             <div class="ngc-footer-badge" style="margin-bottom: 0;">
                 <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
@@ -61,8 +65,8 @@
         </div>
 
         <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 8px; border-left: 4px solid var(--ngc-neon);">
-            <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.2rem;">Acceso al Sistema</h2>
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 8px; border-left: 4px solid var(--ngc-neon); padding: 15px;">
+            <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.1rem;">Acceso al Sistema</h2>
             
             <div class="form-group">
                 <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
@@ -93,24 +97,35 @@
         <!-- INTERFAZ PRINCIPAL DE LA APP -->
         <div id="appScreen" class="oculto" style="width: 100%;">
             
-            <!-- GRILLA DE MÓDULOS -->
+            <!-- GRILLA DE MÓDULOS (NUEVA DISTRIBUCIÓN 3 COLUMNAS) -->
             <div id="menuGrid" class="ngc-button-grid" style="margin-top: 8px;">
+                <!-- Fila 1: Núcleo Financiero -->
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
+                <button class="ngc-btn btn-module" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano de Obra</button>
+                
+                <!-- Fila 2: Gestión de Clientes -->
                 <button class="ngc-btn btn-module" id="btnVerClientes"><i class="fa-solid fa-users-viewfinder"></i> Ver Clientes</button>
                 <button class="ngc-btn btn-module" id="btnNuevoCliente"><i class="fa-solid fa-user-plus"></i> Nuevo Cliente</button>
+                <button class="ngc-btn btn-module"><i class="fa-brands fa-whatsapp"></i> Enviar WTS</button>
+                
+                <!-- Fila 3: Herramientas de Campo -->
                 <button class="ngc-btn btn-module" id="btnCatalogos"><i class="fa-solid fa-book-open"></i> Catálogos</button>
                 <button class="ngc-btn btn-module" id="btnFotos"><i class="fa-solid fa-camera"></i> Fotos</button>
-                <button class="ngc-btn btn-module"><i class="fa-brands fa-whatsapp"></i> Compartir WTS</button>
-                <button class="ngc-btn btn-module" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano de Obra</button>
-                <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Técnico</button>
+                <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Téc.</button>
+                
+                <!-- Fila 4: Informática y Redes -->
                 <button class="ngc-btn btn-module" id="btnPresupuestoPC"><i class="fa-solid fa-desktop"></i> Ppto. PC</button>
-                <button class="ngc-btn btn-module" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Materiales PC</button>
+                <button class="ngc-btn btn-module" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Mat. PC</button>
                 <button class="ngc-btn btn-module" id="btnPotenciaPC"><i class="fa-solid fa-bolt"></i> Potencia PC</button>
+                
+                <!-- Fila 5: Otros -->
                 <button class="ngc-btn btn-module" id="btnPresupuestoPC2"><i class="fa-solid fa-file-invoice"></i> Ppto. PC 2</button>
                 <button class="ngc-btn btn-module" id="btnPreguntas"><i class="fa-solid fa-circle-question"></i> Preguntas</button>
                 <button class="ngc-btn btn-module" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
-                <button class="ngc-btn btn-module" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
+                
+                <!-- Botón Expansivo Inferior -->
+                <button class="ngc-btn btn-module btn-full-width" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
             </div>
         </div>
 
@@ -122,15 +137,6 @@
                 <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
                 
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
-                    
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
-                    <div class="theme-switch-wrapper">
-                        <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
-                        <label for="tema_dark" class="theme-switch-label">OSCURO</label>
-                        <input type="radio" id="tema_light" name="tema_app" value="light" onchange="cambiarTemaManual('light')" style="display:none">
-                        <label for="tema_light" class="theme-switch-label">CLARO</label>
-                    </div>
-
                     <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
                     <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
                     <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
@@ -148,13 +154,20 @@
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 8px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1.5px;">
+        <div class="ngc-site-credits" style="text-align: center; font-size: 0.6rem; color: var(--ngc-text-faded); margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px;">
             &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
         </div>
 
     </main>
 
     <script src="script.js"></script>
+    <script>
+        function toggleThemeManual() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('temaVillaser', newTheme);
+        }
+    </script>
 </body>
-    </html>
-    
+</html>
