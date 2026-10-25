@@ -212,6 +212,29 @@ function cerrarConfiguracion() {
     document.getElementById('modalConfig').classList.add('oculto');
 }
 
+function abrirTerminos(desdeRegistro) {
+    document.getElementById('modalTerminos').classList.remove('oculto');
+    const contenedorDescarga = document.getElementById('btnDescargaPdfContainer');
+    
+    // Si viene desde la pantalla de login/registro, mostramos el botón de descarga.
+    if (desdeRegistro) {
+        contenedorDescarga.style.display = 'block';
+    } else {
+        // Si viene desde el menú de perfil, lo ocultamos y cerramos el menú desplegable.
+        contenedorDescarga.style.display = 'none';
+        document.getElementById('userDropdown').classList.add('oculto');
+    }
+}
+
+function cerrarTerminos() {
+    document.getElementById('modalTerminos').classList.add('oculto');
+}
+
+// Cierra modal de términos al tocar fondo (Actualiza tu EventListener global de clicks)
+document.getElementById('modalTerminos').addEventListener('click', function(e) { 
+    if(e.target === this) cerrarTerminos(); 
+});
+
 function guardarConfiguracion() {
     const nombre = document.getElementById('confNombre').value.trim();
     const slogan = document.getElementById('confSlogan').value.trim();
@@ -233,12 +256,20 @@ function guardarConfiguracion() {
 // ==========================================
 // 4. FUNCIONES DE FIREBASE (AUTH)
 // ==========================================
-function crearCuenta() {
-    const email = document.getElementById('emailInput').value.trim();
+function crearCuenta() { 
+    const email = document.getElementById('emailInput').value.trim(); 
     const password = document.getElementById('passwordInput').value.trim();
-
+    
+    // NUEVA VALIDACIÓN: Verifica si aceptó los términos
+    const aceptaTerminos = document.getElementById('aceptaTerminos').checked;
+    
     if (!email || !password) {
         mostrarMensaje("Completa correo y contraseña.", "error");
+        return;
+    }
+    
+    if (!aceptaTerminos) {
+        mostrarMensaje("Debes aceptar los Términos y Condiciones.", "error");
         return;
     }
 
@@ -253,6 +284,8 @@ function crearCuenta() {
                 document.getElementById('passwordInput').type = 'password';
                 document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
                 document.getElementById('togglePasswordIcon').style.color = 'var(--ngc-text-faded)';
+                // Desmarcamos el checkbox para el próximo usuario por seguridad
+                document.getElementById('aceptaTerminos').checked = false; 
                 mostrarPantallaLogin();
             });
         })
