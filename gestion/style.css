@@ -44,7 +44,9 @@
 
 /* ================== ESTRUCTURA BASE ================== */
 body {
-    margin: 0; padding: 65px 4px 10px 4px; /* Ajustado el espacio superior e inferior para evitar scroll */
+    margin: 0; 
+    /* Reducción máxima del padding inferior para evitar scroll */
+    padding: 60px 4px 5px 4px; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-body);
     color: var(--ngc-text); 
@@ -55,19 +57,20 @@ body {
 
 .ngc-wrapper {
     display: flex; flex-direction: column; align-items: center; 
-    width: 100%; max-width: 500px; padding: 10px; /* Reducido para ahorrar espacio */
+    width: 100%; max-width: 500px; 
+    padding: 5px; /* Reducido para ahorrar espacio */
 }
 
 /* ================== COMPONENTES NGC ================== */
 .gnc-hero-card, .ngc-privacy-card, .ngc-cta-banner {
     background: var(--ngc-glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 20px; /* Reducido el interior */
+    border: var(--ngc-border-glass); border-radius: 16px; padding: 15px 20px;
     box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
     width: 100%; box-sizing: border-box; transition: all 0.3s ease;
 }
 
 .ngc-input {
-    width: 100%; padding: 12px; background: var(--ngc-bg-input); /* Achicado de 15px a 12px */
+    width: 100%; padding: 12px; background: var(--ngc-bg-input);
     border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
     color: var(--ngc-text-main); font-size: 1rem; outline: none; transition: all 0.3s ease;
     box-sizing: border-box;
@@ -78,12 +81,12 @@ body {
 }
 
 .ngc-button-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; /* Gap reducido para compactar */
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
 }
 
 .ngc-btn {
     display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column;
-    padding: 12px 10px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass); /* Padding reducido */
+    padding: 12px 10px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
     border-radius: 12px; color: var(--ngc-text-main); font-size: 0.8rem; font-weight: 600;
     text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow); text-align: center;
@@ -96,7 +99,7 @@ body {
     box-shadow: 0 6px 15px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
-/* ================== CONTROLES FLOTANTES ================== */
+/* ================== MENÚ DE USUARIO DESPLEGABLE ================== */
 .hero-logo-icon {
     position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: blur(15px);
@@ -104,34 +107,18 @@ body {
     transition: all 0.3s ease; display: flex; justify-content: center; align-items: center;
 }
 
-.switch-plate {
-    position: fixed; top: 15px; right: 85px; z-index: 9999; width: 40px; height: 60px;
-    background: var(--ngc-glass); backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); border-radius: 8px; display: flex; justify-content: center;
-    align-items: center; cursor: pointer; box-shadow: 0 4px 15px var(--card-shadow); outline: none; padding: 0;
-}
-
-.switch-rocker {
-    width: 14px; height: 28px; border-radius: 4px; position: relative;
-    transform: perspective(200px) rotateX(-12deg); background: #2a2a2a; border: 1px solid #1a1a1a;
-    transition: transform 0.3s ease;
-}
-[data-theme="light"] .switch-rocker {
-    transform: perspective(200px) rotateX(12deg); background: #f4f4f4; border: 1px solid #dcdcdc;
-}
-
-/* ================== MENÚ DE USUARIO SÓLIDO ================== */
+/* MENÚ SÓLIDO: Sin transparencias para que se lea perfecto */
 .dropdown-flotante-content {
-    background: var(--bg-body); /* Fondo 100% sólido */
-    backdrop-filter: none; /* Quitamos la transparencia/blur */
-    border: 2px solid var(--ngc-neon); /* Borde fuerte y contrastante */
+    background: var(--bg-body);
+    backdrop-filter: none; /* Quitamos el cristal */
+    border: 2px solid var(--ngc-neon); /* Borde fuerte */
     border-radius: 12px; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85); /* Sombra dramática para despegar del fondo */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9); /* Sombra intensa para despegarlo */
     padding: 8px;
-    z-index: 99999; /* Máxima prioridad visual */
+    z-index: 99999;
 }
 [data-theme="light"] .dropdown-flotante-content {
-    background: #ffffff; /* Sólido en tema claro */
+    background: #ffffff;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -140,6 +127,20 @@ body {
     align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px;
 }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
+
+/* ================== SELECTOR DE TEMA EN CONFIGURACIÓN ================== */
+.theme-switch-wrapper {
+    display: flex; width: 100%; background: var(--ngc-bg-input);
+    border: 1px solid var(--ngc-privacy-border); border-radius: 8px; 
+    overflow: hidden; margin-top: 5px; margin-bottom: 10px;
+}
+.theme-switch-label {
+    flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; 
+    font-weight: bold; color: var(--ngc-text-faded); cursor: pointer; transition: 0.3s;
+}
+input[type="radio"]:checked + .theme-switch-label {
+    background: var(--ngc-neon); color: #000;
+}
 
 /* ================== ANIMACIONES & UTILIDADES ================== */
 .oculto { display: none !important; }
@@ -152,14 +153,4 @@ body {
   100% { opacity: 0; transform: scale(1.2); }
 }
 .animate-welcome { animation: fade-in-out 2.5s forwards; }
-      
-/* Corrección de color texto Menú Principal */
-.cta-banner-content h3 {
-    color: var(--ngc-text-main) !important;
-}
-.cta-banner-content p {
-    color: var(--ngc-text-faded) !important;
-}
-.cta-arrow {
-    color: var(--ngc-text-main) !important;
-}
+    
