@@ -45,36 +45,41 @@
 /* ================== ESTRUCTURA BASE ================== */
 body {
     margin: 0; 
-    /* Padding reducido radicalmente para evitar cualquier scroll vertical */
-    padding: 15px 4px 5px 4px; 
+    /* Padding superior para no pisar los botones fijos, margen inferior mínimo */
+    padding: 85px 4px 10px 4px; 
+    /* CLAVE: Evita que el padding sume altura extra y genere scroll falso */
+    box-sizing: border-box; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-body);
     color: var(--ngc-text); 
-    display: flex; justify-content: center;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    /* Empuja naturalmente el contenido hacia abajo */
+    justify-content: flex-end; 
     min-height: 100svh;
     transition: background-color 0.4s ease, color 0.4s ease;
-    overflow-x: hidden;
 }
 
 .ngc-wrapper {
     display: flex; flex-direction: column; align-items: center; 
-    width: 100%; max-width: 500px; 
-    padding: 0px 5px; /* Reducido para ahorrar espacio horizontal y vertical */
+    width: 100%; max-width: 500px; padding: 5px;
+    /* Absorbe el espacio vacío arriba, anclando el bloque firmemente abajo */
+    margin-top: auto; 
 }
 
 /* ================== COMPONENTES NGC ================== */
 .gnc-hero-card, .ngc-privacy-card, .ngc-cta-banner {
     background: var(--ngc-glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); border-radius: 16px; 
-    padding: 10px 15px; /* Padding interior reducido para acortar las tarjetas */
+    border: var(--ngc-border-glass); border-radius: 16px; padding: 20px 20px;
     box-shadow: 0 10px 30px var(--card-shadow), var(--ngc-glass-edge);
     width: 100%; box-sizing: border-box; transition: all 0.3s ease;
 }
 
 .ngc-input {
-    width: 100%; padding: 10px 12px; background: var(--ngc-bg-input);
+    width: 100%; padding: 12px; background: var(--ngc-bg-input);
     border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
-    color: var(--ngc-text-main); font-size: 0.95rem; outline: none; transition: all 0.3s ease;
+    color: var(--ngc-text-main); font-size: 1rem; outline: none; transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
@@ -83,49 +88,62 @@ body {
 }
 
 .ngc-button-grid {
-    display: grid; grid-template-columns: 1fr 1fr; 
-    gap: 8px; /* Separación más compacta entre botones */
-    width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
 }
 
 .ngc-btn {
-    display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column;
-    padding: 10px 8px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
-    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.75rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column;
+    padding: 12px 10px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
+    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.8rem; font-weight: 600;
     text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--card-shadow); text-align: center;
 }
 
-.ngc-btn i { font-size: 1.3rem; color: var(--ngc-neon); margin-bottom: 3px; }
+.ngc-btn i { font-size: 1.4rem; color: var(--ngc-neon); margin-bottom: 5px; }
 
 .ngc-btn:hover {
     background: var(--ngc-btn-hover); transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(var(--ngc-neon-rgb), 0.2);
 }
 
-/* ================== MENÚ DE USUARIO DESPLEGABLE ================== */
+/* ================== CONTROLES FLOTANTES ================== */
 .hero-logo-icon {
-    position: fixed; top: 12px; right: 12px; z-index: 9999; width: 55px; height: 55px;
+    position: fixed; top: 15px; right: 15px; z-index: 9999; width: 60px; height: 60px;
     border-radius: 8px; background: var(--ngc-glass); backdrop-filter: blur(15px);
     border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow), var(--ngc-glass-edge);
     transition: all 0.3s ease; display: flex; justify-content: center; align-items: center;
 }
 
-/* MENÚ SÓLIDO: Eliminada la transparencia, agregado color y borde para perfecta legibilidad */
+.switch-plate {
+    position: fixed; top: 15px; right: 85px; z-index: 9999; width: 40px; height: 60px;
+    background: var(--ngc-glass); backdrop-filter: blur(15px);
+    border: var(--ngc-border-glass); border-radius: 8px; display: flex; justify-content: center;
+    align-items: center; cursor: pointer; box-shadow: 0 4px 15px var(--card-shadow); outline: none; padding: 0;
+}
+
+.switch-rocker {
+    width: 14px; height: 28px; border-radius: 4px; position: relative;
+    transform: perspective(200px) rotateX(-12deg); background: #2a2a2a; border: 1px solid #1a1a1a;
+    transition: transform 0.3s ease;
+}
+[data-theme="light"] .switch-rocker {
+    transform: perspective(200px) rotateX(12deg); background: #f4f4f4; border: 1px solid #dcdcdc;
+}
+
+/* ================== MENÚ DE USUARIO SÓLIDO ================== */
 .dropdown-flotante-content {
-    background: var(--bg-body) !important; /* Fuerza color base puro (negro/blanco) */
-    backdrop-filter: none !important; /* Elimina difuminado del fondo */
-    -webkit-backdrop-filter: none !important;
-    border: 2px solid var(--ngc-neon) !important; /* Borde más visible */
+    background: var(--bg-body); 
+    backdrop-filter: none; 
+    border: 2px solid var(--ngc-neon); 
     border-radius: 12px; 
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95) !important; /* Sombra intensa para despegarlo */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85); 
     padding: 8px;
-    z-index: 999999 !important; /* Asegura que tape por encima todo (hasta otras ventanas) */
+    z-index: 99999;
 }
 
 [data-theme="light"] .dropdown-flotante-content {
-    background: #ffffff !important;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4) !important;
+    background: #ffffff; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .dropdown-flotante-content a {
@@ -133,20 +151,6 @@ body {
     align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px;
 }
 .dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
-
-/* ================== SELECTOR DE TEMA EN CONFIGURACIÓN ================== */
-.theme-switch-wrapper {
-    display: flex; width: 100%; background: var(--ngc-bg-input);
-    border: 1px solid var(--ngc-privacy-border); border-radius: 8px; 
-    overflow: hidden; margin-top: 2px; margin-bottom: 8px;
-}
-.theme-switch-label {
-    flex: 1; text-align: center; padding: 8px; font-size: 0.75rem; 
-    font-weight: bold; color: var(--ngc-text-faded); cursor: pointer; transition: 0.3s; margin: 0;
-}
-input[type="radio"]:checked + .theme-switch-label {
-    background: var(--ngc-neon); color: #000;
-}
 
 /* ================== ANIMACIONES & UTILIDADES ================== */
 .oculto { display: none !important; }
