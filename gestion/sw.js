@@ -1,4 +1,4 @@
-const CACHE_NAME = 'villaser-cache-v8';
+const CACHE_NAME = 'villaser-cache-v9';
 
 const urlsToCache = [
     './',
@@ -6,8 +6,8 @@ const urlsToCache = [
     './script.js',
     './style.css',
     './manifest.json',
-    './icono1.png',
-    './icono2.png'
+    './ico192.png',
+    './ico512.png'
 ];
 
 self.addEventListener('install', event => {
