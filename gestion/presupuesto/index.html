@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    
     <title>Presupuestos | Villaser Gestión</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
@@ -18,22 +16,23 @@
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser');
             const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) document.documentElement.setAttribute('data-theme', 'light');
         })();
     </script>
 </head>
 <body>
 
-<!-- NOTIFICACIÓN FLOTANTE (Memoria de Cliente) -->
-<div id="toastCliente" class="ngc-toast oculto gpu-accel">
-    <i class="fa-solid fa-user-check"></i>
-    <div class="toast-content">
-        <strong>Cliente Recuperado</strong>
-        <p>Se cargaron los datos del último informe. Modifícalos si es un proyecto nuevo.</p>
+<!-- MODAL MEMORIA CLIENTE -->
+<div id="modalRecuperarCliente" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid var(--ngc-neon);">
+        <i class="fa-solid fa-user-clock" style="font-size: 3rem; color: var(--ngc-neon); margin-bottom: 15px;"></i>
+        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Cliente Detectado</h3>
+        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">Hay datos de un cliente cargado recientemente en otro módulo. ¿Deseas utilizarlos?</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="ngc-btn" onclick="usarClienteMemoria()"><i class="fa-solid fa-check"></i> Usar Datos del Cliente</button>
+            <button class="ngc-btn danger-btn" onclick="limpiarClienteMemoria()"><i class="fa-solid fa-rotate-right"></i> Empezar de Cero</button>
+        </div>
     </div>
-    <button class="toast-close" onclick="cerrarToast()"><i class="fa-solid fa-xmark"></i></button>
 </div>
 
 <div class="layout-wrapper">
@@ -91,17 +90,6 @@
 
                 <div class="ngc-card gpu-accel">
                     <h4 class="ngc-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
-                    
-                    <!-- BUSCADOR INTELIGENTE -->
-                    <div class="row-group" style="position: relative;">
-                        <label><i class="fa-solid fa-magnifying-glass" style="color: var(--ngc-neon);"></i> Buscador Inteligente</label>
-                        <input type="text" id="buscadorTrabajo" class="ngc-input" placeholder="Buscar concepto (Ej: pilar, tablero...)" autocomplete="off">
-                        <ul id="sugerenciasTrabajo" class="suggestions-dropdown oculto"></ul>
-                    </div>
-
-                    <div style="text-align: center; margin: 15px 0; color: var(--ngc-text-faded); font-size: 0.75rem; text-transform: uppercase; font-weight: bold;">
-                        — O selecciona manualmente —
-                    </div>
 
                     <div class="row-group">
                         <label>Rubro</label>
@@ -152,7 +140,7 @@
                             <button type="button" class="ngc-btn-small danger" onclick="borrarTodasNotas()"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <textarea id="obsManual" class="ngc-input" placeholder="Notas aclaratorias..." readonly style="height: 100px; resize: none;"></textarea>
+                    <textarea id="obsManual" class="ngc-input" placeholder="Notas aclaratorias..." readonly style="height: 80px; resize: none;"></textarea>
 
                     <div class="row-group-stretch" style="margin-top: 15px; align-items: center;">
                         <div style="flex: 1; display: flex; flex-direction: column;">
@@ -167,7 +155,7 @@
                             <small id="badgePrecio" style="color: var(--ngc-warning); font-size: 0.75rem; display: none; margin-top: 2px; font-weight: bold;">(Precio Editado)</small>
                         </div>
                         <div style="flex: 1;">
-                            <button id="btnAddItem" class="ngc-btn" style="width: 100%;" onclick="agregarTrabajo()">
+                            <button id="btnAddItem" class="ngc-btn" style="width: 100%; border-color: var(--success-green); color: var(--success-green);" onclick="agregarTrabajo()">
                                 <i class="fa-solid fa-plus"></i> Agregar
                             </button>
                         </div>
@@ -185,7 +173,7 @@
                     <div class="total-display" id="totalDisplay">TOTAL: $ 0,00</div>
                 </div>
                 
-                <!-- ACCIONES PRINCIPALES (Jerarquía UX) -->
+                <!-- ACCIONES PRINCIPALES -->
                 <div class="action-grid-main" style="margin-top: 20px;">
                     <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
@@ -195,17 +183,17 @@
                     </button>
                 </div>
                 
-                <button class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="tomarCaptura()">
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="tomarCaptura()">
                     <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
                 </button>
 
                 <!-- UTILIDADES / BACKUP -->
                 <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
-                    <button class="ngc-btn-small" onclick="exportarJSON()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center;">
-                        <i class="fa-solid fa-download"></i> Guardar Backup JSON
+                    <button class="ngc-btn-small" onclick="exportarJSON()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-download"></i> Guardar Borrador
                     </button>
-                    <button class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: var(--ngc-neon); border-color: var(--ngc-neon); width: 100%; justify-content: center;">
-                        <i class="fa-solid fa-folder-open"></i> Abrir Backup JSON
+                    <button class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-folder-open"></i> Abrir Borrador
                     </button>
                     <input type="file" id="fileInput" style="display:none" accept=".json" onchange="importarJSON(event)">
                 </div>
@@ -214,7 +202,7 @@
         </div>
     </main>
 
-    <!-- PANEL DERECHO: VISTA PREVIA PDF (Visible solo en PC) -->
+    <!-- PANEL DERECHO: VISTA PREVIA PDF (PC) -->
     <aside class="preview-panel">
         <div id="plantilla-pdf">
             <div class="pdf-container">
@@ -231,7 +219,6 @@
                         <h2 id="pdf-text-logo" style="margin: 0; color: #0088aa; display: none;"></h2>
                     </div>
                 </header>
-
                 <table class="pdf-table">
                     <thead>
                         <tr>
@@ -242,11 +229,8 @@
                             <th>Subtotal</th>
                         </tr>
                     </thead>
-                    <tbody id="pdf-tbody">
-                        <!-- Se llena con JS -->
-                    </tbody>
+                    <tbody id="pdf-tbody"></tbody>
                 </table>
-
                 <div class="pdf-body-lower">
                     <div class="pdf-notas-box">
                         <h3>Notas Aclaratorias</h3>
@@ -258,7 +242,6 @@
                         <div class="pdf-total-row final-total"><span>Total</span> <b id="pdf-total"></b></div>
                     </div>
                 </div>
-
                <footer class="pdf-footer">
                     <div class="pdf-pagos">
                         <h4>Condiciones</h4>
