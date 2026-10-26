@@ -17,11 +17,12 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
+    <!-- Script Inteligente de Tema -->
     <script>
         (function() {
-            const temaGuardado = localStorage.getItem('temaVillaser');
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
             const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
@@ -29,9 +30,13 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA -->
-    <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
-        <img src="./ico512.png" alt="Cargando Villaser..." style="width: 160px; height: auto; animation: pulse 2s infinite;">
+    <!-- PANTALLA DE CARGA (Splash Screen Profesional) -->
+    <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+        <div class="splash-spinner-container">
+            <div class="splash-spinner"></div>
+            <img src="./ico512.png" alt="Cargando Villaser..." class="splash-logo-center">
+        </div>
+        <p style="margin-top: 25px; font-size: 0.8rem; font-weight: bold; color: var(--ngc-text-faded); letter-spacing: 2px; text-transform: uppercase; animation: pulse 2s infinite;">Iniciando Sistema</p>
     </div>
 
     <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
@@ -43,10 +48,7 @@
             
             <a href="#" id="btn-instalar" class="oculto"><i class="fa-solid fa-download"></i> Instalar App</a>
             <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
-            
-            <!-- NUEVO: ENLACE A TÉRMINOS DESDE EL PERFIL -->
             <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Térm. y Condiciones</a>
-            
             <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
@@ -77,7 +79,7 @@
                 <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
             </div>
 
-            <!-- NUEVO: CHECKBOX DE TÉRMINOS Y CONDICIONES -->
+            <!-- CHECKBOX DE TÉRMINOS Y CONDICIONES -->
             <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.75rem; color: var(--ngc-text-faded); text-align: left;">
                 <input type="checkbox" id="aceptaTerminos" style="accent-color: var(--ngc-neon); width: 16px; height: 16px; cursor: pointer;">
                 <label for="aceptaTerminos">
@@ -139,6 +141,8 @@
                     <div class="theme-switch-wrapper">
                         <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
                         <label for="tema_dark" class="theme-switch-label">OSCURO</label>
+                        <input type="radio" id="tema_system" name="tema_app" value="system" onchange="cambiarTemaManual('system')" style="display:none">
+                        <label for="tema_system" class="theme-switch-label">SISTEMA</label>
                         <input type="radio" id="tema_light" name="tema_app" value="light" onchange="cambiarTemaManual('light')" style="display:none">
                         <label for="tema_light" class="theme-switch-label">CLARO</label>
                     </div>
@@ -159,7 +163,7 @@
             </div>
         </div>
 
-        <!-- NUEVO MODAL: TÉRMINOS Y CONDICIONES -->
+        <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
         <div id="modalTerminos" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10001; display: flex; justify-content: center; align-items: center;">
             <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; position: relative;">
                 <button onclick="cerrarTerminos()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
@@ -183,7 +187,6 @@
                     <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Eres el único responsable legal por los datos personales (nombres, direcciones, teléfonos) de los clientes que ingreses al generar un presupuesto. La plataforma Villaser no vende, comparte ni audita esta información de terceros.</p>
                 </div>
                 
-                <!-- Botón de Descarga PDF (Se muestra/oculta por JS según de donde se abra) -->
                 <div id="btnDescargaPdfContainer" style="margin-top: 15px;">
                     <a href="./terminos_villaser.pdf" download="Terminos_Villaser_Gestion.pdf" class="ngc-btn" style="text-decoration: none; width: 100%; display: flex; justify-content: center; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;">
                         <i class="fa-solid fa-file-pdf"></i> Descargar copia en PDF
