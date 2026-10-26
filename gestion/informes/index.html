@@ -8,17 +8,11 @@
     
     <title>Villaser - Informe Técnico</title>
     
-    <!-- Librerías para capturar pantalla y generar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <!-- LIBRERÍA DE ÍCONOS FALTANTE (Soluciona las flechitas) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Tu CSS Global -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Script de tema -->
     <script>
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser');
@@ -31,7 +25,7 @@
 </head>
 <body>
 
-    <!-- TOAST NOTIFICACIÓN (Actualizado al estilo global) -->
+    <!-- TOAST NOTIFICACIÓN -->
     <div id="toastCliente" class="ngc-toast oculto gpu-accel">
         <i class="fa-solid fa-user-check"></i>
         <div class="toast-content">
@@ -70,7 +64,6 @@
                     <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()">
                 </div>
                 
-                <!-- Eliminado el campo de teléfono para que encaje perfecto -->
                 <div class="row-group">
                     <label>Dirección</label>
                     <input type="text" id="cliDir" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
@@ -94,19 +87,20 @@
                     
                     <div class="row-group">
                         <label for="textoInforme">Redactar párrafo:</label>
-                        <textarea id="textoInforme" class="ngc-input" lang="es" spellcheck="true" placeholder="Escriba aquí el párrafo y presione agregar..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
+                        <textarea id="textoInforme" class="ngc-input" lang="es" spellcheck="true" placeholder="Escriba aquí el párrafo..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
                     </div>
                     
-                    <div class="action-grid-main" style="margin-top: 15px;">
-                        <button id="btnRevisar" class="ngc-btn" style="color: #ff9800; border-color: #ff9800; background: rgba(255, 152, 0, 0.1);" onclick="revisarOrtografia()">
-                            <i class="fa-solid fa-magnifying-glass"></i> REVISAR
-                        </button>
-                        <button id="btnAgregarParrafo" class="ngc-btn" style="color: var(--success-green); border-color: var(--success-green); background: rgba(40, 167, 69, 0.1);" onclick="agregarParrafo()">
-                            <i class="fa-solid fa-plus"></i> AGREGAR
-                        </button>
-                    </div>
+                    <button id="btnAgregarParrafo" class="ngc-btn" style="width: 100%; color: var(--success-green); border-color: var(--success-green); margin-top: 15px;" onclick="agregarParrafo()">
+                        <i class="fa-solid fa-plus"></i> AGREGAR PÁRRAFO
+                    </button>
                     
                     <div id="lista-parrafos" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- NOTAS GLOBALES (COMO PRESUPUESTO) -->
+                <div class="ngc-card gpu-accel">
+                    <label>Notas Globales del Informe</label>
+                    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Conclusiones finales o advertencias..." style="height: 75px; resize: none;" oninput="actualizarVistaPreviews();"></textarea>
                 </div>
 
                 <!-- ÁREA DE CAPTURA -->
@@ -114,42 +108,39 @@
                     <header class="header-brand">VILLASER - INFORME TÉCNICO</header>
                     <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--ngc-neon); line-height: 1.4; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;"></div>
                     <div id="previewInforme" style="font-size: 0.9rem; white-space: normal; line-height: 1.5; padding: 4px;"></div>
+                    <!-- Notas Globales Renderizadas -->
+                    <div id="previewNotasGlobales" style="font-size: 0.85rem; margin-top: 12px; color: var(--ngc-text-faded); border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px; display: none; white-space: pre-wrap; font-style: italic;"></div>
                 </div>
 
-                <!-- CONTROLES INFERIORES -->
+                <!-- CONTROLES INFERIORES NORMALIZADOS (IGUAL A PRESUPUESTO) -->
                 <div class="action-grid-main" style="margin-top: 20px;">
-                    <button id="btnCopyTitle" class="ngc-btn" style="color: #ff9800; border-color: #ff9800; background: rgba(255, 152, 0, 0.1);" onclick="copyTitle()">
-                        <i class="fa-regular fa-copy"></i> COPIAR TÍTULO
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
+                        <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
-                    <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: rgba(0, 212, 255, 0.1);" onclick="takeScreenshot()">
-                        <i class="fa-solid fa-camera"></i> DESCARGAR IMAGEN
-                    </button>
-                </div>
-
-                <div style="margin-top: 15px;">
-                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()" style="width: 100%;">
-                        <i class="fa-solid fa-file-pdf"></i> GENERAR PDF
+                    <button class="ngc-btn" onclick="sendWSP()" style="color: var(--success-green); border-color: var(--success-green);">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
                     </button>
                 </div>
+                
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
+                    <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
+                </button>
 
-                <div class="action-grid-footer" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
-                    <button id="btnExport" class="ngc-btn-small" style="color: var(--ngc-warning); border-color: var(--ngc-warning); justify-content: center;" onclick="exportToTxt()">
-                        <i class="fa-solid fa-download"></i> GUARDAR
+                <!-- UTILIDADES / BACKUP NORMALIZADAS -->
+                <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button id="btnExport" class="ngc-btn-small" onclick="exportToTxt()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-download"></i> Guardar Borrador
                     </button>
-                    <button id="btnImport" class="ngc-btn-small" style="color: var(--ngc-neon); border-color: var(--ngc-neon); justify-content: center;" onclick="document.getElementById('fileInput').click()">
-                        <i class="fa-solid fa-folder-open"></i> ABRIR
+                    <button id="btnImport" class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-folder-open"></i> Abrir Borrador
                     </button>
                     <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
-                    
-                    <button class="ngc-btn-small" style="grid-column: span 2; color: var(--success-green); border-color: var(--success-green); justify-content: center;" onclick="sendWSP()">
-                        <i class="fa-brands fa-whatsapp"></i> ENVIAR WHATSAPP
-                    </button>
                 </div>
                 
             </section>
         </main>
 
-        <!-- PANEL DERECHO: VISTA PREVIA PDF (Visible solo en PC) -->
+        <!-- PANEL DERECHO: VISTA PREVIA PDF (PC) -->
         <aside class="preview-panel">
             <div id="plantilla-pdf">
                 <div class="pdf-container">
@@ -172,6 +163,12 @@
 
                     <div class="pdf-body-content">
                         <div id="pdf-texto-contenido" class="pdf-informe-texto"></div>
+                        
+                        <!-- Caja de Notas Globales -->
+                        <div class="pdf-notas-box" id="pdf-notas-box" style="display:none; width: 100%; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 30px;">
+                            <h3 style="margin: 0 0 10px 0; font-size: 12px; color: #0088aa; text-transform: uppercase;">Notas Globales</h3>
+                            <div id="pdf-notas" class="pdf-notas-content" style="font-size: 11px; color: #555; line-height: 1.4; white-space: pre-wrap;"></div>
+                        </div>
                     </div>
 
                     <footer class="pdf-footer">
