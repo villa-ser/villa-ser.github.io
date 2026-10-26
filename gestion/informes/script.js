@@ -12,22 +12,25 @@ let informeParrafos = [];
 window.onload = () => {
     cargarClienteGlobal();
     cargarDatosEmpresa();
-    renderizarParrafos(); // Por si hay un borrador guardado
+    renderizarParrafos(); 
 };
 
-// Carga la información de la empresa configurada en el menú principal
+// Carga la información de la empresa
 function cargarDatosEmpresa() {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
     const profSlogan = localStorage.getItem('villaser_conf_slogan') || '';
     const profLogo = localStorage.getItem('villaser_conf_logo') || '';
 
-    // Llenamos el pie de página del PDF
-    document.getElementById('pdf-tel-footer').innerText = profTel ? `📞 ${profTel}` : '';
-    document.getElementById('pdf-slogan').innerText = profSlogan || '¡Electricidad Segura, Hogar Tranquilo!';
-    document.getElementById('pdf-credenciales').innerText = profNombre;
+    const elTelFooter = document.getElementById('pdf-tel-footer');
+    if(elTelFooter) elTelFooter.innerText = profTel ? `📞 ${profTel}` : '';
+    
+    const elSlogan = document.getElementById('pdf-slogan');
+    if(elSlogan) elSlogan.innerText = profSlogan || '¡Electricidad Segura, Hogar Tranquilo!';
+    
+    const elCredenciales = document.getElementById('pdf-credenciales');
+    if(elCredenciales) elCredenciales.innerText = profNombre;
 
-    // Llenamos el logo del PDF
     const imgPdf = document.getElementById('pdf-img-logo');
     const txtPdf = document.getElementById('pdf-text-logo');
     
@@ -44,17 +47,16 @@ function cargarDatosEmpresa() {
     }
 }
 
-// Carga el cliente de otro módulo
+// Carga el cliente global
 function cargarClienteGlobal() {
     const guardado = localStorage.getItem('villaser_cliente_global');
     if (guardado) {
         try {
             const datos = JSON.parse(guardado);
-            if (datos.nombre || datos.tel || datos.dir) {
+            if (datos.nombre || datos.dir) {
                 document.getElementById('cliNombre').value = datos.nombre || '';
-                document.getElementById('cliTel').value = datos.tel || '';
                 document.getElementById('cliDir').value = datos.dir || '';
-                document.getElementById('cliObs').value = datos.obs || datos.proyecto || ''; // Soporta "proyecto" del módulo materiales
+                document.getElementById('cliObs').value = datos.obs || datos.proyecto || ''; 
                 
                 clientDetails = datos;
                 currentClientName = datos.nombre || '';
@@ -71,15 +73,13 @@ function cargarClienteGlobal() {
 function guardarClienteGlobal() {
     clientDetails = {
         nombre: document.getElementById('cliNombre').value.trim(),
-        tel: document.getElementById('cliTel').value.trim(),
+        tel: selectedPhone, // Mantenemos el teléfono oculto si viene de otro módulo
         dir: document.getElementById('cliDir').value.trim(),
         obs: document.getElementById('cliObs').value.trim(),
-        proyecto: document.getElementById('cliObs').value.trim() // Retrocompatibilidad
+        proyecto: document.getElementById('cliObs').value.trim() 
     };
     
     currentClientName = clientDetails.nombre;
-    selectedPhone = clientDetails.tel.replace(/\D/g, '');
-    
     localStorage.setItem('villaser_cliente_global', JSON.stringify(clientDetails));
 }
 
@@ -87,13 +87,17 @@ function mostrarToast() {
     const toast = document.getElementById('toastCliente');
     if (toast) {
         toast.classList.remove('oculto');
+        setTimeout(() => toast.classList.add('mostrar'), 10);
         setTimeout(cerrarToast, 5000); 
     }
 }
 
 function cerrarToast() {
     const toast = document.getElementById('toastCliente');
-    if (toast) toast.classList.add('oculto');
+    if (toast) {
+        toast.classList.remove('mostrar');
+        setTimeout(() => toast.classList.add('oculto'), 400); // Espera la animación
+    }
 }
 
 function confirmarCliente() {
@@ -106,12 +110,17 @@ function confirmarCliente() {
     }
     
     const b = document.getElementById('btnCli'); 
-    b.innerText = "✓ LISTO"; 
+    b.innerHTML = '<i class="fa-solid fa-check"></i> LISTO'; 
     b.classList.add('btn-success-active');
     
     setTimeout(() => { 
-        document.getElementById('section-client').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
+        // CORRECCIÓN: Se cambió .hidden por .oculto
+        document.getElementById('section-client').classList.add('oculto');
+        document.getElementById('main-content').classList.remove('oculto');
+        
+        // Volver a acomodar el flex-column por si acaso
+        document.getElementById('main-content').classList.add('flex-column', 'gap-15');
+        
         actualizarVistaPreviews();
     }, 500);
 }
@@ -128,7 +137,7 @@ function revisarOrtografia() {
     }
     textarea.focus();
     textarea.select();
-    btnAlert('btnRevisar', '🔍 REVISAR');
+    btnAlert('btnRevisar', '<i class="fa-solid fa-magnifying-glass"></i> REVISAR');
 }
 
 function agregarParrafo() {
@@ -140,7 +149,7 @@ function agregarParrafo() {
     informeParrafos.push(texto);
     document.getElementById('textoInforme').value = "";
     
-    btnAlert('btnAgregarParrafo', '+ AGREGAR');
+    btnAlert('btnAgregarParrafo', '<i class="fa-solid fa-plus"></i> AGREGAR');
     renderizarParrafos();
 }
 
@@ -169,8 +178,8 @@ function renderizarParrafos() {
         div.innerHTML = `
             <p>${parrafo}</p>
             <div class="parrafo-actions">
-                <button class="btn-edit-p" onclick="editarParrafo(${index})" title="Editar">✏️</button>
-                <button class="btn-del-p" onclick="eliminarParrafo(${index})" title="Eliminar">🗑️</button>
+                <button class="btn-edit-p" onclick="editarParrafo(${index})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-del-p" onclick="eliminarParrafo(${index})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
             </div>
         `;
         contenedor.appendChild(div);
@@ -180,7 +189,6 @@ function renderizarParrafos() {
 }
 
 function actualizarVistaPreviews() {
-    // 1. Llenar Preview de Pantalla
     const infoClientArea = document.getElementById('previewClientInfo');
     infoClientArea.innerHTML = `
         <strong>Cliente:</strong> ${clientDetails.nombre}<br>
@@ -191,14 +199,16 @@ function actualizarVistaPreviews() {
     const previewArea = document.getElementById('previewInforme');
     previewArea.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 15px;">${p}</p>`).join('');
 
-    // 2. Llenar Preview del PDF Oculto
     const fechaLarga = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('pdf-fecha').innerText = fechaLarga;
-    document.getElementById('pdf-cliente').innerText = clientDetails.nombre;
-    document.getElementById('pdf-dir').innerText = clientDetails.dir || 'A coordinar';
-    
+    const pdfFecha = document.getElementById('pdf-fecha');
+    const pdfCliente = document.getElementById('pdf-cliente');
+    const pdfDir = document.getElementById('pdf-dir');
     const pdfTexto = document.getElementById('pdf-texto-contenido');
-    pdfTexto.innerHTML = informeParrafos.map(p => `<p>${p}</p>`).join('');
+
+    if(pdfFecha) pdfFecha.innerText = fechaLarga;
+    if(pdfCliente) pdfCliente.innerText = clientDetails.nombre;
+    if(pdfDir) pdfDir.innerText = clientDetails.dir || 'A coordinar';
+    if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => `<p>${p}</p>`).join('');
 }
 
 // =======================================================
@@ -207,12 +217,13 @@ function actualizarVistaPreviews() {
 
 function btnAlert(id, text) {
     const b = document.getElementById(id); 
-    b.innerHTML = "¡LISTO!"; 
+    const originalText = b.innerHTML;
+    b.innerHTML = '<i class="fa-solid fa-check"></i> ¡LISTO!'; 
     b.classList.add('btn-success-active');
     setTimeout(() => { 
-        b.innerHTML = text; 
+        b.innerHTML = text || originalText; 
         b.classList.remove('btn-success-active'); 
-    }, 800);
+    }, 1000);
 }
 
 async function copyTitle() {
@@ -225,7 +236,7 @@ async function copyTitle() {
     
     try {
         await navigator.clipboard.writeText(title);
-        btnAlert('btnCopyTitle', '📋 TÍTULO');
+        btnAlert('btnCopyTitle', '<i class="fa-regular fa-copy"></i> COPIAR TÍTULO');
     } catch (err) {
         const textArea = document.createElement("textarea");
         textArea.value = title;
@@ -233,7 +244,7 @@ async function copyTitle() {
         document.body.appendChild(textArea); 
         textArea.focus(); textArea.select();
         document.execCommand('copy'); 
-        btnAlert('btnCopyTitle', '📋 TÍTULO');
+        btnAlert('btnCopyTitle', '<i class="fa-regular fa-copy"></i> COPIAR TÍTULO');
         document.body.removeChild(textArea);
     }
 }
@@ -245,10 +256,9 @@ async function takeScreenshot() {
     }
     
     const area = document.getElementById('captureSection');
-    
-    // Preparar colores para la captura
     const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
     const bgColor = isLightMode ? "#ffffff" : "#181818";
+    
     area.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
     area.style.border = "none";
     window.scrollTo(0, 0);
@@ -274,7 +284,6 @@ async function generarPDF() {
     actualizarVistaPreviews();
     const element = document.getElementById('plantilla-pdf');
     
-    // Lo mostramos temporalmente para html2pdf
     element.style.display = 'block';
     window.scrollTo(0, 0);
     
@@ -288,7 +297,7 @@ async function generarPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    btnAlert('btnGenerarPDF', '📄 GENERANDO...');
+    btnAlert('btnGenerarPDF', '<i class="fa-solid fa-file-pdf"></i> GENERANDO...');
     
     try {
         await html2pdf().set(opt).from(element).save();
@@ -357,7 +366,7 @@ function exportToTxt() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    btnAlert('btnExport', '💾 GUARDADO');
+    btnAlert('btnExport', '<i class="fa-solid fa-download"></i> GUARDADO');
 }
 
 function importFromTxt(event) {
@@ -371,9 +380,9 @@ function importFromTxt(event) {
             
             if (data.cliente) {
                 document.getElementById('cliNombre').value = data.cliente.nombre || '';
-                document.getElementById('cliTel').value = data.cliente.tel || '';
                 document.getElementById('cliDir').value = data.cliente.dir || '';
                 document.getElementById('cliObs').value = data.cliente.obs || '';
+                selectedPhone = data.cliente.tel || '';
                 guardarClienteGlobal();
             }
             
@@ -381,12 +390,12 @@ function importFromTxt(event) {
                 informeParrafos = data.parrafos;
             }
             
-            // Forzar avance a la pantalla de edición
-            document.getElementById('section-client').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
+            // CORRECCIÓN: Se cambió .hidden por .oculto
+            document.getElementById('section-client').classList.add('oculto');
+            document.getElementById('main-content').classList.remove('oculto');
             
             renderizarParrafos();
-            btnAlert('btnImport', '📂 CARGADO');
+            btnAlert('btnImport', '<i class="fa-solid fa-folder-open"></i> CARGADO');
             
         } catch (error) {
             console.error(error);
@@ -394,25 +403,23 @@ function importFromTxt(event) {
         }
     };
     reader.readAsText(file);
-    event.target.value = ""; // reset input
+    event.target.value = ""; 
 }
 
-// Reiniciar Informe
 function nuevoInforme() {
     if (confirm("¿Estás seguro de iniciar un nuevo informe? Se borrarán los datos actuales de la pantalla.")) {
         document.getElementById('cliNombre').value = '';
-        document.getElementById('cliTel').value = '';
         document.getElementById('cliDir').value = '';
         document.getElementById('cliObs').value = '';
+        selectedPhone = '';
         
         informeParrafos = [];
         
-        // Regresa a la vista inicial de cliente
-        document.getElementById('main-content').classList.add('hidden');
-        document.getElementById('section-client').classList.remove('hidden');
+        // CORRECCIÓN: Se cambió .hidden por .oculto
+        document.getElementById('main-content').classList.add('oculto');
+        document.getElementById('section-client').classList.remove('oculto');
         
         guardarClienteGlobal();
         renderizarParrafos();
     }
 }
-
