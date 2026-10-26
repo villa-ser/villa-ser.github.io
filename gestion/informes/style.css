@@ -331,3 +331,26 @@ body.light-mode .toast-flotante {
 .pdf-slogan { font-weight: bold; color: #0088aa; margin-bottom: 4px; font-size: 12px; }
 .pdf-contacto { margin-bottom: 2px; }
   
+/* ================== BOTONES DE NAVEGACIÓN SUPERIOR ================== */
+.ngc-btn-icon {
+    background: var(--ngc-glass); 
+    border: var(--ngc-border-glass); 
+    color: var(--text);
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+    font-size: 0.8rem; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    transition: 0.2s;
+}
+.ngc-btn-icon.danger { 
+    border-color: var(--danger); 
+    color: var(--danger); 
+}
+.ngc-btn-icon:hover {
+    transform: translateY(-2px);
+}
