@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#121212">
     
     <title>Villaser - Informe Técnico</title>
@@ -13,163 +12,184 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
+    <!-- LIBRERÍA DE ÍCONOS FALTANTE (Soluciona las flechitas) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tu CSS Global -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Script de tema -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 </head>
 <body>
-    <!-- TOAST NOTIFICACIÓN (Memoria de Cliente) -->
-    <div id="toastCliente" class="toast-flotante oculto">
-        <span class="toast-icon">👤</span>
+
+    <!-- TOAST NOTIFICACIÓN (Actualizado al estilo global) -->
+    <div id="toastCliente" class="ngc-toast oculto gpu-accel">
+        <i class="fa-solid fa-user-check"></i>
         <div class="toast-content">
             <strong>Cliente Recuperado</strong>
             <p>Se cargaron los datos del último proyecto. Modifícalos si es uno nuevo.</p>
         </div>
-        <button class="toast-close" onclick="cerrarToast()">✖</button>
+        <button class="toast-close" onclick="cerrarToast()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <main class="container">
-        
-        <!-- BARRA DE NAVEGACIÓN ESTANDARIZADA -->
-<nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
-    <div style="display: flex; justify-content: flex-start;">
-        <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
-            <i class="fa-solid fa-arrow-left"></i> Menú
-        </button>
-    </div>
-    
-    <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
-        <i class="fa-solid fa-clipboard-check"></i> Informe Técnico
-    </div>
-    
-    <div style="display: flex; justify-content: flex-end;">
-        <button id="btnNuevoInforme" class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
-            <i class="fa-solid fa-rotate-right"></i>
-        </button>
-    </div>
-</nav>
-
-        <!-- SECCIÓN CLIENTE -->
-        <section id="section-client" class="card">
-            <h4>Datos del Cliente</h4>
-            <p style="font-size: 0.8rem; color: var(--border-color); margin-bottom: 12px; margin-top: -5px;">Ingresá los datos manualmente. Se guardarán para tu próximo informe.</p>
+    <!-- WRAPPER PARA PC/MÓVIL -->
+    <div class="layout-wrapper">
+        <main class="container">
             
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div>
-                    <label for="cliNombre" class="sr-only">Nombre del Cliente</label>
-                    <input type="text" id="cliNombre" placeholder="Nombre del Cliente" onchange="guardarClienteGlobal()">
+            <!-- BARRA DE NAVEGACIÓN -->
+            <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                    <i class="fa-solid fa-arrow-left"></i> Menú
+                </button>
+                
+                <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                    <i class="fa-solid fa-clipboard-check"></i> Informe Técnico
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div>
-                        <label for="cliTel" class="sr-only">Teléfono</label>
-                        <input type="text" id="cliTel" placeholder="Teléfono" onchange="guardarClienteGlobal()">
-                    </div>
-                    <div>
-                        <label for="cliDir" class="sr-only">Dirección</label>
-                        <input type="text" id="cliDir" placeholder="Dirección" onchange="guardarClienteGlobal()">
-                    </div>
+                <button id="btnNuevoInforme" class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </nav>
+
+            <!-- SECCIÓN CLIENTE -->
+            <section id="section-client" class="ngc-card gpu-accel">
+                <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Cliente</h4>
+                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Ingresá los datos manualmente. Se guardarán para tu próximo informe.</p>
+                
+                <div class="row-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()">
                 </div>
                 
-                <div>
-                    <label for="cliObs" class="sr-only">Observaciones Cliente</label>
-                    <input type="text" id="cliObs" placeholder="Observaciones / Proyecto" onchange="guardarClienteGlobal()">
+                <!-- Eliminado el campo de teléfono para que encaje perfecto -->
+                <div class="row-group">
+                    <label>Dirección</label>
+                    <input type="text" id="cliDir" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
                 </div>
                 
-                <button id="btnCli" class="btn-add-custom btn-client" style="width: 100%; margin-top: 5px;" onclick="confirmarCliente()">Comenzar Informe</button>
-            </div>
-        </section>
-
-        <!-- SECCIÓN PRINCIPAL (INFORME TÉCNICO) -->
-        <section id="main-content" class="hidden">
-            
-            <div class="card">
-                <h4>Redacción de Informe Técnico</h4>
-                <label for="textoInforme">Redactar párrafo:</label>
-                <textarea id="textoInforme" lang="es" spellcheck="true" placeholder="Escriba aquí el párrafo y presione agregar..." style="min-height: 100px; resize: vertical; line-height: 1.5;"></textarea>
-                
-                <!-- BOTONES DE REVISAR Y AGREGAR EN PARALELO -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                    <button id="btnRevisar" class="btn-add-custom" style="border-color: #ff9800; color: #ff9800; background: rgba(255, 152, 0, 0.1);" onclick="revisarOrtografia()">🔍 REVISAR</button>
-                    <button id="btnAgregarParrafo" class="btn-add-custom" style="border-color: var(--success); color: var(--success); background: rgba(40, 167, 69, 0.1);" onclick="agregarParrafo()">+ AGREGAR</button>
+                <div class="row-group">
+                    <label>Observaciones / Proyecto</label>
+                    <input type="text" id="cliObs" class="ngc-input" placeholder="Ej: Revisión eléctrica" onchange="guardarClienteGlobal()">
                 </div>
                 
-                <!-- LISTA DE PÁRRAFOS EDITABLES -->
-                <div id="lista-parrafos" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
-            </div>
+                <button id="btnCli" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="confirmarCliente()">
+                    <i class="fa-solid fa-play"></i> Comenzar Informe
+                </button>
+            </section>
 
-            <!-- ÁREA DE CAPTURA (PARA IMAGEN / WSP) -->
-            <div id="captureSection" class="capture-area">
-                <header class="list-header-title">VILLASER - INFORME TÉCNICO</header>
-                <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--accent); line-height: 1.4; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;"></div>
-                <div id="previewInforme" style="font-size: 0.9rem; white-space: normal; line-height: 1.5; padding: 4px;"></div>
-            </div>
+            <!-- SECCIÓN PRINCIPAL (INFORME TÉCNICO) -->
+            <section id="main-content" class="oculto flex-column gap-15">
+                
+                <div class="ngc-card gpu-accel">
+                    <h4 class="ngc-card-title"><i class="fa-solid fa-pen-to-square"></i> Redacción de Informe Técnico</h4>
+                    
+                    <div class="row-group">
+                        <label for="textoInforme">Redactar párrafo:</label>
+                        <textarea id="textoInforme" class="ngc-input" lang="es" spellcheck="true" placeholder="Escriba aquí el párrafo y presione agregar..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
+                    </div>
+                    
+                    <div class="action-grid-main" style="margin-top: 15px;">
+                        <button id="btnRevisar" class="ngc-btn" style="color: #ff9800; border-color: #ff9800; background: rgba(255, 152, 0, 0.1);" onclick="revisarOrtografia()">
+                            <i class="fa-solid fa-magnifying-glass"></i> REVISAR
+                        </button>
+                        <button id="btnAgregarParrafo" class="ngc-btn" style="color: var(--success-green); border-color: var(--success-green); background: rgba(40, 167, 69, 0.1);" onclick="agregarParrafo()">
+                            <i class="fa-solid fa-plus"></i> AGREGAR
+                        </button>
+                    </div>
+                    
+                    <div id="lista-parrafos" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
 
-            <!-- CONTROLES INFERIORES -->
-            <div class="action-grid" style="margin-top: 20px;">
-                <button id="btnCopyTitle" class="btn-add-custom btn-copy" onclick="copyTitle()">📋 TÍTULO</button>
-                <button class="btn-add-custom btn-cap" onclick="takeScreenshot()">📸 IMAGEN</button>
-            </div>
+                <!-- ÁREA DE CAPTURA -->
+                <div id="captureSection" class="capture-zone gpu-accel">
+                    <header class="header-brand">VILLASER - INFORME TÉCNICO</header>
+                    <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--ngc-neon); line-height: 1.4; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;"></div>
+                    <div id="previewInforme" style="font-size: 0.9rem; white-space: normal; line-height: 1.5; padding: 4px;"></div>
+                </div>
 
-            <div style="margin-top: 10px;">
-                <button id="btnGenerarPDF" class="btn-add-custom btn-pdf" onclick="generarPDF()" style="width: 100%; height: 50px; font-size: 0.9rem;">📄 DESCARGAR PDF</button>
-            </div>
+                <!-- CONTROLES INFERIORES -->
+                <div class="action-grid-main" style="margin-top: 20px;">
+                    <button id="btnCopyTitle" class="ngc-btn" style="color: #ff9800; border-color: #ff9800; background: rgba(255, 152, 0, 0.1);" onclick="copyTitle()">
+                        <i class="fa-regular fa-copy"></i> COPIAR TÍTULO
+                    </button>
+                    <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: rgba(0, 212, 255, 0.1);" onclick="takeScreenshot()">
+                        <i class="fa-solid fa-camera"></i> DESCARGAR IMAGEN
+                    </button>
+                </div>
 
-            <!-- CAMBIO DE EXPORTAR/IMPORTAR a GUARDAR/ABRIR -->
-            <div class="btn-grid-actions-footer">
-                <button id="btnExport" class="btn-add-custom btn-export" onclick="exportToTxt()">💾 GUARDAR</button>
-                <button id="btnImport" class="btn-add-custom btn-import" onclick="document.getElementById('fileInput').click()">📂 ABRIR</button>
-                <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
-                <button class="btn-add-custom btn-full btn-wsp" onclick="sendWSP()">🚀 ENVIAR WHATSAPP</button>
-            </div>
-            
-        </section>
-    </main>
+                <div style="margin-top: 15px;">
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()" style="width: 100%;">
+                        <i class="fa-solid fa-file-pdf"></i> GENERAR PDF
+                    </button>
+                </div>
 
-    <!-- PLANTILLA OCULTA EXCLUSIVA PARA EL PDF A4 (295mm) -->
-    <div id="plantilla-pdf" style="display: none;">
-        <div class="pdf-container">
-            <header class="pdf-header">
-                <!-- TÍTULO PRINCIPAL CENTRADO Y EN UN SOLO RENGLÓN -->
-                <div style="text-align: center; margin-bottom: 20px; width: 100%;">
-                    <h2 style="margin: 0; color: #0088aa; font-size: 22px; text-transform: uppercase;">Informe Técnico</h2>
+                <div class="action-grid-footer" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button id="btnExport" class="ngc-btn-small" style="color: var(--ngc-warning); border-color: var(--ngc-warning); justify-content: center;" onclick="exportToTxt()">
+                        <i class="fa-solid fa-download"></i> GUARDAR
+                    </button>
+                    <button id="btnImport" class="ngc-btn-small" style="color: var(--ngc-neon); border-color: var(--ngc-neon); justify-content: center;" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-folder-open"></i> ABRIR
+                    </button>
+                    <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
+                    
+                    <button class="ngc-btn-small" style="grid-column: span 2; color: var(--success-green); border-color: var(--success-green); justify-content: center;" onclick="sendWSP()">
+                        <i class="fa-brands fa-whatsapp"></i> ENVIAR WHATSAPP
+                    </button>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                    <div class="pdf-info-box">
-                        <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
-                        <div class="pdf-row"><b>Cliente</b> <span id="pdf-cliente"></span></div>
-                        <div class="pdf-row"><b>Dirección</b> <span id="pdf-dir"></span></div>
-                    </div>
-                    <div class="pdf-logo-box">
-                        <img src="membrete.avif" alt="Villaser Electricista" style="max-width: 100%; max-height: 70px; display: block; margin-left: auto;">
-                    </div>
-                </div>
-            </header>
+            </section>
+        </main>
 
-            <div class="pdf-body-content">
-                <div id="pdf-texto-contenido" class="pdf-informe-texto"></div>
+        <!-- PANEL DERECHO: VISTA PREVIA PDF (Visible solo en PC) -->
+        <aside class="preview-panel">
+            <div id="plantilla-pdf">
+                <div class="pdf-container">
+                    <header class="pdf-header">
+                        <div style="text-align: center; margin-bottom: 20px; width: 100%;">
+                            <h2 style="margin: 0; color: #0088aa; font-size: 22px; text-transform: uppercase;">Informe Técnico</h2>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                            <div class="pdf-info-box">
+                                <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
+                                <div class="pdf-row"><b>Cliente</b> <span id="pdf-cliente"></span></div>
+                                <div class="pdf-row"><b>Dirección</b> <span id="pdf-dir"></span></div>
+                            </div>
+                            <div class="pdf-logo-box">
+                                <img src="membrete.avif" alt="Villaser Electricista" style="max-width: 100%; max-height: 70px; display: block; margin-left: auto;">
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="pdf-body-content">
+                        <div id="pdf-texto-contenido" class="pdf-informe-texto"></div>
+                    </div>
+
+                    <footer class="pdf-footer">
+                        <div></div> 
+                        <div class="pdf-right-footer">
+                            <div class="pdf-slogan">¡Electricidad Segura, Hogar Tranquilo!</div>
+                            <div class="pdf-contacto">
+                                <span>📞 351 355 9347</span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
+                            </div>
+                            <div class="pdf-contacto"><span>🪪 Electricista Habilitado Cat III</span></div>
+                            <div class="pdf-contacto"><span>ERSeP Registro Nro 29029389 - 14027</span></div>
+                        </div>
+                    </footer>
+                </div>
             </div>
-
-            <footer class="pdf-footer">
-                <div></div> 
-                <div class="pdf-right-footer">
-                    <div class="pdf-slogan">
-                        ¡Electricidad Segura, Hogar Tranquilo!
-                    </div>
-                    <div class="pdf-contacto">
-                        <span>📞 351 355 9347</span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
-                    </div>
-                    <div class="pdf-contacto">
-                        <span>🪪 Electricista Habilitado Cat III</span>
-                    </div>
-                    <div class="pdf-contacto">
-                        <span>ERSeP Registro Nro 29029389 - 14027</span>
-                    </div>
-                </div>
-            </footer>
-        </div>
+        </aside>
     </div>
 
     <script src="script.js"></script>
 </body>
-                  </html>
-                  
+</html>
