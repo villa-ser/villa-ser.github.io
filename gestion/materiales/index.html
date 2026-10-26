@@ -37,18 +37,24 @@
 <div class="layout-wrapper">
     <main class="container">
         
-        <!-- BARRA DE NAVEGACIÓN -->
-        <nav class="top-nav">
-            <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
-                <i class="fa-solid fa-arrow-left"></i> Menú
-            </button>
-            <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
-                <i class="fa-solid fa-boxes-stacked"></i> Materiales
-            </div>
-            <button id="btnNuevoListado" class="ngc-btn-icon danger oculto" onclick="nuevoListado()" title="Nueva Lista">
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
-        </nav>
+        <!-- BARRA DE NAVEGACIÓN ESTANDARIZADA -->
+<nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
+    <div style="display: flex; justify-content: flex-start;">
+        <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+            <i class="fa-solid fa-arrow-left"></i> Menú
+        </button>
+    </div>
+    
+    <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+        <i class="fa-solid fa-boxes-stacked"></i> Materiales
+    </div>
+    
+    <div style="display: flex; justify-content: flex-end;">
+        <button id="btnNuevoListado" class="ngc-btn-icon danger" onclick="nuevoListado()" title="Nueva Lista">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
+    </div>
+</nav>
 
         <div id="status" class="ngc-card loading-state">
             <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
