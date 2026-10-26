@@ -38,23 +38,23 @@
     <main class="container">
         
         <!-- BARRA DE NAVEGACIÓN ESTANDARIZADA -->
-<nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
-    <div style="display: flex; justify-content: flex-start;">
-        <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
-            <i class="fa-solid fa-arrow-left"></i> Menú
-        </button>
-    </div>
-    
-    <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
-        <i class="fa-solid fa-boxes-stacked"></i> Materiales
-    </div>
-    
-    <div style="display: flex; justify-content: flex-end;">
-        <button id="btnNuevoListado" class="ngc-btn-icon danger" onclick="nuevoListado()" title="Nueva Lista">
-            <i class="fa-solid fa-rotate-right"></i>
-        </button>
-    </div>
-</nav>
+        <nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
+            <div style="display: flex; justify-content: flex-start;">
+                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                    <i class="fa-solid fa-arrow-left"></i> Menú
+                </button>
+            </div>
+            
+            <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                <i class="fa-solid fa-boxes-stacked"></i> Materiales
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="btnNuevoListado" class="ngc-btn-icon danger" onclick="nuevoListado()" title="Nueva Lista">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </nav>
 
         <div id="status" class="ngc-card loading-state">
             <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
@@ -89,14 +89,6 @@
 
         <!-- SECCIÓN PRINCIPAL (LISTA) -->
         <section id="main-content" class="oculto flex-column gap-15">
-            
-            <div class="ngc-card gpu-accel">
-                <label>Nota Rápida General</label>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="obsGenerales" class="ngc-input" placeholder="Ej: Materiales Planta Alta..." style="flex:1;">
-                    <button id="btnGen" class="ngc-btn" style="border-color: #fbbc04; color: #fbbc04;" onclick="addGeneralObs()"><i class="fa-solid fa-thumbtack"></i> Fijar</button>
-                </div>
-            </div>
 
             <div class="ngc-card gpu-accel">
                 <h4 class="ngc-card-title"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</h4>
@@ -144,13 +136,19 @@
                 </div>
             </div>
 
+            <!-- Notas Globales (Ubicación como en Presupuesto) -->
+            <div class="ngc-card gpu-accel">
+                <label>Notas Globales de Materiales</label>
+                <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Materiales para Planta Alta..." style="height: 75px; resize: none;" oninput="guardarEstado(); renderItems();"></textarea>
+            </div>
+
             <!-- ÁREA DE CAPTURA ORIGINAL -->
             <div id="captureSection" class="ngc-card gpu-accel" style="padding: 15px 10px; background: var(--ngc-btn-bg);">
                 <header class="list-header-title header-brand">MATERIALES SOLICITADOS</header>
                 <div id="itemsContainer"></div>
             </div>
 
-            <!-- ACCIONES PRINCIPALES -->
+            <!-- ACCIONES PRINCIPALES NORMALIZADAS -->
             <div class="action-grid-main" style="margin-top: 10px;">
                 <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
                     <i class="fa-solid fa-file-pdf"></i> Generar PDF
@@ -213,7 +211,7 @@
 
                 <div class="pdf-body-lower" id="pdf-notas-box" style="display:none;">
                     <div class="pdf-notas-box" style="width: 100%;">
-                        <h3>Notas Generales</h3>
+                        <h3>Notas Globales</h3>
                         <div id="pdf-notas" class="pdf-notas-content"></div>
                     </div>
                 </div>
