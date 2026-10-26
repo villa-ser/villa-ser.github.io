@@ -396,3 +396,23 @@ function importFromTxt(event) {
     reader.readAsText(file);
     event.target.value = ""; // reset input
 }
+
+// Reiniciar Informe
+function nuevoInforme() {
+    if (confirm("¿Estás seguro de iniciar un nuevo informe? Se borrarán los datos actuales de la pantalla.")) {
+        document.getElementById('cliNombre').value = '';
+        document.getElementById('cliTel').value = '';
+        document.getElementById('cliDir').value = '';
+        document.getElementById('cliObs').value = '';
+        
+        informeParrafos = [];
+        
+        // Regresa a la vista inicial de cliente
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('section-client').classList.remove('hidden');
+        
+        guardarClienteGlobal();
+        renderizarParrafos();
+    }
+}
+
