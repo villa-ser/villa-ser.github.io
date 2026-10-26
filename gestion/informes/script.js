@@ -1,21 +1,14 @@
-// =======================================================
-// 1. VARIABLES GLOBALES Y ESTADO
-// =======================================================
 let clientDetails = { nombre: "", tel: "", dir: "", obs: "" };
 let currentClientName = "";
 let selectedPhone = "";
 let informeParrafos = []; 
 
-// =======================================================
-// 2. INICIALIZACIÓN Y MEMORIA GLOBAL
-// =======================================================
 window.onload = () => {
     cargarClienteGlobal();
     cargarDatosEmpresa();
     renderizarParrafos(); 
 };
 
-// Carga la información de la empresa
 function cargarDatosEmpresa() {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
@@ -47,7 +40,6 @@ function cargarDatosEmpresa() {
     }
 }
 
-// Carga el cliente global
 function cargarClienteGlobal() {
     const guardado = localStorage.getItem('villaser_cliente_global');
     if (guardado) {
@@ -73,12 +65,11 @@ function cargarClienteGlobal() {
 function guardarClienteGlobal() {
     clientDetails = {
         nombre: document.getElementById('cliNombre').value.trim(),
-        tel: selectedPhone, // Mantenemos el teléfono oculto si viene de otro módulo
+        tel: selectedPhone, 
         dir: document.getElementById('cliDir').value.trim(),
         obs: document.getElementById('cliObs').value.trim(),
         proyecto: document.getElementById('cliObs').value.trim() 
     };
-    
     currentClientName = clientDetails.nombre;
     localStorage.setItem('villaser_cliente_global', JSON.stringify(clientDetails));
 }
@@ -96,7 +87,7 @@ function cerrarToast() {
     const toast = document.getElementById('toastCliente');
     if (toast) {
         toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400); // Espera la animación
+        setTimeout(() => toast.classList.add('oculto'), 400); 
     }
 }
 
@@ -111,33 +102,17 @@ function confirmarCliente() {
     
     const b = document.getElementById('btnCli'); 
     b.innerHTML = '<i class="fa-solid fa-check"></i> LISTO'; 
-    b.classList.add('btn-success-active');
+    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
     
     setTimeout(() => { 
-        // CORRECCIÓN: Se cambió .hidden por .oculto
         document.getElementById('section-client').classList.add('oculto');
         document.getElementById('main-content').classList.remove('oculto');
-        
-        // Volver a acomodar el flex-column por si acaso
         document.getElementById('main-content').classList.add('flex-column', 'gap-15');
         
+        b.innerHTML = '<i class="fa-solid fa-play"></i> Comenzar Informe';
+        b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
         actualizarVistaPreviews();
     }, 500);
-}
-
-// =======================================================
-// 3. GESTIÓN DE PÁRRAFOS DEL INFORME
-// =======================================================
-
-function revisarOrtografia() {
-    const textarea = document.getElementById('textoInforme');
-    if (textarea.value.trim() === '') {
-        alert("No hay texto para revisar.");
-        return;
-    }
-    textarea.focus();
-    textarea.select();
-    btnAlert('btnRevisar', '<i class="fa-solid fa-magnifying-glass"></i> REVISAR');
 }
 
 function agregarParrafo() {
@@ -149,7 +124,7 @@ function agregarParrafo() {
     informeParrafos.push(texto);
     document.getElementById('textoInforme').value = "";
     
-    btnAlert('btnAgregarParrafo', '<i class="fa-solid fa-plus"></i> AGREGAR');
+    btnAlert('btnAgregarParrafo', '<i class="fa-solid fa-plus"></i> AGREGAR PÁRRAFO');
     renderizarParrafos();
 }
 
@@ -199,54 +174,46 @@ function actualizarVistaPreviews() {
     const previewArea = document.getElementById('previewInforme');
     previewArea.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 15px;">${p}</p>`).join('');
 
-    const fechaLarga = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
+    // Actualizar Global Notes en la Captura
+    const og = document.getElementById('obsGenerales').value;
+    const previewGlobales = document.getElementById('previewNotasGlobales');
+    if (og) {
+        previewGlobales.innerText = `Nota: ${og}`;
+        previewGlobales.style.display = 'block';
+    } else {
+        previewGlobales.style.display = 'none';
+    }
+
+    // Actualizar Global Notes en PDF
     const pdfFecha = document.getElementById('pdf-fecha');
     const pdfCliente = document.getElementById('pdf-cliente');
     const pdfDir = document.getElementById('pdf-dir');
     const pdfTexto = document.getElementById('pdf-texto-contenido');
+    const pdfNotasBox = document.getElementById('pdf-notas-box');
+    const pdfNotas = document.getElementById('pdf-notas');
 
-    if(pdfFecha) pdfFecha.innerText = fechaLarga;
+    if(pdfFecha) pdfFecha.innerText = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
     if(pdfCliente) pdfCliente.innerText = clientDetails.nombre;
     if(pdfDir) pdfDir.innerText = clientDetails.dir || 'A coordinar';
     if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => `<p>${p}</p>`).join('');
-}
 
-// =======================================================
-// 4. ACCIONES FINALES (PDF, Imagen, WhatsApp, Export)
-// =======================================================
+    if (og && pdfNotasBox && pdfNotas) {
+        pdfNotas.innerText = og;
+        pdfNotasBox.style.display = 'block';
+    } else if (pdfNotasBox) {
+        pdfNotasBox.style.display = 'none';
+    }
+}
 
 function btnAlert(id, text) {
     const b = document.getElementById(id); 
     const originalText = b.innerHTML;
     b.innerHTML = '<i class="fa-solid fa-check"></i> ¡LISTO!'; 
-    b.classList.add('btn-success-active');
+    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
     setTimeout(() => { 
         b.innerHTML = text || originalText; 
-        b.classList.remove('btn-success-active'); 
+        b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; 
     }, 1000);
-}
-
-async function copyTitle() {
-    const shortName = currentClientName ? currentClientName.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '') : "Cliente";
-    const now = new Date();
-    const dd = String(now.getDate()).padStart(2, '0');
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const yyyy = now.getFullYear();
-    const title = `${shortName}_Villaser_Informe_${dd}-${mm}-${yyyy}`;
-    
-    try {
-        await navigator.clipboard.writeText(title);
-        btnAlert('btnCopyTitle', '<i class="fa-regular fa-copy"></i> COPIAR TÍTULO');
-    } catch (err) {
-        const textArea = document.createElement("textarea");
-        textArea.value = title;
-        textArea.style.position = "fixed"; textArea.style.left = "-9999px";
-        document.body.appendChild(textArea); 
-        textArea.focus(); textArea.select();
-        document.execCommand('copy'); 
-        btnAlert('btnCopyTitle', '<i class="fa-regular fa-copy"></i> COPIAR TÍTULO');
-        document.body.removeChild(textArea);
-    }
 }
 
 async function takeScreenshot() {
@@ -324,6 +291,9 @@ function sendWSP() {
         text += `${p}\n\n`;
     });
 
+    const og = document.getElementById('obsGenerales').value;
+    if (og) text += `*NOTAS GLOBALES:*\n${og}\n`;
+
     let cleanNumber = selectedPhone;
     if (!cleanNumber) { 
         cleanNumber = prompt("Ingrese el número de WhatsApp del cliente (Ej: 3511234567):", "");
@@ -337,19 +307,17 @@ function sendWSP() {
     window.open(`https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`, '_blank');
 }
 
-// =======================================================
-// 5. EXPORTAR / IMPORTAR BORRADORES (.TXT / JSON)
-// =======================================================
-
 function exportToTxt() {
-    if (informeParrafos.length === 0 && !clientDetails.nombre) {
+    const og = document.getElementById('obsGenerales').value;
+    if (informeParrafos.length === 0 && !clientDetails.nombre && !og) {
         alert("No hay datos para guardar.");
         return;
     }
     
     const data = {
         cliente: clientDetails,
-        parrafos: informeParrafos
+        parrafos: informeParrafos,
+        obsGenerales: og
     };
     
     const jsonString = JSON.stringify(data, null, 2);
@@ -365,8 +333,6 @@ function exportToTxt() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
-    btnAlert('btnExport', '<i class="fa-solid fa-download"></i> GUARDADO');
 }
 
 function importFromTxt(event) {
@@ -389,13 +355,17 @@ function importFromTxt(event) {
             if (data.parrafos && Array.isArray(data.parrafos)) {
                 informeParrafos = data.parrafos;
             }
+
+            if (data.obsGenerales) {
+                document.getElementById('obsGenerales').value = data.obsGenerales;
+            } else {
+                document.getElementById('obsGenerales').value = '';
+            }
             
-            // CORRECCIÓN: Se cambió .hidden por .oculto
             document.getElementById('section-client').classList.add('oculto');
             document.getElementById('main-content').classList.remove('oculto');
             
             renderizarParrafos();
-            btnAlert('btnImport', '<i class="fa-solid fa-folder-open"></i> CARGADO');
             
         } catch (error) {
             console.error(error);
@@ -411,11 +381,11 @@ function nuevoInforme() {
         document.getElementById('cliNombre').value = '';
         document.getElementById('cliDir').value = '';
         document.getElementById('cliObs').value = '';
+        document.getElementById('obsGenerales').value = '';
         selectedPhone = '';
         
         informeParrafos = [];
         
-        // CORRECCIÓN: Se cambió .hidden por .oculto
         document.getElementById('main-content').classList.add('oculto');
         document.getElementById('section-client').classList.remove('oculto');
         
@@ -423,3 +393,4 @@ function nuevoInforme() {
         renderizarParrafos();
     }
 }
+    
