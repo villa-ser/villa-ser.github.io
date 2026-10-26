@@ -50,7 +50,6 @@ function setupEventListeners() {
     });
 }
 
-// --- MODAL DE MEMORIA GLOBAL ---
 function inicializarClienteMemoria() {
     const clienteStr = localStorage.getItem('villaser_cliente_global');
     const estadoStr = localStorage.getItem('materiales_estado_actual');
@@ -91,6 +90,7 @@ function guardarEstado() {
         cliNombre: document.getElementById('cliNombre').value,
         cliDireccion: document.getElementById('cliDireccion').value,
         cliProyecto: document.getElementById('cliProyecto').value,
+        obsGenerales: document.getElementById('obsGenerales').value,
         items: listaItems
     };
     localStorage.setItem('materiales_estado_actual', JSON.stringify(estado));
@@ -103,6 +103,7 @@ function cargarEstadoGuardado() {
         if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
         if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
         if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
+        if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
         
         listaItems = estado.items || [];
         if (listaItems.length > 0) {
@@ -120,6 +121,7 @@ function nuevoListado() {
         document.getElementById('cliNombre').value = '';
         document.getElementById('cliDireccion').value = '';
         document.getElementById('cliProyecto').value = '';
+        document.getElementById('obsGenerales').value = '';
         listaItems = [];
         guardarEstado();
         guardarClienteGlobal();
@@ -170,13 +172,22 @@ function renderItems() {
     
     listaItems.forEach(i => {
         const div = document.createElement('div');
-        let className = i.type === 'CLI' ? 'client-header' : (i.type === 'OBS' ? 'general-header' : '');
+        let className = i.type === 'CLI' ? 'client-header' : '';
         div.className = "row-item " + className;
         div.setAttribute('data-raw', i.raw);
         div.innerHTML = `<div style="flex:1; overflow:hidden; text-overflow:ellipsis;">${i.html}</div>
                          <button class="btn-delete" aria-label="Eliminar ítem" onclick="borrarItem(${i.id})"><i class="fa-solid fa-trash"></i></button>`;
         container.appendChild(div);
     });
+
+    // Inyectar Notas Globales en el Resumen
+    const og = document.getElementById('obsGenerales').value;
+    if(og) {
+        const div = document.createElement('div');
+        div.className = "row-item general-header";
+        div.innerHTML = `<div style="flex:1;"><i style="color:var(--ngc-text-main); opacity:0.8;">Notas Globales: ${og}</i></div>`;
+        container.appendChild(div);
+    }
     
     sincronizarVistaPreviaPDF();
 }
@@ -216,15 +227,6 @@ function addClientToList() {
         b.innerHTML = "<i class='fa-solid fa-play'></i> Iniciar Lista";
         b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
     }, 500);
-}
-
-function addGeneralObs() {
-    const obs = document.getElementById('obsGenerales').value;
-    if (!obs.trim()) return;
-    
-    listaItems.push({ id: Date.now(), type: 'OBS', raw: `OBS\t${obs}`, html: `<i style="color:var(--ngc-text-main); opacity:0.8;">Nota: ${obs}</i>` });
-    document.getElementById('obsGenerales').value = "";
-    guardarEstado(); renderItems(); btnAlert('btnGen', '<i class="fa-solid fa-thumbtack"></i> Fijar');
 }
 
 function addItem() {
@@ -296,7 +298,6 @@ function sincronizarVistaPreviaPDF() {
 
     let clienteNombre = document.getElementById('cliNombre').value || "Cliente";
     let clienteDireccion = document.getElementById('cliDireccion').value || document.getElementById('cliProyecto').value || "-";
-    let notasAcumuladas = "";
     
     const tbody = document.getElementById('pdf-tbody');
     if(!tbody) return;
@@ -306,8 +307,6 @@ function sincronizarVistaPreviaPDF() {
         const raw = i.raw.split('\t');
         if (raw[0] === 'CLI') {
             clienteNombre = raw[1]; clienteDireccion = raw[2];
-        } else if (raw[0] === 'OBS') {
-            notasAcumuladas += `• ${raw[1]}<br>`;
         } else if (raw[0] === 'ITM') {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td style="text-align: center; font-weight: bold;">${raw[1]}</td><td style="text-align: center;">${raw[2].substring(0,4).toUpperCase()}</td><td>${raw[3]}</td><td style="font-size: 10.5px; color: #555; text-align: left;">${raw[4] || '-'}</td>`;
@@ -323,8 +322,10 @@ function sincronizarVistaPreviaPDF() {
     if (document.getElementById('pdf-tel-footer')) document.getElementById('pdf-tel-footer').innerText = profTel ? `📞 ${profTel}` : '';
     
     const boxNotas = document.getElementById('pdf-notas-box');
-    if(notasAcumuladas && boxNotas) {
-        document.getElementById('pdf-notas').innerHTML = notasAcumuladas;
+    const og = document.getElementById('obsGenerales').value;
+
+    if(og && boxNotas) {
+        document.getElementById('pdf-notas').innerText = og;
         boxNotas.style.display = 'block';
     } else if (boxNotas) {
         boxNotas.style.display = 'none';
@@ -379,8 +380,12 @@ function takeScreenshot() {
 }
 
 function exportToTxt() {
-    if (listaItems.length === 0) { alert("La lista está vacía."); return; }
-    const content = listaItems.map(i => i.raw).join('\n');
+    const obsGen = document.getElementById('obsGenerales').value.replace(/\n/g, '\\n');
+    if (listaItems.length === 0 && !obsGen) { alert("La lista está vacía."); return; }
+
+    let content = listaItems.map(i => i.raw).join('\n');
+    if (obsGen) content += `\nGLOBAL_OBS\t${obsGen}`;
+
     const blob = new Blob([content], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -396,6 +401,7 @@ function importFromTxt(event) {
     reader.onload = function(e) {
         const lines = e.target.result.split('\n');
         listaItems = [];
+        document.getElementById('obsGenerales').value = ""; // Reiniciar Global
         
         lines.forEach(line => {
             if (!line.trim()) return;
@@ -404,10 +410,10 @@ function importFromTxt(event) {
                 document.getElementById('cliNombre').value = raw[1] || '';
                 document.getElementById('cliDireccion').value = raw[2] || '';
                 listaItems.push({ id: Date.now() + Math.random(), type: 'CLI', raw: line, html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${new Date().toLocaleDateString('es-AR')} - ${raw[1]}</strong>` });
-            } else if (raw[0] === 'OBS') {
-                listaItems.push({ id: Date.now() + Math.random(), type: 'OBS', raw: line, html: `<i style="color:var(--ngc-text-main); opacity:0.8;">Nota: ${raw[1]}</i>` });
             } else if (raw[0] === 'ITM') {
                 listaItems.push({ id: Date.now() + Math.random(), type: 'ITM', raw: line, html: `<b>${raw[1]} ${raw[2].substring(0,3).toUpperCase()}</b> | ${raw[3]} ${raw[4] ? `<span style="color:var(--ngc-neon);">[${raw[4]}]</span>` : ''}` });
+            } else if (raw[0] === 'GLOBAL_OBS') {
+                document.getElementById('obsGenerales').value = raw[1].replace(/\\n/g, '\n');
             }
         });
         
@@ -431,9 +437,11 @@ function sendWSP() {
     listaItems.forEach(i => {
         const raw = i.raw.split('\t');
         if (raw[0] === 'CLI') text += `\n*CLIENTE:* ${raw[1]}\n`;
-        else if (raw[0] === 'OBS') text += `*NOTA:* ${raw[1]}\n`;
-        else text += `• ${raw[1]} ${raw[2]} - ${raw[3]} ${raw[4] ? '('+raw[4]+')' : ''}\n`;
+        else if (raw[0] === 'ITM') text += `• ${raw[1]} ${raw[2]} - ${raw[3]} ${raw[4] ? '('+raw[4]+')' : ''}\n`;
     });
+
+    const obsGen = document.getElementById('obsGenerales').value;
+    if (obsGen) text += `\n*NOTAS GLOBALES:*\n${obsGen}\n`;
     
     let cleanNumber = tel.replace(/\D/g, '');
     if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
@@ -441,5 +449,4 @@ function sendWSP() {
     
     window.location.href = `whatsapp://send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`;
     setTimeout(() => { if (document.hasFocus()) window.open(`https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`, '_blank'); }, 500);
-                }
-                                                              
+}
