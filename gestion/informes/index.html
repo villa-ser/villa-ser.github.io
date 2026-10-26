@@ -28,13 +28,25 @@
 
     <main class="container">
         
-        <!-- BOTÓN VOLVER AL MENÚ -->
-        <nav class="top-nav">
-            <button class="btn-back" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
-                <span>⬅</span> Menú
-            </button>
-        </nav>
-        
+        <!-- BARRA DE NAVEGACIÓN ESTANDARIZADA -->
+<nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
+    <div style="display: flex; justify-content: flex-start;">
+        <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+            <i class="fa-solid fa-arrow-left"></i> Menú
+        </button>
+    </div>
+    
+    <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+        <i class="fa-solid fa-clipboard-check"></i> Informe Técnico
+    </div>
+    
+    <div style="display: flex; justify-content: flex-end;">
+        <button id="btnNuevoInforme" class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
+    </div>
+</nav>
+
         <!-- SECCIÓN CLIENTE -->
         <section id="section-client" class="card">
             <h4>Datos del Cliente</h4>
