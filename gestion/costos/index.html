@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    
+    <title>Costos Mano de Obra | Villaser</title>
+    
+    <!-- Iconos y CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="top-nav">
+            <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <i class="fa-solid fa-arrow-left"></i> Menú
+            </button>
+            <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                <i class="fa-solid fa-hand-holding-dollar"></i> Costos
+            </div>
+            <button class="ngc-btn-icon danger" onclick="resetForm()" title="Limpiar Búsqueda">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </nav>
+
+        <!-- INDICADOR DE CARGA -->
+        <div id="loading" class="ngc-card loading-state" style="text-align: center; padding: 40px 20px;">
+            <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 15px;"></i>
+            <br><span style="color: var(--ngc-text-faded); font-size: 0.9rem; text-transform: uppercase; font-weight: bold;">Sincronizando Precios...</span>
+        </div>
+        
+        <div id="app" class="oculto flex-column gap-15">
+            
+            <!-- TARJETA DE FILTROS -->
+            <section class="ngc-card gpu-accel">
+                <h4 class="ngc-card-title"><i class="fa-solid fa-filter"></i> Parámetros de Búsqueda</h4>
+                
+                <div class="row-group">
+                    <label>Organización / Fuente (Filtro)</label>
+                    <div id="fuente-container" class="fuentes-grid">
+                        <span style="color: var(--ngc-text-faded); font-size: 0.8rem;">Cargando fuentes...</span>
+                    </div>
+                </div>
+
+                <div class="row-group">
+                    <label>Categoría / Rubro</label>
+                    <select id="selTema" class="ngc-input native-select" onchange="updateSubtema()" disabled>
+                        <option value="">Aguarde un momento...</option>
+                    </select>
+                </div>
+
+                <div class="row-group" style="margin-bottom: 0;">
+                    <label>Concepto Específico</label>
+                    <select id="selConcepto" class="ngc-input native-select" onchange="showDetails()" disabled>
+                        <option value="">Seleccione categoría primero...</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- TARJETA DE RESULTADOS -->
+            <section id="result-card" class="ngc-card gpu-accel oculto">
+                <h4 class="ngc-card-title" style="justify-content: space-between; align-items: center; border-bottom: 1px solid var(--ngc-privacy-border); padding-bottom: 12px; margin-bottom: 15px;">
+                    <span><i class="fa-solid fa-money-bill-wave"></i> Cotización Estimada</span>
+                    <span id="res-codigo" style="font-size: 0.75rem; background: var(--ngc-neon); color: #000; padding: 4px 8px; border-radius: 6px; font-weight: bold;">---</span>
+                </h4>
+
+                <div style="text-align: center; padding: 25px 10px; background: rgba(40, 167, 69, 0.1); border: 1px solid rgba(40, 167, 69, 0.3); border-radius: 12px; margin-bottom: 20px;">
+                    <span style="display: block; font-size: 0.75rem; color: var(--ngc-text-faded); text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Monto Base Sugerido (ARS)</span>
+                    <div id="res-precio" style="font-size: 2.5rem; font-weight: 900; color: var(--success-green); letter-spacing: 1px;">$ 0</div>
+                </div>
+
+                <div class="row-group">
+                    <label>Descripción del Trabajo</label>
+                    <div id="res-concepto-full" style="background: var(--ngc-bg-input); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); color: var(--ngc-neon); font-weight: 600; font-size: 0.95rem; line-height: 1.5;">---</div>
+                </div>
+
+                <div class="row-group-stretch">
+                    <div class="flex-1">
+                        <label>Categoría</label>
+                        <div id="res-tema" style="background: var(--ngc-bg-input); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); font-size: 0.85rem; color: var(--ngc-text-main); text-transform: capitalize;">---</div>
+                    </div>
+                    <div class="flex-1">
+                        <label>Fuente Info</label>
+                        <div id="res-org" style="background: var(--ngc-bg-input); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); font-size: 0.85rem; color: var(--ngc-text-main); text-transform: capitalize;">---</div>
+                    </div>
+                </div>
+
+                <div class="row-group" style="margin-bottom: 0;">
+                    <label>Notas Aclaratorias / Condiciones</label>
+                    <div id="res-notes-content" style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--ngc-warning); font-size: 0.85rem; color: var(--ngc-text-main); line-height: 1.6; white-space: pre-wrap;">Sin observaciones.</div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- Librería de Google Charts -->
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- Scripts Propios -->
+<script src="script.js"></script>
+</body>
+</html>
