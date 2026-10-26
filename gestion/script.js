@@ -1,5 +1,5 @@
 // ==========================================
-// 1. CONFIGURACIÓN DE FIREBASE
+// 1. CONFIGURACIÓN DE FIREBASE Y TEMA
 // ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
@@ -17,8 +17,29 @@ const auth = firebase.auth();
 let registrandoCuenta = false;
 let cargaInicial = true;
 
+// Lógica inteligente de Tema (Modo Noche, Día o Automático OS)
+function aplicarTema(tema) {
+    const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (tema === 'light' || (tema === 'system' && prefiereClaro)) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+function cambiarTemaManual(nuevoTema) {
+    localStorage.setItem('temaVillaser', nuevoTema);
+    aplicarTema(nuevoTema);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     
+    // Escucha en tiempo real si el celular cambia de Modo Oscuro a Claro (sólo si está en "Sistema")
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+        const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+        if (temaGuardado === 'system') aplicarTema('system');
+    });
+
     // --- LÓGICA DE SESIÓN Y SPLASH SCREEN ---
     auth.onAuthStateChanged(user => {
         const procesarAcceso = () => {
@@ -29,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     mostrarAppPrincipal(user.email);
                 } else {
                     auth.signOut().then(() => {
-                        mostrarMensaje("Debes verificar tu correo para ingresar. Revisa tu bandeja de entrada o SPAM.", "error");
+                        mostrarMensaje("Debes verificar tu correo para ingresar.", "error");
                         mostrarPantallaLogin();
                     });
                 }
@@ -39,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (cargaInicial) {
+            // Aumentado a 2 segundos para apreciar el anillo de carga
             setTimeout(() => {
                 const splash = document.getElementById('customSplashScreen');
                 if (splash) {
@@ -47,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 procesarAcceso();
                 cargaInicial = false;
-            }, 1500); 
+            }, 2000); 
         } else {
             procesarAcceso();
         }
@@ -99,11 +121,7 @@ const rutas = {
 
 Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
-    if (btn) {
-        btn.addEventListener('click', () => {
-            window.location.href = rutas[id];
-        });
-    }
+    if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
 });
 
 // ==========================================
@@ -163,7 +181,7 @@ function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
 }
 
-// Cierra menú flotante al tocar fuera
+// Cierra menús al tocar fuera
 document.addEventListener('click', (e) => { 
     const wrapper = document.getElementById('userMenuWrapper'); 
     const dropdown = document.getElementById('userDropdown'); 
@@ -173,67 +191,42 @@ document.addEventListener('click', (e) => {
     } 
 });
 
-// --- LÓGICA DE CONFIGURACIÓN ---
 function abrirConfiguracion() {
-    // Cargar textos
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
     document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
 
-    // Cargar logo guardado
     const logoGuardado = localStorage.getItem('villaser_conf_logo');
     if (logoGuardado) {
         document.getElementById('logoPreview').src = logoGuardado;
         document.getElementById('logoPreview').style.display = 'block';
     }
 
-    // Sincronizar estado del switch del tema (Modo Noche / Modo Claro)
-    const esClaro = document.documentElement.getAttribute('data-theme') === 'light';
-    const checkboxTema = document.getElementById('checkboxTema');
-    if(checkboxTema) checkboxTema.checked = esClaro;
+    // Marca el botón de radio correcto según lo que haya elegido el usuario (Sistema por defecto)
+    const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+    const radioTema = document.getElementById(`tema_${temaGuardado}`);
+    if(radioTema) radioTema.checked = true;
 
     document.getElementById('modalConfig').classList.remove('oculto');
     document.getElementById('userDropdown').classList.add('oculto');
 }
 
-function cambiarTemaDesdeConfig() {
-    const esClaro = document.getElementById('checkboxTema').checked;
-    const nuevoTema = esClaro ? 'light' : 'dark';
-    
-    if (nuevoTema === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
-    localStorage.setItem('temaVillaser', nuevoTema);
-}
-
-function cerrarConfiguracion() {
-    document.getElementById('modalConfig').classList.add('oculto');
-}
+function cerrarConfiguracion() { document.getElementById('modalConfig').classList.add('oculto'); }
 
 function abrirTerminos(desdeRegistro) {
     document.getElementById('modalTerminos').classList.remove('oculto');
     const contenedorDescarga = document.getElementById('btnDescargaPdfContainer');
     
-    // Si viene desde la pantalla de login/registro, mostramos el botón de descarga.
     if (desdeRegistro) {
         contenedorDescarga.style.display = 'block';
     } else {
-        // Si viene desde el menú de perfil, lo ocultamos y cerramos el menú desplegable.
         contenedorDescarga.style.display = 'none';
         document.getElementById('userDropdown').classList.add('oculto');
     }
 }
 
-function cerrarTerminos() {
-    document.getElementById('modalTerminos').classList.add('oculto');
-}
-
-// Cierra modal de términos al tocar fondo (Actualiza tu EventListener global de clicks)
-document.getElementById('modalTerminos').addEventListener('click', function(e) { 
-    if(e.target === this) cerrarTerminos(); 
-});
+function cerrarTerminos() { document.getElementById('modalTerminos').classList.add('oculto'); }
+document.getElementById('modalTerminos').addEventListener('click', function(e) { if(e.target === this) cerrarTerminos(); });
 
 function guardarConfiguracion() {
     const nombre = document.getElementById('confNombre').value.trim();
@@ -259,18 +252,13 @@ function guardarConfiguracion() {
 function crearCuenta() { 
     const email = document.getElementById('emailInput').value.trim(); 
     const password = document.getElementById('passwordInput').value.trim();
-    
-    // NUEVA VALIDACIÓN: Verifica si aceptó los términos
     const aceptaTerminos = document.getElementById('aceptaTerminos').checked;
     
     if (!email || !password) {
-        mostrarMensaje("Completa correo y contraseña.", "error");
-        return;
+        mostrarMensaje("Completa correo y contraseña.", "error"); return;
     }
-    
     if (!aceptaTerminos) {
-        mostrarMensaje("Debes aceptar los Términos y Condiciones.", "error");
-        return;
+        mostrarMensaje("Debes aceptar los Términos y Condiciones.", "error"); return;
     }
 
     registrandoCuenta = true;
@@ -284,7 +272,6 @@ function crearCuenta() {
                 document.getElementById('passwordInput').type = 'password';
                 document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
                 document.getElementById('togglePasswordIcon').style.color = 'var(--ngc-text-faded)';
-                // Desmarcamos el checkbox para el próximo usuario por seguridad
                 document.getElementById('aceptaTerminos').checked = false; 
                 mostrarPantallaLogin();
             });
@@ -303,8 +290,7 @@ function iniciarSesion() {
     const password = document.getElementById('passwordInput').value.trim();
 
     if (!email || !password) {
-        mostrarMensaje("Completa correo y contraseña.", "error");
-        return;
+        mostrarMensaje("Completa correo y contraseña.", "error"); return;
     }
     
     document.getElementById('errorMessage').classList.add('oculto');
@@ -316,9 +302,7 @@ function iniciarSesion() {
             document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
             
             let msg = "Error al ingresar. Revisa los datos.";
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                msg = "Datos incorrectos.";
-            }
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = "Datos incorrectos.";
             mostrarMensaje(msg, "error");
         });
 }
@@ -330,8 +314,7 @@ function cerrarSesion() {
 function recuperarPassword() {
     const email = document.getElementById('emailInput').value.trim();
     if (!email) {
-        mostrarMensaje("Ingresa tu correo arriba y presiona recuperar.", "error");
-        return;
+        mostrarMensaje("Ingresa tu correo arriba y presiona recuperar.", "error"); return;
     }
     auth.sendPasswordResetEmail(email)
         .then(() => mostrarMensaje(`Recuperación enviada a ${email}.`, "exito"))
@@ -365,16 +348,12 @@ if (btnInstalar) {
     btnInstalar.addEventListener('click', async (e) => { 
         e.preventDefault(); 
         if (!eventoInstalacion) return;
-        
         eventoInstalacion.prompt();
         const { outcome } = await eventoInstalacion.userChoice;
-        
         if (outcome === 'accepted') {
-            console.log('El usuario instaló la aplicación');
             btnInstalar.classList.add('oculto');
             btnInstalar.style.display = 'none';
         }
-        
         eventoInstalacion = null;
     }); 
         }
