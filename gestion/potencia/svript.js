@@ -291,7 +291,7 @@ function calcularGradoYRenderizar() {
     document.getElementById('ui-grado').innerText = gradoActual;
     renderTabla(areaTotal, gradoActual);
 }
-
+   
 function renderTabla(areaTotal, gradoActual) {
     areaTotal = areaTotal || parseFloat(document.getElementById('ui-sla').innerText) || 0;
     gradoActual = gradoActual || document.getElementById('ui-grado').innerText;
@@ -636,4 +636,4 @@ function cargarDesdeJSON(event) {
     };
     reader.readAsText(file);
     event.target.value = ''; 
-              }
+                }
