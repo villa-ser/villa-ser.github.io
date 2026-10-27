@@ -10,7 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- AQUÍ FORZAMOS LA ACTUALIZACIÓN DEL CSS -->
+    <link rel="stylesheet" href="style.css?v=2">
 
     <script>
         (function() {
@@ -80,7 +82,6 @@
                     <i class="fa-solid fa-play"></i> Comenzar Carga de Ambientes
                 </button>
 
-                <!-- Input oculto para abrir borradores directos desde el menú de inicio si quisiera -->
                 <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="cargarDesdeJSON(event)">
                 <button class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="width: 100%; justify-content: center; background: transparent; border-style: dashed; margin-top: 15px; color: #e91e63; border-color: #e91e63;">
                     <i class="fa-solid fa-folder-open"></i> Abrir Borrador de Potencia (.json)
@@ -258,7 +259,7 @@
     </aside>
 </div>
 
-<script src="script.js"></script>
+<!-- AQUÍ FORZAMOS LA ACTUALIZACIÓN DEL SCRIPT -->
+<script src="script.js?v=2"></script>
 </body>
-  </html>
-                      
+</html>
