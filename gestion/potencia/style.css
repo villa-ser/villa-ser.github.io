@@ -143,4 +143,3 @@ label { font-size: 0.75rem; color: var(--ngc-text-faded); text-transform: upperc
 .pdf-table th { background-color: #f0f0f0; color: #333; font-weight: bold; text-transform: uppercase; padding: 4px 2px; text-align: center; border: 1px solid #ccc; word-wrap: break-word; }
 .pdf-table td { padding: 4px 2px; border: 1px solid #ddd; vertical-align: middle; text-align: center; }
 .pdf-table tfoot td { border-top: 2px solid #666; background-color: #fafafa; font-weight: bold; }
-       
