@@ -193,3 +193,14 @@ input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon);
 
 .oculto { display: none !important; }
 .gpu-accel { backface-visibility: hidden; transform: translateZ(0); }
+
+/* ==========================================
+   CONTROL DE LOGO SPLASH SCREEN (TEMA DÍA/NOCHE)
+   ========================================== */
+/* Por defecto (Modo Oscuro): Muestra el logo blanco, oculta el negro */
+.logo-splash-oscuro { display: block; }
+.logo-splash-claro { display: none; }
+
+/* Cuando el modo es Claro: Oculta el logo blanco, muestra el negro */
+[data-theme="light"] .logo-splash-oscuro { display: none; }
+[data-theme="light"] .logo-splash-claro { display: block; }
