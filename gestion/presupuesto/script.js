@@ -1,3 +1,18 @@
+// --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
+window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+    
+    // Solo cambia automáticamente si el usuario lo tiene en modo "Sistema"
+    if (temaGuardado === 'system') {
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (prefiereClaro) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    }
+});
+
 const SHEET_ID = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
 const URL_PRECIOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
 
