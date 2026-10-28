@@ -357,6 +357,12 @@ function iniciarSesion() {
 }
 
 function cerrarSesion() {
+    // Limpiar caché local al salir
+    localStorage.removeItem('villaser_conf_nombre');
+    localStorage.removeItem('villaser_conf_slogan');
+    localStorage.removeItem('villaser_conf_telefono');
+    localStorage.removeItem('villaser_conf_logo');
+    
     auth.signOut().then(() => window.location.reload());
 }
 
