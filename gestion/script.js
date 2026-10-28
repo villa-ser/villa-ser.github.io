@@ -298,11 +298,18 @@ function guardarConfiguracion() {
     alert("¡Datos guardados correctamente!");
     cerrarConfiguracion();
 
-    // 3. Sincronizar con Firebase (Nube) EN SEGUNDO PLANO
+        // 3. Sincronizar con Firebase (Nube) EN SEGUNDO PLANO
     db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
-        .then(() => console.log("Datos sincronizados en la nube exitosamente."))
-        .catch((error) => console.error("Error silencioso al sincronizar en la nube:", error));
+        .then(() => {
+            console.log("Datos sincronizados en la nube exitosamente.");
+        })
+        .catch((error) => {
+            // ALARMA ACTIVADA: Esto nos dirá en pantalla cuál es el problema exacto
+            alert("Atención: Firebase bloqueó el guardado. Motivo: " + error.message);
+            console.error("Error al sincronizar en la nube:", error);
+        });
 }
+
 
 // ==========================================
 // 4. FUNCIONES DE FIREBASE (AUTH)
