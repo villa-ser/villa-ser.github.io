@@ -14,12 +14,12 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const auth = firebase.auth();
-const db = firebase.firestore(); // <-- AGREGA ESTA LÍNEA
+const db = firebase.firestore();
 
 let registrandoCuenta = false;
 let cargaInicial = true;
 
-// Lógica inteligente de Tema (Modo Noche, Día o Automático OS)
+// Lógica inteligente de Tema
 function aplicarTema(tema) {
     const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
     if (tema === 'light' || (tema === 'system' && prefiereClaro)) {
@@ -35,59 +35,57 @@ function cambiarTemaManual(nuevoTema) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // Escucha en tiempo real si el celular cambia de Modo Oscuro a Claro (sólo si está en "Sistema")
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
         const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
         if (temaGuardado === 'system') aplicarTema('system');
     });
 
-        // --- LÓGICA DE SESIÓN Y SPLASH SCREEN ---
-    auth.onAuthStateChanged(user => {
-        const procesarAcceso = async () => { // <--- Convertido en async
-            if (user) {
-                if (registrandoCuenta) return;
-                if (user.emailVerified) {
-                    
-                    // NUEVO: Sincronizar Firebase con LocalStorage al iniciar sesión
-                    try {
-                        const doc = await db.collection('perfiles').doc(user.uid).get();
-                        if (doc.exists) {
-                            const data = doc.data();
-                            if (data.nombre !== undefined) localStorage.setItem('villaser_conf_nombre', data.nombre);
-                            if (data.slogan !== undefined) localStorage.setItem('villaser_conf_slogan', data.slogan);
-                            if (data.telefono !== undefined) localStorage.setItem('villaser_conf_telefono', data.telefono);
-                            if (data.logo !== undefined) localStorage.setItem('villaser_conf_logo', data.logo);
-                        }
-                    } catch (error) {
-                        console.error("Error al sincronizar perfil:", error);
-                    }
+    // --- LÓGICA DE SESIÓN Y SPLASH SCREEN MEJORADA ---
+    auth.onAuthStateChanged(async (user) => {
+        if (registrandoCuenta) return;
 
-                    document.getElementById('errorMessage').classList.add('oculto');
-                    mostrarAppPrincipal(user.email);
-                } else {
-                    auth.signOut().then(() => {
-                        mostrarMensaje("Debes verificar tu correo para ingresar.", "error");
-                        mostrarPantallaLogin();
-                    });
+        if (user) {
+            if (user.emailVerified) {
+                // Descargamos de Firebase silenciosamente y actualizamos local
+                try {
+                    const doc = await db.collection('perfiles').doc(user.uid).get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.nombre) localStorage.setItem('villaser_conf_nombre', data.nombre);
+                        if (data.slogan) localStorage.setItem('villaser_conf_slogan', data.slogan);
+                        if (data.telefono) localStorage.setItem('villaser_conf_telefono', data.telefono);
+                        if (data.logo) localStorage.setItem('villaser_conf_logo', data.logo);
+                    }
+                } catch (error) {
+                    console.error("Error leyendo Firebase. Verifica las Reglas de Firestore.", error);
                 }
+
+                document.getElementById('errorMessage').classList.add('oculto');
+                mostrarAppPrincipal(user.email);
             } else {
+                await auth.signOut();
+                mostrarMensaje("Debes verificar tu correo para ingresar.", "error");
                 mostrarPantallaLogin();
             }
-        };
-
-        if (cargaInicial) {
-            setTimeout(() => {
-                const splash = document.getElementById('customSplashScreen');
-                if (splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.classList.add('oculto'), 500);
-                }
-                procesarAcceso();
-                cargaInicial = false;
-            }, 2000); 
         } else {
-            procesarAcceso();
+            mostrarPantallaLogin();
+        }
+
+        // Ocultar splash screen SOLO DESPUÉS de comprobar todo el estado
+        if (cargaInicial) {
+            const splash = document.getElementById('customSplashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.classList.add('oculto'), 500);
+            }
+            cargaInicial = false;
+        }
+
+        // Restaurar estado visual del botón Login si veníamos de un intento
+        const btnLogin = document.getElementById('loginBtn');
+        if (btnLogin) {
+            btnLogin.innerHTML = '<i class="fa-solid fa-lock-open"></i> Ingresar';
+            btnLogin.disabled = false;
         }
     });
 
@@ -95,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === 'Enter') iniciarSesion();
     });
 
-    // --- PREVISUALIZACIÓN DE LOGO EN CONFIG ---
+    // --- PREVISUALIZACIÓN DE LOGO ---
     document.getElementById('confLogo').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -207,24 +205,48 @@ document.addEventListener('click', (e) => {
     } 
 });
 
-function abrirConfiguracion() {
+// AHORA ABRIR CONFIGURACIÓN SE ASEGURA DE TRAER LOS DATOS SI SE HABÍAN BORRADO
+async function abrirConfiguracion() {
+    document.getElementById('modalConfig').classList.remove('oculto');
+    document.getElementById('userDropdown').classList.add('oculto');
+
+    // 1. Cargar rápido de memoria local
     document.getElementById('confNombre').value = localStorage.getItem('villaser_conf_nombre') || '';
     document.getElementById('confSlogan').value = localStorage.getItem('villaser_conf_slogan') || '';
     document.getElementById('confTelefono').value = localStorage.getItem('villaser_conf_telefono') || '';
-
+    
     const logoGuardado = localStorage.getItem('villaser_conf_logo');
     if (logoGuardado) {
         document.getElementById('logoPreview').src = logoGuardado;
         document.getElementById('logoPreview').style.display = 'block';
+    } else {
+        document.getElementById('logoPreview').style.display = 'none';
     }
 
-    // Marca el botón de radio correcto según lo que haya elegido el usuario (Sistema por defecto)
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
     const radioTema = document.getElementById(`tema_${temaGuardado}`);
     if(radioTema) radioTema.checked = true;
 
-    document.getElementById('modalConfig').classList.remove('oculto');
-    document.getElementById('userDropdown').classList.add('oculto');
+    // 2. Si no hay datos locales (porque se borró el historial), forzamos una lectura a la nube
+    const user = auth.currentUser;
+    if (user && !document.getElementById('confNombre').value) {
+        try {
+            const doc = await db.collection('perfiles').doc(user.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                if (data.nombre) { document.getElementById('confNombre').value = data.nombre; localStorage.setItem('villaser_conf_nombre', data.nombre); }
+                if (data.slogan) { document.getElementById('confSlogan').value = data.slogan; localStorage.setItem('villaser_conf_slogan', data.slogan); }
+                if (data.telefono) { document.getElementById('confTelefono').value = data.telefono; localStorage.setItem('villaser_conf_telefono', data.telefono); }
+                if (data.logo) {
+                    document.getElementById('logoPreview').src = data.logo;
+                    document.getElementById('logoPreview').style.display = 'block';
+                    localStorage.setItem('villaser_conf_logo', data.logo);
+                }
+            }
+        } catch (e) {
+            console.log("No se pudo leer de la nube al abrir config", e);
+        }
+    }
 }
 
 function cerrarConfiguracion() { document.getElementById('modalConfig').classList.add('oculto'); }
@@ -277,14 +299,9 @@ function guardarConfiguracion() {
     cerrarConfiguracion();
 
     // 3. Sincronizar con Firebase (Nube) EN SEGUNDO PLANO
-    // Si no hay buen internet ahora, Firebase lo subirá automáticamente cuando vuelva la señal.
     db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
-        .then(() => {
-            console.log("Datos sincronizados en la nube exitosamente.");
-        })
-        .catch((error) => {
-            console.error("Error silencioso al sincronizar en la nube:", error);
-        });
+        .then(() => console.log("Datos sincronizados en la nube exitosamente."))
+        .catch((error) => console.error("Error silencioso al sincronizar en la nube:", error));
 }
 
 // ==========================================
@@ -336,8 +353,21 @@ function iniciarSesion() {
     
     document.getElementById('errorMessage').classList.add('oculto');
 
-    auth.signInWithEmailAndPassword(email, password)
+    // Cambiar estado visual del botón (Loader)
+    const btnLogin = document.getElementById('loginBtn');
+    btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+    btnLogin.disabled = true;
+
+    // Forzamos persistencia LOCAL para evitar deslogueos al recargar
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+            return auth.signInWithEmailAndPassword(email, password);
+        })
         .catch((error) => {
+            // Restaurar botón si hay error
+            btnLogin.innerHTML = '<i class="fa-solid fa-lock-open"></i> Ingresar';
+            btnLogin.disabled = false;
+
             document.getElementById('passwordInput').value = '';
             document.getElementById('passwordInput').type = 'password';
             document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
@@ -404,3 +434,4 @@ if (btnInstalar) {
         eventoInstalacion = null;
     }); 
         }
+        
