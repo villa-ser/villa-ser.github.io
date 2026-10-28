@@ -1,4 +1,4 @@
-const CACHE_NAME = 'villaser-cache-v11';
+const CACHE_NAME = 'villaser-cache-v12';
 
 const urlsToCache = [
     './',
@@ -42,6 +42,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // REGLA DE ORO: Ignorar las conexiones a Firebase y peticiones que no sean GET
+    if (event.request.url.includes('firestore.googleapis.com') || 
+        event.request.url.includes('firebase') || 
+        event.request.method !== 'GET') {
+        return; // Deja que el navegador hable con la nube libremente sin interceptarlo
+    }
+
+    // Para todo lo demás (Tus archivos HTML, CSS, JS e imágenes), usar caché local
     event.respondWith(
         caches.match(event.request)
             .then(response => {
