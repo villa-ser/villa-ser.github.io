@@ -44,7 +44,10 @@
     -webkit-tap-highlight-color: transparent; 
 }
 
-body {
+/* Bloqueo de Pull-to-Refresh y ajustes generales */
+html, body {
+    overscroll-behavior-y: none; 
+    touch-action: pan-x pan-y;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-body);
     color: var(--ngc-text); 
@@ -54,7 +57,6 @@ body {
     min-height: 100svh;
     padding: 0 15px; 
     overflow-y: auto; 
-    overscroll-behavior-y: none; 
     user-select: none; 
     transition: background-color 0.4s ease, color 0.4s ease;
 }
