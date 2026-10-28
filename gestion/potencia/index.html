@@ -21,6 +21,37 @@
             }
         })();
     </script>
+
+    <!-- 1. Cargar SDKs de Firebase (si no están ya en el HTML del módulo) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<!-- 2. Guardián de Seguridad -->
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+        authDomain: "villaser-gestion.firebaseapp.com",
+        projectId: "villaser-gestion",
+        storageBucket: "villaser-gestion.firebasestorage.app",
+        messagingSenderId: "1032102638132",
+        appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
+    };
+
+    // Inicializar Firebase solo si no está inicializado previamente
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    // Verificar el estado de la sesión
+    firebase.auth().onAuthStateChanged(user => {
+        // Si el usuario no existe (no está logueado) o no verificó su mail, se lo expulsa
+        if (!user || !user.emailVerified) {
+            // Redirige un nivel hacia atrás, cayendo en el login (gestión/index.html)
+            window.location.replace('../index.html'); 
+        }
+    });
+        </script>
+    
 </head>
 <body>
 
