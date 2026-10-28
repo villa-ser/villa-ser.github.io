@@ -42,12 +42,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (temaGuardado === 'system') aplicarTema('system');
     });
 
-    // --- LÓGICA DE SESIÓN Y SPLASH SCREEN ---
+        // --- LÓGICA DE SESIÓN Y SPLASH SCREEN ---
     auth.onAuthStateChanged(user => {
-        const procesarAcceso = () => {
+        const procesarAcceso = async () => { // <--- Convertido en async
             if (user) {
                 if (registrandoCuenta) return;
                 if (user.emailVerified) {
+                    
+                    // NUEVO: Sincronizar Firebase con LocalStorage al iniciar sesión
+                    try {
+                        const doc = await db.collection('perfiles').doc(user.uid).get();
+                        if (doc.exists) {
+                            const data = doc.data();
+                            if (data.nombre !== undefined) localStorage.setItem('villaser_conf_nombre', data.nombre);
+                            if (data.slogan !== undefined) localStorage.setItem('villaser_conf_slogan', data.slogan);
+                            if (data.telefono !== undefined) localStorage.setItem('villaser_conf_telefono', data.telefono);
+                            if (data.logo !== undefined) localStorage.setItem('villaser_conf_logo', data.logo);
+                        }
+                    } catch (error) {
+                        console.error("Error al sincronizar perfil:", error);
+                    }
+
                     document.getElementById('errorMessage').classList.add('oculto');
                     mostrarAppPrincipal(user.email);
                 } else {
@@ -62,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (cargaInicial) {
-            // Aumentado a 2 segundos para apreciar el anillo de carga
             setTimeout(() => {
                 const splash = document.getElementById('customSplashScreen');
                 if (splash) {
