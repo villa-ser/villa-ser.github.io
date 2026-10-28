@@ -44,7 +44,6 @@
     -webkit-tap-highlight-color: transparent; 
 }
 
-/* Bloqueo de Pull-to-Refresh y ajustes generales */
 html, body {
     overscroll-behavior-y: none; 
     touch-action: pan-x pan-y;
@@ -55,7 +54,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     min-height: 100svh;
-    padding: 0 15px; 
+    padding: 0 10px; 
     overflow-y: auto; 
     user-select: none; 
     transition: background-color 0.4s ease, color 0.4s ease;
@@ -66,24 +65,29 @@ input, textarea { user-select: auto; }
 .ngc-wrapper {
     display: flex; 
     flex-direction: column; 
-    justify-content: center; 
+    justify-content: space-between; 
     align-items: center; 
     width: 100%; 
-    max-width: 500px;
-    flex: 1; 
+    max-width: 480px;
+    min-height: 100svh;
+    padding: 10px 0;
 }
 
 /* ================== DISTRIBUCIÓN PANTALLAS (LOGIN VS APP) ================== */
 #mainHeader, #loginScreen {
+    width: 100%;
     margin-top: 10px !important; 
     margin-bottom: 10px !important;
 }
 
 #appScreen {
     width: 100%;
-    margin-top: auto !important; 
-    margin-bottom: 15px !important; 
-    padding-top: 85px !important; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding-top: 65px !important; 
+    margin-bottom: 10px !important; 
 }
 
 /* ================== COMPONENTES Y TARJETAS ================== */
@@ -119,8 +123,8 @@ input, textarea { user-select: auto; }
 
 /* ================== MENÚ FLOTANTE Y CABECERA ================== */
 .hero-logo-icon {
-    position: fixed; top: 15px; right: 15px; z-index: 9999; 
-    width: 50px; height: 50px; 
+    position: fixed; top: 12px; right: 12px; z-index: 9999; 
+    width: 48px; height: 48px; 
     border-radius: 12px; background: var(--ngc-glass); backdrop-filter: blur(15px);
     border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow);
     display: flex; justify-content: center; align-items: center; cursor: pointer;
@@ -128,7 +132,7 @@ input, textarea { user-select: auto; }
 .hero-logo-icon i { font-size: 1.4rem; color: var(--ngc-neon); }
 
 .dropdown-flotante-content {
-    position: absolute; top: 60px; right: 0; width: 190px;
+    position: absolute; top: 56px; right: 0; width: 190px;
     background: var(--bg-body); border: 2px solid var(--ngc-neon);
     border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.85); padding: 8px; z-index: 10000;
 }
@@ -139,15 +143,25 @@ input, textarea { user-select: auto; }
 
 /* ================== GRILLA DE MÓDULOS ================== */
 .ngc-button-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 8px; 
+    width: 100%;
 }
 
 .btn-module {
+    display: flex;
     flex-direction: column; 
-    height: 72px; padding: 8px 4px;
-    font-size: 0.65rem; text-align: center; font-weight: 600;
+    align-items: center;
+    justify-content: center;
+    height: 74px; 
+    padding: 6px 2px;
+    font-size: 0.65rem; 
+    text-align: center; 
+    font-weight: 600;
+    line-height: 1.1;
 }
-.btn-module i { font-size: 1.6rem; margin-bottom: 3px; }
+.btn-module i { font-size: 1.5rem; margin-bottom: 4px; }
 
 /* ================== MODAL DE CONFIGURACIÓN ================== */
 .theme-switch-wrapper { display: flex; background: var(--bg-body); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
@@ -189,20 +203,15 @@ input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon);
 .ngc-title { color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
 .hero-name { color: var(--ngc-neon); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }
 .ngc-footer-badge { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--success-green); color: var(--success-green); }
-.ngc-site-credits { font-size: 0.7rem; color: var(--ngc-text-faded); margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 100%; }
+.ngc-site-credits { font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: auto; padding-top: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 100%; }
 .ngc-site-credits span { color: var(--ngc-neon); font-weight: bold; }
 .error-text { margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--error-red); }
 
 .oculto { display: none !important; }
 .gpu-accel { backface-visibility: hidden; transform: translateZ(0); }
 
-/* ==========================================
-   CONTROL DE LOGO SPLASH SCREEN (TEMA DÍA/NOCHE)
-   ========================================== */
-/* Por defecto (Modo Oscuro): Muestra el logo blanco, oculta el negro */
+/* CONTROL DE LOGO SPLASH SCREEN */
 .logo-splash-oscuro { display: block; }
 .logo-splash-claro { display: none; }
-
-/* Cuando el modo es Claro: Oculta el logo blanco, muestra el negro */
 [data-theme="light"] .logo-splash-oscuro { display: none; }
 [data-theme="light"] .logo-splash-claro { display: block; }
