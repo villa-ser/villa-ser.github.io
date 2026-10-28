@@ -244,22 +244,55 @@ function abrirTerminos(desdeRegistro) {
 function cerrarTerminos() { document.getElementById('modalTerminos').classList.add('oculto'); }
 document.getElementById('modalTerminos').addEventListener('click', function(e) { if(e.target === this) cerrarTerminos(); });
 
-function guardarConfiguracion() {
+async function guardarConfiguracion() {
     const nombre = document.getElementById('confNombre').value.trim();
     const slogan = document.getElementById('confSlogan').value.trim();
     const telefono = document.getElementById('confTelefono').value.trim();
     const logoPreview = document.getElementById('logoPreview').src;
 
+    const user = auth.currentUser;
+    if (!user) {
+        alert("Sesión caducada. Inicia sesión nuevamente para guardar.");
+        return;
+    }
+
+    // 1. Guardar en LocalStorage para que el resto de la app siga funcionando sin tocar código
     localStorage.setItem('villaser_conf_nombre', nombre);
     localStorage.setItem('villaser_conf_slogan', slogan);
     localStorage.setItem('villaser_conf_telefono', telefono);
 
+    const perfilData = {
+        nombre: nombre,
+        slogan: slogan,
+        telefono: telefono
+    };
+
     if (logoPreview && logoPreview.startsWith('data:image')) {
         localStorage.setItem('villaser_conf_logo', logoPreview);
+        perfilData.logo = logoPreview;
     }
 
-    alert("¡Datos guardados correctamente!");
-    cerrarConfiguracion();
+    // 2. Guardar en Firebase (Nube)
+    try {
+        // Ponemos el botón en estado de carga (opcional pero profesional)
+        const btnGuardar = document.querySelector('#modalConfig .ngc-btn');
+        const txtOriginal = btnGuardar.innerHTML;
+        btnGuardar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+        btnGuardar.disabled = true;
+
+        await db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true });
+
+        // Restaurar botón
+        btnGuardar.innerHTML = txtOriginal;
+        btnGuardar.disabled = false;
+
+        alert("¡Datos guardados correctamente en tu cuenta de la nube!");
+        cerrarConfiguracion();
+    } catch (error) {
+        console.error("Error al guardar en Firebase:", error);
+        alert("Hubo un problema de red, pero los datos se guardaron localmente.");
+        cerrarConfiguracion();
+    }
 }
 
 // ==========================================
