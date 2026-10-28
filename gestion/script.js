@@ -244,7 +244,7 @@ function abrirTerminos(desdeRegistro) {
 function cerrarTerminos() { document.getElementById('modalTerminos').classList.add('oculto'); }
 document.getElementById('modalTerminos').addEventListener('click', function(e) { if(e.target === this) cerrarTerminos(); });
 
-async function guardarConfiguracion() {
+function guardarConfiguracion() {
     const nombre = document.getElementById('confNombre').value.trim();
     const slogan = document.getElementById('confSlogan').value.trim();
     const telefono = document.getElementById('confTelefono').value.trim();
@@ -256,7 +256,7 @@ async function guardarConfiguracion() {
         return;
     }
 
-    // 1. Guardar en LocalStorage para que el resto de la app siga funcionando sin tocar código
+    // 1. Guardar INMEDIATAMENTE en LocalStorage (La app reacciona al instante)
     localStorage.setItem('villaser_conf_nombre', nombre);
     localStorage.setItem('villaser_conf_slogan', slogan);
     localStorage.setItem('villaser_conf_telefono', telefono);
@@ -272,27 +272,19 @@ async function guardarConfiguracion() {
         perfilData.logo = logoPreview;
     }
 
-    // 2. Guardar en Firebase (Nube)
-    try {
-        // Ponemos el botón en estado de carga (opcional pero profesional)
-        const btnGuardar = document.querySelector('#modalConfig .ngc-btn');
-        const txtOriginal = btnGuardar.innerHTML;
-        btnGuardar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-        btnGuardar.disabled = true;
+    // 2. Cerramos el modal de inmediato y avisamos al usuario (Cero demoras)
+    alert("¡Datos guardados correctamente!");
+    cerrarConfiguracion();
 
-        await db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true });
-
-        // Restaurar botón
-        btnGuardar.innerHTML = txtOriginal;
-        btnGuardar.disabled = false;
-
-        alert("¡Datos guardados correctamente en tu cuenta de la nube!");
-        cerrarConfiguracion();
-    } catch (error) {
-        console.error("Error al guardar en Firebase:", error);
-        alert("Hubo un problema de red, pero los datos se guardaron localmente.");
-        cerrarConfiguracion();
-    }
+    // 3. Sincronizar con Firebase (Nube) EN SEGUNDO PLANO
+    // Si no hay buen internet ahora, Firebase lo subirá automáticamente cuando vuelva la señal.
+    db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
+        .then(() => {
+            console.log("Datos sincronizados en la nube exitosamente.");
+        })
+        .catch((error) => {
+            console.error("Error silencioso al sincronizar en la nube:", error);
+        });
 }
 
 // ==========================================
