@@ -16,10 +16,8 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <!-- AGREGA ESTA LÍNEA EXACTAMENTE AQUÍ -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-
     <!-- Script Inteligente de Tema -->
     <script>
         (function() {
@@ -34,16 +32,16 @@
 <body>
 
     <!-- PANTALLA DE CARGA (Splash Screen Profesional) -->
-<div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
-    <div class="splash-spinner-container">
-        <div class="splash-spinner"></div>
-        <!-- LOGO MODO OSCURO (Logo Blanco) -->
-        <img src="./icono512_blanco.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-oscuro">
-        <!-- LOGO MODO CLARO (Logo Negro) -->
-        <img src="./icono512.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-claro">
+    <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+        <div class="splash-spinner-container">
+            <div class="splash-spinner"></div>
+            <!-- LOGO MODO OSCURO (Logo Blanco) -->
+            <img src="./icono512_blanco.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-oscuro">
+            <!-- LOGO MODO CLARO (Logo Negro) -->
+            <img src="./icono512.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-claro">
+        </div>
+        <p style="margin-top: 25px; font-size: 0.8rem; font-weight: bold; color: var(--ngc-text-faded); letter-spacing: 2px; text-transform: uppercase; animation: pulse 2s infinite;">Cargando Sistema</p>
     </div>
-    <p style="margin-top: 25px; font-size: 0.8rem; font-weight: bold; color: var(--ngc-text-faded); letter-spacing: 2px; text-transform: uppercase; animation: pulse 2s infinite;">Cargando Sistema</p>
-</div>
 
     <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
     <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
@@ -210,4 +208,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+                        </html>
+                        
