@@ -12,7 +12,7 @@ let precioEditado = null;
 let contactosAgenda = []; 
 let totalMontoActual = 0; 
 
-// Controles de Nube (NUEVO FLUJO)
+// Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 
@@ -63,7 +63,6 @@ function setupEventListeners() {
 // INTEGRACIÓN AGENDA (FIREBASE)
 // ==========================================
 function marcarClienteManual() {
-    // Si el usuario edita el nombre a mano, asume que NO es de la agenda
     clienteDesdeAgenda = false;
     permiteGuardarNube = true; 
 }
@@ -124,7 +123,6 @@ function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre;
     document.getElementById('cliDireccion').value = dir;
     
-    // Habilitamos la nube porque el cliente viene de la agenda
     clienteDesdeAgenda = true;
     permiteGuardarNube = true; 
     
@@ -144,10 +142,9 @@ function iniciarPresupuesto() {
         return;
     }
     
-    // Validar si fue tipeado manualmente o traído de agenda
     if (!clienteDesdeAgenda) {
         document.getElementById('modalAgendarCliente').classList.remove('oculto');
-        return; // Pausamos el inicio hasta que decida
+        return; 
     }
     
     avanzarPasoTrabajo();
@@ -160,7 +157,7 @@ function opcionBuscarAgenda() {
 
 function opcionContinuarSinAgenda() {
     if (confirm("⚠️ AVISO: Al no estar en tu agenda, este presupuesto NO podrá guardarse en la nube (solo podrás descargar el PDF o Imagen).\n\n¿Estás seguro de continuar?")) {
-        permiteGuardarNube = false; // Bloqueamos la función de guardado Firebase
+        permiteGuardarNube = false; 
         document.getElementById('modalAgendarCliente').classList.add('oculto');
         avanzarPasoTrabajo();
     }
@@ -180,7 +177,6 @@ function avanzarPasoTrabajo() {
 function guardarBorradorFirebase(mostrarAlerta = false) {
     if (!currentUserUid) return;
     
-    // Si el usuario continuó sin agendar, bloqueamos el guardado
     if (!permiteGuardarNube) {
         if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado, por lo que no es posible guardarlo en la nube.");
         return;
@@ -284,7 +280,6 @@ function cargarBorradorNube(docId) {
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
-            // Al venir de la nube, sabemos que es un cliente agendado y válido
             data.clienteDesdeAgenda = true;
             data.permiteGuardarNube = true;
 
@@ -311,7 +306,6 @@ function eliminarBorradorNube(docId, btnElement) {
 // MEMORIA LOCAL Y TOAST
 // ==========================================
 function inicializarClienteMemoria() {
-    // Ya no hay alerta al iniciar. Simplemente recupera el borrador en progreso si lo había.
     cargarEstadoGuardado();
 }
 
@@ -364,7 +358,6 @@ function nuevoPresupuesto() {
         listaItems = [];
         nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
         
-        // Reset flags para nuevo cliente
         clienteDesdeAgenda = false;
         permiteGuardarNube = true;
         
@@ -620,7 +613,6 @@ async function generarPDF() {
     if (listaItems.length === 0) return alert("Agregá trabajos para generar el PDF.");
     sincronizarVistaPreviaPDF();
 
-    // Guardado de seguridad oculto
     if(permiteGuardarNube) { guardarBorradorFirebase(false); }
 
     const element = document.getElementById('plantilla-pdf');
