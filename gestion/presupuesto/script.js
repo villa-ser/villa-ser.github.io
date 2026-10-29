@@ -152,26 +152,59 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
 }
 
 function abrirModalBorradores() {
-    document.getElementById('modalBorradores').classList.remove('oculto');
-    const contenedor = document.getElementById('listaBorradores');
-    contenedor.innerHTML = '<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando en la nube...</div>';
+    const nombreClienteActual = document.getElementById('cliNombre').value.trim();
     
+    // 1. Validar que haya un cliente seleccionado
+    if (!nombreClienteActual) {
+        alert("⚠️ Primero ingresá o seleccioná el Nombre del Cliente en 'Datos del Proyecto' para buscar sus borradores.");
+        document.getElementById('cliNombre').focus();
+        return;
+    }
+
+    const modal = document.getElementById('modalBorradores');
+    modal.classList.remove('oculto');
+    
+    // 2. Hacer explícito el título del módulo dinámicamente
+    const tituloModal = modal.querySelector('h3, h4, strong'); 
+    if (tituloModal) {
+        tituloModal.innerHTML = '<i class="fa-solid fa-cloud"></i> BORRADORES DE PRESUPUESTO';
+    }
+
+    const contenedor = document.getElementById('listaBorradores');
+    
+    // 3. Splash Screen / Pantalla de carga con altura fija (evita que se enangoste la pantalla)
+    contenedor.innerHTML = `
+        <div style="min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #e91e63; text-align: center;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+            <span style="font-size: 0.95rem; font-weight: bold;">Buscando borradores de<br><span style="color:var(--ngc-text-main)">${nombreClienteActual}</span>...</span>
+        </div>
+    `;
+    
+    // 4. Filtrar en la nube SOLAMENTE los borradores del cliente cargado
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos")
-      .orderBy("fechaGuardado", "desc")
+      .where("cliNombre", "==", nombreClienteActual)
       .get()
       .then((snapshot) => {
           contenedor.innerHTML = '';
           if (snapshot.empty) {
-              contenedor.innerHTML = "<p style='color:var(--ngc-text-faded); text-align:center;'>No tienes borradores guardados.</p>";
+              contenedor.innerHTML = `
+                  <div style="min-height: 120px; display: flex; justify-content: center; align-items: center;">
+                      <p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores de presupuesto guardados en la nube para <b>${nombreClienteActual}</b>.</p>
+                  </div>`;
               return;
           }
           
-          snapshot.forEach((doc) => {
-              let p = doc.data();
-              const fechaStr = new Date(p.fechaGuardado).toLocaleDateString('es-AR', {day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'});
+          // Ordenamos por fecha en la memoria del navegador para evitar pedirte crear índices en Firebase
+          let borradores = [];
+          snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
+          borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
+          
+          borradores.forEach((b) => {
+              let p = b.data;
+              const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString('es-AR', {day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'}) : 'Sin fecha';
               
               const div = document.createElement('div');
-              div.style.cssText = "background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-left: 3px solid #e91e63; padding: 12px; border-radius: 8px;";
+              div.style.cssText = "background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-left: 3px solid #e91e63; padding: 12px; border-radius: 8px; margin-bottom: 10px;";
               div.innerHTML = `
                   <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                       <strong style="color: var(--ngc-text-main); font-size: 0.95rem;">${p.cliNombre || 'Sin Nombre'}</strong>
@@ -182,8 +215,8 @@ function abrirModalBorradores() {
                       Última vez: ${fechaStr}
                   </div>
                   <div style="display: flex; gap: 8px;">
-                      <button class="ngc-btn-small" style="flex:1; border: 1px solid #e91e63; color: #e91e63; background: rgba(233, 30, 99, 0.1);" onclick="cargarBorradorNube('${doc.id}')">Abrir</button>
-                      <button class="ngc-btn-small" style="border: 1px solid var(--error-red); color: var(--error-red); background: transparent;" onclick="eliminarBorradorNube('${doc.id}', this)"><i class="fa-solid fa-trash"></i></button>
+                      <button class="ngc-btn-small" style="flex:1; border: 1px solid #e91e63; color: #e91e63; background: rgba(233, 30, 99, 0.1);" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                      <button class="ngc-btn-small" style="border: 1px solid var(--error-red); color: var(--error-red); background: transparent;" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
                   </div>
               `;
               contenedor.appendChild(div);
@@ -191,7 +224,7 @@ function abrirModalBorradores() {
       })
       .catch((error) => {
           console.error("Error al cargar borradores:", error);
-          contenedor.innerHTML = "<p style='color:var(--error-red); text-align:center;'>Error al conectar con la nube.</p>";
+          contenedor.innerHTML = "<div style='min-height: 120px; display: flex; justify-content: center; align-items: center;'><p style='color:var(--error-red); text-align:center;'>Error al conectar con la nube.</p></div>";
       });
 }
 
