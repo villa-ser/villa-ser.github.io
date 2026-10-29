@@ -8,7 +8,8 @@ function initAgenda() {
 }
 
 function cargarContactos() {
-    db.collection("usuarios").doc(currentUserUid).collection("contactos")
+    // Apuntamos a la base de datos coincidiendo con tus reglas de Firestore (perfiles)
+    db.collection("perfiles").doc(currentUserUid).collection("contactos")
       .orderBy("timestamp", "desc")
       .onSnapshot((querySnapshot) => {
           contactosArray = [];
@@ -21,10 +22,8 @@ function cargarContactos() {
           renderizarContactos();
       }, (error) => {
           console.error("Error obteniendo contactos: ", error);
-          
-          // ALERTA INTELIGENTE DE PERMISOS
           if (error.code === 'permission-denied') {
-              document.getElementById('loaderAgenda').innerHTML = '<div style="color:var(--error-red); padding: 15px; border: 1px dashed var(--error-red); border-radius: 8px; font-size: 0.9rem;">⚠️ <strong>Faltan Permisos de Firebase</strong><br><br>Ve a Firebase Console > Firestore Database > Rules y pega las reglas de seguridad.</div>';
+              document.getElementById('loaderAgenda').innerHTML = '<div style="color:var(--error-red); padding: 15px; border: 1px dashed var(--error-red); border-radius: 8px; font-size: 0.9rem;">⚠️ <strong>Faltan Permisos de Firebase</strong><br><br>Ve a Firebase Console > Firestore Database > Rules y pega las nuevas reglas.</div>';
           } else {
               document.getElementById('loaderAgenda').innerHTML = '<p style="color:var(--error-red);">Error al cargar agenda.</p>';
           }
@@ -59,7 +58,7 @@ function renderizarContactos() {
         div.className = 'contacto-card gpu-accel';
         div.onclick = () => abrirDetalle(c.id);
         
-        const codigoID = c.id.substring(0, 6).toUpperCase(); // Código autogenerado corto
+        const codigoID = c.id.substring(0, 6).toUpperCase(); 
         
         div.innerHTML = `
             <div class="contacto-info">
@@ -115,8 +114,8 @@ function guardarContacto() {
         return;
     }
 
-    const docRef = id ? db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(id) 
-                      : db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(); 
+    const docRef = id ? db.collection("perfiles").doc(currentUserUid).collection("contactos").doc(id) 
+                      : db.collection("perfiles").doc(currentUserUid).collection("contactos").doc(); 
 
     if(id) delete data.timestamp; 
 
@@ -147,58 +146,42 @@ function abrirDetalle(id) {
     document.getElementById('btnWts').disabled = !c.tel;
     document.getElementById('btnWts').style.opacity = c.tel ? '1' : '0.4';
     
-    buscarBorradoresRelacionados(c.nombre);
+    buscarBorradoresActivos(c.nombre);
 
     document.getElementById('modalDetalle').classList.remove('oculto');
 }
 
-// Escanea los borradores JSON locales creados por los otros módulos
-function buscarBorradoresRelacionados(nombreContacto) {
+// Escanea la memoria global (LocalStorage) para buscar trabajos en curso
+function buscarBorradoresActivos(nombreContacto) {
     const contenedor = document.getElementById('detHistorial');
     contenedor.innerHTML = '';
     let hayBorradores = false;
     const nombreClean = nombreContacto.toLowerCase().trim();
 
-    // 1. Escanear Presupuestos
     try {
-        const pres = localStorage.getItem('presupuesto_estado_actual');
-        if (pres) {
-            const pData = JSON.parse(pres);
-            if (pData.cliNombre && pData.cliNombre.toLowerCase().trim() === nombreClean) {
+        const guardado = localStorage.getItem('villaser_cliente_global');
+        if (guardado) {
+            const datos = JSON.parse(guardado);
+            if (datos.nombre && datos.nombre.toLowerCase().trim() === nombreClean) {
                 hayBorradores = true;
                 contenedor.innerHTML += `
-                    <div style="background: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--ngc-neon); padding: 8px; border-radius: 4px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-file-invoice-dollar" style="color: var(--ngc-neon);"></i> 
-                        Presupuesto Pendiente (${pData.items ? pData.items.length : 0} ítems)
-                    </div>`;
-            }
-        }
-    } catch(e) {}
-
-    // 2. Escanear Materiales
-    try {
-        const mat = localStorage.getItem('materiales_estado_actual');
-        if (mat) {
-            const mData = JSON.parse(mat);
-            if (mData.cliNombre && mData.cliNombre.toLowerCase().trim() === nombreClean) {
-                hayBorradores = true;
-                contenedor.innerHTML += `
-                    <div style="background: rgba(40, 167, 69, 0.1); border-left: 3px solid var(--success-green); padding: 8px; border-radius: 4px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-list-check" style="color: var(--success-green);"></i> 
-                        Materiales Solicitados (${mData.items ? mData.items.length : 0} ítems)
+                    <div style="background: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--ngc-neon); padding: 10px; border-radius: 4px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-file-signature" style="color: var(--ngc-neon);"></i> 
+                        <strong>Borrador Activo en Memoria</strong><br>
+                        <span style="color: var(--ngc-text-faded); font-size: 0.75rem; display: block; margin-top: 4px;">Este cliente está actualmente cargado en el sistema. Puedes ir a Presupuestos, Materiales o Informes para continuar editando sus datos o generar sus PDFs.</span>
                     </div>`;
             }
         }
     } catch(e) {}
 
     if (!hayBorradores) {
-        contenedor.innerHTML = '<span style="color: var(--ngc-text-faded); font-size: 0.8rem; font-style: italic;">No hay borradores activos para este cliente.</span>';
+        contenedor.innerHTML = '<span style="color: var(--ngc-text-faded); font-size: 0.8rem; font-style: italic;">No hay trabajos activos en memoria para este cliente.</span>';
     }
 }
 
 function eliminarContacto() {
     if (confirm("¿Estás seguro de que deseas eliminar este contacto?")) {
-        db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(contactoSeleccionado).delete()
+        db.collection("perfiles").doc(currentUserUid).collection("contactos").doc(contactoSeleccionado).delete()
         .then(() => {
             mostrarToast("Eliminado", "El contacto fue borrado permanentemente.");
             cerrarModal('modalDetalle');
@@ -238,5 +221,4 @@ function mostrarToast(titulo, mensaje) {
 
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) event.target.classList.add('oculto');
-                }
-            
+}
