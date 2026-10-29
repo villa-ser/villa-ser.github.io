@@ -9,8 +9,8 @@ let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
 
 let conceptoEditado = null;
 let precioEditado = null;
-let contactosAgenda = []; // Para el buscador
-let totalMontoActual = 0; // Para guardar en metadatos
+let contactosAgenda = []; 
+let totalMontoActual = 0; 
 
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
@@ -20,8 +20,8 @@ const selConcepto = document.getElementById('selConcepto');
 // ==========================================
 function initAppFirestore() {
     db = firebase.firestore();
-    cargarClienteGlobal(); 
-    cargarEstadoGuardado(); 
+    // Corrección: Esta función gestiona tanto la memoria global como los guardados locales
+    inicializarClienteMemoria(); 
     fetchData();
 }
 
@@ -63,7 +63,6 @@ function abrirModalAgenda() {
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
-    // Descargar contactos desde Firebase
     db.collection("perfiles").doc(currentUserUid).collection("contactos")
       .orderBy("nombre")
       .get()
@@ -117,7 +116,6 @@ function filtrarAgenda() {
 function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre;
     document.getElementById('cliDireccion').value = dir;
-    // Proyecto se deja manual como pediste
     guardarClienteGlobal();
     cerrarModalAgenda();
     mostrarToast("Cliente Seleccionado", "Datos de agenda importados.");
@@ -144,8 +142,6 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
         fechaGuardado: Date.now()
     };
     
-    // Guardamos usando un ID fijo basado en el cliente, o uno genérico si no hay nombre. 
-    // Así un cliente puede tener 1 presupuesto en borrador activo sin llenar la base de datos de basura.
     let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
 
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).set(estado)
@@ -248,8 +244,8 @@ function inicializarClienteMemoria() {
 
 function usarClienteMemoria() {
     document.getElementById('cliNombre').value = window.clienteTemporal.nombre || '';
-    document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || '';
-    document.getElementById('cliProyecto').value = window.clienteTemporal.proyecto || '';
+    document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || window.clienteTemporal.dir || '';
+    document.getElementById('cliProyecto').value = window.clienteTemporal.proyecto || window.clienteTemporal.obs || '';
     guardarClienteGlobal();
     document.getElementById('modalRecuperarCliente').classList.add('oculto');
 }
@@ -567,7 +563,6 @@ async function generarPDF() {
     if (listaItems.length === 0) return alert("Agregá trabajos para generar el PDF.");
     sincronizarVistaPreviaPDF();
 
-    // Guardado Automático como Borrador en la Nube antes del PDF
     guardarBorradorFirebase(false);
 
     const element = document.getElementById('plantilla-pdf');
@@ -601,4 +596,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-        }
+                                                        }
