@@ -12,7 +12,7 @@ let precioEditado = null;
 let contactosAgenda = []; 
 let totalMontoActual = 0; 
 
-// Controles de Nube (Flujo Cliente Agendado)
+// Controles de Nube
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 let uidSeguro = null;
@@ -21,23 +21,32 @@ const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN (MOTOR BLINDADO Y FLEXIBLE)
+// INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
 // ==========================================
 function arrancarModulo() {
-    if (typeof firebase !== 'undefined') {
-        try { db = firebase.firestore(); } catch(e) {}
-        
-        // Atrapa la sesión apenas Firebase la confirma
-        if (firebase.auth) {
-            firebase.auth().onAuthStateChanged(user => {
-                if (user) {
-                    uidSeguro = user.uid;
-                    if (!db) db = firebase.firestore();
-                }
-            });
+    // 1. Intento seguro de Firebase (Si falla, se omite y la app sigue funcionando)
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            db = firebase.firestore();
+            if (typeof firebase.auth === 'function') {
+                firebase.auth().onAuthStateChanged(user => {
+                    if (user) uidSeguro = user.uid;
+                });
+            }
         }
+    } catch (e) {
+        console.warn("Aviso: Firebase no pudo iniciar, funcionando en modo local.", e);
     }
-    inicializarClienteMemoria(); 
+
+    // 2. Intento seguro de Memoria (Si hay un archivo roto, lo resetea sin trabarse)
+    try {
+        inicializarClienteMemoria();
+    } catch (e) {
+        console.warn("Aviso: Memoria local reseteada por datos corruptos.");
+        localStorage.removeItem('presupuesto_estado_actual');
+    }
+
+    // 3. Descarga de Google Sheets obligatoria
     fetchData();
 }
 
@@ -47,10 +56,12 @@ if (document.readyState === 'loading') {
     arrancarModulo();
 }
 
-// Función infalible para obtener el usuario sin que tire error
+// ==========================================
+// DESCARGA Y RENDERIZADO
+// ==========================================
 function obtenerUid() {
     if (uidSeguro) return uidSeguro;
-    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+    if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
         return firebase.auth().currentUser.uid;
     }
     if (typeof currentUserUid !== 'undefined' && currentUserUid) return currentUserUid;
@@ -102,32 +113,27 @@ function marcarClienteManual() {
 
 function abrirModalAgenda() {
     const uid = obtenerUid();
-    if (!uid) {
-        alert("⚠️ Aguardá un segundo a que cargue la sesión o verificá estar logueado.");
+    if (!uid || !db) {
+        alert("⚠️ No hay sesión detectada o falta inicializar Firebase en este módulo html.");
         return;
     }
-    if (!db) db = firebase.firestore();
 
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
     db.collection("perfiles").doc(uid).collection("contactos")
-      .orderBy("nombre")
-      .get()
+      .orderBy("nombre").get()
       .then((snapshot) => {
           contactosAgenda = [];
           snapshot.forEach((doc) => { contactosAgenda.push(doc.data()); });
           filtrarAgenda();
       })
       .catch((error) => {
-          console.error("Error al cargar agenda:", error);
           document.getElementById('listaAgenda').innerHTML = "<p style='color:var(--error-red); text-align:center;'>Error al cargar contactos.</p>";
       });
 }
 
-function cerrarModalAgenda() {
-    document.getElementById('modalAgenda').classList.add('oculto');
-}
+function cerrarModalAgenda() { document.getElementById('modalAgenda').classList.add('oculto'); }
 
 function filtrarAgenda() {
     const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
@@ -162,17 +168,15 @@ function filtrarAgenda() {
 function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre;
     document.getElementById('cliDireccion').value = dir;
-    
     clienteDesdeAgenda = true;
     permiteGuardarNube = true; 
-    
     guardarClienteGlobal();
     cerrarModalAgenda();
     mostrarToast("Cliente Seleccionado", "Datos de agenda importados.");
 }
 
 // ==========================================
-// CONTROL DE FLUJO: AGENDAR NUEVO CLIENTE
+// CONTROL DE FLUJO
 // ==========================================
 function iniciarPresupuesto() {
     const nombre = document.getElementById('cliNombre').value.trim();
@@ -181,12 +185,10 @@ function iniciarPresupuesto() {
         document.getElementById('cliNombre').focus();
         return;
     }
-    
     if (!clienteDesdeAgenda) {
         document.getElementById('modalAgendarCliente').classList.remove('oculto');
         return; 
     }
-    
     avanzarPasoTrabajo();
 }
 
@@ -212,25 +214,19 @@ function avanzarPasoTrabajo() {
 }
 
 // ==========================================
-// BORRADORES EN LA NUBE (FIREBASE)
+// NUBE (FIREBASE)
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false) {
     const uid = obtenerUid();
-    if (!uid) {
-        if (mostrarAlerta) alert("⚠️ Sesión no detectada. Verificá tu conexión para guardar en la nube.");
+    if (!uid || !db) {
+        if (mostrarAlerta) alert("⚠️ Sesión no detectada para la nube.");
         return;
     }
-    if (!db) db = firebase.firestore();
-    
     if (!permiteGuardarNube) {
         if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado.");
         return;
     }
-
-    if (listaItems.length === 0 && !document.getElementById('cliNombre').value) {
-        if (mostrarAlerta) alert("El presupuesto está vacío. No hay nada que guardar.");
-        return;
-    }
+    if (listaItems.length === 0 && !document.getElementById('cliNombre').value) return;
     
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
@@ -244,105 +240,75 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
     };
     
     let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
-
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).set(estado)
-    .then(() => {
-        if (mostrarAlerta) mostrarToast("Borrador Guardado", "Se sincronizó con tu cuenta en la nube.");
-    })
-    .catch((error) => console.error("Error guardando en la nube: ", error));
+      .then(() => { if (mostrarAlerta) mostrarToast("Borrador Guardado", "Sincronizado con tu cuenta."); })
+      .catch((error) => console.error("Error guardando en la nube: ", error));
 }
 
 function abrirModalBorradores() {
     const uid = obtenerUid();
-    if (!uid) {
-        alert("⚠️ Sesión no detectada. Aguardá unos segundos o vuelve a iniciar sesión.");
+    if (!uid || !db) {
+        alert("⚠️ Sesión no detectada.");
         return;
     }
-    if (!db) db = firebase.firestore();
-
     const nombreClienteActual = document.getElementById('cliNombre').value.trim();
     if (!nombreClienteActual) {
-        alert("⚠️ Primero ingresá o seleccioná el Nombre del Cliente en 'Datos del Proyecto' para buscar sus borradores.");
+        alert("⚠️ Primero ingresá el Nombre del Cliente para buscar sus borradores.");
         document.getElementById('cliNombre').focus();
         return;
     }
 
     const modal = document.getElementById('modalBorradores');
     modal.classList.remove('oculto');
-    
     const contenedor = document.getElementById('listaBorradores');
-    contenedor.innerHTML = `
-        <div style="min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #e91e63; text-align: center;">
-            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
-            <span style="font-size: 0.95rem; font-weight: bold;">Buscando borradores de<br><span style="color:var(--ngc-text-main)">${nombreClienteActual}</span>...</span>
-        </div>
-    `;
+    contenedor.innerHTML = `<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando borradores...</div>`;
     
     db.collection("perfiles").doc(uid).collection("presupuestos")
-      .where("cliNombre", "==", nombreClienteActual)
-      .get()
+      .where("cliNombre", "==", nombreClienteActual).get()
       .then((snapshot) => {
           contenedor.innerHTML = '';
           if (snapshot.empty) {
-              contenedor.innerHTML = `
-                  <div style="min-height: 120px; display: flex; justify-content: center; align-items: center;">
-                      <p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores de presupuesto guardados en la nube para <b>${nombreClienteActual}</b>.</p>
-                  </div>`;
+              contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores guardados.</p>`;
               return;
           }
-          
           let borradores = [];
           snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
           borradores.forEach((b) => {
               let p = b.data;
-              const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString('es-AR', {day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'}) : 'Sin fecha';
-              
+              const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString() : 'Sin fecha';
               const div = document.createElement('div');
-              div.style.cssText = "background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-left: 3px solid #e91e63; padding: 12px; border-radius: 8px; margin-bottom: 10px;";
+              div.style.cssText = "background: var(--ngc-bg-input); border-left: 3px solid #e91e63; padding: 12px; margin-bottom: 10px;";
               div.innerHTML = `
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                      <strong style="color: var(--ngc-text-main); font-size: 0.95rem;">${p.cliNombre || 'Sin Nombre'}</strong>
-                      <span style="color: var(--success-green); font-weight: bold; font-size: 0.85rem;">$${(p.totalMonto || 0).toLocaleString('es-AR')}</span>
+                  <div style="display: flex; justify-content: space-between;">
+                      <strong style="color: var(--ngc-text-main);">${p.cliNombre || 'Sin Nombre'}</strong>
+                      <span style="color: var(--success-green);">$${(p.totalMonto || 0).toLocaleString('es-AR')}</span>
                   </div>
-                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-bottom: 10px;">
-                      Proyecto: ${p.cliProyecto || '-'}<br>
-                      Última vez: ${fechaStr}
-                  </div>
+                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-bottom: 10px;">Última vez: ${fechaStr}</div>
                   <div style="display: flex; gap: 8px;">
-                      <button class="ngc-btn-small" style="flex:1; border: 1px solid #e91e63; color: #e91e63; background: rgba(233, 30, 99, 0.1);" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
-                      <button class="ngc-btn-small" style="border: 1px solid var(--error-red); color: var(--error-red); background: transparent;" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
+                      <button class="ngc-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                      <button class="ngc-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
                   </div>
               `;
               contenedor.appendChild(div);
           });
-      })
-      .catch((error) => {
-          console.error("Error al cargar borradores:", error);
-          contenedor.innerHTML = "<div style='min-height: 120px; display: flex; justify-content: center; align-items: center;'><p style='color:var(--error-red); text-align:center;'>Error al conectar con la nube.</p></div>";
       });
 }
 
-function cerrarModalBorradores() {
-    document.getElementById('modalBorradores').classList.add('oculto');
-}
+function cerrarModalBorradores() { document.getElementById('modalBorradores').classList.add('oculto'); }
 
 function cargarBorradorNube(docId) {
     const uid = obtenerUid();
-    if (!uid) return;
-    if (!db) db = firebase.firestore();
-
+    if (!uid || !db) return;
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
             data.clienteDesdeAgenda = true;
             data.permiteGuardarNube = true;
-
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
             guardarClienteGlobal();
-            
             avanzarPasoTrabajo();
             cerrarModalBorradores();
             mostrarToast("Borrador Abierto", "Los datos han sido cargados.");
@@ -352,10 +318,8 @@ function cargarBorradorNube(docId) {
 
 function eliminarBorradorNube(docId, btnElement) {
     const uid = obtenerUid();
-    if (!uid) return;
-    if (!db) db = firebase.firestore();
-
-    if (confirm("¿Estás seguro de eliminar este borrador de la nube?")) {
+    if (!uid || !db) return;
+    if (confirm("¿Eliminar este borrador de la nube?")) {
         db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).delete().then(() => {
             btnElement.closest('div').parentElement.remove();
         });
@@ -365,9 +329,7 @@ function eliminarBorradorNube(docId, btnElement) {
 // ==========================================
 // MEMORIA LOCAL Y TOAST
 // ==========================================
-function inicializarClienteMemoria() {
-    cargarEstadoGuardado();
-}
+function inicializarClienteMemoria() { cargarEstadoGuardado(); }
 
 function guardarClienteGlobal() {
     const clienteObj = {
@@ -397,33 +359,29 @@ function cargarEstadoGuardado() {
     const estadoStr = localStorage.getItem('presupuesto_estado_actual');
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
-        if (estado.cliNombre && document.getElementById('cliNombre')) document.getElementById('cliNombre').value = estado.cliNombre;
-        if (estado.cliDireccion && document.getElementById('cliDireccion')) document.getElementById('cliDireccion').value = estado.cliDireccion;
-        if (estado.cliProyecto && document.getElementById('cliProyecto')) document.getElementById('cliProyecto').value = estado.cliProyecto;
-        if (estado.obsGenerales && document.getElementById('obsGenerales')) document.getElementById('obsGenerales').value = estado.obsGenerales;
+        if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
+        if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
+        if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
+        if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
         listaItems = estado.items || [];
         if (estado.nro) nroPresupuestoGlobal = estado.nro;
-        
         if (estado.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = estado.clienteDesdeAgenda;
         if (estado.permiteGuardarNube !== undefined) permiteGuardarNube = estado.permiteGuardarNube;
     }
 }
 
 function nuevoPresupuesto() {
-    if(confirm("¿Estás seguro de iniciar un nuevo presupuesto? Se borrará el borrador local actual.")) {
+    if(confirm("¿Iniciar nuevo presupuesto?")) {
         document.getElementById('cliNombre').value = '';
         document.getElementById('cliDireccion').value = '';
         document.getElementById('cliProyecto').value = '';
         document.getElementById('obsGenerales').value = '';
         listaItems = [];
         nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
-        
         clienteDesdeAgenda = false;
         permiteGuardarNube = true;
-        
         guardarEstadoLocal();
         guardarClienteGlobal();
-        
         document.getElementById('step-trabajo').classList.add('oculto');
         document.getElementById('step-cliente').classList.remove('oculto');
         renderTabla();
@@ -435,9 +393,7 @@ function mostrarToast(titulo, mensaje) {
     const msgEl = document.getElementById('toastMessage');
     const toast = document.getElementById('toastCliente');
     if (!titleEl || !msgEl || !toast) return;
-    
-    titleEl.innerText = titulo;
-    msgEl.innerText = mensaje;
+    titleEl.innerText = titulo; msgEl.innerText = mensaje;
     toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 100);
     setTimeout(() => {
@@ -447,11 +403,10 @@ function mostrarToast(titulo, mensaje) {
 }
 
 // ==========================================
-// FUNCIONES DE ÍTEMS Y CÁLCULOS
+// ÍTEMS Y CÁLCULOS
 // ==========================================
 function step(id, val) { 
-    const el = document.getElementById(id); 
-    if(!el) return;
+    const el = document.getElementById(id); if(!el) return;
     let newValue = parseInt(el.value || 0) + val;
     el.value = Math.max(el.min ? parseInt(el.min) : 0, newValue); 
 }
@@ -491,7 +446,6 @@ function cargarDetallePrecios() {
     const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); 
     const inputObs = document.getElementById('obsManual');
     limpiarEdicionesTemporales();
-    
     if(item) { 
         document.getElementById('unitarioLabel').innerText = `Unit: $ ${item.precio.toLocaleString('es-AR')}`; 
         inputObs.value = item.notas; notasOriginales = item.notas; inputObs.readOnly = true; 
@@ -506,7 +460,7 @@ function editarConceptoTemporal() {
     const itemActual = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
     if (!itemActual) return;
     const valorBase = conceptoEditado !== null ? conceptoEditado : itemActual.concepto;
-    const nuevoTexto = prompt("Editar nombre del trabajo:", valorBase);
+    const nuevoTexto = prompt("Editar nombre:", valorBase);
     if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
         conceptoEditado = nuevoTexto.trim(); document.getElementById('badgeConcepto').style.display = 'block';
     }
@@ -516,7 +470,7 @@ function editarPrecioTemporal() {
     const itemActual = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
     if (!itemActual) return;
     const valorBase = precioEditado !== null ? precioEditado : itemActual.precio;
-    const nuevoPrecioStr = prompt("Editar precio unitario:", valorBase);
+    const nuevoPrecioStr = prompt("Editar precio:", valorBase);
     if (nuevoPrecioStr !== null) {
         const nuevoPrecio = parseFloat(nuevoPrecioStr.replace(/[^0-9.,]/g, '').replace(',', '.'));
         if (!isNaN(nuevoPrecio)) {
@@ -533,7 +487,7 @@ function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
 
 function agregarTrabajo() {
     const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
-    if(!itemOriginal) { alert("Seleccione un trabajo para agregar."); return; }
+    if(!itemOriginal) { alert("Seleccione un trabajo."); return; }
     
     const finalConcepto = conceptoEditado !== null ? conceptoEditado : itemOriginal.concepto;
     const finalPrecio = precioEditado !== null ? precioEditado : itemOriginal.precio;
@@ -542,12 +496,10 @@ function agregarTrabajo() {
     const finalTotal = (finalPrecio * qty) * (1 - desc / 100);
           
     listaItems.push({ id: Date.now(), concepto: finalConcepto, obs: document.getElementById('obsManual').value, qty, total: finalTotal, unitario: finalPrecio, desc });
-    
     guardarEstadoLocal(); renderTabla(); 
     
     document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; document.getElementById('porcentajeDesc').value = 0;
-    selConcepto.value = ""; 
-    limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
+    selConcepto.value = ""; limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
 // ==========================================
@@ -712,4 +664,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-                               }
+                                                                                                     }
