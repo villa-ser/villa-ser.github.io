@@ -20,12 +20,23 @@ const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN (EL MOTOR DE ARRANQUE)
 // ==========================================
-function initAppFirestore() {
-    db = firebase.firestore();
+window.onload = () => {
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+        db = firebase.firestore();
+    }
     inicializarClienteMemoria(); 
     fetchData();
+};
+
+function initAppFirestore() {
+    // Por si tu archivo firebase-config.js usa este nombre para arrancar
+    if (!db && typeof firebase !== 'undefined' && firebase.firestore) {
+        db = firebase.firestore();
+        inicializarClienteMemoria(); 
+        fetchData();
+    }
 }
 
 async function fetchData() {
@@ -646,4 +657,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-                       }
+                     }
