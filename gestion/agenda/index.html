@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212">
+    
+    <title>Villaser - Agenda de Contactos</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+    </script>
+
+    <!-- SDKs de Firebase (Auth y Firestore) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Guardián de Seguridad -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+            authDomain: "villaser-gestion.firebaseapp.com",
+            projectId: "villaser-gestion",
+            storageBucket: "villaser-gestion.firebasestorage.app",
+            messagingSenderId: "1032102638132",
+            appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        
+        let currentUserUid = null;
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user || !user.emailVerified) {
+                window.location.replace('../index.html'); 
+            } else {
+                currentUserUid = user.uid;
+                // Iniciamos la carga de contactos cuando sabemos quién es el usuario
+                if(typeof initAgenda === 'function') initAgenda();
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toastAgenda" class="ngc-toast oculto gpu-accel">
+        <i id="toastIcon" class="fa-solid fa-check-circle"></i>
+        <div class="toast-content">
+            <strong id="toastTitle">Acción Exitosa</strong>
+            <p id="toastMessage">El contacto ha sido guardado.</p>
+        </div>
+    </div>
+
+    <div class="layout-wrapper">
+        <main class="container">
+            
+            <!-- BARRA DE NAVEGACIÓN -->
+            <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                    <i class="fa-solid fa-arrow-left"></i> Menú
+                </button>
+                <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                    <i class="fa-solid fa-address-book"></i> Mi Agenda
+                </div>
+                <button class="ngc-btn-icon" onclick="abrirModalFormulario()" title="Nuevo Contacto" style="color: var(--success-green); border-color: var(--success-green);">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </nav>
+
+            <!-- CONTROLES DE BÚSQUEDA Y ORDEN -->
+            <section class="ngc-card gpu-accel" style="margin-bottom: 20px; padding: 15px;">
+                <div class="search-bar-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="buscador" class="ngc-input search-input" placeholder="Buscar por nombre, dirección o teléfono..." oninput="filtrarContactos()">
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                    <select id="ordenador" class="ngc-input" style="width: auto; padding: 8px; font-size: 0.8rem;" onchange="renderizarContactos()">
+                        <option value="recientes">Más recientes primero</option>
+                        <option value="antiguos">Más antiguos primero</option>
+                        <option value="az">Alfabético (A-Z)</option>
+                        <option value="za">Alfabético (Z-A)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- LISTADO DE CONTACTOS -->
+            <section id="listaContactos" class="flex-column gap-15">
+                <!-- Se inyectan mediante JS -->
+                <div id="loaderAgenda" style="text-align: center; color: var(--ngc-neon); padding: 20px;">
+                    <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                    <p style="margin-top: 10px; font-size: 0.8rem;">Cargando contactos...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL FORMULARIO (NUEVO / EDITAR) -->
+    <div id="modalFormulario" class="modal-overlay oculto">
+        <div class="ngc-privacy-card modal-content gpu-accel">
+            <button onclick="cerrarModal('modalFormulario')" class="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="formTitle" class="modal-title"><i class="fa-solid fa-user-plus"></i> Nuevo Contacto</h3>
+            
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <input type="hidden" id="contactoId">
+                
+                <div class="form-group">
+                    <label>Nombre / Empresa *</label>
+                    <input type="text" id="formNombre" class="ngc-input" placeholder="Ej: Familia Gómez">
+                </div>
+                
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="formDir" class="ngc-input" placeholder="Ej: San Martín 123, B° Centro">
+                </div>
+                
+                <div class="form-group">
+                    <label>Teléfono (WhatsApp)</label>
+                    <input type="tel" id="formTel" class="ngc-input" placeholder="Ej: 3511234567">
+                </div>
+                
+                <div class="form-group">
+                    <label>Observaciones Generales</label>
+                    <input type="text" id="formObs" class="ngc-input" placeholder="Ej: Cliente referenciado por Juan">
+                </div>
+
+                <div class="form-group">
+                    <label>Historial / Borradores de Trabajos</label>
+                    <textarea id="formHistorial" class="ngc-input" placeholder="Anota aquí los trabajos realizados, fechas, o detalles técnicos importantes..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
+                </div>
+                
+                <button class="ngc-btn primary-btn mt-10" onclick="guardarContacto()">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Contacto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLES DEL CONTACTO -->
+    <div id="modalDetalle" class="modal-overlay oculto">
+        <div class="ngc-privacy-card modal-content gpu-accel" style="max-width: 450px;">
+            <button onclick="cerrarModal('modalDetalle')" class="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(var(--ngc-neon-rgb), 0.1); border: 2px solid var(--ngc-neon); display: inline-flex; justify-content: center; align-items: center; font-size: 1.8rem; color: var(--ngc-neon); margin-bottom: 10px;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3 id="detNombre" style="margin: 0; color: var(--ngc-text-main); font-size: 1.3rem;">Nombre</h3>
+                <p id="detCodigo" style="margin: 5px 0 0 0; font-size: 0.7rem; color: var(--ngc-text-faded); text-transform: uppercase;">ID: </p>
+            </div>
+            
+            <div class="detalle-info-box">
+                <p><strong><i class="fa-solid fa-location-dot"></i> Dirección:</strong> <span id="detDir">-</span></p>
+                <p><strong><i class="fa-solid fa-phone"></i> Teléfono:</strong> <span id="detTel">-</span></p>
+                <p><strong><i class="fa-solid fa-comment-dots"></i> Observaciones:</strong> <span id="detObs">-</span></p>
+                <div style="margin-top: 10px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 10px;">
+                    <p style="margin-bottom: 5px;"><strong><i class="fa-solid fa-clock-rotate-left"></i> Historial de Trabajos:</strong></p>
+                    <p id="detHistorial" style="white-space: pre-wrap; font-size: 0.85rem; color: var(--ngc-text-faded);">-</p>
+                </div>
+            </div>
+
+            <div class="action-grid-main" style="margin-top: 20px;">
+                <button id="btnMap" class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: rgba(var(--ngc-neon-rgb), 0.1);" onclick="abrirMaps()">
+                    <i class="fa-solid fa-map-location-dot"></i> Ir a Mapa
+                </button>
+                <button id="btnWts" class="ngc-btn" style="color: var(--success-green); border-color: var(--success-green); background: rgba(40, 167, 69, 0.1);" onclick="abrirWhatsApp()">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </button>
+            </div>
+            
+            <div class="action-grid-main" style="margin-top: 12px;">
+                <button class="ngc-btn-small" onclick="abrirModalFormulario(true)" style="width: 100%; border: 1px dashed var(--ngc-warning); color: var(--ngc-warning); background: transparent;">
+                    <i class="fa-solid fa-pen"></i> Modificar
+                </button>
+                <button class="ngc-btn-small" onclick="eliminarContacto()" style="width: 100%; border: 1px dashed var(--error-red); color: var(--error-red); background: transparent;">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+                      </html>
+                      
