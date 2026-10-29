@@ -1,15 +1,13 @@
 let db;
 let contactosArray = [];
-let contactoSeleccionado = null; // Guarda el ID del contacto abierto en detalle
+let contactoSeleccionado = null; 
 
-// Inicialización llamada desde el HTML cuando Firebase Auth verifica al usuario
 function initAgenda() {
     db = firebase.firestore();
     cargarContactos();
 }
 
 function cargarContactos() {
-    // Escucha en tiempo real la colección de contactos de este usuario
     db.collection("usuarios").doc(currentUserUid).collection("contactos")
       .orderBy("timestamp", "desc")
       .onSnapshot((querySnapshot) => {
@@ -23,7 +21,13 @@ function cargarContactos() {
           renderizarContactos();
       }, (error) => {
           console.error("Error obteniendo contactos: ", error);
-          document.getElementById('loaderAgenda').innerHTML = '<p style="color:var(--error-red);">Error al cargar agenda.</p>';
+          
+          // ALERTA INTELIGENTE DE PERMISOS
+          if (error.code === 'permission-denied') {
+              document.getElementById('loaderAgenda').innerHTML = '<div style="color:var(--error-red); padding: 15px; border: 1px dashed var(--error-red); border-radius: 8px; font-size: 0.9rem;">⚠️ <strong>Faltan Permisos de Firebase</strong><br><br>Ve a Firebase Console > Firestore Database > Rules y pega las reglas de seguridad.</div>';
+          } else {
+              document.getElementById('loaderAgenda').innerHTML = '<p style="color:var(--error-red);">Error al cargar agenda.</p>';
+          }
       });
 }
 
@@ -34,38 +38,32 @@ function renderizarContactos() {
     
     contenedor.innerHTML = '';
 
-    // Filtrar
     let filtrados = contactosArray.filter(c => {
         return (c.nombre || '').toLowerCase().includes(textoBuscador) ||
                (c.dir || '').toLowerCase().includes(textoBuscador) ||
                (c.tel || '').toLowerCase().includes(textoBuscador);
     });
 
-    // Ordenar
-    if (orden === 'az') {
-        filtrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
-    } else if (orden === 'za') {
-        filtrados.sort((a, b) => (b.nombre || '').localeCompare(a.nombre || ''));
-    } else if (orden === 'antiguos') {
-        filtrados.sort((a, b) => a.timestamp - b.timestamp);
-    } else {
-        // Recientes (Por defecto)
-        filtrados.sort((a, b) => b.timestamp - a.timestamp);
-    }
+    if (orden === 'az') filtrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+    else if (orden === 'za') filtrados.sort((a, b) => (b.nombre || '').localeCompare(a.nombre || ''));
+    else if (orden === 'antiguos') filtrados.sort((a, b) => a.timestamp - b.timestamp);
+    else filtrados.sort((a, b) => b.timestamp - a.timestamp);
 
     if (filtrados.length === 0) {
         contenedor.innerHTML = `<p style="text-align:center; color:var(--ngc-text-faded); margin-top:20px;">No se encontraron contactos.</p>`;
         return;
     }
 
-    // Inyectar HTML
     filtrados.forEach(c => {
         const div = document.createElement('div');
         div.className = 'contacto-card gpu-accel';
         div.onclick = () => abrirDetalle(c.id);
+        
+        const codigoID = c.id.substring(0, 6).toUpperCase(); // Código autogenerado corto
+        
         div.innerHTML = `
             <div class="contacto-info">
-                <h4>${c.nombre}</h4>
+                <h4>${c.nombre} <span style="font-size:0.6rem; color:var(--ngc-neon); border: 1px solid var(--ngc-neon); padding: 2px 4px; border-radius:4px; margin-left: 5px;">#${codigoID}</span></h4>
                 <p><i class="fa-solid fa-phone"></i> ${c.tel || 'Sin teléfono'}</p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: var(--ngc-text-faded);"></i>
@@ -74,24 +72,19 @@ function renderizarContactos() {
     });
 }
 
-function filtrarContactos() {
-    renderizarContactos(); // Se ejecuta en vivo al escribir
-}
+function filtrarContactos() { renderizarContactos(); }
 
 // ======================= MODALES Y FORMULARIO =======================
 
 function abrirModalFormulario(esEdicion = false) {
     if (!esEdicion) {
-        // Modo Nuevo
         document.getElementById('contactoId').value = "";
         document.getElementById('formNombre').value = "";
         document.getElementById('formDir').value = "";
         document.getElementById('formTel').value = "";
         document.getElementById('formObs').value = "";
-        document.getElementById('formHistorial').value = "";
         document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> Nuevo Contacto';
     } else {
-        // Modo Editar (absorbe datos del array buscando por ID)
         const c = contactosArray.find(x => x.id === contactoSeleccionado);
         if(!c) return;
         document.getElementById('contactoId').value = c.id;
@@ -99,16 +92,13 @@ function abrirModalFormulario(esEdicion = false) {
         document.getElementById('formDir').value = c.dir || '';
         document.getElementById('formTel').value = c.tel || '';
         document.getElementById('formObs').value = c.obs || '';
-        document.getElementById('formHistorial').value = c.historial || '';
         document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> Editar Contacto';
         cerrarModal('modalDetalle');
     }
     document.getElementById('modalFormulario').classList.remove('oculto');
 }
 
-function cerrarModal(idModal) {
-    document.getElementById(idModal).classList.add('oculto');
-}
+function cerrarModal(idModal) { document.getElementById(idModal).classList.add('oculto'); }
 
 function guardarContacto() {
     const id = document.getElementById('contactoId').value;
@@ -117,7 +107,6 @@ function guardarContacto() {
         dir: document.getElementById('formDir').value.trim(),
         tel: document.getElementById('formTel').value.trim(),
         obs: document.getElementById('formObs').value.trim(),
-        historial: document.getElementById('formHistorial').value.trim(),
         timestamp: Date.now()
     };
 
@@ -127,21 +116,20 @@ function guardarContacto() {
     }
 
     const docRef = id ? db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(id) 
-                      : db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(); // Genera ID automático
+                      : db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(); 
 
-    if(id) { delete data.timestamp; } // Si edita, no cambia la fecha de creación original
+    if(id) delete data.timestamp; 
 
     docRef.set(data, { merge: true }).then(() => {
         mostrarToast("Guardado", "El contacto se guardó correctamente.");
         cerrarModal('modalFormulario');
-        // Firestore dispara onSnapshot automáticamente y actualiza la lista.
     }).catch((error) => {
         console.error("Error al guardar: ", error);
-        alert("Error al guardar el contacto.");
+        alert("Error al guardar el contacto. Revisa tu conexión y reglas de Firebase.");
     });
 }
 
-// ======================= DETALLES Y ACCIONES =======================
+// ======================= DETALLES Y BORRADORES =======================
 
 function abrirDetalle(id) {
     contactoSeleccionado = id;
@@ -149,30 +137,72 @@ function abrirDetalle(id) {
     if(!c) return;
 
     document.getElementById('detNombre').innerText = c.nombre;
-    document.getElementById('detCodigo').innerText = `ID: ${c.id.substring(0,6)}`;
+    document.getElementById('detCodigo').innerText = `ID: ${c.id.substring(0,6).toUpperCase()}`;
     document.getElementById('detDir').innerText = c.dir || 'No especificada';
     document.getElementById('detTel').innerText = c.tel || 'No especificado';
     document.getElementById('detObs').innerText = c.obs || 'Sin observaciones';
-    document.getElementById('detHistorial').innerText = c.historial || 'Sin historial.';
 
-    // Habilitar/Deshabilitar botones de acción si no hay datos
     document.getElementById('btnMap').disabled = !c.dir;
     document.getElementById('btnMap').style.opacity = c.dir ? '1' : '0.4';
     document.getElementById('btnWts').disabled = !c.tel;
     document.getElementById('btnWts').style.opacity = c.tel ? '1' : '0.4';
+    
+    buscarBorradoresRelacionados(c.nombre);
 
     document.getElementById('modalDetalle').classList.remove('oculto');
 }
 
+// Escanea los borradores JSON locales creados por los otros módulos
+function buscarBorradoresRelacionados(nombreContacto) {
+    const contenedor = document.getElementById('detHistorial');
+    contenedor.innerHTML = '';
+    let hayBorradores = false;
+    const nombreClean = nombreContacto.toLowerCase().trim();
+
+    // 1. Escanear Presupuestos
+    try {
+        const pres = localStorage.getItem('presupuesto_estado_actual');
+        if (pres) {
+            const pData = JSON.parse(pres);
+            if (pData.cliNombre && pData.cliNombre.toLowerCase().trim() === nombreClean) {
+                hayBorradores = true;
+                contenedor.innerHTML += `
+                    <div style="background: rgba(0, 212, 255, 0.1); border-left: 3px solid var(--ngc-neon); padding: 8px; border-radius: 4px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-file-invoice-dollar" style="color: var(--ngc-neon);"></i> 
+                        Presupuesto Pendiente (${pData.items ? pData.items.length : 0} ítems)
+                    </div>`;
+            }
+        }
+    } catch(e) {}
+
+    // 2. Escanear Materiales
+    try {
+        const mat = localStorage.getItem('materiales_estado_actual');
+        if (mat) {
+            const mData = JSON.parse(mat);
+            if (mData.cliNombre && mData.cliNombre.toLowerCase().trim() === nombreClean) {
+                hayBorradores = true;
+                contenedor.innerHTML += `
+                    <div style="background: rgba(40, 167, 69, 0.1); border-left: 3px solid var(--success-green); padding: 8px; border-radius: 4px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-list-check" style="color: var(--success-green);"></i> 
+                        Materiales Solicitados (${mData.items ? mData.items.length : 0} ítems)
+                    </div>`;
+            }
+        }
+    } catch(e) {}
+
+    if (!hayBorradores) {
+        contenedor.innerHTML = '<span style="color: var(--ngc-text-faded); font-size: 0.8rem; font-style: italic;">No hay borradores activos para este cliente.</span>';
+    }
+}
+
 function eliminarContacto() {
-    if (confirm("¿Estás seguro de que deseas eliminar este contacto? Todo su historial se perderá para siempre.")) {
+    if (confirm("¿Estás seguro de que deseas eliminar este contacto?")) {
         db.collection("usuarios").doc(currentUserUid).collection("contactos").doc(contactoSeleccionado).delete()
         .then(() => {
             mostrarToast("Eliminado", "El contacto fue borrado permanentemente.");
             cerrarModal('modalDetalle');
-        }).catch((error) => {
-            console.error("Error borrando contacto: ", error);
-        });
+        }).catch((error) => console.error("Error borrando contacto: ", error));
     }
 }
 
@@ -193,8 +223,6 @@ function abrirMaps() {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.dir)}`, '_blank');
 }
 
-// ======================= UTILIDADES =======================
-
 function mostrarToast(titulo, mensaje) {
     document.getElementById('toastTitle').innerText = titulo;
     document.getElementById('toastMessage').innerText = mensaje;
@@ -202,17 +230,13 @@ function mostrarToast(titulo, mensaje) {
     
     toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 10);
-    
     setTimeout(() => {
         toast.classList.remove('mostrar');
         setTimeout(() => toast.classList.add('oculto'), 400); 
     }, 4000);
 }
 
-// Cerrar modales clickeando afuera (Overlay)
 window.onclick = function(event) {
-    if (event.target.classList.contains('modal-overlay')) {
-        event.target.classList.add('oculto');
-    }
-          }
-          
+    if (event.target.classList.contains('modal-overlay')) event.target.classList.add('oculto');
+                }
+            
