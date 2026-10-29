@@ -12,6 +12,10 @@ let precioEditado = null;
 let contactosAgenda = []; 
 let totalMontoActual = 0; 
 
+// Controles de Nube (NUEVO FLUJO)
+let clienteDesdeAgenda = false;
+let permiteGuardarNube = true;
+
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
@@ -20,7 +24,6 @@ const selConcepto = document.getElementById('selConcepto');
 // ==========================================
 function initAppFirestore() {
     db = firebase.firestore();
-    // Corrección: Esta función gestiona tanto la memoria global como los guardados locales
     inicializarClienteMemoria(); 
     fetchData();
 }
@@ -44,7 +47,7 @@ async function fetchData() {
         document.getElementById('loading').classList.add('oculto'); 
         document.getElementById('app').classList.remove('oculto');
 
-        if (listaItems.length > 0) iniciarPresupuesto();
+        if (listaItems.length > 0) avanzarPasoTrabajo();
     } catch (e) { 
         document.getElementById('loading').innerHTML = `⚠️ Error de conexión a la base de datos.<br><br><button class="ngc-btn" onclick="location.reload()">Reintentar</button>`;
         console.error(e);
@@ -59,6 +62,12 @@ function setupEventListeners() {
 // ==========================================
 // INTEGRACIÓN AGENDA (FIREBASE)
 // ==========================================
+function marcarClienteManual() {
+    // Si el usuario edita el nombre a mano, asume que NO es de la agenda
+    clienteDesdeAgenda = false;
+    permiteGuardarNube = true; 
+}
+
 function abrirModalAgenda() {
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
@@ -68,9 +77,7 @@ function abrirModalAgenda() {
       .get()
       .then((snapshot) => {
           contactosAgenda = [];
-          snapshot.forEach((doc) => {
-              contactosAgenda.push(doc.data());
-          });
+          snapshot.forEach((doc) => { contactosAgenda.push(doc.data()); });
           filtrarAgenda();
       })
       .catch((error) => {
@@ -116,9 +123,55 @@ function filtrarAgenda() {
 function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre;
     document.getElementById('cliDireccion').value = dir;
+    
+    // Habilitamos la nube porque el cliente viene de la agenda
+    clienteDesdeAgenda = true;
+    permiteGuardarNube = true; 
+    
     guardarClienteGlobal();
     cerrarModalAgenda();
     mostrarToast("Cliente Seleccionado", "Datos de agenda importados.");
+}
+
+// ==========================================
+// CONTROL DE FLUJO: AGENDAR NUEVO CLIENTE
+// ==========================================
+function iniciarPresupuesto() {
+    const nombre = document.getElementById('cliNombre').value.trim();
+    if(!nombre) {
+        alert("Por favor, ingresá al menos el Nombre del Cliente.");
+        document.getElementById('cliNombre').focus();
+        return;
+    }
+    
+    // Validar si fue tipeado manualmente o traído de agenda
+    if (!clienteDesdeAgenda) {
+        document.getElementById('modalAgendarCliente').classList.remove('oculto');
+        return; // Pausamos el inicio hasta que decida
+    }
+    
+    avanzarPasoTrabajo();
+}
+
+function opcionBuscarAgenda() {
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    abrirModalAgenda();
+}
+
+function opcionContinuarSinAgenda() {
+    if (confirm("⚠️ AVISO: Al no estar en tu agenda, este presupuesto NO podrá guardarse en la nube (solo podrás descargar el PDF o Imagen).\n\n¿Estás seguro de continuar?")) {
+        permiteGuardarNube = false; // Bloqueamos la función de guardado Firebase
+        document.getElementById('modalAgendarCliente').classList.add('oculto');
+        avanzarPasoTrabajo();
+    }
+}
+
+function avanzarPasoTrabajo() {
+    document.getElementById('step-cliente').classList.add('oculto');
+    document.getElementById('step-trabajo').classList.remove('oculto');
+    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
+    guardarClienteGlobal();
+    renderTabla();
 }
 
 // ==========================================
@@ -126,6 +179,13 @@ function seleccionarContacto(nombre, dir) {
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false) {
     if (!currentUserUid) return;
+    
+    // Si el usuario continuó sin agendar, bloqueamos el guardado
+    if (!permiteGuardarNube) {
+        if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado, por lo que no es posible guardarlo en la nube.");
+        return;
+    }
+
     if (listaItems.length === 0 && !document.getElementById('cliNombre').value) {
         if (mostrarAlerta) alert("El presupuesto está vacío. No hay nada que guardar.");
         return;
@@ -153,8 +213,6 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
 
 function abrirModalBorradores() {
     const nombreClienteActual = document.getElementById('cliNombre').value.trim();
-    
-    // 1. Validar que haya un cliente seleccionado
     if (!nombreClienteActual) {
         alert("⚠️ Primero ingresá o seleccioná el Nombre del Cliente en 'Datos del Proyecto' para buscar sus borradores.");
         document.getElementById('cliNombre').focus();
@@ -164,15 +222,7 @@ function abrirModalBorradores() {
     const modal = document.getElementById('modalBorradores');
     modal.classList.remove('oculto');
     
-    // 2. Hacer explícito el título del módulo dinámicamente
-    const tituloModal = modal.querySelector('h3, h4, strong'); 
-    if (tituloModal) {
-        tituloModal.innerHTML = '<i class="fa-solid fa-cloud"></i> BORRADORES DE PRESUPUESTO';
-    }
-
     const contenedor = document.getElementById('listaBorradores');
-    
-    // 3. Splash Screen / Pantalla de carga con altura fija (evita que se enangoste la pantalla)
     contenedor.innerHTML = `
         <div style="min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #e91e63; text-align: center;">
             <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
@@ -180,7 +230,6 @@ function abrirModalBorradores() {
         </div>
     `;
     
-    // 4. Filtrar en la nube SOLAMENTE los borradores del cliente cargado
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos")
       .where("cliNombre", "==", nombreClienteActual)
       .get()
@@ -194,7 +243,6 @@ function abrirModalBorradores() {
               return;
           }
           
-          // Ordenamos por fecha en la memoria del navegador para evitar pedirte crear índices en Firebase
           let borradores = [];
           snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
@@ -236,15 +284,15 @@ function cargarBorradorNube(docId) {
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
+            // Al venir de la nube, sabemos que es un cliente agendado y válido
+            data.clienteDesdeAgenda = true;
+            data.permiteGuardarNube = true;
+
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
             guardarClienteGlobal();
             
-            document.getElementById('step-cliente').classList.add('oculto');
-            document.getElementById('step-trabajo').classList.remove('oculto');
-            document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-            renderTabla();
-            
+            avanzarPasoTrabajo();
             cerrarModalBorradores();
             mostrarToast("Borrador Abierto", "Los datos han sido cargados.");
         }
@@ -263,28 +311,8 @@ function eliminarBorradorNube(docId, btnElement) {
 // MEMORIA LOCAL Y TOAST
 // ==========================================
 function inicializarClienteMemoria() {
-    const clienteStr = localStorage.getItem('villaser_cliente_global');
-    const estadoStr = localStorage.getItem('presupuesto_estado_actual');
-    const estado = estadoStr ? JSON.parse(estadoStr) : { items: [] };
-
-    if (clienteStr && estado.items.length === 0 && !estado.cliNombre) {
-        window.clienteTemporal = JSON.parse(clienteStr);
-        document.getElementById('modalRecuperarCliente').classList.remove('oculto');
-    } else {
-        cargarEstadoGuardado();
-    }
-}
-
-function usarClienteMemoria() {
-    document.getElementById('cliNombre').value = window.clienteTemporal.nombre || '';
-    document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || window.clienteTemporal.dir || '';
-    document.getElementById('cliProyecto').value = window.clienteTemporal.proyecto || window.clienteTemporal.obs || '';
-    guardarClienteGlobal();
-    document.getElementById('modalRecuperarCliente').classList.add('oculto');
-}
-
-function limpiarClienteMemoria() {
-    document.getElementById('modalRecuperarCliente').classList.add('oculto');
+    // Ya no hay alerta al iniciar. Simplemente recupera el borrador en progreso si lo había.
+    cargarEstadoGuardado();
 }
 
 function guardarClienteGlobal() {
@@ -304,7 +332,9 @@ function guardarEstadoLocal() {
         cliProyecto: document.getElementById('cliProyecto').value,
         obsGenerales: document.getElementById('obsGenerales').value,
         items: listaItems,
-        nro: nroPresupuestoGlobal
+        nro: nroPresupuestoGlobal,
+        clienteDesdeAgenda: clienteDesdeAgenda,
+        permiteGuardarNube: permiteGuardarNube
     };
     localStorage.setItem('presupuesto_estado_actual', JSON.stringify(estado));
 }
@@ -319,6 +349,9 @@ function cargarEstadoGuardado() {
         if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
         listaItems = estado.items || [];
         if (estado.nro) nroPresupuestoGlobal = estado.nro;
+        
+        if (estado.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = estado.clienteDesdeAgenda;
+        if (estado.permiteGuardarNube !== undefined) permiteGuardarNube = estado.permiteGuardarNube;
     }
 }
 
@@ -330,6 +363,11 @@ function nuevoPresupuesto() {
         document.getElementById('obsGenerales').value = '';
         listaItems = [];
         nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
+        
+        // Reset flags para nuevo cliente
+        clienteDesdeAgenda = false;
+        permiteGuardarNube = true;
+        
         guardarEstadoLocal();
         guardarClienteGlobal();
         
@@ -337,20 +375,6 @@ function nuevoPresupuesto() {
         document.getElementById('step-cliente').classList.remove('oculto');
         renderTabla();
     }
-}
-
-function iniciarPresupuesto() {
-    const nombre = document.getElementById('cliNombre').value.trim();
-    if(!nombre) {
-        alert("Por favor, ingresá al menos el Nombre del Cliente.");
-        document.getElementById('cliNombre').focus();
-        return;
-    }
-    document.getElementById('step-cliente').classList.add('oculto');
-    document.getElementById('step-trabajo').classList.remove('oculto');
-    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-    guardarClienteGlobal();
-    renderTabla();
 }
 
 function mostrarToast(titulo, mensaje) {
@@ -596,7 +620,8 @@ async function generarPDF() {
     if (listaItems.length === 0) return alert("Agregá trabajos para generar el PDF.");
     sincronizarVistaPreviaPDF();
 
-    guardarBorradorFirebase(false);
+    // Guardado de seguridad oculto
+    if(permiteGuardarNube) { guardarBorradorFirebase(false); }
 
     const element = document.getElementById('plantilla-pdf');
     const originalDisplay = getComputedStyle(element).display;
@@ -614,7 +639,7 @@ async function generarPDF() {
 
     try { 
         await html2pdf().set(opt).from(element).save(); 
-        mostrarToast("Generado con Éxito", "PDF guardado local y borrador respaldado en la nube.");
+        if(permiteGuardarNube) mostrarToast("Generado con Éxito", "PDF guardado y borrador respaldado.");
     } catch (error) { 
         alert("Error al generar el PDF."); 
     } 
@@ -629,4 +654,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-                                                        }
+                       }
