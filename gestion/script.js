@@ -122,7 +122,7 @@ const rutas = {
     'btnInformeTecnico': './informes/index.html',
     'btnCostos': './costos/index.html',
     'btnPotencia': './potencia/index.html',
-    'btnVerClientes': './ver_clientes/index.html',
+    'btnAgenda': './agenda/index.html',
     'btnNuevoCliente': './nuevo_cliente/index.html',
     'btnCatalogos': './catalogos/index.html',
     'btnFotos': './fotos/index.html',
