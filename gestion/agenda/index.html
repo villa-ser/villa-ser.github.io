@@ -21,7 +21,7 @@
     })();
     </script>
 
-    <!-- SDKs de Firebase (Auth y Firestore) -->
+    <!-- SDKs de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -63,7 +63,6 @@
     <div class="layout-wrapper">
         <main class="container">
             
-            <!-- BARRA DE NAVEGACIÓN -->
             <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
                     <i class="fa-solid fa-arrow-left"></i> Menú
@@ -76,7 +75,6 @@
                 </button>
             </nav>
 
-            <!-- CONTROLES DE BÚSQUEDA Y ORDEN -->
             <section class="ngc-card gpu-accel" style="margin-bottom: 20px; padding: 15px;">
                 <div class="search-bar-container">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -92,7 +90,6 @@
                 </div>
             </section>
 
-            <!-- LISTADO DE CONTACTOS -->
             <section id="listaContactos" class="flex-column gap-15">
                 <div id="loaderAgenda" style="text-align: center; color: var(--ngc-neon); padding: 20px;">
                     <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
@@ -102,7 +99,7 @@
         </main>
     </div>
 
-    <!-- MODAL FORMULARIO (NUEVO / EDITAR) -->
+    <!-- MODAL FORMULARIO -->
     <div id="modalFormulario" class="modal-overlay oculto">
         <div class="ngc-privacy-card modal-content gpu-accel">
             <button onclick="cerrarModal('modalFormulario')" class="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -131,8 +128,6 @@
                     <input type="text" id="formObs" class="ngc-input" placeholder="Ej: Cliente referenciado por Juan">
                 </div>
                 
-                <!-- Eliminado el text area de historial, ya que será automático -->
-
                 <button class="ngc-btn mt-10" style="color: var(--success-green); border-color: var(--success-green); background: rgba(40,167,69,0.1);" onclick="guardarContacto()">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Contacto
                 </button>
@@ -140,7 +135,7 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLES DEL CONTACTO -->
+    <!-- MODAL DETALLES -->
     <div id="modalDetalle" class="modal-overlay oculto">
         <div class="ngc-privacy-card modal-content gpu-accel" style="max-width: 450px;">
             <button onclick="cerrarModal('modalDetalle')" class="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -160,7 +155,7 @@
                 
                 <!-- ZONA DE BORRADORES AUTOMÁTICOS -->
                 <div style="margin-top: 15px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 15px;">
-                    <p style="margin-bottom: 10px;"><strong><i class="fa-solid fa-folder-open"></i> Borradores Activos:</strong></p>
+                    <p style="margin-bottom: 10px;"><strong><i class="fa-solid fa-folder-open"></i> Actividad en Memoria:</strong></p>
                     <div id="detHistorial" style="display: flex; flex-direction: column; gap: 8px;">
                         <!-- Se llena con JS leyendo el LocalStorage -->
                     </div>
