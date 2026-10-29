@@ -1,4 +1,4 @@
-let db;
+let db = null;
 const SHEET_ID = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
 const URL_PRECIOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
 
@@ -20,23 +20,26 @@ const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN (EL MOTOR DE ARRANQUE)
+// INICIALIZACIÓN (MOTOR BLINDADO)
 // ==========================================
-window.onload = () => {
-    if (typeof firebase !== 'undefined' && firebase.firestore) {
-        db = firebase.firestore();
-    }
-    inicializarClienteMemoria(); 
-    fetchData();
-};
-
-function initAppFirestore() {
-    // Por si tu archivo firebase-config.js usa este nombre para arrancar
-    if (!db && typeof firebase !== 'undefined' && firebase.firestore) {
-        db = firebase.firestore();
+function arrancarModulo() {
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            db = firebase.firestore();
+        }
         inicializarClienteMemoria(); 
         fetchData();
+    } catch (error) {
+        const cajaCarga = document.getElementById('loading');
+        if (cajaCarga) cajaCarga.innerHTML = `<span style="color:var(--error-red)">⚠️ Error interno al arrancar: ${error.message}</span>`;
+        console.error("Error de arranque:", error);
     }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancarModulo);
+} else {
+    arrancarModulo();
 }
 
 async function fetchData() {
@@ -60,14 +63,17 @@ async function fetchData() {
 
         if (listaItems.length > 0) avanzarPasoTrabajo();
     } catch (e) { 
-        document.getElementById('loading').innerHTML = `⚠️ Error de conexión a la base de datos.<br><br><button class="ngc-btn" onclick="location.reload()">Reintentar</button>`;
+        const loadingDiv = document.getElementById('loading');
+        if (loadingDiv) {
+            loadingDiv.innerHTML = `⚠️ Error al leer los precios de Google Sheets.<br><br><button class="ngc-btn" onclick="location.reload()">Reintentar</button>`;
+        }
         console.error(e);
     }
 }
 
 function setupEventListeners() {
-    selTema.addEventListener('change', cambioTema);
-    selConcepto.addEventListener('change', cargarDetallePrecios);
+    if (selTema) selTema.addEventListener('change', cambioTema);
+    if (selConcepto) selConcepto.addEventListener('change', cargarDetallePrecios);
 }
 
 // ==========================================
@@ -79,6 +85,11 @@ function marcarClienteManual() {
 }
 
 function abrirModalAgenda() {
+    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
+        alert("⚠️ No hay sesión activa o conexión a la nube.");
+        return;
+    }
+
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
@@ -186,10 +197,13 @@ function avanzarPasoTrabajo() {
 // BORRADORES EN LA NUBE (FIREBASE)
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false) {
-    if (!currentUserUid) return;
+    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
+        if (mostrarAlerta) alert("⚠️ Sesión no iniciada. No se puede guardar en la nube.");
+        return;
+    }
     
     if (!permiteGuardarNube) {
-        if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado, por lo que no es posible guardarlo en la nube.");
+        if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado.");
         return;
     }
 
@@ -219,6 +233,11 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
 }
 
 function abrirModalBorradores() {
+    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
+        alert("⚠️ Sesión no iniciada. No se puede acceder a la nube.");
+        return;
+    }
+
     const nombreClienteActual = document.getElementById('cliNombre').value.trim();
     if (!nombreClienteActual) {
         alert("⚠️ Primero ingresá o seleccioná el Nombre del Cliente en 'Datos del Proyecto' para buscar sus borradores.");
@@ -288,6 +307,7 @@ function cerrarModalBorradores() {
 }
 
 function cargarBorradorNube(docId) {
+    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) return;
     db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
@@ -306,6 +326,7 @@ function cargarBorradorNube(docId) {
 }
 
 function eliminarBorradorNube(docId, btnElement) {
+    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) return;
     if (confirm("¿Estás seguro de eliminar este borrador de la nube?")) {
         db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).delete().then(() => {
             btnElement.closest('div').parentElement.remove();
@@ -348,10 +369,10 @@ function cargarEstadoGuardado() {
     const estadoStr = localStorage.getItem('presupuesto_estado_actual');
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
-        if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
-        if (estado.cliDireccion) document.getElementById('cliDireccion').value = estado.cliDireccion;
-        if (estado.cliProyecto) document.getElementById('cliProyecto').value = estado.cliProyecto;
-        if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
+        if (estado.cliNombre && document.getElementById('cliNombre')) document.getElementById('cliNombre').value = estado.cliNombre;
+        if (estado.cliDireccion && document.getElementById('cliDireccion')) document.getElementById('cliDireccion').value = estado.cliDireccion;
+        if (estado.cliProyecto && document.getElementById('cliProyecto')) document.getElementById('cliProyecto').value = estado.cliProyecto;
+        if (estado.obsGenerales && document.getElementById('obsGenerales')) document.getElementById('obsGenerales').value = estado.obsGenerales;
         listaItems = estado.items || [];
         if (estado.nro) nroPresupuestoGlobal = estado.nro;
         
@@ -382,9 +403,13 @@ function nuevoPresupuesto() {
 }
 
 function mostrarToast(titulo, mensaje) {
-    document.getElementById('toastTitle').innerText = titulo;
-    document.getElementById('toastMessage').innerText = mensaje;
+    const titleEl = document.getElementById('toastTitle');
+    const msgEl = document.getElementById('toastMessage');
     const toast = document.getElementById('toastCliente');
+    if (!titleEl || !msgEl || !toast) return;
+    
+    titleEl.innerText = titulo;
+    msgEl.innerText = mensaje;
     toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 100);
     setTimeout(() => {
@@ -398,11 +423,13 @@ function mostrarToast(titulo, mensaje) {
 // ==========================================
 function step(id, val) { 
     const el = document.getElementById(id); 
+    if(!el) return;
     let newValue = parseInt(el.value || 0) + val;
     el.value = Math.max(el.min ? parseInt(el.min) : 0, newValue); 
 }
 
 function poblarTemas() { 
+    if(!selTema) return;
     selTema.innerHTML = '<option value="">-- SELECCIONE RUBRO --</option>';
     [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { 
         const opt = document.createElement('option'); opt.value = t; opt.textContent = t; selTema.appendChild(opt);
@@ -657,4 +684,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-                     }
+}
