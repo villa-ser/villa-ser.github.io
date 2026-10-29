@@ -44,7 +44,6 @@
                 window.location.replace('../index.html'); 
             } else {
                 currentUserUid = user.uid;
-                // Iniciamos la carga de contactos cuando sabemos quién es el usuario
                 if(typeof initAgenda === 'function') initAgenda();
             }
         });
@@ -95,7 +94,6 @@
 
             <!-- LISTADO DE CONTACTOS -->
             <section id="listaContactos" class="flex-column gap-15">
-                <!-- Se inyectan mediante JS -->
                 <div id="loaderAgenda" style="text-align: center; color: var(--ngc-neon); padding: 20px;">
                     <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
                     <p style="margin-top: 10px; font-size: 0.8rem;">Cargando contactos...</p>
@@ -132,13 +130,10 @@
                     <label>Observaciones Generales</label>
                     <input type="text" id="formObs" class="ngc-input" placeholder="Ej: Cliente referenciado por Juan">
                 </div>
-
-                <div class="form-group">
-                    <label>Historial / Borradores de Trabajos</label>
-                    <textarea id="formHistorial" class="ngc-input" placeholder="Anota aquí los trabajos realizados, fechas, o detalles técnicos importantes..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
-                </div>
                 
-                <button class="ngc-btn primary-btn mt-10" onclick="guardarContacto()">
+                <!-- Eliminado el text area de historial, ya que será automático -->
+
+                <button class="ngc-btn mt-10" style="color: var(--success-green); border-color: var(--success-green); background: rgba(40,167,69,0.1);" onclick="guardarContacto()">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Contacto
                 </button>
             </div>
@@ -162,9 +157,13 @@
                 <p><strong><i class="fa-solid fa-location-dot"></i> Dirección:</strong> <span id="detDir">-</span></p>
                 <p><strong><i class="fa-solid fa-phone"></i> Teléfono:</strong> <span id="detTel">-</span></p>
                 <p><strong><i class="fa-solid fa-comment-dots"></i> Observaciones:</strong> <span id="detObs">-</span></p>
-                <div style="margin-top: 10px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 10px;">
-                    <p style="margin-bottom: 5px;"><strong><i class="fa-solid fa-clock-rotate-left"></i> Historial de Trabajos:</strong></p>
-                    <p id="detHistorial" style="white-space: pre-wrap; font-size: 0.85rem; color: var(--ngc-text-faded);">-</p>
+                
+                <!-- ZONA DE BORRADORES AUTOMÁTICOS -->
+                <div style="margin-top: 15px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 15px;">
+                    <p style="margin-bottom: 10px;"><strong><i class="fa-solid fa-folder-open"></i> Borradores Activos:</strong></p>
+                    <div id="detHistorial" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Se llena con JS leyendo el LocalStorage -->
+                    </div>
                 </div>
             </div>
 
@@ -190,5 +189,4 @@
 
     <script src="script.js"></script>
 </body>
-                      </html>
-                      
+</html>
