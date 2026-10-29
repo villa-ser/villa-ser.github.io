@@ -15,31 +15,47 @@ let totalMontoActual = 0;
 // Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
+let uidSeguro = null;
 
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN (MOTOR BLINDADO)
+// INICIALIZACIÓN (MOTOR BLINDADO Y FLEXIBLE)
 // ==========================================
 function arrancarModulo() {
-    try {
-        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-            db = firebase.firestore();
+    if (typeof firebase !== 'undefined') {
+        try { db = firebase.firestore(); } catch(e) {}
+        
+        // Atrapa la sesión apenas Firebase la confirma
+        if (firebase.auth) {
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    uidSeguro = user.uid;
+                    if (!db) db = firebase.firestore();
+                }
+            });
         }
-        inicializarClienteMemoria(); 
-        fetchData();
-    } catch (error) {
-        const cajaCarga = document.getElementById('loading');
-        if (cajaCarga) cajaCarga.innerHTML = `<span style="color:var(--error-red)">⚠️ Error interno al arrancar: ${error.message}</span>`;
-        console.error("Error de arranque:", error);
     }
+    inicializarClienteMemoria(); 
+    fetchData();
 }
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', arrancarModulo);
 } else {
     arrancarModulo();
+}
+
+// Función infalible para obtener el usuario sin que tire error
+function obtenerUid() {
+    if (uidSeguro) return uidSeguro;
+    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid;
+    }
+    if (typeof currentUserUid !== 'undefined' && currentUserUid) return currentUserUid;
+    if (typeof window.currentUserUid !== 'undefined' && window.currentUserUid) return window.currentUserUid;
+    return null;
 }
 
 async function fetchData() {
@@ -85,15 +101,17 @@ function marcarClienteManual() {
 }
 
 function abrirModalAgenda() {
-    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
-        alert("⚠️ No hay sesión activa o conexión a la nube.");
+    const uid = obtenerUid();
+    if (!uid) {
+        alert("⚠️ Aguardá un segundo a que cargue la sesión o verificá estar logueado.");
         return;
     }
+    if (!db) db = firebase.firestore();
 
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
-    db.collection("perfiles").doc(currentUserUid).collection("contactos")
+    db.collection("perfiles").doc(uid).collection("contactos")
       .orderBy("nombre")
       .get()
       .then((snapshot) => {
@@ -197,10 +215,12 @@ function avanzarPasoTrabajo() {
 // BORRADORES EN LA NUBE (FIREBASE)
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false) {
-    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
-        if (mostrarAlerta) alert("⚠️ Sesión no iniciada. No se puede guardar en la nube.");
+    const uid = obtenerUid();
+    if (!uid) {
+        if (mostrarAlerta) alert("⚠️ Sesión no detectada. Verificá tu conexión para guardar en la nube.");
         return;
     }
+    if (!db) db = firebase.firestore();
     
     if (!permiteGuardarNube) {
         if (mostrarAlerta) alert("⚠️ Acción bloqueada: Este presupuesto pertenece a un cliente no agendado.");
@@ -225,7 +245,7 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
     
     let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
 
-    db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).set(estado)
+    db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).set(estado)
     .then(() => {
         if (mostrarAlerta) mostrarToast("Borrador Guardado", "Se sincronizó con tu cuenta en la nube.");
     })
@@ -233,10 +253,12 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
 }
 
 function abrirModalBorradores() {
-    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) {
-        alert("⚠️ Sesión no iniciada. No se puede acceder a la nube.");
+    const uid = obtenerUid();
+    if (!uid) {
+        alert("⚠️ Sesión no detectada. Aguardá unos segundos o vuelve a iniciar sesión.");
         return;
     }
+    if (!db) db = firebase.firestore();
 
     const nombreClienteActual = document.getElementById('cliNombre').value.trim();
     if (!nombreClienteActual) {
@@ -256,7 +278,7 @@ function abrirModalBorradores() {
         </div>
     `;
     
-    db.collection("perfiles").doc(currentUserUid).collection("presupuestos")
+    db.collection("perfiles").doc(uid).collection("presupuestos")
       .where("cliNombre", "==", nombreClienteActual)
       .get()
       .then((snapshot) => {
@@ -307,8 +329,11 @@ function cerrarModalBorradores() {
 }
 
 function cargarBorradorNube(docId) {
-    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) return;
-    db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).get().then((doc) => {
+    const uid = obtenerUid();
+    if (!uid) return;
+    if (!db) db = firebase.firestore();
+
+    db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
             data.clienteDesdeAgenda = true;
@@ -326,9 +351,12 @@ function cargarBorradorNube(docId) {
 }
 
 function eliminarBorradorNube(docId, btnElement) {
-    if (!db || typeof currentUserUid === 'undefined' || !currentUserUid) return;
+    const uid = obtenerUid();
+    if (!uid) return;
+    if (!db) db = firebase.firestore();
+
     if (confirm("¿Estás seguro de eliminar este borrador de la nube?")) {
-        db.collection("perfiles").doc(currentUserUid).collection("presupuestos").doc(docId).delete().then(() => {
+        db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).delete().then(() => {
             btnElement.closest('div').parentElement.remove();
         });
     }
@@ -684,4 +712,4 @@ function enviarWhatsApp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-}
+                               }
