@@ -16,7 +16,7 @@ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', ()
 // =======================================================
 // LÓGICA DE CÁLCULO Y GOOGLE CHARTS (MÓDULO COSTOS)
 // =======================================================
-const sheetId = '1prJUdOspEx0AHh7PEAx_i5mQ7in8wGtshL6AO293fgk';
+const sheetId = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
 let allData = [];
 let selectedFuentes = [];
 
@@ -50,13 +50,13 @@ function handleResponse(response) {
     allData = [];
     for (let i = 0; i < rows; i++) {
         allData.push({
-            codigo: data.getValue(i, 0),    
-            fuente: data.getValue(i, 1),    // Columna B (Fuente)
-            tema: data.getValue(i, 2),      // Columna C (Rubro)
-            concepto: data.getValue(i, 3),  // Columna D (Trabajo)
-            precio: data.getValue(i, 4),    // Columna E (Precio)
-            notas: data.getValue(i, 5),     // Columna F (Notas)
-            org: data.getValue(i, 11)       // Columna L (Org Específica si existe)
+            tema: data.getValue(i, 0),      // Columna A (Rubro)
+            concepto: data.getValue(i, 1),  // Columna B (Trabajo)
+            precio: data.getValue(i, 2),    // Columna C (Precio)
+            notas: data.getValue(i, 3),     // Columna D (Notas)
+            codigo: data.getValue(i, 5),    // Columna F (Codigo)
+            fuente: data.getValue(i, 9),    // Columna J (Fuente)
+            org: data.getValue(i, 9)       // Columna J (Org Específica si existe)
         });
     }
 
