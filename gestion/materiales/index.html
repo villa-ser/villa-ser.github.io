@@ -205,22 +205,26 @@
                     </div>
 
                     <!-- NOTAS DEL ÍTEM -->
-                    <div class="row-group" style="margin-top: 15px;">
-                        <label>Notas del Ítem (Opcional)</label>
-                        <textarea id="observaciones" class="ngc-input" placeholder="Ej: Marca homologada..." style="height: 60px; resize: none;"></textarea>
-                    </div>
-
-                    <div class="action-grid-main" style="margin-top: 15px;">
-                        <button id="btnMat" class="ngc-btn" onclick="addItem()" style="border-color: var(--success-green); color: var(--success-green);"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
-                        <button type="button" class="ngc-btn" onclick="agregarItemManual()"><i class="fa-solid fa-pen"></i> Ítem Libre</button>
-                    </div>
-                </div>       
+                    <div class="row-group-stretch" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+    <div style="flex: 0 0 110px;"> <!-- Ancho fijo para que no invada -->
+        <label style="font-size: 0.65rem; color: var(--ngc-neon);">UNIDAD</label>
+        <select id="unidadItem" class="ngc-input native-select" style="padding: 10px 5px; font-size: 0.85rem; text-align: center;">
+            <option value="UNID">UNID</option>
+            <option value="MTS">MTS</option>
+        </select>
+    </div>
+    <div style="flex: 1;">
+        <label style="font-size: 0.65rem; color: var(--ngc-neon);">NOTAS DEL ÍTEM (Opcional)</label>
+        <input type="text" id="notaItem" class="ngc-input" placeholder="Ej: Color blanco..." style="padding: 10px;">
+    </div>
+</div>
                 
-                <!-- NOTAS GLOBALES -->
-                <div class="ngc-card gpu-accel">
-                    <label>Notas Globales de Materiales</label>
-                    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Comprar en distribuidor mayorista..." style="height: 75px; resize: none;" oninput="guardarEstado(); renderItems();"></textarea>
-                </div>
+                <!-- NOTAS GLOBALES DE MATERIALES -->
+<div class="ngc-card gpu-accel" style="margin-bottom: 15px;">
+    <label>Notas Globales de Materiales</label>
+    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Los materiales deben entregarse por la mañana..." style="height: 75px; resize: none;"></textarea>
+</div>
+                    
                 
                 <!-- ZONA DE CAPTURA VISUAL -->
                 <div id="captureSection" class="capture-zone gpu-accel" style="padding: 15px; background: var(--ngc-bg-input); border-radius: 12px; border: 1px solid var(--ngc-privacy-border);">
