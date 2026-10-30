@@ -1,23 +1,3 @@
-// --- GUARDIÁN DE SEGURIDAD Y BASE DE DATOS ---
-let currentUserUid = null;
-let db = null;
-
-// Envolvemos Firebase para que espere la carga completa y no bloquee el resto del código si falla
-window.addEventListener('DOMContentLoaded', () => {
-    if (typeof firebase !== 'undefined') {
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user || !user.emailVerified) {
-                window.location.replace('../index.html'); 
-            } else {
-                currentUserUid = user.uid;
-                db = firebase.firestore();
-            }
-        });
-    } else {
-        console.error("⚠️ Firebase no está cargado. Las funciones de Agenda en la nube no estarán disponibles.");
-    }
-});
-
 // --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
