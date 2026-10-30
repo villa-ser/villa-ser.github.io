@@ -1,3 +1,16 @@
+// --- GUARDIÁN DE SEGURIDAD Y BASE DE DATOS ---
+let currentUserUid = null;
+let db = null;
+
+firebase.auth().onAuthStateChanged(user => {
+    if (!user || !user.emailVerified) {
+        window.location.replace('../index.html'); 
+    } else {
+        currentUserUid = user.uid;
+        db = firebase.firestore();
+    }
+});
+
 // --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
