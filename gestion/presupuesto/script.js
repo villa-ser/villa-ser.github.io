@@ -7,6 +7,7 @@ let listaItems = [];
 let notasOriginales = "";
 let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
 let telefonoClienteActual = "";
+let nombreBorradorActual = null; 
 
 let conceptoEditado = null;
 let precioEditado = null;
@@ -218,7 +219,7 @@ function avanzarPasoTrabajo() {
 // ==========================================
 // NUBE (FIREBASE)
 // ==========================================
-function guardarBorradorFirebase(mostrarAlerta = false) {
+function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     const uid = obtenerUid();
     if (!uid || !db) {
         if (mostrarAlerta) alert("⚠️ Sesión no detectada para la nube.");
@@ -230,6 +231,23 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
     }
     if (listaItems.length === 0 && !document.getElementById('cliNombre').value) return;
     
+    // Armar el nombre sugerido
+    const nombreCli = (document.getElementById('cliNombre').value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
+    const proyCli = (document.getElementById('cliProyecto').value.trim() || 'Presupuesto').replace(/\s+/g, '_');
+    let nombreSugerido = `${nombreCli}_${proyCli}_borrador_presupuesto`;
+    let nombreFinal = nombreSugerido;
+
+    if (!autoGuardado) {
+        // Guardado Manual: Preguntar nombre al usuario
+        const nombreIngresado = prompt("Guardar borrador como:", nombreBorradorActual || nombreSugerido);
+        if (nombreIngresado === null) return; // El usuario canceló
+        nombreFinal = nombreIngresado.trim() || nombreSugerido;
+        nombreBorradorActual = nombreFinal; // Memoria del archivo actual
+    } else {
+        // Autoguardado desde PDF: Usa el nombre actual o el sugerido sin preguntar
+        nombreFinal = nombreBorradorActual || nombreSugerido;
+    }
+
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
         cliDireccion: document.getElementById('cliDireccion').value,
@@ -238,10 +256,13 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
         items: listaItems,
         nro: nroPresupuestoGlobal,
         totalMonto: totalMontoActual,
-        fechaGuardado: Date.now()
+        fechaGuardado: Date.now(),
+        nombreBorrador: nombreFinal // Se guarda el nombre del archivo
     };
     
-    let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
+    // El ID en Firebase será el nombre del archivo. Si usas el mismo nombre, se sobrescribe.
+    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
+    
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).set(estado)
       .then(() => { if (mostrarAlerta) mostrarToast("Borrador Guardado", "Sincronizado con tu cuenta."); })
       .catch((error) => console.error("Error guardando en la nube: ", error));
@@ -270,7 +291,7 @@ function abrirModalBorradores() {
       .then((snapshot) => {
           contenedor.innerHTML = '';
           if (snapshot.empty) {
-              contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores guardados.</p>`;
+              contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores guardados para este cliente.</p>`;
               return;
           }
           let borradores = [];
@@ -280,14 +301,18 @@ function abrirModalBorradores() {
           borradores.forEach((b) => {
               let p = b.data;
               const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString() : 'Sin fecha';
+              
+              // Detecta el nombre personalizado del archivo o arma uno predeterminado
+              const nombreArchivo = p.nombreBorrador || `${p.cliNombre}_${p.cliProyecto || 'Presupuesto'}_borrador`.replace(/\s+/g, '_');
+              
               const div = document.createElement('div');
               div.style.cssText = "background: var(--ngc-bg-input); border-left: 3px solid #e91e63; padding: 12px; margin-bottom: 10px;";
               div.innerHTML = `
-                  <div style="display: flex; justify-content: space-between;">
-                      <strong style="color: var(--ngc-text-main);">${p.cliNombre || 'Sin Nombre'}</strong>
-                      <span style="color: var(--success-green);">$${(p.totalMonto || 0).toLocaleString('es-AR')}</span>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <strong style="color: var(--ngc-text-main); word-break: break-word; line-height: 1.2; font-size: 0.95rem;">${nombreArchivo}</strong>
+                      <span style="color: var(--success-green); margin-left: 10px; font-weight: bold;">$${(p.totalMonto || 0).toLocaleString('es-AR')}</span>
                   </div>
-                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-bottom: 10px;">Última vez: ${fechaStr}</div>
+                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-top: 4px; margin-bottom: 10px;">Última vez: ${fechaStr}</div>
                   <div style="display: flex; gap: 8px;">
                       <button class="ngc-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
                       <button class="ngc-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
@@ -308,6 +333,10 @@ function cargarBorradorNube(docId) {
             const data = doc.data();
             data.clienteDesdeAgenda = true;
             data.permiteGuardarNube = true;
+            
+            // Le indicamos al sistema en qué archivo estamos trabajando
+            nombreBorradorActual = data.nombreBorrador || null; 
+
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
             guardarClienteGlobal();
@@ -384,6 +413,10 @@ function nuevoPresupuesto() {
         nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
         clienteDesdeAgenda = false;
         permiteGuardarNube = true;
+        
+        // Limpiamos el nombre del archivo actual para empezar de cero
+        nombreBorradorActual = null; 
+        
         guardarEstadoLocal();
         guardarClienteGlobal();
         document.getElementById('step-trabajo').classList.add('oculto');
@@ -635,8 +668,8 @@ async function generarPDF() {
     if (listaItems.length === 0) return alert("Agregá trabajos para generar el PDF.");
     sincronizarVistaPreviaPDF();
 
-    if(permiteGuardarNube) { guardarBorradorFirebase(false); }
-
+    if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
+    
     const element = document.getElementById('plantilla-pdf');
     const originalDisplay = getComputedStyle(element).display;
     if (originalDisplay === 'none') element.style.display = 'block';
