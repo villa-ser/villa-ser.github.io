@@ -6,6 +6,7 @@ let dbPrecios = [];
 let listaItems = [];
 let notasOriginales = "";
 let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
+let telefonoClienteActual = "";
 
 let conceptoEditado = null;
 let precioEditado = null;
@@ -159,15 +160,16 @@ function filtrarAgenda() {
                 <h4 style="margin: 0; font-size: 0.95rem; color: var(--ngc-text-main);">${c.nombre}</h4>
                 <small style="color: var(--ngc-text-faded);"><i class="fa-solid fa-location-dot"></i> ${c.dir || 'Sin dirección'}</small>
             </div>
-            <button class="ngc-btn-small" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: transparent;" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}')">Usar</button>
+            <button class="ngc-btn-small" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: transparent;" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${(c.tel || '').replace(/'/g, "\\'")}')">Usar</button>
         `;
         contenedor.appendChild(div);
     });
 }
 
-function seleccionarContacto(nombre, dir) {
+function seleccionarContacto(nombre, dir, tel = "") {
     document.getElementById('cliNombre').value = nombre;
     document.getElementById('cliDireccion').value = dir;
+    telefonoClienteActual = tel; // Guardamos el teléfono
     clienteDesdeAgenda = true;
     permiteGuardarNube = true; 
     guardarClienteGlobal();
@@ -350,7 +352,8 @@ function guardarEstadoLocal() {
         items: listaItems,
         nro: nroPresupuestoGlobal,
         clienteDesdeAgenda: clienteDesdeAgenda,
-        permiteGuardarNube: permiteGuardarNube
+        permiteGuardarNube: permiteGuardarNube,
+        telefonoCliente: telefonoClienteActual
     };
     localStorage.setItem('presupuesto_estado_actual', JSON.stringify(estado));
 }
@@ -367,6 +370,7 @@ function cargarEstadoGuardado() {
         if (estado.nro) nroPresupuestoGlobal = estado.nro;
         if (estado.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = estado.clienteDesdeAgenda;
         if (estado.permiteGuardarNube !== undefined) permiteGuardarNube = estado.permiteGuardarNube;
+        if (estado.telefonoCliente !== undefined) telefonoClienteActual = estado.telefonoCliente;
     }
 }
 
@@ -655,13 +659,51 @@ async function generarPDF() {
     } 
     finally { if (window.innerWidth < 992) element.style.display = 'none'; }
 }
-
+// ==========================================
+// NUEVO SISTEMA WHATSAPP
+// ==========================================
 function enviarWhatsApp() { 
-    const tel = prompt("Ingresá el número de WhatsApp del cliente (Ej: 3511234567):");
-    if(!tel) return;
-    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PRESUPUESTO';
-    let m = `*${profNombre.toUpperCase()}*\nProyecto: ${document.getElementById('cliProyecto').value}\n\n`; 
-    listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
-    m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
-    window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
-                                                                                                     }
+    document.getElementById('modalWhatsApp').classList.remove('oculto');
+    const btnActual = document.getElementById('btnWspGuardado');
+    
+    // Si tenemos el teléfono del cliente de la agenda, habilitamos el botón
+    if (telefonoClienteActual) {
+        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente (${telefonoClienteActual})`;
+        btnActual.disabled = false;
+        btnActual.style.opacity = '1';
+    } else {
+        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Cliente sin teléfono`;
+        btnActual.disabled = true;
+        btnActual.style.opacity = '0.5';
+    }
+}
+
+function cerrarModalWsp() {
+    document.getElementById('modalWhatsApp').classList.add('oculto');
+}
+
+function armarMensajeWsp() {
+    const proyecto = document.getElementById('cliProyecto').value.trim() || '...';
+    return `Le adjunto el presupuesto para su proyecto de ${proyecto}.`;
+}
+
+// Opción 1: Enviar directo al contacto agendado
+function enviarWspClienteActual() {
+    if (!telefonoClienteActual) return;
+    
+    let cleanNumber = telefonoClienteActual.replace(/\D/g, '');
+    if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
+    else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
+    
+    const msg = armarMensajeWsp();
+    window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+    cerrarModalWsp();
+}
+
+// Opción 2: Abre WhatsApp nativo en la sección de seleccionar contactos
+function buscarEnWhatsApp() {
+    const msg = armarMensajeWsp();
+    // Al omitir el número y pasar solo el texto, WhatsApp abre el buscador para que elijas a quién reenviarlo
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    cerrarModalWsp();
+}
