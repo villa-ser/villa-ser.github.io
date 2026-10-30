@@ -62,10 +62,13 @@ async function initDatosSheets() {
         
         document.getElementById('loading').classList.add('oculto');
         
+        // CORRECCIÓN: Asegurar que el contenedor global se muestre SIEMPRE
+        document.getElementById('app').classList.remove('oculto');
+        
         if (listaItems.length === 0) {
             document.getElementById('section-client').classList.remove('oculto');
         } else {
-            document.getElementById('app').classList.remove('oculto');
+            document.getElementById('main-content').classList.remove('oculto');
         }
         
         fillSelect(0, [...new Set(dataMat.map(item => item.c0))].filter(v => v));
@@ -194,7 +197,7 @@ function opcionBuscarAgenda() {
 }
 
 function opcionContinuarSinAgenda() {
-    if (confirm("⚠️ AVISO: Al no estar en tu agenda, esta lista NO podrá guardarse en la nube (solo podrás descargar el PDF o Imagen).\n\n¿Estás seguro de continuar?")) {
+    if (confirm("⚠️ AVISO: Al no estar en tu agenda, esta lista NO podrá guardarse en la nube.\n\n¿Estás seguro de continuar?")) {
         permiteGuardarNube = false; 
         document.getElementById('modalAgendarCliente').classList.add('oculto');
         avanzarPasoLista();
@@ -208,7 +211,6 @@ function avanzarPasoLista() {
     document.getElementById('main-content').classList.add('flex-column', 'gap-15');
     document.getElementById('btnNuevoListado').classList.remove('oculto');
     
-    // Si la lista está vacía, agregamos el encabezado de cliente automáticamente.
     const nombre = document.getElementById('cliNombre').value.trim();
     if (nombre && listaItems.length === 0) {
         const dir = document.getElementById('cliDir').value;
@@ -424,6 +426,7 @@ function nuevoListado() {
         guardarClienteGlobal();
         
         document.getElementById('main-content').classList.add('oculto');
+        document.getElementById('app').classList.remove('oculto');
         document.getElementById('section-client').classList.remove('oculto');
         document.getElementById('btnNuevoListado').classList.add('oculto');
         renderItems();
@@ -669,6 +672,55 @@ function takeScreenshot() {
         deletes.forEach(b => b.style.visibility = 'visible');
         area.style.color = ""; area.style.border = "";
     });
+}
+
+function exportToTxt() {
+    const obsGen = document.getElementById('obsGenerales').value.replace(/\n/g, '\\n');
+    if (listaItems.length === 0 && !obsGen) { alert("La lista está vacía."); return; }
+
+    let content = listaItems.map(i => i.raw).join('\n');
+    if (obsGen) content += `\nGLOBAL_OBS\t${obsGen}`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = (document.getElementById('cliNombre').value.trim() || "Lista") + "_Borrador.txt";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+function importFromTxt(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const lines = e.target.result.split('\n');
+        listaItems = [];
+        document.getElementById('obsGenerales').value = "";
+        
+        lines.forEach(line => {
+            if (!line.trim()) return;
+            const raw = line.split('\t');
+            if (raw[0] === 'CLI') {
+                document.getElementById('cliNombre').value = raw[1] || '';
+                document.getElementById('cliDir').value = raw[2] || '';
+                listaItems.push({ id: Date.now() + Math.random(), type: 'CLI', raw: line, html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${new Date().toLocaleDateString('es-AR')} - ${raw[1]}</strong>` });
+            } else if (raw[0] === 'ITM') {
+                listaItems.push({ id: Date.now() + Math.random(), type: 'ITM', raw: line, html: `<b>${raw[1]} ${raw[2].substring(0,3).toUpperCase()}</b> | ${raw[3]} ${raw[4] ? `<span style="color:var(--ngc-neon);">[${raw[4]}]</span>` : ''}` });
+            } else if (raw[0] === 'GLOBAL_OBS') {
+                document.getElementById('obsGenerales').value = raw[1].replace(/\\n/g, '\n');
+            }
+        });
+        
+        event.target.value = ""; guardarEstado(); renderItems();
+        guardarClienteGlobal();
+        document.getElementById('section-client').classList.add('oculto');
+        document.getElementById('app').classList.remove('oculto');
+        document.getElementById('main-content').classList.remove('oculto');
+        document.getElementById('main-content').classList.add('flex-column');
+        document.getElementById('btnNuevoListado').classList.remove('oculto');
+    };
+    reader.readAsText(file);
 }
 
 // ==========================================
