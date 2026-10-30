@@ -1,3 +1,36 @@
+// ==========================================
+// INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
+// ==========================================
+function arrancarModulo() {
+    // 1. Intento seguro de Firebase (Si falla, se omite y la app sigue funcionando)
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            db = firebase.firestore();
+            if (typeof firebase.auth === 'function') {
+                firebase.auth().onAuthStateChanged(user => {
+                    if (user) uidSeguro = user.uid;
+                });
+            }
+        }
+    } catch (e) {
+        console.warn("Aviso: Firebase no pudo iniciar, funcionando en modo local.", e);
+    }
+
+    // 2. Intento seguro de Memoria (Si hay un archivo roto, lo resetea sin trabarse)
+    try {
+        inicializarClienteMemoria();
+    } catch (e) {
+        console.warn("Aviso: Memoria local reseteada por datos corruptos.");
+        localStorage.removeItem('presupuesto_estado_actual');
+    }
+
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancarModulo);
+} else {
+    arrancarModulo();
+}
+
 // --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
