@@ -1,18 +1,7 @@
 // ==========================================
 // 1. CONFIGURACIÓN DE FIREBASE Y TEMA
 // ==========================================
-const firebaseConfig = {
-    apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
-    authDomain: "villaser-gestion.firebaseapp.com",
-    projectId: "villaser-gestion",
-    storageBucket: "villaser-gestion.firebasestorage.app",
-    messagingSenderId: "1032102638132",
-    appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061",
-    measurementId: "G-CS6MWCYNFD"
-};
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+// La configuración ya se cargó externamente desde firebase-config.js
 const auth = firebase.auth();
 const db = firebase.firestore();
 
