@@ -16,7 +16,10 @@ const MAPA_IZ = { "1.5": 15, "2.5": 21, "4": 28, "6": 36, "10": 50, "16": 66 };
 
 let listaAmbientes = [];
 let editandoId = null;
-window.clienteTemporal = null; // Para manejo de modal y estado
+
+// Lógica Agenda / Firebase
+let clienteDesdeAgenda = false;
+let clienteActualId = null;
 
 // Circuitos inician vacíos en selecciones, esperando ingreso del usuario
 let circuitos = [
@@ -26,7 +29,6 @@ let circuitos = [
 let circuitoCS = { id: 'CS', tipo: 'T.P.', dpms: 0, tension: '', seccionLN: '', seccionPE: '', iz: '', in: '' };
 
 window.onload = () => {
-    inicializarClienteMemoria();
     actualizarPDFHeaders();
 };
 
@@ -51,10 +53,7 @@ function mostrarToast(titulo, mensaje, esError = false) {
 
     toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 10);
-    
-    setTimeout(() => {
-        cerrarToast();
-    }, 3500);
+    setTimeout(() => cerrarToast(), 3500);
 }
 
 function cerrarToast() {
@@ -65,41 +64,10 @@ function cerrarToast() {
     }
 }
 
-// --- MODAL DE MEMORIA GLOBAL Y CLIENTE ---
-function inicializarClienteMemoria() {
-    const clienteStr = localStorage.getItem('villaser_cliente_global');
-    if (clienteStr && listaAmbientes.length === 0 && !document.getElementById('cliNombre').value) {
-        try {
-            window.clienteTemporal = JSON.parse(clienteStr);
-            if (window.clienteTemporal.nombre) {
-                document.getElementById('modalRecuperarCliente').classList.remove('oculto');
-            }
-        } catch (e) {}
-    }
-}
-
-function usarClienteMemoria() {
-    if (window.clienteTemporal) {
-        document.getElementById('cliNombre').value = window.clienteTemporal.nombre || '';
-        document.getElementById('cliTel').value = window.clienteTemporal.tel || '';
-        document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || window.clienteTemporal.dir || '';
-        guardarClienteGlobal();
-        mostrarToast('Cliente Recuperado', 'Datos cargados exitosamente.');
-    }
-    document.getElementById('modalRecuperarCliente').classList.add('oculto');
-}
-
-function limpiarClienteMemoria() {
-    document.getElementById('modalRecuperarCliente').classList.add('oculto');
-}
-
-function guardarClienteGlobal() {
-    const clienteObj = {
-        nombre: document.getElementById('cliNombre').value.trim(),
-        tel: document.getElementById('cliTel').value.trim(),
-        direccion: document.getElementById('cliDireccion').value.trim()
-    };
-    localStorage.setItem('villaser_cliente_global', JSON.stringify(clienteObj));
+// --- LÓGICA DE FLUJO DE CLIENTE ---
+function marcarClienteManual() {
+    clienteDesdeAgenda = false;
+    clienteActualId = null;
 }
 
 function nuevoCalculo() {
@@ -107,6 +75,8 @@ function nuevoCalculo() {
         document.getElementById('cliNombre').value = '';
         document.getElementById('cliTel').value = '';
         document.getElementById('cliDireccion').value = '';
+        marcarClienteManual();
+
         listaAmbientes = [];
         circuitos = [
             { id: 'C1', tipo: 'IUG', dpms: 0, userEditedDpms: false, tension: '', seccionLN: '', seccionPE: '', iz: '', in: '' },
@@ -114,7 +84,6 @@ function nuevoCalculo() {
         ];
         circuitoCS = { id: 'CS', tipo: 'T.P.', dpms: 0, tension: '', seccionLN: '', seccionPE: '', iz: '', in: '' };
         
-        guardarClienteGlobal();
         document.getElementById('step-trabajo').classList.add('oculto');
         document.getElementById('step-cliente').classList.remove('oculto');
         calcularGradoYRenderizar();
@@ -128,13 +97,240 @@ function iniciarCalculo() {
         document.getElementById('cliNombre').focus();
         return;
     }
+    
+    if (!clienteDesdeAgenda) {
+        document.getElementById('modalAgendarCliente').classList.remove('oculto');
+        return;
+    }
+
+    avanzarPasoTrabajo();
+}
+
+function opcionContinuarSinAgenda() {
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    document.getElementById('modalAdvertenciaBorrador').classList.remove('oculto');
+}
+
+function opcionBuscarAgenda() {
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    abrirModalAgenda();
+}
+
+function confirmarCalculoTemporal() {
+    document.getElementById('modalAdvertenciaBorrador').classList.add('oculto');
+    avanzarPasoTrabajo();
+}
+
+function cancelarCalculoTemporal() {
+    document.getElementById('modalAdvertenciaBorrador').classList.add('oculto');
+}
+
+function avanzarPasoTrabajo() {
     document.getElementById('step-cliente').classList.add('oculto');
     document.getElementById('step-trabajo').classList.remove('oculto');
     document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-    guardarClienteGlobal();
     actualizarGestorCircuitos();
     calcularGradoYRenderizar();
 }
+
+// --- AGENDA DE FIREBASE ---
+function abrirModalAgenda() {
+    document.getElementById('modalAgenda').classList.remove('oculto');
+    filtrarAgenda();
+}
+
+function cerrarModalAgenda() {
+    document.getElementById('modalAgenda').classList.add('oculto');
+}
+
+async function filtrarAgenda() {
+    const query = document.getElementById('buscadorAgenda').value.toLowerCase();
+    const lista = document.getElementById('listaAgenda');
+    lista.innerHTML = '<div style="text-align: center; color: var(--ngc-neon);"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>';
+    
+    if(!db || !currentUserUid) return;
+
+    try {
+        const snapshot = await db.collection('clientes').where('userId', '==', currentUserUid).get();
+        lista.innerHTML = '';
+        let count = 0;
+
+        snapshot.forEach(doc => {
+            const c = doc.data();
+            const textStr = `${c.nombre} ${c.telefono} ${c.direccion}`.toLowerCase();
+            if (textStr.includes(query)) {
+                count++;
+                lista.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <b style="color: var(--ngc-text-main); display: block;">${c.nombre}</b>
+                            <small style="color: var(--ngc-text-faded);"><i class="fa-solid fa-phone"></i> ${c.telefono || '-'} | <i class="fa-solid fa-location-dot"></i> ${c.direccion || '-'}</small>
+                        </div>
+                        <button class="ngc-btn-small" onclick="seleccionarClienteAgenda('${doc.id}', '${c.nombre.replace(/'/g, "\\'")}', '${c.telefono || ''}', '${c.direccion || ''}')" style="color: var(--ngc-neon); border-color: var(--ngc-neon);">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                `;
+            }
+        });
+
+        if (count === 0) lista.innerHTML = '<div style="text-align: center; color: var(--ngc-text-faded);">No se encontraron clientes.</div>';
+    } catch(e) {
+        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar agenda.</div>';
+    }
+}
+
+function seleccionarClienteAgenda(id, nombre, tel, dir) {
+    clienteActualId = id;
+    clienteDesdeAgenda = true;
+    document.getElementById('cliNombre').value = nombre;
+    document.getElementById('cliTel').value = tel;
+    document.getElementById('cliDireccion').value = dir;
+    cerrarModalAgenda();
+    mostrarToast("Cliente Seleccionado", "Datos cargados desde la agenda.");
+}
+
+// --- BORRADORES EN FIREBASE ---
+async function guardarBorradorFirebase() {
+    if (!clienteDesdeAgenda) {
+        alert("No puedes guardar un borrador en la nube para un cliente no agendado.");
+        return;
+    }
+    
+    if (listaAmbientes.length === 0) return alert("Debe cargar ambientes para guardar.");
+
+    const payload = {
+        userId: currentUserUid,
+        clienteId: clienteActualId,
+        clienteNombre: document.getElementById('cliNombre').value,
+        fecha: new Date().toISOString(),
+        listaAmbientes,
+        circuitos,
+        circuitoCS
+    };
+
+    const btn = event.currentTarget;
+    const oldHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+
+    try {
+        await db.collection('borradores_potencia').add(payload);
+        mostrarToast("Guardado Exitoso", "El borrador se guardó en la nube.");
+    } catch(e) {
+        alert("Error al guardar en la nube.");
+    } finally {
+        btn.innerHTML = oldHtml;
+    }
+}
+
+async function abrirModalBorradores() {
+    if(!clienteDesdeAgenda) {
+        alert("Selecciona un cliente de la agenda para ver sus borradores de potencia.");
+        return;
+    }
+    document.getElementById('modalBorradores').classList.remove('oculto');
+    const lista = document.getElementById('listaBorradores');
+    lista.innerHTML = '<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando borradores...</div>';
+
+    try {
+        // Obtenemos todos los del cliente y los ordenamos en JavaScript (Evita requerir índices compuestos en Firebase)
+        const snapshot = await db.collection('borradores_potencia')
+            .where('userId', '==', currentUserUid)
+            .where('clienteId', '==', clienteActualId)
+            .get();
+            
+        let docs = [];
+        snapshot.forEach(doc => docs.push(doc.data()));
+        docs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+            
+        lista.innerHTML = '';
+        if (docs.length === 0) {
+            lista.innerHTML = '<div style="text-align: center; color: var(--ngc-text-faded);">No hay borradores de potencia para este cliente.</div>';
+            return;
+        }
+
+        docs.forEach(data => {
+            const d = new Date(data.fecha);
+            lista.innerHTML += `
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <b style="color: var(--ngc-text-main); display: block;">${data.clienteNombre}</b>
+                        <small style="color: var(--ngc-text-faded);"><i class="fa-regular fa-clock"></i> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}</small>
+                    </div>
+                    <button class="ngc-btn-small" onclick='cargarBorradorPotencia(${JSON.stringify(data).replace(/'/g, "&#39;")})' style="color: #e91e63; border-color: #e91e63;">
+                        <i class="fa-solid fa-download"></i> Abrir
+                    </button>
+                </div>
+            `;
+        });
+    } catch (e) {
+        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar borradores.</div>';
+    }
+}
+
+function cerrarModalBorradores() {
+    document.getElementById('modalBorradores').classList.add('oculto');
+}
+
+function cargarBorradorPotencia(data) {
+    listaAmbientes = data.listaAmbientes || [];
+    circuitos = data.circuitos || [];
+    circuitoCS = data.circuitoCS || { id: 'CS', tipo: 'T.P.', dpms: 0, tension: '', seccionLN: '', seccionPE: '', iz: '', in: '' };
+    
+    cerrarModalBorradores();
+    actualizarGestorCircuitos();
+    calcularGradoYRenderizar();
+    mostrarToast("Borrador Abierto", "Los datos se cargaron correctamente.");
+}
+
+
+// --- ENVIAR WHATSAPP (NUEVO MODAL) ---
+function abrirModalWhatsApp() {
+    if (listaAmbientes.length === 0) return alert("Debes cargar ambientes primero.");
+    const telGuardado = document.getElementById('cliTel').value.trim();
+    document.getElementById('modalWhatsApp').classList.remove('oculto');
+    
+    if(telGuardado) {
+        document.getElementById('btnWspGuardado').style.display = 'flex';
+        document.getElementById('btnWspGuardado').innerHTML = `<i class="fa-solid fa-phone"></i> Enviar al Agendado (${telGuardado})`;
+        document.getElementById('btnWspGuardado').onclick = () => procesarEnvioWsp(telGuardado);
+    } else {
+        document.getElementById('btnWspGuardado').style.display = 'none';
+    }
+}
+
+function cerrarModalWhatsApp() {
+    document.getElementById('modalWhatsApp').classList.add('oculto');
+    document.getElementById('inputWspNuevo').value = '';
+}
+
+function ejecutarEnvioWspNuevo() {
+    const num = document.getElementById('inputWspNuevo').value.trim();
+    if(!num) return alert("Ingresá un número válido.");
+    procesarEnvioWsp(num);
+}
+
+function procesarEnvioWsp(numero) {
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
+    const dpms = document.getElementById('ui-dpms').innerText;
+    const grado = document.getElementById('ui-grado').innerText;
+    const area = document.getElementById('ui-sla').innerText;
+    
+    let m = `*${profNombre.toUpperCase()}*\nProyecto: ${document.getElementById('cliNombre').value}\n\n`;
+    m += `Se ha realizado el cálculo de Carga y Circuitos:\n`;
+    m += `• Superficie Límite: ${area}\n`;
+    m += `• Grado Electrificación: ${grado}\n`;
+    m += `• DPMS Total: ${dpms}\n\n`;
+    m += `*TOTAL AMBIENTES:* ${listaAmbientes.length}\n`;
+
+    let tel = numero.replace(/\D/g, '');
+    if (tel.length === 10) tel = "549" + tel;
+    else if (!tel.startsWith("54")) tel = "549" + tel;
+    
+    window.open(`https://wa.me/${tel}?text=${encodeURIComponent(m)}`, '_blank');
+    cerrarModalWhatsApp();
+}
+
 
 // --- LÓGICA DE POTENCIA (AEA) ---
 function obtenerGradoElectrificacion(areaTotal) {
@@ -585,67 +781,4 @@ async function tomarCaptura() {
     link.download = `Carga_Circuitos_${n}.png`; link.href = canvas.toDataURL(); link.click(); 
     
     zona.style.color = oldColor; 
-}
-
-// --- SISTEMA DE GUARDADO / APERTURA EN JSON ---
-function guardarComoJSON() {
-    const cliNombre = document.getElementById('cliNombre').value;
-    if (!cliNombre && listaAmbientes.length === 0) return alert("No hay datos para guardar.");
-    
-    const payload = {
-        cliente: {
-            nombre: cliNombre,
-            tel: document.getElementById('cliTel').value,
-            direccion: document.getElementById('cliDireccion').value
-        },
-        listaAmbientes,
-        circuitos,
-        circuitoCS
-    };
-    
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `Villaser_Carga_${cliNombre.replace(/ /g, '_') || 'Borrador'}.json`;
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    mostrarToast('Borrador Guardado', 'Se descargó el archivo JSON correctamente.');
-}
-
-function cargarDesdeJSON(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            
-            if (data.cliente) {
-                document.getElementById('cliNombre').value = data.cliente.nombre || '';
-                document.getElementById('cliTel').value = data.cliente.tel || '';
-                document.getElementById('cliDireccion').value = data.cliente.direccion || '';
-                guardarClienteGlobal();
-            }
-            
-            listaAmbientes = data.listaAmbientes || [];
-            circuitos = data.circuitos || [];
-            circuitoCS = data.circuitoCS || { id: 'CS', tipo: 'T.P.', dpms: 0, tension: '', seccionLN: '', seccionPE: '', iz: '', in: '' };
-            
-            document.getElementById('step-cliente').classList.add('oculto');
-            document.getElementById('step-trabajo').classList.remove('oculto');
-            document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-            
-            actualizarGestorCircuitos();
-            calcularGradoYRenderizar();
-            
-            mostrarToast('Borrador Abierto', 'Los datos se cargaron correctamente.');
-        } catch (err) {
-            mostrarToast('Error', 'Archivo no válido o corrupto.', true);
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = ''; 
-}
+                    }
