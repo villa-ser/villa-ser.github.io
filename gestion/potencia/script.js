@@ -2,12 +2,19 @@
 let currentUserUid = null;
 let db = null;
 
-firebase.auth().onAuthStateChanged(user => {
-    if (!user || !user.emailVerified) {
-        window.location.replace('../index.html'); 
+// Envolvemos Firebase para que espere la carga completa y no bloquee el resto del código si falla
+window.addEventListener('DOMContentLoaded', () => {
+    if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user || !user.emailVerified) {
+                window.location.replace('../index.html'); 
+            } else {
+                currentUserUid = user.uid;
+                db = firebase.firestore();
+            }
+        });
     } else {
-        currentUserUid = user.uid;
-        db = firebase.firestore();
+        console.error("⚠️ Firebase no está cargado. Las funciones de Agenda en la nube no estarán disponibles.");
     }
 });
 
