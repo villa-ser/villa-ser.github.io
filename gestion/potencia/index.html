@@ -94,7 +94,7 @@
 </div>
 
 <!-- MODAL AGENDA FIREBASE -->
-<div id="modalAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+<div id="modalAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10001; display: flex; justify-content: center; align-items: center;">
     <div class="ngc-card" style="width: 90%; max-width: 500px; height: 80vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-left: 4px solid var(--ngc-neon);">
         <div style="padding: 15px; border-bottom: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
             <h3 style="margin: 0; color: var(--ngc-text-main); font-size: 1.1rem;"><i class="fa-solid fa-address-book"></i> MI AGENDA</h3>
@@ -122,24 +122,23 @@
     </div>
 </div>
 
-<!-- MODAL ENVIAR WHATSAPP -->
+<!-- MODAL ENVIAR WHATSAPP (ESTILO EXACTO MATERIALES) -->
 <div id="modalWhatsApp" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid var(--success-green);">
+    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-radius: 12px; padding: 25px 20px;">
         <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: var(--success-green); margin-bottom: 15px;"></i>
-        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Enviar a Cliente</h3>
-        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">¿A qué número deseas enviar el resumen?</p>
+        <h3 style="color: var(--ngc-text-main); margin-top: 0; font-size: 1.2rem; font-weight: bold; text-transform: uppercase;">ENVIAR LISTA</h3>
+        <p style="color: var(--ngc-text-faded); font-size: 0.95rem; margin-bottom: 25px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
         
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button id="btnWspGuardado" class="ngc-btn" style="background: rgba(40, 167, 69, 0.1); border-color: var(--success-green); color: var(--success-green); display: none;"></button>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button id="btnWspGuardado" class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; font-weight: bold; font-size: 0.95rem; justify-content: center; display: none;"></button>
             
-            <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch;">
-                <input type="number" id="inputWspNuevo" class="ngc-input" placeholder="O escribe uno nuevo..." style="flex: 1;">
-                <button class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; padding: 0 15px;" onclick="ejecutarEnvioWspNuevo()">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
+            <button class="ngc-btn" style="background: transparent; color: var(--success-green); border: 1px solid var(--success-green); font-weight: bold; font-size: 0.95rem; justify-content: center;" onclick="abrirModalAgenda('whatsapp')">
+                <i class="fa-solid fa-magnifying-glass"></i> BUSCAR EN MIS CONTACTOS
+            </button>
             
-            <button class="ngc-btn danger-btn" style="margin-top: 10px; background: transparent; border-style: dashed;" onclick="cerrarModalWhatsApp()">Cancelar</button>
+            <button class="ngc-btn danger-btn" style="background: transparent; color: var(--error-red); border: 1px solid var(--error-red); font-weight: bold; font-size: 0.95rem; justify-content: center;" onclick="cerrarModalWhatsApp()">
+                CANCELAR
+            </button>
         </div>
     </div>
 </div>
@@ -178,7 +177,7 @@
                     <label>Nombre del Cliente</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" oninput="marcarClienteManual()" style="flex: 1;">
-                        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: rgba(0, 212, 255, 0.1);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
+                        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: rgba(0, 212, 255, 0.1);" onclick="abrirModalAgenda('carga')" title="Buscar en Agenda">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </div>
@@ -376,4 +375,4 @@
 
 <script src="script.js"></script>
 </body>
-</html>
+                            </html>
