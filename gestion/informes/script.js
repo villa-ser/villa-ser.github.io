@@ -1,145 +1,151 @@
-// --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
-window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-    const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
-    
-    // Solo cambia automáticamente si el usuario lo tiene en modo "Sistema"
-    if (temaGuardado === 'system') {
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-        if (prefiereClaro) {
-            document.documentElement.setAttribute('data-theme', 'light');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
-    }
-});
+// ==========================================
+// INICIALIZACIÓN Y VARIABLES GLOBALES
+// ==========================================
+let db = null;
+let uidSeguro = null;
+let informeParrafos = [];
+let clienteDesdeAgenda = false;
+let permiteGuardarNube = false;
+let clienteActualId = null;
+let nombreBorradorActual = null;
 
-let clientDetails = { nombre: "", tel: "", dir: "", obs: "" };
-let currentClientName = "";
-let selectedPhone = "";
-let informeParrafos = []; 
-
-window.onload = () => {
-    cargarClienteGlobal();
-    cargarDatosEmpresa();
-    renderizarParrafos(); 
-};
-
-function cargarDatosEmpresa() {
-    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
-    const profTel = localStorage.getItem('villaser_conf_telefono') || '';
-    const profSlogan = localStorage.getItem('villaser_conf_slogan') || '';
-    const profLogo = localStorage.getItem('villaser_conf_logo') || '';
-
-    const elTelFooter = document.getElementById('pdf-tel-footer');
-    if(elTelFooter) elTelFooter.innerText = profTel ? `📞 ${profTel}` : '';
-    
-    const elSlogan = document.getElementById('pdf-slogan');
-    if(elSlogan) elSlogan.innerText = profSlogan || '¡Electricidad Segura, Hogar Tranquilo!';
-    
-    const elCredenciales = document.getElementById('pdf-credenciales');
-    if(elCredenciales) elCredenciales.innerText = profNombre;
-
-    const imgPdf = document.getElementById('pdf-img-logo');
-    const txtPdf = document.getElementById('pdf-text-logo');
-    
-    if (imgPdf && txtPdf) {
-        if (profLogo && profLogo.startsWith('data:image')) {
-            imgPdf.src = profLogo; 
-            imgPdf.style.display = 'block'; 
-            txtPdf.style.display = 'none';
-        } else {
-            imgPdf.style.display = 'none'; 
-            txtPdf.innerText = profNombre.toUpperCase(); 
-            txtPdf.style.display = 'block';
-        }
-    }
-}
-
-function cargarClienteGlobal() {
-    const guardado = localStorage.getItem('villaser_cliente_global');
-    if (guardado) {
-        try {
-            const datos = JSON.parse(guardado);
-            if (datos.nombre || datos.dir) {
-                document.getElementById('cliNombre').value = datos.nombre || '';
-                document.getElementById('cliDir').value = datos.dir || '';
-                document.getElementById('cliObs').value = datos.obs || datos.proyecto || ''; 
-                
-                clientDetails = datos;
-                currentClientName = datos.nombre || '';
-                selectedPhone = datos.tel ? datos.tel.replace(/\D/g, '') : '';
-                
-                mostrarToast();
+function arrancarModulo() {
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            db = firebase.firestore();
+            if (typeof firebase.auth === 'function') {
+                firebase.auth().onAuthStateChanged(user => {
+                    if (user) uidSeguro = user.uid;
+                });
             }
-        } catch (e) {
-            console.error("Error al leer cliente global", e);
         }
+    } catch (e) {
+        console.warn("Aviso: Firebase no pudo iniciar.", e);
     }
 }
 
-function guardarClienteGlobal() {
-    clientDetails = {
-        nombre: document.getElementById('cliNombre').value.trim(),
-        tel: selectedPhone, 
-        dir: document.getElementById('cliDir').value.trim(),
-        obs: document.getElementById('cliObs').value.trim(),
-        proyecto: document.getElementById('cliObs').value.trim() 
-    };
-    currentClientName = clientDetails.nombre;
-    localStorage.setItem('villaser_cliente_global', JSON.stringify(clientDetails));
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancarModulo);
+} else {
+    arrancarModulo();
 }
 
-function mostrarToast() {
-    const toast = document.getElementById('toastCliente');
-    if (toast) {
-        toast.classList.remove('oculto');
-        setTimeout(() => toast.classList.add('mostrar'), 10);
-        setTimeout(cerrarToast, 5000); 
+function obtenerUid() {
+    if (uidSeguro) return uidSeguro;
+    if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid;
     }
+    return null;
 }
 
-function cerrarToast() {
-    const toast = document.getElementById('toastCliente');
-    if (toast) {
-        toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400); 
-    }
-}
-
-function confirmarCliente() {
-    guardarClienteGlobal(); 
+// ==========================================
+// AGENDA Y VALIDACIONES
+// ==========================================
+async function abrirModalAgenda() {
+    document.getElementById('modalAdvertenciaAgenda').classList.add('oculto');
+    document.getElementById('modalAgenda').classList.remove('oculto');
+    const container = document.getElementById('listaContactosModal');
+    container.innerHTML = '<div style="text-align:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando agenda...</div>';
     
-    if (!clientDetails.nombre) {
-        alert("Por favor, ingrese al menos el nombre del cliente.");
-        document.getElementById('cliNombre').focus();
+    const uid = obtenerUid();
+    if (!uid || !db) {
+        container.innerHTML = '<div style="color:var(--error-red); text-align:center;">No hay conexión con la agenda.</div>';
         return;
     }
-    
-    const b = document.getElementById('btnCli'); 
-    b.innerHTML = '<i class="fa-solid fa-check"></i> LISTO'; 
-    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
-    
-    setTimeout(() => { 
-        document.getElementById('section-client').classList.add('oculto');
-        document.getElementById('main-content').classList.remove('oculto');
-        document.getElementById('main-content').classList.add('flex-column', 'gap-15');
+
+    try {
+        const snapshot = await db.collection("perfiles").doc(uid).collection("contactos").get();
+        container.innerHTML = '';
+        if (snapshot.empty) {
+            container.innerHTML = '<div style="text-align:center; color:var(--ngc-text-faded);">Agenda vacía.</div>';
+            return;
+        }
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const div = document.createElement('div');
+            div.className = 'contacto-item';
+            div.style.cssText = "background: rgba(255,255,255,0.05); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 10px; cursor: pointer;";
+            div.innerHTML = `<b style="color:var(--ngc-neon);">${data.nombre}</b><br><small style="color:var(--ngc-text-faded);">${data.telefono || 'Sin Tel'}</small>`;
+            div.onclick = () => seleccionarClienteAgenda(doc.id, data.nombre, data.telefono, data.direccion);
+            container.appendChild(div);
+        });
+    } catch (error) {
+        container.innerHTML = '<div style="color:var(--error-red); text-align:center;">Error al cargar.</div>';
+    }
+}
+
+function filtrarAgenda() {
+    const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
+    const items = document.getElementById('listaContactosModal').querySelectorAll('div.contacto-item');
+    items.forEach(item => {
+        if(item.innerText.toLowerCase().includes(texto)) item.style.display = 'block';
+        else item.style.display = 'none';
+    });
+}
+
+function cerrarModalAgenda() {
+    document.getElementById('modalAgenda').classList.add('oculto');
+}
+
+function seleccionarClienteAgenda(id, nombre, tel, dir) {
+    clienteActualId = id;
+    clienteDesdeAgenda = true;
+    permiteGuardarNube = true;
+    document.getElementById('cliNombre').value = nombre;
+    document.getElementById('cliTel').value = tel;
+    document.getElementById('cliDir').value = dir;
+    cerrarModalAgenda();
+    mostrarToast("Cliente Seleccionado", "Datos cargados desde la agenda.");
+}
+
+function verificarClienteManual() {
+    if(clienteDesdeAgenda) return;
+    const nombre = document.getElementById('cliNombre').value.trim();
+    if(nombre.length > 2) document.getElementById('modalAdvertenciaAgenda').classList.remove('oculto');
+}
+
+function continuarSinAgenda() {
+    permiteGuardarNube = false;
+    clienteDesdeAgenda = false;
+    document.getElementById('modalAdvertenciaAgenda').classList.add('oculto');
+}
+
+// ==========================================
+// FLUJO INFORME Y PÁRRAFOS
+// ==========================================
+function nuevoInforme() {
+    if (confirm("¿Iniciar un nuevo informe? Se borrarán los datos actuales.")) {
+        document.getElementById('cliNombre').value = '';
+        document.getElementById('cliTel').value = '';
+        document.getElementById('cliDir').value = '';
+        document.getElementById('obsGenerales').value = '';
+        informeParrafos = [];
+        clienteDesdeAgenda = false;
+        permiteGuardarNube = false;
+        nombreBorradorActual = null;
         
-        b.innerHTML = '<i class="fa-solid fa-play"></i> Comenzar Informe';
-        b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
-        actualizarVistaPreviews();
-    }, 500);
+        document.getElementById('step-trabajo').classList.add('oculto');
+        document.getElementById('step-cliente').classList.remove('oculto');
+        renderizarParrafos();
+    }
+}
+
+function iniciarInforme() {
+    const nombre = document.getElementById('cliNombre').value.trim();
+    if (!nombre) return alert("Por favor, ingrese el nombre del cliente.");
+    
+    document.getElementById('step-cliente').classList.add('oculto');
+    document.getElementById('step-trabajo').classList.remove('oculto');
+    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
+    actualizarVistaPreviews();
 }
 
 function agregarParrafo() {
     const texto = document.getElementById('textoInforme').value.trim();
-    if (texto === "") {
-        alert("Escriba un párrafo antes de agregar.");
-        return;
-    }
+    if (!texto) return alert("Escriba un párrafo antes de agregar.");
+    
     informeParrafos.push(texto);
     document.getElementById('textoInforme').value = "";
-    
-    btnAlert('btnAgregarParrafo', '<i class="fa-solid fa-plus"></i> AGREGAR PÁRRAFO');
     renderizarParrafos();
 }
 
@@ -151,8 +157,7 @@ function eliminarParrafo(index) {
 }
 
 function editarParrafo(index) {
-    const parrafoActual = informeParrafos[index];
-    document.getElementById('textoInforme').value = parrafoActual;
+    document.getElementById('textoInforme').value = informeParrafos[index];
     informeParrafos.splice(index, 1);
     renderizarParrafos();
     document.getElementById('textoInforme').focus();
@@ -164,32 +169,32 @@ function renderizarParrafos() {
     
     informeParrafos.forEach((parrafo, index) => {
         const div = document.createElement('div');
-        div.className = 'parrafo-item';
+        div.style.cssText = 'background: rgba(0,0,0,0.4); border: 1px solid var(--ngc-privacy-border); padding: 12px; border-radius: 8px; position: relative; font-size: 0.85rem; line-height: 1.5;';
         div.innerHTML = `
             <p>${parrafo}</p>
-            <div class="parrafo-actions">
-                <button class="btn-edit-p" onclick="editarParrafo(${index})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-del-p" onclick="eliminarParrafo(${index})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+            <div style="display: flex; gap: 10px; margin-top: 8px; justify-content: flex-end;">
+                <button onclick="editarParrafo(${index})" style="background: transparent; border: none; color: #ff9800; cursor: pointer;"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="eliminarParrafo(${index})" style="background: transparent; border: none; color: var(--error-red); cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
             </div>
         `;
         contenedor.appendChild(div);
     });
-    
     actualizarVistaPreviews();
 }
 
+// ==========================================
+// RENDERIZADO, PDF Y MEMBRETE
+// ==========================================
 function actualizarVistaPreviews() {
+    const cliNombre = document.getElementById('cliNombre').value || 'Sin Nombre';
+    const cliDir = document.getElementById('cliDir').value || '-';
+    
     const infoClientArea = document.getElementById('previewClientInfo');
-    infoClientArea.innerHTML = `
-        <strong>Cliente:</strong> ${clientDetails.nombre}<br>
-        <strong>Dirección:</strong> ${clientDetails.dir || '-'}<br>
-        <strong>Referencia:</strong> ${clientDetails.obs || '-'}
-    `;
+    infoClientArea.innerHTML = `<strong>Cliente:</strong> ${cliNombre}<br><strong>Dirección:</strong> ${cliDir}`;
     
     const previewArea = document.getElementById('previewInforme');
     previewArea.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 15px;">${p}</p>`).join('');
 
-    // Actualizar Global Notes en la Captura
     const og = document.getElementById('obsGenerales').value;
     const previewGlobales = document.getElementById('previewNotasGlobales');
     if (og) {
@@ -199,7 +204,7 @@ function actualizarVistaPreviews() {
         previewGlobales.style.display = 'none';
     }
 
-    // Actualizar Global Notes en PDF
+    // Actualizar PDF Mapeo
     const pdfFecha = document.getElementById('pdf-fecha');
     const pdfCliente = document.getElementById('pdf-cliente');
     const pdfDir = document.getElementById('pdf-dir');
@@ -207,10 +212,10 @@ function actualizarVistaPreviews() {
     const pdfNotasBox = document.getElementById('pdf-notas-box');
     const pdfNotas = document.getElementById('pdf-notas');
 
-    if(pdfFecha) pdfFecha.innerText = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
-    if(pdfCliente) pdfCliente.innerText = clientDetails.nombre;
-    if(pdfDir) pdfDir.innerText = clientDetails.dir || 'A coordinar';
-    if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => `<p>${p}</p>`).join('');
+    if(pdfFecha) pdfFecha.innerText = new Date().toLocaleDateString('es-AR');
+    if(pdfCliente) pdfCliente.innerText = cliNombre;
+    if(pdfDir) pdfDir.innerText = cliDir;
+    if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 20px;">${p}</p>`).join('');
 
     if (og && pdfNotasBox && pdfNotas) {
         pdfNotas.innerText = og;
@@ -218,59 +223,43 @@ function actualizarVistaPreviews() {
     } else if (pdfNotasBox) {
         pdfNotasBox.style.display = 'none';
     }
+    
+    actualizarPDFHeaders();
 }
 
-function btnAlert(id, text) {
-    const b = document.getElementById(id); 
-    const originalText = b.innerHTML;
-    b.innerHTML = '<i class="fa-solid fa-check"></i> ¡LISTO!'; 
-    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
-    setTimeout(() => { 
-        b.innerHTML = text || originalText; 
-        b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; 
-    }, 1000);
-}
+function actualizarPDFHeaders() {
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
+    const profTel = localStorage.getItem('villaser_conf_telefono') || '';
+    const profSlogan = localStorage.getItem('villaser_conf_slogan') || '';
+    const profLogo = localStorage.getItem('villaser_conf_logo') || '';
 
-async function takeScreenshot() {
-    if (informeParrafos.length === 0) {
-        alert("El informe está vacío.");
-        return;
+    const elTelFooter = document.getElementById('pdf-tel-footer');
+    if(elTelFooter) elTelFooter.innerText = profTel ? `📞 ${profTel}` : '';
+    const elSlogan = document.getElementById('pdf-slogan');
+    if(elSlogan) elSlogan.innerText = profSlogan || '¡Electricidad Segura, Hogar Tranquilo!';
+    const elCredenciales = document.getElementById('pdf-credenciales');
+    if(elCredenciales) elCredenciales.innerText = profNombre;
+
+    const imgPdf = document.getElementById('pdf-img-logo');
+    const txtPdf = document.getElementById('pdf-text-logo');
+    
+    if (imgPdf && txtPdf) {
+        if (profLogo && profLogo.startsWith('data:image')) {
+            imgPdf.src = profLogo; imgPdf.style.display = 'block'; txtPdf.style.display = 'none';
+        } else {
+            imgPdf.style.display = 'none'; txtPdf.innerText = profNombre.toUpperCase(); txtPdf.style.display = 'block';
+        }
     }
-    
-    const area = document.getElementById('captureSection');
-    const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-    const bgColor = isLightMode ? "#ffffff" : "#181818";
-    
-    area.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
-    area.style.border = "none";
-    window.scrollTo(0, 0);
-
-    html2canvas(area, { backgroundColor: bgColor, scale: 2, useCORS: true, scrollY: 0 }).then(canvas => {
-        const link = document.createElement('a');
-        const shortName = currentClientName ? currentClientName.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '') : "Cliente";
-        link.download = `Informe_${shortName}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        area.style.color = ""; 
-        area.style.border = "";
-    });
 }
 
 async function generarPDF() {
-    if (informeParrafos.length === 0) {
-        alert("Agregue al menos un párrafo para generar el informe.");
-        return;
-    }
-    
+    if (informeParrafos.length === 0) return alert("Agregue al menos un párrafo.");
     actualizarVistaPreviews();
     const element = document.getElementById('plantilla-pdf');
-    
     element.style.display = 'block';
     window.scrollTo(0, 0);
     
-    const shortName = currentClientName ? currentClientName.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '') : "Cliente";
-    
+    const shortName = (document.getElementById('cliNombre').value || "Cliente").split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
     const opt = {
         margin:       0, 
         filename:     `${shortName}_Informe_Tecnico.pdf`,
@@ -279,133 +268,232 @@ async function generarPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    btnAlert('btnGenerarPDF', '<i class="fa-solid fa-file-pdf"></i> GENERANDO...');
+    if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
     
     try {
         await html2pdf().set(opt).from(element).save();
     } catch (error) {
-        console.error("Error al generar PDF", error);
         alert("Ocurrió un error al generar el PDF.");
     } finally {
         element.style.display = 'none';
     }
 }
 
-function sendWSP() {
-    if (informeParrafos.length === 0) {
-        alert("El informe está vacío.");
-        return;
-    }
+async function takeScreenshot() {
+    if (informeParrafos.length === 0) return alert("El informe está vacío.");
+    const area = document.getElementById('captureSection');
+    const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
+    const bgColor = isLightMode ? "#ffffff" : "#181818";
     
-    let text = `*INFORME TÉCNICO*\n`;
-    text += `*Cliente:* ${clientDetails.nombre}\n`;
-    if(clientDetails.dir) text += `*Dirección:* ${clientDetails.dir}\n`;
-    text += `\n`;
+    area.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
+    area.style.border = "none";
     
-    informeParrafos.forEach(p => {
-        text += `${p}\n\n`;
+    html2canvas(area, { backgroundColor: bgColor, scale: 2, useCORS: true, scrollY: 0 }).then(canvas => {
+        const link = document.createElement('a');
+        const shortName = (document.getElementById('cliNombre').value || "Cliente").split(' ')[0];
+        link.download = `Informe_${shortName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        area.style.color = ""; 
+        area.style.border = "";
     });
+}
 
+// ==========================================
+// WHATSAPP
+// ==========================================
+function abrirModalWhatsApp() {
+    if (informeParrafos.length === 0) return alert("Debes cargar información primero.");
+    const telGuardado = document.getElementById('cliTel').value.trim();
+    document.getElementById('inputWspManual').value = ""; 
+    document.getElementById('modalWhatsApp').classList.remove('oculto');
+    
+    const btnWspGuardado = document.getElementById('btnWspGuardado');
+    if(telGuardado) {
+        btnWspGuardado.style.display = 'flex';
+        btnWspGuardado.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ENVIAR AL CLIENTE (${telGuardado})`;
+        btnWspGuardado.onclick = () => procesarEnvioWsp(telGuardado);
+    } else {
+        btnWspGuardado.style.display = 'none';
+    }
+}
+
+function cerrarModalWhatsApp() {
+    document.getElementById('modalWhatsApp').classList.add('oculto');
+}
+
+function enviarWspManual() {
+    const numero = document.getElementById('inputWspManual').value.trim();
+    if (!numero) return alert("Por favor, ingresá un número válido.");
+    procesarEnvioWsp(numero);
+}
+
+function procesarEnvioWsp(numero) {
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
+    let text = `*${profNombre.toUpperCase()} - INFORME TÉCNICO*\n`;
+    text += `*Cliente:* ${document.getElementById('cliNombre').value}\n\n`;
+    
+    informeParrafos.forEach(p => text += `${p}\n\n`);
+    
     const og = document.getElementById('obsGenerales').value;
     if (og) text += `*NOTAS GLOBALES:*\n${og}\n`;
 
-    let cleanNumber = selectedPhone;
-    if (!cleanNumber) { 
-        cleanNumber = prompt("Ingrese el número de WhatsApp del cliente (Ej: 3511234567):", "");
-        if (!cleanNumber) return;
-        cleanNumber = cleanNumber.replace(/\D/g, '');
-    }
-
-    if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
-    else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
+    let tel = numero.replace(/\D/g, '');
+    if (tel.length === 10) tel = "549" + tel;
+    else if (!tel.startsWith("54")) tel = "549" + tel;
     
-    window.open(`https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/${tel}?text=${encodeURIComponent(text)}`, '_blank');
+    cerrarModalWhatsApp();
 }
 
-function exportToTxt() {
-    const og = document.getElementById('obsGenerales').value;
-    if (informeParrafos.length === 0 && !clientDetails.nombre && !og) {
-        alert("No hay datos para guardar.");
+// ==========================================
+// NUBE (FIREBASE)
+// ==========================================
+async function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
+    const uid = obtenerUid();
+    if (!uid || !db) {
+        if (mostrarAlerta) alert("⚠️ Sesión no detectada para la nube.");
         return;
     }
+    if (!permiteGuardarNube) {
+        if (mostrarAlerta) alert("⚠️ Acción bloqueada: Cliente no agendado.");
+        return;
+    }
+    if (informeParrafos.length === 0) return;
     
-    const data = {
-        cliente: clientDetails,
+    const nombreCli = (document.getElementById('cliNombre').value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
+    let nombreSugerido = `${nombreCli}_borrador_informe`;
+    let nombreFinal = nombreSugerido;
+
+    if (!autoGuardado) {
+        const nombreIngresado = prompt("Guardar borrador como:", nombreBorradorActual || nombreSugerido);
+        if (nombreIngresado === null) return;
+        nombreFinal = nombreIngresado.trim() || nombreSugerido;
+        nombreBorradorActual = nombreFinal;
+    } else {
+        nombreFinal = nombreBorradorActual || nombreSugerido;
+    }
+
+    const estado = {
+        cliNombre: document.getElementById('cliNombre').value,
+        cliTel: document.getElementById('cliTel').value,
+        cliDir: document.getElementById('cliDir').value,
+        obsGenerales: document.getElementById('obsGenerales').value,
         parrafos: informeParrafos,
-        obsGenerales: og
+        fechaGuardado: Date.now(),
+        nombreBorrador: nombreFinal
     };
     
-    const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
+    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
     
-    const shortName = currentClientName ? currentClientName.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '') : "Borrador";
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Informe_${shortName}_Villaser.txt`;
-    
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function importFromTxt(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            
-            if (data.cliente) {
-                document.getElementById('cliNombre').value = data.cliente.nombre || '';
-                document.getElementById('cliDir').value = data.cliente.dir || '';
-                document.getElementById('cliObs').value = data.cliente.obs || '';
-                selectedPhone = data.cliente.tel || '';
-                guardarClienteGlobal();
-            }
-            
-            if (data.parrafos && Array.isArray(data.parrafos)) {
-                informeParrafos = data.parrafos;
-            }
-
-            if (data.obsGenerales) {
-                document.getElementById('obsGenerales').value = data.obsGenerales;
-            } else {
-                document.getElementById('obsGenerales').value = '';
-            }
-            
-            document.getElementById('section-client').classList.add('oculto');
-            document.getElementById('main-content').classList.remove('oculto');
-            
-            renderizarParrafos();
-            
-        } catch (error) {
-            console.error(error);
-            alert("El archivo no tiene el formato correcto.");
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = ""; 
-}
-
-function nuevoInforme() {
-    if (confirm("¿Estás seguro de iniciar un nuevo informe? Se borrarán los datos actuales de la pantalla.")) {
-        document.getElementById('cliNombre').value = '';
-        document.getElementById('cliDir').value = '';
-        document.getElementById('cliObs').value = '';
-        document.getElementById('obsGenerales').value = '';
-        selectedPhone = '';
-        
-        informeParrafos = [];
-        
-        document.getElementById('main-content').classList.add('oculto');
-        document.getElementById('section-client').classList.remove('oculto');
-        
-        guardarClienteGlobal();
-        renderizarParrafos();
+    try {
+        await db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).set(estado);
+        if (mostrarAlerta) mostrarToast("Guardado", "Sincronizado con la nube.");
+    } catch (e) {
+        console.error("Error Firebase:", e);
+        if (mostrarAlerta) alert("Error al guardar.");
     }
 }
-    
+
+async function abrirModalBorradores() {
+    if(!clienteDesdeAgenda) {
+        alert("Selecciona un cliente de la agenda para ver sus borradores de informe.");
+        return;
+    }
+    document.getElementById('modalBorradores').classList.remove('oculto');
+    const lista = document.getElementById('listaBorradores');
+    lista.innerHTML = '<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>';
+
+    const uid = obtenerUid();
+    if (!uid || !db) return lista.innerHTML = '<div style="color:var(--error-red);">Sin conexión.</div>';
+
+    try {
+        const snapshot = await db.collection("perfiles").doc(uid).collection("borradores_informe")
+            .where('cliNombre', '==', document.getElementById('cliNombre').value.trim())
+            .get();
+            
+        let docs = [];
+        snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+        docs.sort((a,b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
+            
+        lista.innerHTML = '';
+        if (docs.length === 0) {
+            lista.innerHTML = '<div style="color:var(--ngc-text-faded); text-align:center;">No hay borradores.</div>';
+            return;
+        }
+
+        docs.forEach(b => {
+            const p = b.data;
+            const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString() : 'Sin fecha';
+            lista.innerHTML += `
+                <div style="background: rgba(255,255,255,0.05); border-left: 3px solid #e91e63; padding: 12px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong style="color: var(--ngc-text-main);">${p.nombreBorrador || p.cliNombre}</strong>
+                    </div>
+                    <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-bottom: 10px;">${fechaStr}</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="ngc-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                        <button class="ngc-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (e) {
+        lista.innerHTML = '<div style="color:var(--error-red); text-align:center;">Error al cargar.</div>';
+    }
+}
+
+function cerrarModalBorradores() {
+    document.getElementById('modalBorradores').classList.add('oculto');
+}
+
+async function cargarBorradorNube(docId) {
+    const uid = obtenerUid();
+    if (!uid || !db) return;
+    try {
+        const doc = await db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).get();
+        if (doc.exists) {
+            const data = doc.data();
+            document.getElementById('cliNombre').value = data.cliNombre || '';
+            document.getElementById('cliTel').value = data.cliTel || '';
+            document.getElementById('cliDir').value = data.cliDir || '';
+            document.getElementById('obsGenerales').value = data.obsGenerales || '';
+            informeParrafos = data.parrafos || [];
+            
+            clienteDesdeAgenda = true;
+            permiteGuardarNube = true;
+            nombreBorradorActual = data.nombreBorrador || null;
+            
+            cerrarModalBorradores();
+            document.getElementById('step-cliente').classList.add('oculto');
+            document.getElementById('step-trabajo').classList.remove('oculto');
+            renderizarParrafos();
+            mostrarToast("Borrador Abierto", "Los datos han sido cargados.");
+        }
+    } catch(e) {
+        alert("Error al cargar el borrador.");
+    }
+}
+
+function eliminarBorradorNube(docId, btnElement) {
+    const uid = obtenerUid();
+    if (!uid || !db) return;
+    if (confirm("¿Eliminar este borrador de la nube?")) {
+        db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).delete().then(() => {
+            btnElement.closest('div').remove();
+        });
+    }
+}
+
+// Utilidad Toast
+function mostrarToast(titulo, mensaje) {
+    const toast = document.getElementById('toastCliente');
+    document.getElementById('toastTitle').innerText = titulo;
+    document.getElementById('toastMessage').innerText = mensaje;
+    toast.classList.remove('oculto');
+    setTimeout(() => toast.classList.add('mostrar'), 10);
+    setTimeout(() => {
+        toast.classList.remove('mostrar');
+        setTimeout(() => toast.classList.add('oculto'), 400);
+    }, 4000);
+}
