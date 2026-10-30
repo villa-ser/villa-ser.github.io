@@ -24,12 +24,16 @@ function arrancarModulo() {
         localStorage.removeItem('presupuesto_estado_actual');
     }
 
+    // 3. Descarga de Google Sheets obligatoria
+    fetchData();
+}
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', arrancarModulo);
 } else {
     arrancarModulo();
 }
+
 
 // --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
