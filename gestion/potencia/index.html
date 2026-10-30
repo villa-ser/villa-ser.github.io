@@ -107,6 +107,13 @@
         <div style="display: flex; flex-direction: column; gap: 12px;">
             <button id="btnWspGuardado" class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; font-weight: bold; font-size: 0.95rem; justify-content: center; display: none;"></button>
             
+            <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                <input type="number" id="inputWspManual" class="ngc-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                <button class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManual()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
             <button class="ngc-btn" style="background: transparent; color: var(--success-green); border: 1px solid var(--success-green); font-weight: bold; font-size: 0.95rem; justify-content: center;" onclick="abrirModalAgenda('whatsapp')">
                 <i class="fa-solid fa-magnifying-glass"></i> BUSCAR EN MIS CONTACTOS
             </button>
