@@ -34,6 +34,15 @@ if (document.readyState === 'loading') {
     arrancarModulo();
 }
 
+function obtenerUid() {
+    if (uidSeguro) return uidSeguro;
+    if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid;
+    }
+    if (typeof currentUserUid !== 'undefined' && currentUserUid) return currentUserUid;
+    if (typeof window.currentUserUid !== 'undefined' && window.currentUserUid) return window.currentUserUid;
+    return null;
+}
 
 // --- LÓGICA DE TEMA AUTOMÁTICO EN TIEMPO REAL ---
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
