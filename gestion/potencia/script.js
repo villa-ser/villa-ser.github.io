@@ -1,8 +1,11 @@
 // ==========================================
 // INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
 // ==========================================
+let db = null;
+let uidSeguro = null;
+
 function arrancarModulo() {
-    // 1. Intento seguro de Firebase (Si falla, se omite y la app sigue funcionando)
+    // 1. Intento seguro de Firebase
     try {
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
             db = firebase.firestore();
@@ -15,17 +18,7 @@ function arrancarModulo() {
     } catch (e) {
         console.warn("Aviso: Firebase no pudo iniciar, funcionando en modo local.", e);
     }
-
-    // 2. Intento seguro de Memoria (Si hay un archivo roto, lo resetea sin trabarse)
-    try {
-        inicializarClienteMemoria();
-    } catch (e) {
-        console.warn("Aviso: Memoria local reseteada por datos corruptos.");
-        localStorage.removeItem('presupuesto_estado_actual');
-    }
-
-    // 3. Descarga de Google Sheets obligatoria
-    fetchData();
+    // NOTA: Se eliminaron llamados a fetchData() e inicializarClienteMemoria() porque no corresponden al módulo de Potencia y rompían la carga.
 }
 
 if (document.readyState === 'loading') {
@@ -39,7 +32,6 @@ function obtenerUid() {
     if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
         return firebase.auth().currentUser.uid;
     }
-    if (typeof currentUserUid !== 'undefined' && currentUserUid) return currentUserUid;
     if (typeof window.currentUserUid !== 'undefined' && window.currentUserUid) return window.currentUserUid;
     return null;
 }
@@ -197,18 +189,22 @@ function cerrarModalAgenda() {
 async function filtrarAgenda() {
     const query = document.getElementById('buscadorAgenda').value.toLowerCase();
     const lista = document.getElementById('listaAgenda');
-    lista.innerHTML = '<div style="text-align: center; color: var(--ngc-neon);"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>';
+    lista.innerHTML = '<div style="text-align: center; color: var(--ngc-neon);"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando agenda...</div>';
     
-    if(!db || !currentUserUid) return;
+    const uid = obtenerUid();
+    if(!db || !uid) {
+        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">No hay conexión a la base de datos.</div>';
+        return;
+    }
 
     try {
-        const snapshot = await db.collection('clientes').where('userId', '==', currentUserUid).get();
+        // CORRECCIÓN CLAVE: Apunta a perfiles/{uid}/contactos para coincidir con la agenda global
+        const snapshot = await db.collection("perfiles").doc(uid).collection("contactos").get();
         lista.innerHTML = '';
         let count = 0;
 
         snapshot.forEach(doc => {
             const c = doc.data();
-            // Corrección de bug: Si un cliente no tiene nombre guardado o está incompleto, previene el error "replace is not a function"
             const nombre = c.nombre || c.cliente || 'Sin Nombre';
             const tel = c.telefono || c.tel || '';
             const dir = c.direccion || c.dir || '';
@@ -266,8 +262,11 @@ async function guardarBorradorFirebase() {
     
     if (listaAmbientes.length === 0) return alert("Debe cargar ambientes para guardar.");
 
+    const uid = obtenerUid();
+    if (!uid || !db) return alert("No hay sesión activa para guardar en la nube.");
+
     const payload = {
-        userId: currentUserUid,
+        userId: uid,
         clienteId: clienteActualId,
         clienteNombre: document.getElementById('cliNombre').value,
         fecha: new Date().toISOString(),
@@ -284,6 +283,7 @@ async function guardarBorradorFirebase() {
         await db.collection('borradores_potencia').add(payload);
         mostrarToast("Guardado Exitoso", "El borrador se guardó en la nube.");
     } catch(e) {
+        console.error(e);
         alert("Error al guardar en la nube.");
     } finally {
         btn.innerHTML = oldHtml;
@@ -299,9 +299,15 @@ async function abrirModalBorradores() {
     const lista = document.getElementById('listaBorradores');
     lista.innerHTML = '<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando borradores...</div>';
 
+    const uid = obtenerUid();
+    if (!uid || !db) {
+        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">No hay conexión con tu usuario.</div>';
+        return;
+    }
+
     try {
         const snapshot = await db.collection('borradores_potencia')
-            .where('userId', '==', currentUserUid)
+            .where('userId', '==', uid)
             .where('clienteId', '==', clienteActualId)
             .get();
             
@@ -330,6 +336,7 @@ async function abrirModalBorradores() {
             `;
         });
     } catch (e) {
+        console.error(e);
         lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar borradores.</div>';
     }
 }
@@ -349,10 +356,15 @@ function cargarBorradorPotencia(data) {
     mostrarToast("Borrador Abierto", "Los datos se cargaron correctamente.");
 }
 
-// --- ENVIAR WHATSAPP (NUEVO MODAL) ---
+// --- ENVIAR WHATSAPP (ESTILO EXACTO MATERIALES) ---
 function abrirModalWhatsApp() {
     if (listaAmbientes.length === 0) return alert("Debes cargar ambientes primero.");
     const telGuardado = document.getElementById('cliTel').value.trim();
+    
+    // Limpiamos el input numérico por si el usuario vuelve a abrirlo
+    const inputManual = document.getElementById('inputWspManual');
+    if (inputManual) inputManual.value = ""; 
+    
     document.getElementById('modalWhatsApp').classList.remove('oculto');
     
     const btnWspGuardado = document.getElementById('btnWspGuardado');
@@ -367,6 +379,15 @@ function abrirModalWhatsApp() {
 
 function cerrarModalWhatsApp() {
     document.getElementById('modalWhatsApp').classList.add('oculto');
+}
+
+function enviarWspManual() {
+    const numero = document.getElementById('inputWspManual').value.trim();
+    if (!numero) {
+        alert("Por favor, ingresá un número de celular válido.");
+        return;
+    }
+    procesarEnvioWsp(numero);
 }
 
 function procesarEnvioWsp(numero) {
@@ -388,7 +409,7 @@ function procesarEnvioWsp(numero) {
     
     window.open(`https://wa.me/${tel}?text=${encodeURIComponent(m)}`, '_blank');
     cerrarModalWhatsApp();
-                                }
+}
 
 // --- LÓGICA DE POTENCIA (AEA) ---
 function obtenerGradoElectrificacion(areaTotal) {
