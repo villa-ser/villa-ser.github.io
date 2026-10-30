@@ -4,68 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>Materiales GNC | Villaser</title>
+    <title>Materiales | Villaser Gestión</title>
     
+    <!-- Librerías -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
     <script>
-    (function() {
-        // Lee la configuración, si no hay nada asume 'system'
-        const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
-        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-        
-        // Si el usuario eligió 'light', o si eligió 'system' y su celular está en modo claro
-        if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
-            document.documentElement.setAttribute('data-theme', 'light');
-        }
-    })();
-</script>
-
-    <!-- 1. Cargar SDKs de Firebase (si no están ya en el HTML del módulo) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-<!-- 2. Guardián de Seguridad -->
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
-        authDomain: "villaser-gestion.firebaseapp.com",
-        projectId: "villaser-gestion",
-        storageBucket: "villaser-gestion.firebasestorage.app",
-        messagingSenderId: "1032102638132",
-        appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
-    };
-
-    // Inicializar Firebase solo si no está inicializado previamente
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-
-    // Verificar el estado de la sesión
-    firebase.auth().onAuthStateChanged(user => {
-        // Si el usuario no existe (no está logueado) o no verificó su mail, se lo expulsa
-        if (!user || !user.emailVerified) {
-            // Redirige un nivel hacia atrás, cayendo en el login (gestión/index.html)
-            window.location.replace('../index.html'); 
-        }
-    });
-</script>
-    
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser');
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
 </head>
 <body>
 
-<!-- MODAL MEMORIA CLIENTE -->
-<div id="modalRecuperarCliente" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid var(--ngc-neon);">
-        <i class="fa-solid fa-user-clock" style="font-size: 3rem; color: var(--ngc-neon); margin-bottom: 15px;"></i>
-        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Cliente Detectado</h3>
-        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">Hay datos de un cliente cargado recientemente en otro módulo. ¿Deseas utilizarlos?</p>
+<!-- TOAST NOTIFICACIÓN -->
+<div id="toastCliente" class="toast-notification oculto">
+    <i class="fa-solid fa-circle-check"></i>
+    <div>
+        <strong id="toastTitle">Acción Exitosa</strong>
+        <p id="toastMessage">Operación realizada.</p>
+    </div>
+</div>
+
+<!-- MODAL NUEVO CONTACTO / NO AGENDADO -->
+<div id="modalAgendarCliente" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid var(--ngc-warning);">
+        <i class="fa-solid fa-address-book" style="font-size: 3rem; color: var(--ngc-warning); margin-bottom: 15px;"></i>
+        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Cliente No Agendado</h3>
+        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">Has escrito un cliente manualmente. Para poder guardar esta lista en la nube, debe estar en tu agenda.</p>
+        
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="ngc-btn" onclick="usarClienteMemoria()"><i class="fa-solid fa-check"></i> Usar Datos del Cliente</button>
-            <button class="ngc-btn danger-btn" onclick="limpiarClienteMemoria()"><i class="fa-solid fa-rotate-right"></i> Empezar de Cero</button>
+            <button class="ngc-btn" onclick="window.location.href='../agenda/index.html'"><i class="fa-solid fa-user-plus"></i> Ir a Agendar Cliente</button>
+            <button class="ngc-btn" style="background: transparent; border: 1px solid var(--ngc-neon); color: var(--ngc-neon);" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-magnifying-glass"></i> Buscar en mi Agenda</button>
+            <button class="ngc-btn danger-btn" onclick="opcionContinuarSinAgenda()"><i class="fa-solid fa-triangle-exclamation"></i> No por el momento</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGENDA FIREBASE -->
+<div id="modalAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 500px; height: 80vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-left: 4px solid var(--ngc-neon);">
+        
+        <div style="padding: 15px; border-bottom: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; color: var(--ngc-text-main); font-size: 1.1rem;"><i class="fa-solid fa-address-book"></i> MI AGENDA</h3>
+            <button onclick="cerrarModalAgenda()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div style="padding: 15px; background: var(--ngc-bg-subtle);">
+            <div class="row-group" style="margin: 0;">
+                <input type="text" id="buscadorAgenda" class="ngc-input" placeholder="Buscar por nombre, dir o tel..." oninput="filtrarAgenda()">
+            </div>
+        </div>
+        
+        <div id="listaAgenda" style="flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="text-align: center; color: var(--ngc-neon);"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando agenda...</div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MIS BORRADORES FIREBASE -->
+<div id="modalBorradores" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 9998; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 500px; height: 80vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-left: 4px solid #e91e63;">
+        <div style="padding: 15px; border-bottom: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; color: #e91e63; font-size: 1.1rem;"><i class="fa-solid fa-cloud"></i> MIS BORRADORES</h3>
+            <button onclick="cerrarModalBorradores()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div id="listaBorradores" style="flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ENVIAR WHATSAPP -->
+<div id="modalWhatsApp" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid #25D366;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: #25D366; margin-bottom: 15px;"></i>
+        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Enviar Lista</h3>
+        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="btnWspGuardado" class="ngc-btn" style="background: #25D366; color: white; border-color: #25D366;" onclick="enviarWspClienteActual()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+            <button class="ngc-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWhatsApp()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            <button class="ngc-btn danger-btn" style="margin-top: 10px; background: transparent;" onclick="cerrarModalWsp()">Cancelar</button>
         </div>
     </div>
 </div>
@@ -73,190 +107,194 @@
 <div class="layout-wrapper">
     <main class="container">
         
-        <!-- BARRA DE NAVEGACIÓN ESTANDARIZADA -->
-        <nav class="top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
-            <div style="display: flex; justify-content: flex-start;">
-                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
-                    <i class="fa-solid fa-arrow-left"></i> Menú
-                </button>
-            </div>
-            
-            <div style="text-align: center; font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="top-nav">
+            <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <i class="fa-solid fa-arrow-left"></i> Menú
+            </button>
+            <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
                 <i class="fa-solid fa-boxes-stacked"></i> Materiales
             </div>
-            
-            <div style="display: flex; justify-content: flex-end;">
-                <button id="btnNuevoListado" class="ngc-btn-icon danger" onclick="nuevoListado()" title="Nueva Lista">
-                    <i class="fa-solid fa-rotate-right"></i>
-                </button>
-            </div>
+            <button id="btnNuevoListado" class="ngc-btn-icon danger oculto" onclick="nuevoListado()" title="Nueva Lista">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
         </nav>
 
-        <div id="status" class="ngc-card loading-state">
+        <!-- INDICADOR DE CARGA -->
+        <div id="loading" class="ngc-card loading-state">
             <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
-            <br>Sincronizando Catálogo...
+            <br>Sincronizando Base de Datos...
         </div>
         
-        <!-- SECCIÓN CLIENTE -->
-        <section id="section-client" class="ngc-card gpu-accel oculto">
-            <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
-            <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Tus datos de profesional se añadirán automáticamente al PDF.</p>
+        <div id="app" class="oculto">
             
-            <div class="row-group">
-                <label>Nombre del Cliente</label>
-                <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()">
-            </div>
-            
-            <div class="row-group-stretch">
-                <div class="flex-1">
-                    <label>Dirección</label>
-                    <input type="text" id="cliDireccion" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
-                </div>
-                <div class="flex-1">
-                    <label>Nombre del Proyecto</label>
-                    <input type="text" id="cliProyecto" class="ngc-input" placeholder="Ej: Remodelación Cocina" onchange="guardarClienteGlobal()">
-                </div>
-            </div>
-            
-            <button id="btnCli" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="addClientToList()">
-                <i class="fa-solid fa-play"></i> Iniciar Lista
-            </button>
-        </section>
-
-        <!-- SECCIÓN PRINCIPAL (LISTA) -->
-        <section id="main-content" class="oculto flex-column gap-15">
-
-            <div class="ngc-card gpu-accel">
-                <h4 class="ngc-card-title"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</h4>
-                
-                <select id="sel0" class="ngc-input native-select" disabled style="margin-bottom: 8px;">
-                    <option value="">-- Selección --</option>
-                </select>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <select id="sel1" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
-                    <select id="sel2" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
-                    <select id="sel3" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
-                    <select id="sel4" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
-                </div>
-                
-                <select id="sel5" class="ngc-input native-select" style="margin-bottom: 12px;" disabled>
-                    <option value="">-- Selección --</option>
-                </select>
-                
-                <div class="row-group-stretch" style="margin-bottom: 12px;">
-                    <div class="flex-1">
-                        <label>Cantidad</label>
-                        <div class="stepper">
-                            <button type="button" class="btn-step" onclick="changeQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                            <input type="number" id="cantidad" class="ngc-input-step" value="1" min="1">
-                            <button type="button" class="btn-step" onclick="changeQty(1)"><i class="fa-solid fa-plus"></i></button>
-                        </div>
+            <!-- DATOS DEL CLIENTE / PROYECTO -->
+            <section id="section-client" class="ngc-card gpu-accel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h4 class="ngc-card-title" style="margin-bottom: 5px;"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                        <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin: 0;">Información del cliente para la lista de materiales.</p>
                     </div>
-                    <div class="flex-1">
-                        <label>Unidad</label>
-                        <div class="unit-toggle">
-                            <input type="radio" id="u_unid" name="um" value="Unidades" checked style="display:none">
-                            <label for="u_unid" class="unit-label">UNID</label>
-                            <input type="radio" id="u_metros" name="um" value="Metros" style="display:none">
-                            <label for="u_metros" class="unit-label">MTS</label>
-                        </div>
+                </div>
+
+                <div class="row-group">
+                    <label>Nombre del Cliente</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()" oninput="marcarClienteManual()" style="flex: 1;">
+                        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                     </div>
                 </div>
                 
-                <textarea id="observaciones" class="ngc-input" placeholder="Notas del ítem (Opcional)..." style="height: 60px; margin-bottom: 12px; resize: none;"></textarea>
-                
-                <div class="action-grid-main">
-                    <button id="btnMat" class="ngc-btn" onclick="addItem()" style="border-color: var(--success-green); color: var(--success-green);"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
-                    <button type="button" class="ngc-btn" onclick="agregarItemManual()"><i class="fa-solid fa-pen"></i> Ítem Libre</button>
+                <div class="row-group-stretch">
+                    <div class="flex-1">
+                        <label>Dirección</label>
+                        <input type="text" id="cliDir" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
+                    </div>
+                    <div class="flex-1">
+                        <label>Proyecto / Obs</label>
+                        <input type="text" id="cliObs" class="ngc-input" placeholder="Ej: Tablero Principal" onchange="guardarClienteGlobal()">
+                    </div>
                 </div>
-            </div>
-
-            <!-- Notas Globales (Ubicación como en Presupuesto) -->
-            <div class="ngc-card gpu-accel">
-                <label>Notas Globales de Materiales</label>
-                <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Materiales para Planta Alta..." style="height: 75px; resize: none;" oninput="guardarEstado(); renderItems();"></textarea>
-            </div>
-
-            <!-- ÁREA DE CAPTURA ORIGINAL -->
-            <div id="captureSection" class="ngc-card gpu-accel" style="padding: 15px 10px; background: var(--ngc-btn-bg);">
-                <header class="list-header-title header-brand">MATERIALES SOLICITADOS</header>
-                <div id="itemsContainer"></div>
-            </div>
-
-            <!-- ACCIONES PRINCIPALES NORMALIZADAS -->
-            <div class="action-grid-main" style="margin-top: 10px;">
-                <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
-                    <i class="fa-solid fa-file-pdf"></i> Generar PDF
+                
+                <button id="btnCli" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarLista()">
+                    <i class="fa-solid fa-play"></i> Comenzar Carga de Materiales
                 </button>
-                <button class="ngc-btn" onclick="sendWSP()" style="color: var(--success-green); border-color: var(--success-green);">
-                    <i class="fa-brands fa-whatsapp"></i> Enviar Lista
-                </button>
-            </div>
+            </section>
 
-            <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
-                <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
-            </button>
-            
-            <!-- UTILIDADES / BACKUP -->
-            <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
-                <button id="btnExport" class="ngc-btn-small" onclick="exportToTxt()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: transparent; border-style: dashed;">
-                    <i class="fa-solid fa-download"></i> Guardar Borrador
-                </button>
-                <button id="btnImport" class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: transparent; border-style: dashed;">
-                    <i class="fa-solid fa-folder-open"></i> Abrir Borrador
-                </button>
-                <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
-            </div>
+            <!-- ZONA DE TRABAJO / MATERIALES -->
+            <section id="main-content" class="oculto flex-column gap-15">
+                <div class="ngc-card gpu-accel">
+                    <h4 class="ngc-card-title"><i class="fa-solid fa-cart-shopping"></i> Agregar Materiales</h4>
+                    
+                    <select id="sel0" class="ngc-input native-select" disabled style="margin-bottom: 8px;">
+                        <option value="">-- Selección --</option>
+                    </select>
 
-        </section>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <select id="sel1" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
+                        <select id="sel2" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
+                        <select id="sel3" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
+                        <select id="sel4" class="ngc-input native-select" disabled><option value="">-- Selección --</option></select>
+                    </div>
+                    
+                    <select id="sel5" class="ngc-input native-select" style="margin-bottom: 12px;" disabled>
+                        <option value="">-- Selección --</option>
+                    </select>
+
+                    <!-- CANTIDAD Y UNIDAD DE MEDIDA -->
+                    <div class="row-group-stretch" style="margin-top: 15px; align-items: flex-end;">
+                        <div style="flex: 2;">
+                            <label>Cantidad</label>
+                            <div class="stepper">
+                                <button type="button" class="btn-step" onclick="changeQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" id="cantidad" class="ngc-input-step" value="1" min="1">
+                                <button type="button" class="btn-step" onclick="changeQty(1)"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div style="flex: 1.2; min-width: 90px;">
+                            <label>Unidad</label>
+                            <div class="unit-toggle" style="height: 45px;">
+                                <input type="radio" id="u_unid" name="um" value="Unid" checked style="display:none">
+                                <label for="u_unid" class="unit-label">UNID</label>
+                                <input type="radio" id="u_metros" name="um" value="Mts" style="display:none">
+                                <label for="u_metros" class="unit-label">MTS</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTAS DEL ÍTEM -->
+                    <div class="row-group" style="margin-top: 15px;">
+                        <label>Notas del Ítem (Opcional)</label>
+                        <textarea id="observaciones" class="ngc-input" placeholder="Ej: Marca homologada..." style="height: 60px; resize: none;"></textarea>
+                    </div>
+
+                    <div class="action-grid-main" style="margin-top: 15px;">
+                        <button id="btnMat" class="ngc-btn" onclick="addItem()" style="border-color: var(--success-green); color: var(--success-green);"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+                        <button type="button" class="ngc-btn" onclick="agregarItemManual()"><i class="fa-solid fa-pen"></i> Ítem Libre</button>
+                    </div>
+                </div>       
+                
+                <!-- NOTAS GLOBALES -->
+                <div class="ngc-card gpu-accel">
+                    <label>Notas Globales de Materiales</label>
+                    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Comprar en distribuidor mayorista..." style="height: 75px; resize: none;" oninput="guardarEstado(); renderItems();"></textarea>
+                </div>
+                
+                <!-- ZONA DE CAPTURA VISUAL -->
+                <div id="captureSection" class="capture-zone gpu-accel" style="padding: 15px; background: var(--ngc-bg-input); border-radius: 12px; border: 1px solid var(--ngc-privacy-border);">
+                    <header class="header-brand" style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 10px; font-size: 0.9rem;">VILLASER - MATERIALES</header>
+                    <div id="itemsContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+                
+                <!-- ACCIONES PRINCIPALES -->
+                <div class="action-grid-main" style="margin-top: 20px;">
+                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
+                        <i class="fa-solid fa-file-pdf"></i> Generar PDF
+                    </button>
+                    <button class="ngc-btn" onclick="enviarWhatsApp()" style="color: var(--success-green); border-color: var(--success-green);">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar Lista
+                    </button>
+                </div>
+                
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
+                    <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
+                </button>
+
+                <!-- UTILIDADES / BACKUP CLOUD -->
+                <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button class="ngc-btn-small" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: rgba(255,193,7,0.1);">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador Nube
+                    </button>
+                    <button class="ngc-btn-small" onclick="abrirModalBorradores()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: rgba(233,30,99,0.1);">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador Nube
+                    </button>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <!-- PANEL DERECHO: VISTA PREVIA PDF (PC) -->
+     <!-- PANEL DERECHO: VISTA PREVIA PDF (PC) -->
     <aside class="preview-panel">
-        <div id="plantilla-pdf">
-            <div class="pdf-container">
-                <header class="pdf-header">
-                    <div class="pdf-info-box">
-                        <div class="pdf-row" style="font-size: 16px; margin-bottom: 10px; color:#0088aa;"><b>Listado de Materiales</b></div>
-                        <div class="pdf-row"><b>Fecha:</b> <span id="pdf-fecha"></span></div>
-                        <div class="pdf-row"><b>Cliente:</b> <span id="pdf-cliente"></span></div>
-                        <div class="pdf-row"><b>Dirección/Proyecto:</b> <span id="pdf-direccion"></span></div>
+        <div id="plantilla-pdf" style="display: none; background: white; color: black; padding: 30px; width: 210mm; min-height: 297mm; box-sizing: border-box;">
+            <div class="pdf-container" style="font-family: Arial, sans-serif;">
+                <header class="pdf-header" style="display: flex; justify-content: space-between; border-bottom: 2px solid #0088aa; padding-bottom: 15px; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="margin: 0; color: #0088aa;">LISTA DE MATERIALES</h2>
+                        <p id="pdf-fecha" style="margin: 5px 0 0 0; font-size: 0.85rem; color: #555;"></p>
                     </div>
-                    <div class="pdf-logo-box">
-                        <img id="pdf-img-logo" src="" alt="Logo" style="max-width: 100%; max-height: 70px; display: none; margin-left: auto;">
-                        <div id="pdf-text-logo" style="font-size: 18px; font-weight: bold; color: #0088aa; display: block; text-align: right;"></div>
+                    <div>
+                        <b style="color: #333;">Cliente:</b> <span id="pdf-cliente"></span><br>
+                        <b style="color: #333;">Dirección:</b> <span id="pdf-dir"></span><br>
+                        <b style="color: #333;">Proyecto:</b> <span id="pdf-proyecto"></span>
                     </div>
                 </header>
-
-                <div class="pdf-aclaracion">
+                
+                <div class="pdf-aclaracion" style="font-size: 11px; color: #444; background: #f9f9f9; padding: 10px; border-left: 3px solid #ff9800; margin-bottom: 15px;">
                     <b>Aclaración:</b> El presente documento detalla los materiales solicitados para la ejecución de la obra. <i>Villaser no provee ni comercializa dichos materiales.</i>
                 </div>
 
-                <table class="pdf-table">
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
                     <thead>
-                        <tr>
-                            <th style="width: 10%; text-align: center;">Cant.</th>
-                            <th style="width: 15%; text-align: center;">Unidad</th>
-                            <th style="width: 45%;">Descripción</th>
-                            <th style="width: 30%; text-align: left;">Notas del ítem</th>
+                        <tr style="background: #f0f0f0; color: #333; text-align: left; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 10px; border-bottom: 2px solid #ccc; width: 10%; text-align: center;">Cant.</th>
+                            <th style="padding: 10px; border-bottom: 2px solid #ccc; width: 15%; text-align: center;">Unidad</th>
+                            <th style="padding: 10px; border-bottom: 2px solid #ccc; width: 45%;">Material / Concepto</th>
+                            <th style="padding: 10px; border-bottom: 2px solid #ccc; width: 30%; text-align: left;">Observaciones</th>
                         </tr>
                     </thead>
                     <tbody id="pdf-tbody"></tbody>
                 </table>
-
-                <div class="pdf-body-lower" id="pdf-notas-box" style="display:none;">
-                    <div class="pdf-notas-box" style="width: 100%;">
-                        <h3>Notas Globales</h3>
-                        <div id="pdf-notas" class="pdf-notas-content"></div>
-                    </div>
+                <div id="pdf-notas-box" style="display:none; margin-top: 20px; width: 100%; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 12px; color: #0088aa; text-transform: uppercase;">Notas Globales</h3>
+                    <div id="pdf-notas" style="font-size: 10px; color: #555; line-height: 1.4; white-space: pre-wrap;"></div>
                 </div>
-
-                <footer class="pdf-footer">
-                    <div></div> 
-                    <div class="pdf-right-footer">
-                        <div id="pdf-slogan" class="pdf-slogan">¡Electricidad Segura, Hogar Tranquilo!</div>
-                        <div class="pdf-contacto">
+                
+                <footer class="pdf-footer" style="margin-top: 40px; display: flex; justify-content: flex-end; align-items: flex-end; border-top: 1px solid #ddd; padding-top: 15px;">
+                    <div class="pdf-right-footer" style="text-align: right;">
+                        <div id="pdf-slogan" style="font-size: 14px; font-weight: bold; color: #0088aa; font-style: italic; margin-bottom: 6px;">¡Electricidad Segura, Hogar Tranquilo!</div>
+                        <div class="pdf-contacto" style="font-size: 12px; color: #555; font-weight: 500;">
                             <span id="pdf-tel-footer">📞 </span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
                         </div>
                     </div>
@@ -266,6 +304,7 @@
     </aside>
 </div>
 
+<script src="../firebase-config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
