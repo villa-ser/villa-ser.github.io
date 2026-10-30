@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121212">
-    
     <title>Villaser - Informe Técnico</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -15,126 +14,111 @@
 
     <script>
     (function() {
-        // Lee la configuración, si no hay nada asume 'system'
         const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
         const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-        
-        // Si el usuario eligió 'light', o si eligió 'system' y su celular está en modo claro
         if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
             document.documentElement.setAttribute('data-theme', 'light');
         }
     })();
-</script>
+    </script>
 
-    <!-- 1. Cargar SDKs de Firebase (si no están ya en el HTML del módulo) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-<!-- 2. Guardián de Seguridad -->
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
-        authDomain: "villaser-gestion.firebaseapp.com",
-        projectId: "villaser-gestion",
-        storageBucket: "villaser-gestion.firebasestorage.app",
-        messagingSenderId: "1032102638132",
-        appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
-    };
-
-    // Inicializar Firebase solo si no está inicializado previamente
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-
-    // Verificar el estado de la sesión
-    firebase.auth().onAuthStateChanged(user => {
-        // Si el usuario no existe (no está logueado) o no verificó su mail, se lo expulsa
-        if (!user || !user.emailVerified) {
-            // Redirige un nivel hacia atrás, cayendo en el login (gestión/index.html)
-            window.location.replace('../index.html'); 
-        }
-    });
-</script>
-    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+            authDomain: "villaser-gestion.firebaseapp.com",
+            projectId: "villaser-gestion",
+            storageBucket: "villaser-gestion.firebasestorage.app",
+            messagingSenderId: "1032102638132",
+            appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user || !user.emailVerified) window.location.replace('../index.html'); 
+        });
+    </script>
 </head>
 <body>
 
     <!-- TOAST NOTIFICACIÓN -->
     <div id="toastCliente" class="ngc-toast oculto gpu-accel">
-        <i class="fa-solid fa-user-check"></i>
+        <i class="fa-solid fa-check-circle" style="color: var(--success-green); font-size: 1.5rem;"></i>
         <div class="toast-content">
-            <strong>Cliente Recuperado</strong>
-            <p>Se cargaron los datos del último proyecto. Modifícalos si es uno nuevo.</p>
+            <strong id="toastTitle">Notificación</strong>
+            <p id="toastMessage">Operación realizada con éxito.</p>
         </div>
-        <button class="toast-close" onclick="cerrarToast()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <!-- WRAPPER PARA PC/MÓVIL -->
+    <!-- WRAPPER -->
     <div class="layout-wrapper">
         <main class="container">
             
-            <!-- BARRA DE NAVEGACIÓN -->
             <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú">
                     <i class="fa-solid fa-arrow-left"></i> Menú
                 </button>
-                
                 <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
                     <i class="fa-solid fa-clipboard-check"></i> Informe Técnico
                 </div>
-                
-                <button id="btnNuevoInforme" class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
+                <button class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </nav>
 
             <!-- SECCIÓN CLIENTE -->
-            <section id="section-client" class="ngc-card gpu-accel">
-                <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Cliente</h4>
-                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Ingresá los datos manualmente. Se guardarán para tu próximo informe.</p>
+            <section id="step-cliente" class="ngc-card gpu-accel">
+                <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Selecciona el cliente para iniciar el informe.</p>
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
-                    <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" onchange="guardarClienteGlobal()">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" style="flex: 1;" onchange="verificarClienteManual()">
+                        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="row-group">
-                    <label>Dirección</label>
-                    <input type="text" id="cliDir" class="ngc-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
+                <div class="row-group-stretch" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Teléfono</label>
+                        <input type="text" id="cliTel" class="ngc-input" placeholder="Opcional">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Dirección</label>
+                        <input type="text" id="cliDir" class="ngc-input" placeholder="Opcional">
+                    </div>
                 </div>
                 
-                <div class="row-group">
-                    <label>Observaciones / Proyecto</label>
-                    <input type="text" id="cliObs" class="ngc-input" placeholder="Ej: Revisión eléctrica" onchange="guardarClienteGlobal()">
-                </div>
-                
-                <button id="btnCli" class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="confirmarCliente()">
+                <button class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarInforme()">
                     <i class="fa-solid fa-play"></i> Comenzar Informe
                 </button>
             </section>
 
-            <!-- SECCIÓN PRINCIPAL (INFORME TÉCNICO) -->
-            <section id="main-content" class="oculto flex-column gap-15">
+            <!-- SECCIÓN TRABAJO -->
+            <section id="step-trabajo" class="oculto flex-column gap-15">
                 
                 <div class="ngc-card gpu-accel">
-                    <h4 class="ngc-card-title"><i class="fa-solid fa-pen-to-square"></i> Redacción de Informe Técnico</h4>
-                    
+                    <h4 class="ngc-card-title"><i class="fa-solid fa-pen-to-square"></i> Redacción</h4>
                     <div class="row-group">
-                        <label for="textoInforme">Redactar párrafo:</label>
-                        <textarea id="textoInforme" class="ngc-input" lang="es" spellcheck="true" placeholder="Escriba aquí el párrafo..." style="height: 100px; resize: vertical; line-height: 1.5;"></textarea>
+                        <textarea id="textoInforme" class="ngc-input" placeholder="Redactar párrafo aquí..." style="height: 100px; resize: vertical;"></textarea>
                     </div>
                     
-                    <button id="btnAgregarParrafo" class="ngc-btn" style="width: 100%; color: var(--success-green); border-color: var(--success-green); margin-top: 15px;" onclick="agregarParrafo()">
+                    <button class="ngc-btn" style="width: 100%; color: var(--success-green); border-color: var(--success-green); margin-top: 5px;" onclick="agregarParrafo()">
                         <i class="fa-solid fa-plus"></i> AGREGAR PÁRRAFO
                     </button>
                     
                     <div id="lista-parrafos" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
 
-                <!-- NOTAS GLOBALES (COMO PRESUPUESTO) -->
+                <!-- NOTAS GLOBALES NORMALIZADAS -->
                 <div class="ngc-card gpu-accel">
-                    <label>Notas Globales del Informe</label>
-                    <textarea id="obsGenerales" class="ngc-input" placeholder="Ej: Conclusiones finales o advertencias..." style="height: 75px; resize: none;" oninput="actualizarVistaPreviews();"></textarea>
+                    <label>Notas Globales de Informe</label>
+                    <textarea id="obsGenerales" class="ngc-input" placeholder="Conclusiones finales o recomendaciones..." style="height: 75px; resize: none;" oninput="actualizarVistaPreviews();"></textarea>
                 </div>
 
                 <!-- ÁREA DE CAPTURA -->
@@ -142,39 +126,36 @@
                     <header class="header-brand">VILLASER - INFORME TÉCNICO</header>
                     <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--ngc-neon); line-height: 1.4; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;"></div>
                     <div id="previewInforme" style="font-size: 0.9rem; white-space: normal; line-height: 1.5; padding: 4px;"></div>
-                    <!-- Notas Globales Renderizadas -->
                     <div id="previewNotasGlobales" style="font-size: 0.85rem; margin-top: 12px; color: var(--ngc-text-faded); border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px; display: none; white-space: pre-wrap; font-style: italic;"></div>
                 </div>
 
-                <!-- CONTROLES INFERIORES NORMALIZADOS (IGUAL A PRESUPUESTO) -->
-                <div class="action-grid-main" style="margin-top: 20px;">
-                    <button id="btnGenerarPDF" class="ngc-btn danger-btn" onclick="generarPDF()">
+                <!-- BOTONES DE ACCIÓN NORMALIZADOS -->
+                <div class="action-grid-main" style="margin-top: 5px;">
+                    <button class="ngc-btn danger-btn" onclick="generarPDF()">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
-                    <button class="ngc-btn" onclick="sendWSP()" style="color: var(--success-green); border-color: var(--success-green);">
-                        <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
+                    <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
+                        <i class="fa-solid fa-image"></i> Captura (PNG)
                     </button>
                 </div>
                 
-                <button class="ngc-btn" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
-                    <i class="fa-solid fa-image"></i> Descargar Imagen (Resumen)
+                <button class="ngc-btn" style="width: 100%; margin-top: 10px; color: var(--success-green); border-color: var(--success-green);" onclick="abrirModalWhatsApp()">
+                    <i class="fa-brands fa-whatsapp"></i> ENVIAR WHATSAPP
                 </button>
 
-                <!-- UTILIDADES / BACKUP NORMALIZADAS -->
-                <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
-                    <button id="btnExport" class="ngc-btn-small" onclick="exportToTxt()" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: transparent; border-style: dashed;">
-                        <i class="fa-solid fa-download"></i> Guardar Borrador
+                <!-- UTILIDADES FIREBASE -->
+                <div class="action-grid-footer" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button class="ngc-btn-small" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: rgba(255,193,7,0.1);">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
                     </button>
-                    <button id="btnImport" class="ngc-btn-small" onclick="document.getElementById('fileInput').click()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: transparent; border-style: dashed;">
-                        <i class="fa-solid fa-folder-open"></i> Abrir Borrador
+                    <button class="ngc-btn-small" onclick="abrirModalBorradores()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: rgba(233,30,99,0.1);">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
                     </button>
-                    <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="importFromTxt(event)">
                 </div>
-                
             </section>
         </main>
 
-        <!-- PANEL DERECHO: VISTA PREVIA PDF (PC) -->
+        <!-- PANEL DERECHO: PDF A4 -->
         <aside class="preview-panel">
             <div id="plantilla-pdf">
                 <div class="pdf-container">
@@ -182,7 +163,6 @@
                         <div style="text-align: center; margin-bottom: 20px; width: 100%;">
                             <h2 style="margin: 0; color: #0088aa; font-size: 22px; text-transform: uppercase;">Informe Técnico</h2>
                         </div>
-                        
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                             <div class="pdf-info-box">
                                 <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
@@ -190,15 +170,14 @@
                                 <div class="pdf-row"><b>Dirección</b> <span id="pdf-dir"></span></div>
                             </div>
                             <div class="pdf-logo-box">
-                                <img src="membrete.avif" alt="Villaser Electricista" style="max-width: 100%; max-height: 70px; display: block; margin-left: auto;">
+                                <b id="pdf-text-logo" style="color: #0088aa; font-size: 14px;"></b>
+                                <img id="pdf-img-logo" src="" style="max-width: 100%; max-height: 70px; display: none; margin-left: auto;">
                             </div>
                         </div>
                     </header>
 
                     <div class="pdf-body-content">
                         <div id="pdf-texto-contenido" class="pdf-informe-texto"></div>
-                        
-                        <!-- Caja de Notas Globales -->
                         <div class="pdf-notas-box" id="pdf-notas-box" style="display:none; width: 100%; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 30px;">
                             <h3 style="margin: 0 0 10px 0; font-size: 12px; color: #0088aa; text-transform: uppercase;">Notas Globales</h3>
                             <div id="pdf-notas" class="pdf-notas-content" style="font-size: 11px; color: #555; line-height: 1.4; white-space: pre-wrap;"></div>
@@ -208,17 +187,71 @@
                     <footer class="pdf-footer">
                         <div></div> 
                         <div class="pdf-right-footer">
-                            <div class="pdf-slogan">¡Electricidad Segura, Hogar Tranquilo!</div>
+                            <div class="pdf-slogan" id="pdf-slogan"></div>
                             <div class="pdf-contacto">
-                                <span>📞 351 355 9347</span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
+                                <span id="pdf-tel-footer"></span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
                             </div>
-                            <div class="pdf-contacto"><span>🪪 Electricista Habilitado Cat III</span></div>
-                            <div class="pdf-contacto"><span>ERSeP Registro Nro 29029389 - 14027</span></div>
+                            <div class="pdf-contacto"><span id="pdf-credenciales"></span></div>
                         </div>
                     </footer>
                 </div>
             </div>
         </aside>
+    </div>
+
+    <!-- MODAL AGENDA -->
+    <div id="modalAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="ngc-card" style="width: 90%; max-width: 400px; height: 80vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin: 0; color: var(--ngc-neon);"><i class="fa-solid fa-address-book"></i> Mis Clientes</h4>
+                <button onclick="cerrarModalAgenda()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="text" id="buscadorAgenda" class="ngc-input" placeholder="Buscar por nombre..." onkeyup="filtrarAgenda()" style="margin-bottom: 15px;">
+            <div id="listaContactosModal" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL WHATSAPP -->
+    <div id="modalWhatsApp" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-radius: 12px; padding: 25px 20px;">
+            <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: var(--success-green); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--ngc-text-main); margin-top: 0; font-size: 1.2rem;">ENVIAR INFORME</h3>
+            <p style="color: var(--ngc-text-faded); font-size: 0.95rem; margin-bottom: 25px;">¿A quién deseas enviarle el Informe Técnico?</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button id="btnWspGuardado" class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; justify-content: center; display: none;"></button>
+                <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                    <input type="number" id="inputWspManual" class="ngc-input" placeholder="Número (Ej: 3512345678)" style="flex: 1; text-align: center;">
+                    <button class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; padding: 0 20px;" onclick="enviarWspManual()">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <button class="ngc-btn danger-btn" style="background: transparent; color: var(--error-red); border: 1px solid var(--error-red); justify-content: center;" onclick="cerrarModalWhatsApp()">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BORRADORES -->
+    <div id="modalBorradores" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="ngc-card" style="width: 90%; max-width: 400px; height: 70vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin: 0; color: #e91e63;"><i class="fa-solid fa-cloud-arrow-down"></i> Borradores de Informe</h4>
+                <button onclick="cerrarModalBorradores()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="listaBorradores" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL ADVERTENCIA NO AGENDADO -->
+    <div id="modalAdvertenciaAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--ngc-warning); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--ngc-text-main); margin-top: 0;">Cliente no Agendado</h3>
+            <p style="color: var(--ngc-text-faded); font-size: 0.95rem; margin-bottom: 25px;">Has ingresado el nombre manualmente. No podrás guardar borradores en la nube para este cliente.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon); justify-content: center;" onclick="document.getElementById('modalAdvertenciaAgenda').classList.add('oculto'); abrirModalAgenda();">Buscar en Agenda</button>
+                <button class="ngc-btn danger-btn" style="justify-content: center;" onclick="continuarSinAgenda()">Continuar sin guardar en nube</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
