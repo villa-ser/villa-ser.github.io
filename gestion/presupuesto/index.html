@@ -87,6 +87,29 @@
     </div>
 </div>
 
+    <!-- MODAL ENVIAR WHATSAPP -->
+<div id="modalWhatsApp" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+    <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-left: 4px solid #25D366;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: #25D366; margin-bottom: 15px;"></i>
+        <h3 style="color: var(--ngc-text-main); margin-top: 0; text-transform: uppercase;">Enviar Presupuesto</h3>
+        <p style="color: var(--ngc-text-faded); font-size: 0.9rem; margin-bottom: 20px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Opción 1: Número del cliente -->
+            <button id="btnWspGuardado" class="ngc-btn" style="background: #25D366; color: white; border-color: #25D366;" onclick="enviarWspClienteActual()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+
+            <!-- Opción 2: Buscar en la agenda de WhatsApp -->
+            <button class="ngc-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWhatsApp()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            
+            <button class="ngc-btn danger-btn" style="margin-top: 10px; background: transparent;" onclick="cerrarModalWsp()">Cancelar</button>
+        </div>
+    </div>
+</div>
+    
 <div class="layout-wrapper">
     <main class="container">
         
