@@ -21,38 +21,6 @@
             }
         })();
     </script>
-    
-<!-- Guardián de Seguridad y BD -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
-            authDomain: "villaser-gestion.firebaseapp.com",
-            projectId: "villaser-gestion",
-            storageBucket: "villaser-gestion.firebasestorage.app",
-            messagingSenderId: "1032102638132",
-            appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        
-        let currentUserUid = null;
-        let db = null;
-
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user || !user.emailVerified) {
-                window.location.replace('../index.html'); 
-            } else {
-                currentUserUid = user.uid;
-                db = firebase.firestore();
-            }
-        });
-    </script>
-    
-    <!-- SDKs de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 </head>
 <body>
