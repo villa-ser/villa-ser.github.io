@@ -143,3 +143,36 @@ label { font-size: 0.75rem; color: var(--ngc-text-faded); text-transform: upperc
 .pdf-table th { background-color: #f0f0f0; color: #333; font-weight: bold; text-transform: uppercase; padding: 4px 2px; text-align: center; border: 1px solid #ccc; word-wrap: break-word; }
 .pdf-table td { padding: 4px 2px; border: 1px solid #ddd; vertical-align: middle; text-align: center; }
 .pdf-table tfoot td { border-top: 2px solid #666; background-color: #fafafa; font-weight: bold; }
+
+/* ============================================================== */
+/* TOAST NOTIFICATIONS (Mismas animaciones que otros módulos)     */
+/* ============================================================== */
+.ngc-toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--ngc-glass); backdrop-filter: blur(10px);
+    border: var(--ngc-border-glass); border-left: 4px solid var(--success-green);
+    padding: 15px 20px; border-radius: 12px;
+    display: flex; align-items: center; gap: 15px;
+    box-shadow: 0 8px 25px var(--card-shadow);
+    z-index: 10000;
+    transform: translateY(100px); opacity: 0; transition: all 0.4s ease;
+}
+.ngc-toast.mostrar {
+    transform: translateY(0); opacity: 1;
+}
+.ngc-toast i#toastIcon {
+    font-size: 1.5rem; color: var(--success-green);
+}
+.toast-content strong {
+    display: block; color: var(--ngc-text-main); font-size: 0.95rem; margin-bottom: 3px;
+}
+.toast-content p {
+    margin: 0; color: var(--ngc-text-faded); font-size: 0.8rem;
+}
+.toast-close {
+    background: transparent; border: none; color: var(--ngc-text-faded);
+    cursor: pointer; font-size: 1.2rem; margin-left: 10px; transition: 0.2s;
+}
+.toast-close:hover {
+    color: var(--error-red);
+}
