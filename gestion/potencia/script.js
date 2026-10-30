@@ -30,6 +30,41 @@ window.onload = () => {
     actualizarPDFHeaders();
 };
 
+// --- SISTEMA DE TOAST (NOTIFICACIONES) ---
+function mostrarToast(titulo, mensaje, esError = false) {
+    const toast = document.getElementById('toastNotificacion');
+    if (!toast) return;
+    
+    document.getElementById('toastTitle').innerText = titulo;
+    document.getElementById('toastMessage').innerText = mensaje;
+    
+    const icon = document.getElementById('toastIcon');
+    if (esError) {
+        toast.style.borderLeftColor = 'var(--error-red)';
+        icon.className = 'fa-solid fa-triangle-exclamation';
+        icon.style.color = 'var(--error-red)';
+    } else {
+        toast.style.borderLeftColor = 'var(--success-green)';
+        icon.className = 'fa-solid fa-check-circle';
+        icon.style.color = 'var(--success-green)';
+    }
+
+    toast.classList.remove('oculto');
+    setTimeout(() => toast.classList.add('mostrar'), 10);
+    
+    setTimeout(() => {
+        cerrarToast();
+    }, 3500);
+}
+
+function cerrarToast() {
+    const toast = document.getElementById('toastNotificacion');
+    if (toast) {
+        toast.classList.remove('mostrar');
+        setTimeout(() => toast.classList.add('oculto'), 400);
+    }
+}
+
 // --- MODAL DE MEMORIA GLOBAL Y CLIENTE ---
 function inicializarClienteMemoria() {
     const clienteStr = localStorage.getItem('villaser_cliente_global');
@@ -49,6 +84,7 @@ function usarClienteMemoria() {
         document.getElementById('cliTel').value = window.clienteTemporal.tel || '';
         document.getElementById('cliDireccion').value = window.clienteTemporal.direccion || window.clienteTemporal.dir || '';
         guardarClienteGlobal();
+        mostrarToast('Cliente Recuperado', 'Datos cargados exitosamente.');
     }
     document.getElementById('modalRecuperarCliente').classList.add('oculto');
 }
@@ -408,31 +444,6 @@ function renderTabla(areaTotal, gradoActual) {
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
-    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Sección PE</td>`;
-    todosLosCircuitos.forEach(c => {
-        let col = evalVerdeRojo(c.seccionLN !== "" && parseFloat(c.seccionPE) >= parseFloat(c.seccionLN));
-        tfootStr += `<td>${buildSelectHtml(c.id, 'seccionPE', c.seccionPE, [1.5, 2.5, 4, 6, 10, 16], col)}</td>`;
-    });
-    tfootStr += `<td colspan="2"></td></tr>`;
-
-    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Iz (A)</td>`;
-    todosLosCircuitos.forEach(c => {
-        let col = evalVerdeRojo(c._ibCalc && parseFloat(c.iz) >= c._ibCalc);
-        let valStr = c.iz === "" ? "" : c.iz;
-        let style = c.iz !== "" ? `color: ${col}; font-weight:bold;` : 'color: inherit;';
-        tfootStr += `<td><input type="number" class="circ-input" style="${style}" placeholder="-" value="${valStr}" onchange="updC('${c.id}','iz',this.value)"></td>`;
-    });
-    tfootStr += `<td colspan="2"></td></tr>`;
-
-    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">In (A)</td>`;
-    todosLosCircuitos.forEach(c => {
-        let ib = c._ibCalc || 0;
-        let iz = parseFloat(c.iz) || 0;
-        let pIn = parseFloat(c.in);
-        let cumpleIn = (pIn >= ib && pIn <= iz);
-        let col = evalVerdeRojo(cumpleIn);
-        tfootStr += `<td>${buildSelectHtml(c.id, 'in', c.in, [2, 4, 6, 10, 15, 16, 20, 25, 32, 40, 50, 63], col)}</td>`;
-    });
     tfootStr += `<td colspan="2"></td></tr>`;
 
     tfoot.innerHTML = tfootStr;
@@ -559,7 +570,6 @@ async function generarPDF() {
 async function tomarCaptura() { 
     const zona = document.getElementById('zonaCaptura'); 
     
-    // Oculta botones antes de capturar
     const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
     const bgColor = isLightMode ? "#ffffff" : "#1e1e1e";
     const oldColor = zona.style.color;
@@ -601,6 +611,7 @@ function guardarComoJSON() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    mostrarToast('Borrador Guardado', 'Se descargó el archivo JSON correctamente.');
 }
 
 function cargarDesdeJSON(event) {
@@ -630,10 +641,11 @@ function cargarDesdeJSON(event) {
             actualizarGestorCircuitos();
             calcularGradoYRenderizar();
             
+            mostrarToast('Borrador Abierto', 'Los datos se cargaron correctamente.');
         } catch (err) {
-            alert("⚠️ Error al leer el archivo. Asegúrese de que sea un archivo JSON válido exportado desde Villaser.");
+            mostrarToast('Error', 'Archivo no válido o corrupto.', true);
         }
     };
     reader.readAsText(file);
     event.target.value = ''; 
-                                                                                  }
+}
