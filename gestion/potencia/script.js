@@ -20,6 +20,7 @@ let editandoId = null;
 // Lógica Agenda / Firebase
 let clienteDesdeAgenda = false;
 let clienteActualId = null;
+let modoAgenda = 'carga'; // Controla si la agenda sirve para cargar cliente o enviar WhatsApp
 
 // Circuitos inician vacíos en selecciones, esperando ingreso del usuario
 let circuitos = [
@@ -113,7 +114,7 @@ function opcionContinuarSinAgenda() {
 
 function opcionBuscarAgenda() {
     document.getElementById('modalAgendarCliente').classList.add('oculto');
-    abrirModalAgenda();
+    abrirModalAgenda('carga');
 }
 
 function confirmarCalculoTemporal() {
@@ -133,8 +134,12 @@ function avanzarPasoTrabajo() {
     calcularGradoYRenderizar();
 }
 
-// --- AGENDA DE FIREBASE ---
-function abrirModalAgenda() {
+// --- AGENDA DE FIREBASE Y BUSCADOR ---
+function abrirModalAgenda(modo = 'carga') {
+    modoAgenda = modo;
+    if (modo === 'whatsapp') {
+        cerrarModalWhatsApp();
+    }
     document.getElementById('modalAgenda').classList.remove('oculto');
     filtrarAgenda();
 }
@@ -157,16 +162,22 @@ async function filtrarAgenda() {
 
         snapshot.forEach(doc => {
             const c = doc.data();
-            const textStr = `${c.nombre} ${c.telefono} ${c.direccion}`.toLowerCase();
+            // Corrección de bug: Si un cliente no tiene nombre guardado o está incompleto, previene el error "replace is not a function"
+            const nombre = c.nombre || c.cliente || 'Sin Nombre';
+            const tel = c.telefono || c.tel || '';
+            const dir = c.direccion || c.dir || '';
+            
+            const textStr = `${nombre} ${tel} ${dir}`.toLowerCase();
+            
             if (textStr.includes(query)) {
                 count++;
                 lista.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div>
-                            <b style="color: var(--ngc-text-main); display: block;">${c.nombre}</b>
-                            <small style="color: var(--ngc-text-faded);"><i class="fa-solid fa-phone"></i> ${c.telefono || '-'} | <i class="fa-solid fa-location-dot"></i> ${c.direccion || '-'}</small>
+                            <b style="color: var(--ngc-text-main); display: block;">${nombre}</b>
+                            <small style="color: var(--ngc-text-faded);"><i class="fa-solid fa-phone"></i> ${tel || '-'} | <i class="fa-solid fa-location-dot"></i> ${dir || '-'}</small>
                         </div>
-                        <button class="ngc-btn-small" onclick="seleccionarClienteAgenda('${doc.id}', '${c.nombre.replace(/'/g, "\\'")}', '${c.telefono || ''}', '${c.direccion || ''}')" style="color: var(--ngc-neon); border-color: var(--ngc-neon);">
+                        <button class="ngc-btn-small" onclick="seleccionarClienteAgenda('${doc.id}', '${nombre.replace(/'/g, "\\'")}', '${tel}', '${dir}')" style="color: var(--ngc-neon); border-color: var(--ngc-neon);">
                             <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
@@ -176,18 +187,28 @@ async function filtrarAgenda() {
 
         if (count === 0) lista.innerHTML = '<div style="text-align: center; color: var(--ngc-text-faded);">No se encontraron clientes.</div>';
     } catch(e) {
-        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar agenda.</div>';
+        console.error("Error cargando agenda de Firebase:", e);
+        lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar agenda. Verifica tu conexión.</div>';
     }
 }
 
 function seleccionarClienteAgenda(id, nombre, tel, dir) {
-    clienteActualId = id;
-    clienteDesdeAgenda = true;
-    document.getElementById('cliNombre').value = nombre;
-    document.getElementById('cliTel').value = tel;
-    document.getElementById('cliDireccion').value = dir;
-    cerrarModalAgenda();
-    mostrarToast("Cliente Seleccionado", "Datos cargados desde la agenda.");
+    if (modoAgenda === 'whatsapp') {
+        cerrarModalAgenda();
+        if (tel && tel.trim() !== '') {
+            procesarEnvioWsp(tel);
+        } else {
+            alert("Este contacto no tiene un número de teléfono guardado para enviarle el WhatsApp.");
+        }
+    } else {
+        clienteActualId = id;
+        clienteDesdeAgenda = true;
+        document.getElementById('cliNombre').value = nombre;
+        document.getElementById('cliTel').value = tel;
+        document.getElementById('cliDireccion').value = dir;
+        cerrarModalAgenda();
+        mostrarToast("Cliente Seleccionado", "Datos cargados desde la agenda.");
+    }
 }
 
 // --- BORRADORES EN FIREBASE ---
@@ -233,7 +254,6 @@ async function abrirModalBorradores() {
     lista.innerHTML = '<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando borradores...</div>';
 
     try {
-        // Obtenemos todos los del cliente y los ordenamos en JavaScript (Evita requerir índices compuestos en Firebase)
         const snapshot = await db.collection('borradores_potencia')
             .where('userId', '==', currentUserUid)
             .where('clienteId', '==', clienteActualId)
@@ -252,7 +272,7 @@ async function abrirModalBorradores() {
         docs.forEach(data => {
             const d = new Date(data.fecha);
             lista.innerHTML += `
-                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
                         <b style="color: var(--ngc-text-main); display: block;">${data.clienteNombre}</b>
                         <small style="color: var(--ngc-text-faded);"><i class="fa-regular fa-clock"></i> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}</small>
@@ -283,31 +303,24 @@ function cargarBorradorPotencia(data) {
     mostrarToast("Borrador Abierto", "Los datos se cargaron correctamente.");
 }
 
-
 // --- ENVIAR WHATSAPP (NUEVO MODAL) ---
 function abrirModalWhatsApp() {
     if (listaAmbientes.length === 0) return alert("Debes cargar ambientes primero.");
     const telGuardado = document.getElementById('cliTel').value.trim();
     document.getElementById('modalWhatsApp').classList.remove('oculto');
     
+    const btnWspGuardado = document.getElementById('btnWspGuardado');
     if(telGuardado) {
-        document.getElementById('btnWspGuardado').style.display = 'flex';
-        document.getElementById('btnWspGuardado').innerHTML = `<i class="fa-solid fa-phone"></i> Enviar al Agendado (${telGuardado})`;
-        document.getElementById('btnWspGuardado').onclick = () => procesarEnvioWsp(telGuardado);
+        btnWspGuardado.style.display = 'flex';
+        btnWspGuardado.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ENVIAR AL CLIENTE (${telGuardado})`;
+        btnWspGuardado.onclick = () => procesarEnvioWsp(telGuardado);
     } else {
-        document.getElementById('btnWspGuardado').style.display = 'none';
+        btnWspGuardado.style.display = 'none';
     }
 }
 
 function cerrarModalWhatsApp() {
     document.getElementById('modalWhatsApp').classList.add('oculto');
-    document.getElementById('inputWspNuevo').value = '';
-}
-
-function ejecutarEnvioWspNuevo() {
-    const num = document.getElementById('inputWspNuevo').value.trim();
-    if(!num) return alert("Ingresá un número válido.");
-    procesarEnvioWsp(num);
 }
 
 function procesarEnvioWsp(numero) {
@@ -329,8 +342,7 @@ function procesarEnvioWsp(numero) {
     
     window.open(`https://wa.me/${tel}?text=${encodeURIComponent(m)}`, '_blank');
     cerrarModalWhatsApp();
-}
-
+                                }
 
 // --- LÓGICA DE POTENCIA (AEA) ---
 function obtenerGradoElectrificacion(areaTotal) {
@@ -640,6 +652,31 @@ function renderTabla(areaTotal, gradoActual) {
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
+    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Sección PE</td>`;
+    todosLosCircuitos.forEach(c => {
+        let col = evalVerdeRojo(c.seccionLN !== "" && parseFloat(c.seccionPE) >= parseFloat(c.seccionLN));
+        tfootStr += `<td>${buildSelectHtml(c.id, 'seccionPE', c.seccionPE, [1.5, 2.5, 4, 6, 10, 16], col)}</td>`;
+    });
+    tfootStr += `<td colspan="2"></td></tr>`;
+
+    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Iz (A)</td>`;
+    todosLosCircuitos.forEach(c => {
+        let col = evalVerdeRojo(c._ibCalc && parseFloat(c.iz) >= c._ibCalc);
+        let valStr = c.iz === "" ? "" : c.iz;
+        let style = c.iz !== "" ? `color: ${col}; font-weight:bold;` : 'color: inherit;';
+        tfootStr += `<td><input type="number" class="circ-input" style="${style}" placeholder="-" value="${valStr}" onchange="updC('${c.id}','iz',this.value)"></td>`;
+    });
+    tfootStr += `<td colspan="2"></td></tr>`;
+
+    tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">In (A)</td>`;
+    todosLosCircuitos.forEach(c => {
+        let ib = c._ibCalc || 0;
+        let iz = parseFloat(c.iz) || 0;
+        let pIn = parseFloat(c.in);
+        let cumpleIn = (pIn >= ib && pIn <= iz);
+        let col = evalVerdeRojo(cumpleIn);
+        tfootStr += `<td>${buildSelectHtml(c.id, 'in', c.in, [2, 4, 6, 10, 15, 16, 20, 25, 32, 40, 50, 63], col)}</td>`;
+    });
     tfootStr += `<td colspan="2"></td></tr>`;
 
     tfoot.innerHTML = tfootStr;
@@ -672,7 +709,7 @@ function actualizarPDFHeaders() {
     }
 }
 
-function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, totalesBocas, todosArr) {
+ function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, totalesBocas, todosArr) {
     actualizarPDFHeaders();
     
     const cliNombre = document.getElementById('cliNombre').value || 'Sin Nombre';
@@ -781,4 +818,4 @@ async function tomarCaptura() {
     link.download = `Carga_Circuitos_${n}.png`; link.href = canvas.toDataURL(); link.click(); 
     
     zona.style.color = oldColor; 
-                    }
+}
