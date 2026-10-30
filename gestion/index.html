@@ -209,10 +209,15 @@
 
     </main>
 
-<!-- Tu lógica principal -->
-<script src="./script.js"></script>
-</body>
+    <!-- Librerías de Firebase primero -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
+    <!-- Tu puente de conexión -->
+    <script src="./firebase-config.js"></script>
+
+    <!-- Tu lógica principal -->
+    <script src="./script.js"></script>
 </body>
-                        </html>
-                        
+</html>                   
