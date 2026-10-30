@@ -280,10 +280,11 @@ async function guardarBorradorFirebase() {
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
 
     try {
-        await db.collection('borradores_potencia').add(payload);
+        // CORRECCIÓN: Ruta segura apuntando al perfil del usuario
+        await db.collection("perfiles").doc(uid).collection("borradores_potencia").add(payload);
         mostrarToast("Guardado Exitoso", "El borrador se guardó en la nube.");
     } catch(e) {
-        console.error(e);
+        console.error("Error Firebase:", e);
         alert("Error al guardar en la nube.");
     } finally {
         btn.innerHTML = oldHtml;
@@ -306,8 +307,8 @@ async function abrirModalBorradores() {
     }
 
     try {
-        const snapshot = await db.collection('borradores_potencia')
-            .where('userId', '==', uid)
+        // CORRECCIÓN: Ruta segura apuntando al perfil del usuario
+        const snapshot = await db.collection("perfiles").doc(uid).collection("borradores_potencia")
             .where('clienteId', '==', clienteActualId)
             .get();
             
@@ -336,7 +337,7 @@ async function abrirModalBorradores() {
             `;
         });
     } catch (e) {
-        console.error(e);
+        console.error("Error Firebase:", e);
         lista.innerHTML = '<div style="text-align: center; color: var(--error-red);">Error al cargar borradores.</div>';
     }
 }
