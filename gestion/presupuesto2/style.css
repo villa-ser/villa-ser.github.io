@@ -158,4 +158,34 @@ textarea.corp-input { resize: vertical; }
 .pdf-total-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
 .final-total { margin-top: 10px; padding-top: 10px; border-top: 2px solid #333; font-size: 18px; color: #0088aa; }
 .pdf-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #ddd; padding-top: 15px; }
-                
+
+/* ============================================================== */
+/* AJUSTES FINALES: MODAL Y DESPLEGABLES                          */
+/* ============================================================== */
+
+/* Refinamiento del Select Desplegable */
+select.corp-input option {
+    background: var(--bg-body);
+    color: var(--ngc-text-main);
+    font-size: 0.9rem;
+}
+
+/* Modal de Edición: Input adaptado */
+#modalEdicionInput {
+    background: var(--bg-body) !important;
+    border: 2px solid var(--ngc-privacy-border) !important;
+    color: var(--ngc-text-main) !important;
+    font-weight: 500;
+}
+#modalEdicionInput:focus {
+    border-color: var(--ngc-neon) !important;
+    box-shadow: 0 0 0 3px rgba(35, 116, 225, 0.2);
+}
+
+/* Grid del Footer (Guardar/Abrir Nube) */
+.action-grid-footer {
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px;
+}
+
