@@ -374,6 +374,8 @@ function ejecutarNuevoPresupuesto() {
     permiteGuardarNube = true;
     nombreBorradorActual = null;
     
+    telefonoClienteActual = ""; // <--- ¡AÑADIR ESTA LÍNEA AQUÍ!
+    
     guardarEstadoLocal(); 
     document.getElementById('step-trabajo').classList.add('oculto'); 
     document.getElementById('step-cliente').classList.remove('oculto');
@@ -614,18 +616,6 @@ function sincronizarVistaPreviaPDF() {
     document.getElementById('pdf-notas').innerHTML = not || 'Sin notas.';
 }
 
-async function tomarCaptura() { 
-    const zona = document.getElementById('zonaCaptura'); document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'hidden'); 
-    zona.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body');
-    const scrollY = window.scrollY; window.scrollTo(0, 0);
-    
-    const canvas = await html2canvas(zona, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-body'), scale: 2, useCORS: true, scrollY: 0 }); 
-    window.scrollTo(0, scrollY);
-    
-    const link = document.createElement('a'); link.download = `Presupuesto_${inputCliNombre.value.split(' ')[0] || 'Cliente'}.png`; link.href = canvas.toDataURL(); link.click(); 
-    document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'visible'); zona.style.background = ''; 
-}
-
 async function generarPDF() {
     if (listaItems.length === 0) {
         mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para generar el PDF.");
@@ -654,13 +644,64 @@ async function generarPDF() {
 }
 
 // ==========================================
-// NUEVO SISTEMA WHATSAPP
+// NUEVA LÓGICA DE CAPTURA DE PANTALLA
+// ==========================================
+let canvasGlobalParaDescarga = null;
+
+async function tomarCaptura() { 
+    const zona = document.getElementById('zonaCaptura'); 
+    
+    // Ocultar temporalmente los íconos de eliminar basurita visual
+    document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'hidden'); 
+    
+    zona.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body');
+    const scrollY = window.scrollY; window.scrollTo(0, 0);
+    
+    canvasGlobalParaDescarga = await html2canvas(zona, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-body'), scale: 2, useCORS: true, scrollY: 0 }); 
+    window.scrollTo(0, scrollY);
+    
+    // Restaurar íconos y fondo
+    document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'visible'); 
+    zona.style.background = ''; 
+    
+    // Calcular el peso simulado de la imagen (KB)
+    const dataUrl = canvasGlobalParaDescarga.toDataURL('image/png');
+    const pesoKB = Math.round((dataUrl.length * 0.75) / 1024);
+    document.getElementById('pesoCaptura').innerText = `(${pesoKB} KB)`;
+    
+    // Sugerir nombre dinámico
+    const sugerido = inputCliNombre.value.split(' ')[0] || 'Cliente';
+    document.getElementById('nombreArchivoCaptura').value = `Presupuesto_${sugerido}`;
+    
+    // Mostrar modal
+    document.getElementById('modalDescargarCaptura').classList.remove('oculto');
+}
+
+function cerrarModalCaptura() {
+    document.getElementById('modalDescargarCaptura').classList.add('oculto');
+}
+
+function ejecutarDescargaCaptura() {
+    if (!canvasGlobalParaDescarga) return;
+    const nombre = document.getElementById('nombreArchivoCaptura').value.trim() || 'Presupuesto';
+    const link = document.createElement('a'); 
+    link.download = `${nombre}.png`; 
+    link.href = canvasGlobalParaDescarga.toDataURL('image/png'); 
+    link.click(); 
+    cerrarModalCaptura();
+}
+
+// ==========================================
+// NUEVO SISTEMA WHATSAPP ACTUALIZADO
 // ==========================================
 function enviarWhatsApp() { 
     document.getElementById('modalWhatsApp').classList.remove('oculto');
     const btnActual = document.getElementById('btnWspGuardado');
+    const inputManual = document.getElementById('inputWspManual');
     
-    if (telefonoClienteActual) {
+    if (inputManual) inputManual.value = ""; // Limpiar el input manual al abrir
+
+    if (telefonoClienteActual && telefonoClienteActual.trim() !== "") {
         btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente (${telefonoClienteActual})`;
         btnActual.style.display = 'flex';
     } else {
@@ -681,8 +722,20 @@ function armarMensajeWsp() {
 
 function enviarWspClienteActual() {
     if (!telefonoClienteActual) return;
-    
-    let cleanNumber = telefonoClienteActual.replace(/\D/g, '');
+    procesarEnvioWhatsAppLibre(telefonoClienteActual);
+}
+
+function enviarWspManual() {
+    const numero = document.getElementById('inputWspManual').value.trim();
+    if (!numero) {
+        mostrarAlertaCorp("Faltan Datos", "Por favor, ingresá un número de celular válido.");
+        return;
+    }
+    procesarEnvioWhatsAppLibre(numero);
+}
+
+function procesarEnvioWhatsAppLibre(numero) {
+    let cleanNumber = numero.replace(/\D/g, '');
     if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
     else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
     
@@ -698,7 +751,7 @@ function buscarEnWhatsApp() {
 }
 
 // ==========================================
-// NUEVO MENÚ INFERIOR SCROLL (ESTILO META/FB)
+// NUEVO MENÚ INFERIOR TIPO APP
 // ==========================================
 function generarMenuInferior() {
     const footer = document.getElementById('corpFooterMenu'); if (!footer) return;
@@ -716,5 +769,4 @@ function generarMenuInferior() {
         btn.innerHTML = `<i class="fa-solid ${mod.icon}"></i><span>${mod.nombre}</span>`;
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; }; footer.appendChild(btn);
     });
-                               }
-                                                                                     
+}
