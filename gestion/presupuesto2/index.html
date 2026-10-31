@@ -145,36 +145,19 @@
     </div>
 </div>
 
-    <!-- MODAL ENVIAR WHATSAPP -->
-<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card">
-        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
-        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar Presupuesto</h3>
-        <p style="margin-bottom: 20px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
-        
-        <div class="corp-modal-actions">
-            <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspClienteActual()">
-                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
-            </button>
-            <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWhatsApp()">
-                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
-            </button>
-            <button class="corp-btn danger-btn" style="margin-top: 10px;" onclick="cerrarModalWsp()">Cancelar</button>
-        </div>
-    </div>
-</div>
-  
-    <!-- MODAL DE CAPTURA DE PANTALLA -->
+    <!-- ================================================== -->
+<!-- NUEVO MODAL DE CAPTURA DE PANTALLA -->
+<!-- ================================================== -->
 <div id="modalDescargarCaptura" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card" style="padding-top: 30px;">
-        <i class="fa-solid fa-download" style="font-size: 2rem; color: var(--ngc-text-main); margin-bottom: 15px; display: block; text-align: center;"></i>
+        <i class="fa-solid fa-download" style="font-size: 2.5rem; color: var(--ngc-text-main); margin-bottom: 15px; display: block; text-align: center;"></i>
         <h3 style="margin-bottom: 5px; font-size: 1.3rem;">¿Descargar archivo?</h3>
         <p id="pesoCaptura" style="font-size: 1.1rem; color: var(--ngc-text-main); font-weight: bold; text-align: center; margin-bottom: 25px;">(Calculando...)</p>
         
         <div style="position: relative; margin-bottom: 25px;">
-            <label style="position: absolute; top: -10px; left: 10px; background: var(--ngc-glass); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre</label>
+            <label style="position: absolute; top: -10px; left: 10px; background: var(--bg-body); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre</label>
             <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
-                <input type="text" id="nombreArchivoCaptura" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px;" value="Materiales_Cliente">
+                <input type="text" id="nombreArchivoCaptura" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px; outline: none; box-shadow: none;" value="Presupuesto_Cliente">
                 <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.png</span>
             </div>
         </div>
@@ -187,6 +170,39 @@
         <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
             <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalCaptura()">Cancelar</button>
             <button class="corp-btn" style="width: auto; background: #cba6f7; color: #1e1e2e; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaCaptura()">Descargar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL ENVIAR WHATSAPP (REEMPLAZAR EL ACTUAL) -->
+<!-- ================================================== -->
+<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar Presupuesto</h3>
+        <p style="margin-bottom: 20px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
+        
+        <div class="corp-modal-actions">
+            <!-- Botón para contacto agendado (Solo aparece si el cliente tiene teléfono) -->
+            <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspClienteActual()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+            
+            <!-- Opción ingreso manual (Nuevo) -->
+            <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                <input type="number" id="inputWspManual" class="corp-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManual()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Botón de búsqueda nativa de WhatsApp -->
+            <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWhatsApp()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            
+            <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWsp()">Cancelar</button>
         </div>
     </div>
 </div>
