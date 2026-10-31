@@ -8,12 +8,18 @@ const db = firebase.firestore();
 let registrandoCuenta = false;
 let cargaInicial = true;
 
-// Lógica inteligente de Tema
+// Lógica inteligente de Tema (3 Estados: Oscuro, Sistema, Claro)
 function aplicarTema(tema) {
-    const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-    if (tema === 'light' || (tema === 'system' && prefiereClaro)) {
+    if (tema === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-    } else {
+    } else if (tema === 'system') {
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (prefiereClaro) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    } else { // dark o fallback
         document.documentElement.removeAttribute('data-theme');
     }
 }
@@ -24,12 +30,13 @@ function cambiarTemaManual(nuevoTema) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Escuchar si el teléfono cambia de modo de noche a día (Solo funciona si eligieron Sistema)
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
         const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
         if (temaGuardado === 'system') aplicarTema('system');
     });
 
-    // --- LÓGICA DE SESIÓN Y SPLASH SCREEN MEJORADA ---
+    // --- LÓGICA DE SESIÓN Y SPLASH SCREEN ---
     auth.onAuthStateChanged(async (user) => {
         if (registrandoCuenta) return;
 
@@ -60,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
             mostrarPantallaLogin();
         }
 
-        // Ocultar splash screen SOLO DESPUÉS de comprobar todo el estado
+        // Ocultar splash screen SOLO DESPUÉS de comprobar todo el estado (App cargada)
         if (cargaInicial) {
             const splash = document.getElementById('customSplashScreen');
             if (splash) {
@@ -194,7 +201,6 @@ document.addEventListener('click', (e) => {
     } 
 });
 
-// ABRIR CONFIGURACIÓN SE ASEGURA DE TRAER LOS DATOS SI SE HABÍAN BORRADO
 async function abrirConfiguracion() {
     document.getElementById('modalConfig').classList.remove('oculto');
     document.getElementById('userDropdown').classList.add('oculto');
@@ -212,11 +218,12 @@ async function abrirConfiguracion() {
         document.getElementById('logoPreview').style.display = 'none';
     }
 
+    // Asegurarse de que el switch marque la opción correcta en base a localStorage
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
     const radioTema = document.getElementById(`tema_${temaGuardado}`);
     if(radioTema) radioTema.checked = true;
 
-    // 2. Si no hay datos locales (porque se borró el historial), forzamos una lectura a la nube
+    // 2. Si no hay datos locales, forzamos una lectura a la nube
     const user = auth.currentUser;
     if (user && !document.getElementById('confNombre').value) {
         try {
@@ -267,7 +274,7 @@ function guardarConfiguracion() {
         return;
     }
 
-    // 1. Guardar INMEDIATAMENTE en LocalStorage (La app reacciona al instante)
+    // 1. Guardar INMEDIATAMENTE en LocalStorage
     localStorage.setItem('villaser_conf_nombre', nombre);
     localStorage.setItem('villaser_conf_slogan', slogan);
     localStorage.setItem('villaser_conf_telefono', telefono);
@@ -283,17 +290,16 @@ function guardarConfiguracion() {
         perfilData.logo = logoPreview;
     }
 
-    // 2. Cerramos el modal de inmediato y avisamos al usuario (Cero demoras)
-    alert("¡Datos guardados correctamente!");
+    // 2. Cerramos el modal de inmediato
+    alert("¡Datos y preferencias guardadas correctamente!");
     cerrarConfiguracion();
 
-        // 3. Sincronizar con Firebase (Nube) EN SEGUNDO PLANO
+    // 3. Sincronizar con Firebase EN SEGUNDO PLANO
     db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
         .then(() => {
             console.log("Datos sincronizados en la nube exitosamente.");
         })
         .catch((error) => {
-            // ALARMA ACTIVADA: Esto nos dirá en pantalla cuál es el problema exacto
             alert("Atención: Firebase bloqueó el guardado. Motivo: " + error.message);
             console.error("Error al sincronizar en la nube:", error);
         });
@@ -354,7 +360,7 @@ function iniciarSesion() {
     btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
     btnLogin.disabled = true;
 
-    // Forzamos persistencia LOCAL para evitar deslogueos al recargar
+    // Forzamos persistencia LOCAL
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
             return auth.signInWithEmailAndPassword(email, password);
@@ -375,7 +381,7 @@ function iniciarSesion() {
 }
 
 function cerrarSesion() {
-    // Limpiar caché local al salir
+    // Limpiar caché local al salir (Mantiene tu preferencia de TEMA)
     localStorage.removeItem('villaser_conf_nombre');
     localStorage.removeItem('villaser_conf_slogan');
     localStorage.removeItem('villaser_conf_telefono');
@@ -429,5 +435,5 @@ if (btnInstalar) {
         }
         eventoInstalacion = null;
     }); 
-                         }
-            
+                                 }
+                       
