@@ -207,7 +207,17 @@
             </div>
         </div>
     </div>
-
+    
+<!-- MODAL DE ÉXITO CORPORATIVO (Reemplaza al alert nativo) -->
+<div id="modalExitoCorp" class="corp-modal oculto">
+    <div class="corp-modal-card" style="max-width: 350px; text-align: center;">
+        <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: var(--corp-success); margin-bottom: 15px;"></i>
+        <h3 class="corp-modal-title" style="justify-content: center; margin-bottom: 10px;">¡Guardado!</h3>
+        <p style="color: var(--corp-text-faded); font-size: 0.9rem; margin-bottom: 20px;">Datos y preferencias guardadas correctamente.</p>
+        <button class="corp-btn primary-btn" style="width: 100%;" onclick="cerrarModalExitoCorp()">Aceptar</button>
+    </div>
+</div>
+    
     <!-- Librerías de Firebase primero -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
