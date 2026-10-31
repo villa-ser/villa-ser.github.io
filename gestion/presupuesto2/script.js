@@ -348,27 +348,39 @@ function cargarEstadoGuardado() {
     }
 }
 
+// ==========================================
+// NUEVO PRESUPUESTO (MODAL CORPORATIVO)
+// ==========================================
 function nuevoPresupuesto() {
-    if(confirm("¿Iniciar nuevo presupuesto?")) {
-        inputCliNombre.value = ''; 
-        document.getElementById('cliDireccion').value = ''; 
-        document.getElementById('cliProyecto').value = ''; 
-        document.getElementById('obsGenerales').value = '';
-        listaItems = []; 
-        nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
-        clienteDesdeAgenda = false; 
-        permiteGuardarNube = true;
-        nombreBorradorActual = null;
-        
-        guardarEstadoLocal(); 
-        document.getElementById('step-trabajo').classList.add('oculto'); 
-        document.getElementById('step-cliente').classList.remove('oculto');
-        
-        const modalRecuperar = document.getElementById('modalRecuperarCliente');
-        if(modalRecuperar) modalRecuperar.classList.add('oculto'); 
-        
-        renderTabla();
-    }
+    document.getElementById('modalConfirmarNuevo').classList.remove('oculto');
+}
+
+function cerrarModalConfirmarNuevo() {
+    document.getElementById('modalConfirmarNuevo').classList.add('oculto');
+}
+
+function ejecutarNuevoPresupuesto() {
+    cerrarModalConfirmarNuevo();
+    
+    inputCliNombre.value = ''; 
+    document.getElementById('cliDireccion').value = ''; 
+    document.getElementById('cliProyecto').value = ''; 
+    document.getElementById('obsGenerales').value = '';
+    
+    listaItems = []; 
+    nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
+    clienteDesdeAgenda = false; 
+    permiteGuardarNube = true;
+    nombreBorradorActual = null;
+    
+    guardarEstadoLocal(); 
+    document.getElementById('step-trabajo').classList.add('oculto'); 
+    document.getElementById('step-cliente').classList.remove('oculto');
+    
+    const modalRecuperar = document.getElementById('modalRecuperarCliente');
+    if(modalRecuperar) modalRecuperar.classList.add('oculto'); 
+    
+    renderTabla();
 }
 
 function mostrarToast(titulo, mensaje) {
