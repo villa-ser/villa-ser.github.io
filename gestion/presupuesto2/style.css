@@ -189,3 +189,20 @@ select.corp-input option {
     gap: 10px;
 }
 
+/* ============================================================== */
+/* ESTILOS DE COMPONENTES INTERNOS                                */
+/* ============================================================== */
+
+/* Altura mínima segura para notas largas */
+textarea#obsManual {
+    min-height: 90px !important;
+}
+
+/* Estilizar las opciones de Select en PC (Windows/Mac) */
+/* Nota: iOS/Android sobrescriben esto con su UI nativa táctil */
+select.corp-input option {
+    background-color: var(--ngc-glass);
+    color: var(--ngc-text-main);
+    font-size: 0.95rem;
+    padding: 10px;
+}
