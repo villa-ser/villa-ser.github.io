@@ -6,12 +6,14 @@ let dbPrecios = [];
 let listaItems = [];
 let notasOriginales = "";
 let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
+
 let conceptoEditado = null;
 let precioEditado = null;
 let contactosAgenda = []; 
 let totalMontoActual = 0; 
+let nombreBorradorActual = null; // Memoria del archivo abierto (Guardar Como...)
 
-// Controles de Nube
+// Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 let uidSeguro = null;
@@ -21,7 +23,7 @@ const selConcepto = document.getElementById('selConcepto');
 const inputCliNombre = document.getElementById('cliNombre');
 
 // ==========================================
-// INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
+// INICIALIZACIÓN
 // ==========================================
 function arrancarModulo() {
     try {
@@ -37,7 +39,7 @@ function arrancarModulo() {
     catch (e) { localStorage.removeItem('presupuesto_estado_actual'); }
 
     fetchData();
-    generarMenuInferior(); // Render del menú Footer
+    generarMenuInferior(); 
 }
 
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', arrancarModulo); } 
@@ -60,8 +62,10 @@ async function fetchData() {
         const jPre = JSON.parse(txtPre.substring(txtPre.indexOf("{"), txtPre.lastIndexOf("}") + 1));
         
         dbPrecios = jPre.table.rows.filter(r => r.c[1] && r.c[1].v !== "Concepto").map(r => ({ 
-            tema: r.c[0]?.v || 'Gral', concepto: r.c[1]?.v || '', 
-            precio: typeof r.c[2]?.v === 'number' ? r.c[2].v : 0, notas: r.c[3]?.v || '' 
+            tema: r.c[0]?.v || 'Gral', 
+            concepto: r.c[1]?.v || '', 
+            precio: typeof r.c[2]?.v === 'number' ? r.c[2].v : 0, 
+            notas: r.c[3]?.v || '' 
         }));
         
         poblarTemas();
@@ -72,7 +76,8 @@ async function fetchData() {
 
         if (listaItems.length > 0) avanzarPasoTrabajo();
     } catch (e) { 
-        document.getElementById('loading').innerHTML = `⚠️ Error al leer precios de Google Sheets.<br><button class="corp-btn" onclick="location.reload()">Reintentar</button>`;
+        document.getElementById('loading').innerHTML = `⚠️ Error de conexión a la base de datos.<br><br><button class="corp-btn" onclick="location.reload()">Reintentar</button>`;
+        console.error(e);
     }
 }
 
@@ -81,9 +86,23 @@ function setupEventListeners() {
     if (selConcepto) selConcepto.addEventListener('change', cargarDetallePrecios);
     if (inputCliNombre) {
         inputCliNombre.addEventListener('input', () => {
-            clienteDesdeAgenda = false; permiteGuardarNube = false; 
+            clienteDesdeAgenda = false; 
+            permiteGuardarNube = false; 
         });
     }
+}
+
+// ==========================================
+// NUEVOS MODALES DE ALERTA Y CONFIRMACIÓN
+// ==========================================
+function mostrarAlertaCorp(titulo, mensaje) {
+    document.getElementById('modalAlertaTitulo').innerText = titulo;
+    document.getElementById('modalAlertaMensaje').innerText = mensaje;
+    document.getElementById('modalAlertaCorp').classList.remove('oculto');
+}
+
+function cerrarModalAlertaCorp() {
+    document.getElementById('modalAlertaCorp').classList.add('oculto');
 }
 
 // ==========================================
@@ -91,8 +110,15 @@ function setupEventListeners() {
 // ==========================================
 function iniciarPresupuesto() {
     const nombre = inputCliNombre.value.trim();
-    if(!nombre) { alert("Ingresá el Nombre del Cliente."); inputCliNombre.focus(); return; }
-    if (!clienteDesdeAgenda) { document.getElementById('modalAgendarCliente').classList.remove('oculto'); return; }
+    if(!nombre) { 
+        mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente."); 
+        inputCliNombre.focus(); 
+        return; 
+    }
+    if (!clienteDesdeAgenda) { 
+        document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
+        return; 
+    }
     avanzarPasoTrabajo();
 }
 
@@ -102,23 +128,40 @@ function accionAgendarCliente() {
     window.location.href = `../nuevo_cliente/index.html?nombre=${nombre}&dir=${dir}`;
 }
 
-function opcionBuscarAgenda() { document.getElementById('modalAgendarCliente').classList.add('oculto'); abrirModalAgenda(); }
+function opcionBuscarAgenda() { 
+    document.getElementById('modalAgendarCliente').classList.add('oculto'); 
+    abrirModalAgenda(); 
+}
+
 function opcionContinuarSinAgenda() {
-    if (confirm("Al no estar en tu agenda, este presupuesto NO se guardará en la nube. ¿Continuar?")) {
-        permiteGuardarNube = false; document.getElementById('modalAgendarCliente').classList.add('oculto'); avanzarPasoTrabajo();
-    }
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
+}
+
+function cerrarModalConfirmarSinAgenda() {
+    document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
+}
+
+function ejecutarContinuarSinAgenda() {
+    cerrarModalConfirmarSinAgenda();
+    permiteGuardarNube = false;
+    avanzarPasoTrabajo();
 }
 
 function avanzarPasoTrabajo() {
     document.getElementById('step-cliente').classList.add('oculto');
     document.getElementById('step-trabajo').classList.remove('oculto');
     document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-    guardarClienteGlobal(); renderTabla();
+    guardarClienteGlobal(); 
+    renderTabla();
 }
 
 function abrirModalAgenda() {
     const uid = obtenerUid();
-    if (!uid || !db) { alert("⚠️ Sin sesión detectada."); return; }
+    if (!uid || !db) { 
+        mostrarAlertaCorp("Error", "Sin sesión detectada."); 
+        return; 
+    }
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
@@ -144,6 +187,7 @@ function filtrarAgenda() {
         contenedor.appendChild(div);
     });
 }
+
 function seleccionarContacto(nombre, dir) {
     inputCliNombre.value = nombre; document.getElementById('cliDireccion').value = dir;
     clienteDesdeAgenda = true; permiteGuardarNube = true; 
@@ -151,39 +195,87 @@ function seleccionarContacto(nombre, dir) {
 }
 
 // ==========================================
-// BORRADORES NUBE
+// BORRADORES NUBE (Guardar Como... UI)
 // ==========================================
-function guardarBorradorFirebase(mostrarAlerta = false) {
+function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     const uid = obtenerUid();
-    if (!uid || !db || !permiteGuardarNube) return;
+    if (!uid || !db) {
+        if (mostrarAlerta) mostrarAlertaCorp("Error de Sesión", "No se detectó sesión activa para la nube.");
+        return;
+    }
+    if (!permiteGuardarNube) {
+        if (mostrarAlerta) mostrarAlertaCorp("Acción Bloqueada", "Este presupuesto pertenece a un cliente no agendado. No puede guardarse en la nube.");
+        return;
+    }
     if (listaItems.length === 0 && !inputCliNombre.value) return;
+
+    // Generar nombre sugerido: Cliente_Proyecto_Fecha
+    const nombreCli = (inputCliNombre.value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
+    const proyCli = (document.getElementById('cliProyecto').value.trim() || 'Presupuesto').replace(/\s+/g, '_');
+    const fechaHoy = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
+    let nombreSugerido = `${nombreCli}_${proyCli}_${fechaHoy}`;
+
+    if (!autoGuardado) {
+        // Guardado Manual: Abrir Modal en lugar de prompt()
+        document.getElementById('inputNombreBorrador').value = nombreBorradorActual || nombreSugerido;
+        document.getElementById('modalGuardarBorrador').classList.remove('oculto');
+    } else {
+        // Autoguardado: Directo a Firebase sin preguntar
+        ejecutarGuardarNube(nombreBorradorActual || nombreSugerido, false);
+    }
+}
+
+function cerrarModalGuardarBorrador() {
+    document.getElementById('modalGuardarBorrador').classList.add('oculto');
+}
+
+function ejecutarGuardarBorrador() {
+    const nombreIngresado = document.getElementById('inputNombreBorrador').value.trim();
+    if (!nombreIngresado) {
+        mostrarAlertaCorp("Faltan Datos", "Debes ingresar un nombre para el borrador.");
+        return;
+    }
+    nombreBorradorActual = nombreIngresado;
+    cerrarModalGuardarBorrador();
+    ejecutarGuardarNube(nombreBorradorActual, true);
+}
+
+function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
+    const uid = obtenerUid();
+    const estado = { cliNombre: inputCliNombre.value, cliDireccion: document.getElementById('cliDireccion').value, cliProyecto: document.getElementById('cliProyecto').value, obsGenerales: document.getElementById('obsGenerales').value, items: listaItems, nro: nroPresupuestoGlobal, totalMonto: totalMontoActual, fechaGuardado: Date.now(), nombreBorrador: nombreFinal };
     
-    const estado = { cliNombre: inputCliNombre.value, cliDireccion: document.getElementById('cliDireccion').value, cliProyecto: document.getElementById('cliProyecto').value, obsGenerales: document.getElementById('obsGenerales').value, items: listaItems, nro: nroPresupuestoGlobal, totalMonto: totalMontoActual, fechaGuardado: Date.now() };
-    let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
+    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
 
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).set(estado)
-      .then(() => { if (mostrarAlerta) mostrarToast("Guardado", "Sincronizado en la nube."); });
+      .then(() => { if (mostrarAlerta) mostrarToast("Borrador Guardado", "Sincronizado con tu cuenta."); })
+      .catch((e) => console.error("Error guardando en la nube: ", e));
 }
 
 function abrirModalBorradores() {
     const uid = obtenerUid();
     if (!uid || !db) return;
     const nombre = inputCliNombre.value.trim();
-    if (!nombre) { alert("Ingresá el Nombre del Cliente primero."); inputCliNombre.focus(); return; }
+    if (!nombre) { 
+        mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
+        inputCliNombre.focus(); 
+        return; 
+    }
 
     document.getElementById('modalBorradores').classList.remove('oculto');
-    const cont = document.getElementById('listaBorradores'); cont.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...`;
+    const cont = document.getElementById('listaBorradores'); 
+    cont.innerHTML = `<div style="text-align:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
     
     db.collection("perfiles").doc(uid).collection("presupuestos").where("cliNombre", "==", nombre).get().then((snapshot) => {
           cont.innerHTML = '';
-          if (snapshot.empty) { cont.innerHTML = `<p>No hay borradores en nube.</p>`; return; }
+          if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center;">No hay borradores en nube.</p>`; return; }
           let borradores = []; snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
           borradores.forEach((b) => {
               const f = b.data.fechaGuardado ? new Date(b.data.fechaGuardado).toLocaleDateString() : '';
+              const nombreBor = b.data.nombreBorrador || b.data.cliNombre;
               const div = document.createElement('div'); div.className = "modal-list-item"; div.style.borderLeft = "3px solid var(--ngc-neon)";
-              div.innerHTML = `<div><h4>${b.data.cliNombre}</h4><small>$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small></div>
+              div.innerHTML = `<div><h4>${nombreBor}</h4><small>$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small></div>
                   <div style="display:flex; gap:5px;"><button class="corp-btn-small" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
                   <button class="corp-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button></div>`;
               cont.appendChild(div);
@@ -192,11 +284,15 @@ function abrirModalBorradores() {
 }
 
 function cerrarModalBorradores() { document.getElementById('modalBorradores').classList.add('oculto'); }
+
 function cargarBorradorNube(docId) {
     const uid = obtenerUid(); if (!uid || !db) return;
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).get().then((doc) => {
         if (doc.exists) {
-            const data = doc.data(); data.clienteDesdeAgenda = true; data.permiteGuardarNube = true;
+            const data = doc.data(); 
+            data.clienteDesdeAgenda = true; 
+            data.permiteGuardarNube = true;
+            nombreBorradorActual = data.nombreBorrador || docId; // Recuperar el nombre del archivo
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradores();
         }
@@ -204,20 +300,36 @@ function cargarBorradorNube(docId) {
 }
 function eliminarBorradorNube(docId, btn) {
     const uid = obtenerUid(); if (!uid || !db) return;
+    // La única excepción temporal será la confirmación de borrado
     if (confirm("¿Eliminar borrador en nube?")) { db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).delete().then(() => { btn.closest('div.modal-list-item').remove(); }); }
         }
-    // ==========================================
+  // ==========================================
 // MEMORIA LOCAL Y UI
 // ==========================================
 function inicializarClienteMemoria() { cargarEstadoGuardado(); }
 
 function guardarClienteGlobal() {
-    const obj = { nombre: inputCliNombre.value.trim(), direccion: document.getElementById('cliDireccion').value.trim(), proyecto: document.getElementById('cliProyecto').value.trim() };
-    localStorage.setItem('villaser_cliente_global', JSON.stringify(obj)); guardarEstadoLocal(); 
+    const obj = { 
+        nombre: inputCliNombre.value.trim(), 
+        direccion: document.getElementById('cliDireccion').value.trim(), 
+        proyecto: document.getElementById('cliProyecto').value.trim() 
+    };
+    localStorage.setItem('villaser_cliente_global', JSON.stringify(obj)); 
+    guardarEstadoLocal(); 
 }
 
 function guardarEstadoLocal() {
-    localStorage.setItem('presupuesto_estado_actual', JSON.stringify({ cliNombre: inputCliNombre.value, cliDireccion: document.getElementById('cliDireccion').value, cliProyecto: document.getElementById('cliProyecto').value, obsGenerales: document.getElementById('obsGenerales').value, items: listaItems, nro: nroPresupuestoGlobal, clienteDesdeAgenda: clienteDesdeAgenda, permiteGuardarNube: permiteGuardarNube }));
+    localStorage.setItem('presupuesto_estado_actual', JSON.stringify({ 
+        cliNombre: inputCliNombre.value, 
+        cliDireccion: document.getElementById('cliDireccion').value, 
+        cliProyecto: document.getElementById('cliProyecto').value, 
+        obsGenerales: document.getElementById('obsGenerales').value, 
+        items: listaItems, 
+        nro: nroPresupuestoGlobal, 
+        clienteDesdeAgenda: clienteDesdeAgenda, 
+        permiteGuardarNube: permiteGuardarNube,
+        nombreBorradorActual: nombreBorradorActual
+    }));
 }
 
 function cargarEstadoGuardado() {
@@ -232,23 +344,43 @@ function cargarEstadoGuardado() {
         if (est.nro) nroPresupuestoGlobal = est.nro;
         if (est.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = est.clienteDesdeAgenda;
         if (est.permiteGuardarNube !== undefined) permiteGuardarNube = est.permiteGuardarNube;
+        if (est.nombreBorradorActual !== undefined) nombreBorradorActual = est.nombreBorradorActual;
     }
 }
 
 function nuevoPresupuesto() {
     if(confirm("¿Iniciar nuevo presupuesto?")) {
-        inputCliNombre.value = ''; document.getElementById('cliDireccion').value = ''; document.getElementById('cliProyecto').value = ''; document.getElementById('obsGenerales').value = '';
-        listaItems = []; nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
-        clienteDesdeAgenda = false; permiteGuardarNube = true;
-        guardarEstadoLocal(); document.getElementById('step-trabajo').classList.add('oculto'); document.getElementById('step-cliente').classList.remove('oculto');
-        document.getElementById('modalRecuperarCliente').classList.add('oculto'); renderTabla();
+        inputCliNombre.value = ''; 
+        document.getElementById('cliDireccion').value = ''; 
+        document.getElementById('cliProyecto').value = ''; 
+        document.getElementById('obsGenerales').value = '';
+        listaItems = []; 
+        nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
+        clienteDesdeAgenda = false; 
+        permiteGuardarNube = true;
+        nombreBorradorActual = null;
+        
+        guardarEstadoLocal(); 
+        document.getElementById('step-trabajo').classList.add('oculto'); 
+        document.getElementById('step-cliente').classList.remove('oculto');
+        
+        const modalRecuperar = document.getElementById('modalRecuperarCliente');
+        if(modalRecuperar) modalRecuperar.classList.add('oculto'); 
+        
+        renderTabla();
     }
 }
 
 function mostrarToast(titulo, mensaje) {
-    document.getElementById('toastTitle').innerText = titulo; document.getElementById('toastMessage').innerText = mensaje;
-    const toast = document.getElementById('toastCliente'); toast.classList.remove('oculto');
-    setTimeout(() => toast.classList.add('mostrar'), 100); setTimeout(() => { toast.classList.remove('mostrar'); setTimeout(() => toast.classList.add('oculto'), 400); }, 4000); 
+    document.getElementById('toastTitle').innerText = titulo; 
+    document.getElementById('toastMessage').innerText = mensaje;
+    const toast = document.getElementById('toastCliente'); 
+    toast.classList.remove('oculto');
+    setTimeout(() => toast.classList.add('mostrar'), 100); 
+    setTimeout(() => { 
+        toast.classList.remove('mostrar'); 
+        setTimeout(() => toast.classList.add('oculto'), 400); 
+    }, 4000); 
 }
 
 // ==========================================
@@ -261,35 +393,55 @@ function step(id, val) {
 
 function poblarTemas() { 
     if(!selTema) return; selTema.innerHTML = '<option value="">-- SELECCIONE RUBRO --</option>';
-    [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.textContent = t; selTema.appendChild(opt); }); 
+    [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { 
+        const opt = document.createElement('option'); opt.value = t; opt.textContent = t; selTema.appendChild(opt); 
+    }); 
 }
 
 function cambioTema() { 
     const t = selTema.value; selConcepto.innerHTML = '<option value="">-- SELECCIONE TRABAJO --</option>';
-    limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; document.getElementById('obsManual').value = "";
-    if(t) { selConcepto.disabled = false; dbPrecios.filter(i => i.tema === t).forEach(i => { const opt = document.createElement('option'); opt.value = i.concepto; opt.textContent = i.concepto; selConcepto.appendChild(opt); }); } else { selConcepto.disabled = true; }
+    limpiarEdicionesTemporales(); 
+    document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; 
+    document.getElementById('obsManual').value = "";
+    
+    if(t) { 
+        selConcepto.disabled = false; 
+        dbPrecios.filter(i => i.tema === t).forEach(i => { 
+            const opt = document.createElement('option'); opt.value = i.concepto; opt.textContent = i.concepto; selConcepto.appendChild(opt); 
+        }); 
+    } else { 
+        selConcepto.disabled = true; 
+    }
 }
 
 function limpiarEdicionesTemporales() {
     conceptoEditado = null; precioEditado = null;
-    document.getElementById('badgeConcepto').classList.add('oculto'); document.getElementById('badgePrecio').classList.add('oculto');
-    document.getElementById('btnEditConcepto').classList.add('oculto'); document.getElementById('btnEditPrecio').classList.add('oculto');
+    document.getElementById('badgeConcepto').classList.add('oculto'); 
+    document.getElementById('badgePrecio').classList.add('oculto');
+    document.getElementById('btnEditConcepto').classList.add('oculto'); 
+    document.getElementById('btnEditPrecio').classList.add('oculto');
 }
 
 function cargarDetallePrecios() { 
     const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); 
     const obs = document.getElementById('obsManual'); limpiarEdicionesTemporales();
+    
     if(item) { 
         document.getElementById('unitarioLabel').innerText = `Unit: $ ${item.precio.toLocaleString('es-AR')}`; 
-        obs.value = item.notas; notasOriginales = item.notas; obs.readOnly = true; 
-        document.getElementById('btnEditConcepto').classList.remove('oculto'); document.getElementById('btnEditPrecio').classList.remove('oculto');
-    } else { document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; obs.value = ""; }
+        obs.value = item.notas; 
+        notasOriginales = item.notas; 
+        obs.readOnly = true; 
+        document.getElementById('btnEditConcepto').classList.remove('oculto'); 
+        document.getElementById('btnEditPrecio').classList.remove('oculto');
+    } else { 
+        document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; obs.value = ""; 
+    }
 }
 
 // ==========================================
 // EDICIÓN TEMPORAL CON MODAL CORPORATIVO
 // ==========================================
-let tipoEdicionActual = null; // Determina si editamos 'concepto' o 'precio'
+let tipoEdicionActual = null; 
 
 function abrirModalEdicion(tipo, valorActual) {
     tipoEdicionActual = tipo;
@@ -329,7 +481,6 @@ function guardarModalEdicion() {
     cerrarModalEdicion();
 }
 
-// Funciones gatillo que reemplazan a los prompt()
 function editarConceptoTemporal() {
     const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); 
     if (!item) return;
@@ -348,17 +499,35 @@ function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
 
 function agregarTrabajo() {
     const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
-    if(!itemOriginal) { alert("Seleccione un trabajo."); return; }
+    if(!itemOriginal) { 
+        mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
+        return; 
+    }
     
     const qty = parseInt(document.getElementById('cantidad').value) || 1;
     const desc = parseInt(document.getElementById('porcentajeDesc').value) || 0;
     const fPrecio = precioEditado !== null ? precioEditado : itemOriginal.precio;
     const fTotal = (fPrecio * qty) * (1 - desc / 100);
           
-    listaItems.push({ id: Date.now(), concepto: conceptoEditado || itemOriginal.concepto, obs: document.getElementById('obsManual').value, qty, total: fTotal, unitario: fPrecio, desc });
-    guardarEstadoLocal(); renderTabla(); 
+    listaItems.push({ 
+        id: Date.now(), 
+        concepto: conceptoEditado || itemOriginal.concepto, 
+        obs: document.getElementById('obsManual').value, 
+        qty, 
+        total: fTotal, 
+        unitario: fPrecio, 
+        desc 
+    });
     
-    document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; document.getElementById('porcentajeDesc').value = 0; selConcepto.value = ""; limpiarEdicionesTemporales(); document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
+    guardarEstadoLocal(); 
+    renderTabla(); 
+    
+    document.getElementById('obsManual').value = ""; 
+    document.getElementById('cantidad').value = 1; 
+    document.getElementById('porcentajeDesc').value = 0; 
+    selConcepto.value = ""; 
+    limpiarEdicionesTemporales(); 
+    document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
 // ==========================================
@@ -397,13 +566,25 @@ function actualizarPDFHeaders() {
     const t = localStorage.getItem('villaser_conf_telefono'); document.getElementById('pdf-tel').innerText = t ? `📞 ${t}` : '';
     const e = localStorage.getItem('villaser_conf_email'); document.getElementById('pdf-email').innerText = e ? `✉️ ${e}` : '';
     const logo = localStorage.getItem('villaser_conf_logo');
-    if (logo && logo.startsWith('data:image')) { document.getElementById('pdf-img-logo').src = logo; document.getElementById('pdf-img-logo').style.display = 'block'; document.getElementById('pdf-text-logo').style.display = 'none'; } else { document.getElementById('pdf-img-logo').style.display = 'none'; document.getElementById('pdf-text-logo').innerText = document.getElementById('headerMembrete').innerText; document.getElementById('pdf-text-logo').style.display = 'block'; }
+    if (logo && logo.startsWith('data:image')) { 
+        document.getElementById('pdf-img-logo').src = logo; 
+        document.getElementById('pdf-img-logo').style.display = 'block'; 
+        document.getElementById('pdf-text-logo').style.display = 'none'; 
+    } else { 
+        document.getElementById('pdf-img-logo').style.display = 'none'; 
+        document.getElementById('pdf-text-logo').innerText = document.getElementById('headerMembrete').innerText; 
+        document.getElementById('pdf-text-logo').style.display = 'block'; 
+    }
 }
 
 function sincronizarVistaPreviaPDF() {
     actualizarPDFHeaders();
-    document.getElementById('pdf-nro').innerText = nroPresupuestoGlobal; document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
-    document.getElementById('pdf-cliente').innerText = inputCliNombre.value || 'Sin Nombre'; document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'A coordinar'; document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
+    document.getElementById('pdf-nro').innerText = nroPresupuestoGlobal; 
+    document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
+    document.getElementById('pdf-cliente').innerText = inputCliNombre.value || 'Sin Nombre'; 
+    document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'A coordinar'; 
+    document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
+    
     const tbody = document.getElementById('pdf-tbody'); tbody.innerHTML = ''; let sub = 0; let desc = 0; let not = '';
 
     listaItems.forEach((i, idx) => {
@@ -414,32 +595,58 @@ function sincronizarVistaPreviaPDF() {
     });
     const og = document.getElementById('obsGenerales').value; if(og) not += `<br><b>Gral:</b> ${og}`;
 
-    document.getElementById('pdf-subtotal').innerText = `$ ${sub.toLocaleString('es-AR')}`; document.getElementById('pdf-descuentos').innerText = `-$ ${desc.toLocaleString('es-AR')}`; document.getElementById('pdf-total').innerText = `$ ${(sub - desc).toLocaleString('es-AR')}`; document.getElementById('pdf-notas').innerHTML = not || 'Sin notas.';
+    document.getElementById('pdf-subtotal').innerText = `$ ${sub.toLocaleString('es-AR')}`; 
+    document.getElementById('pdf-descuentos').innerText = `-$ ${desc.toLocaleString('es-AR')}`; 
+    document.getElementById('pdf-total').innerText = `$ ${(sub - desc).toLocaleString('es-AR')}`; 
+    document.getElementById('pdf-notas').innerHTML = not || 'Sin notas.';
 }
 
 async function tomarCaptura() { 
     const zona = document.getElementById('zonaCaptura'); document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'hidden'); 
     zona.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body');
     const scrollY = window.scrollY; window.scrollTo(0, 0);
+    
     const canvas = await html2canvas(zona, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-body'), scale: 2, useCORS: true, scrollY: 0 }); 
     window.scrollTo(0, scrollY);
+    
     const link = document.createElement('a'); link.download = `Presupuesto_${inputCliNombre.value.split(' ')[0] || 'Cliente'}.png`; link.href = canvas.toDataURL(); link.click(); 
     document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'visible'); zona.style.background = ''; 
 }
 
 async function generarPDF() {
-    if (listaItems.length === 0) return alert("Agregá trabajos."); sincronizarVistaPreviaPDF();
-    if(permiteGuardarNube) { guardarBorradorFirebase(false); }
+    if (listaItems.length === 0) {
+        mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para generar el PDF.");
+        return;
+    }
+    sincronizarVistaPreviaPDF();
+    
+    // Auto-guardado silencioso en Nube al generar PDF
+    if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
+    
     const element = document.getElementById('plantilla-pdf'); element.style.display = 'block'; window.scrollTo(0, 0);
-    const opt = { margin: 0, filename: `${inputCliNombre.value.replace(/ /g, '_')}_Presupuesto.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-    try { await html2pdf().set(opt).from(element).save(); mostrarToast("Generado con Éxito", permiteGuardarNube ? "PDF guardado y respaldado en la nube." : "PDF guardado (Local temporal)"); } 
-    catch (e) { alert("Error al generar PDF."); } finally { if (window.innerWidth < 992) element.style.display = 'none'; }
+    const opt = { 
+        margin: 0, 
+        filename: `${inputCliNombre.value.replace(/ /g, '_')}_Presupuesto.pdf`, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+    
+    try { 
+        await html2pdf().set(opt).from(element).save(); 
+        mostrarToast("Generado con Éxito", permiteGuardarNube ? "PDF guardado y respaldado en la nube." : "PDF guardado (Local temporal)"); 
+    } 
+    catch (e) { mostrarAlertaCorp("Error", "Error al generar el PDF."); } 
+    finally { if (window.innerWidth < 992) element.style.display = 'none'; }
 }
 
 function enviarWhatsApp() { 
-    const tel = prompt("Número de WhatsApp (Ej: 3511234567):"); if(!tel) return;
+    const tel = prompt("Número de WhatsApp del cliente (Ej: 3511234567):"); 
+    if(!tel) return;
+    
     let m = `*${(localStorage.getItem('villaser_conf_nombre') || 'PRESUPUESTO').toUpperCase()}*\nProyecto: ${document.getElementById('cliProyecto').value}\n\n`; 
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
+    
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
 }
 
@@ -462,5 +669,5 @@ function generarMenuInferior() {
         btn.innerHTML = `<i class="fa-solid ${mod.icon}"></i><span>${mod.nombre}</span>`;
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; }; footer.appendChild(btn);
     });
-    }
-    
+                               }
+                                                                                     
