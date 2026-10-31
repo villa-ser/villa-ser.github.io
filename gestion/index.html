@@ -38,6 +38,8 @@
             <img src="./blanco512.png" alt="Villaser" class="logo-splash-oscuro pulse-anim">
             <!-- LOGO MODO CLARO (Logo Negro) -->
             <img src="./negro512.png" alt="Villaser" class="logo-splash-claro pulse-anim">
+            <!-- ANILLO DE CARGA (SPINNER) -->
+            <div class="meta-spinner"></div>
         </div>
         <div class="meta-splash-bottom">
             <span class="meta-from">from</span>
@@ -56,7 +58,10 @@
             
             <a href="#" id="btn-instalar" class="oculto"><i class="fa-solid fa-download"></i> Instalar App</a>
             <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
+            
+            <!-- ENLACE A TÉRMINOS DESDE EL PERFIL -->
             <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Térm. y Condiciones</a>
+            
             <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
@@ -75,7 +80,7 @@
         </div>
 
         <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 8px; border-left: 4px solid var(--ngc-neon);">
+        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 15px; border-left: 4px solid var(--ngc-neon);">
             <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.2rem;">Acceso al Sistema</h2>
             
             <div class="form-group">
@@ -115,8 +120,8 @@
         <!-- INTERFAZ PRINCIPAL DE LA APP -->
         <div id="appScreen" class="oculto" style="width: 100%;">
             
-            <!-- GRILLA DE MÓDULOS -->
-            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 8px;">
+            <!-- GRILLA DE MÓDULOS (3 Columnas Pro) -->
+            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 15px;">
                 <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
                 <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
                 <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Técnico</button>
@@ -143,8 +148,9 @@
                 
                 <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
                 
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
                     
+                    <!-- SELECTOR INTELIGENTE 3 OPCIONES -->
                     <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
                     <div class="theme-switch-wrapper">
                         <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
@@ -180,24 +186,22 @@
                 
                 <div style="overflow-y: auto; margin-top: 15px; padding-right: 10px; font-size: 0.8rem; color: var(--ngc-text-main); line-height: 1.6; text-align: left;">
                     <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">1. Propósito de la Plataforma</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Villaser Gestión es una herramienta de gestión administrativa, cálculo técnico y organización para profesionales del sector eléctrico.</p>
+                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Villaser Gestión es una herramienta de uso administrativo y cálculo técnico orientada exclusivamente a profesionales del sector eléctrico.</p>
                     
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">2. Registro y Autenticación Cifrada</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Las credenciales de acceso se gestionan mediante la infraestructura de Google Firebase Auth. Tu contraseña está cifrada de extremo a extremo y no es accesible por el personal de la plataforma.</p>
+                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">2. Recopilación y Seguridad de Datos</p>
+                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Al registrarte, almacenamos tu correo electrónico. Tus contraseñas están cifradas de extremo a extremo y protegidas bajo la infraestructura de seguridad de Google Firebase.</p>
                     
                     <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">3. Permisos de Hardware (Cámara y Archivos)</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">La aplicación solicitará permisos de cámara o galería exclusivamente cuando el usuario elija adjuntar fotografías a informes técnicos o guardar el logo corporativo.</p>
+                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">La aplicación solicitará permisos para acceder a la cámara y galería de tu dispositivo <b>única y exclusivamente</b> cuando decidas cargar el logo de tu empresa o adjuntar fotografías a los informes técnicos. Villaser no accede remotamente a tu dispositivo.</p>
                     
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">4. Almacenamiento en la Nube y Sincronización</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Los datos de tu perfil profesional, directorio de clientes, presupuestos e informes técnicos se almacenan y respaldan automáticamente en la nube a través de Google Firebase Firestore. Esto permite sincronizar tu información entre dispositivos y evita pérdidas ante borrados de caché local.</p>
+                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">4. Almacenamiento Local de Preferencias</p>
+                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Los datos de tu empresa (Nombre, Teléfono, Slogan y Logo) se guardan en la memoria local de tu propio navegador (LocalStorage) para autocompletar tus PDFs. Si limpias el caché de tu navegador, deberás cargarlos nuevamente.</p>
                     
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">5. Privacidad y Propiedad Absoluta de los Datos</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">La base de clientes y presupuestos ingresados es propiedad exclusiva del usuario. Villaser Gestión actúa únicamente como proveedor de infraestructura tecnológica y no lee, vende, audita ni comparte esta información con terceros bajo ninguna circunstancia.</p>
-
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">6. Base de Datos de Costos y Valores Sugeridos</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">La plataforma incluye un módulo con una base de datos de costos de mano de obra. Estos valores son de carácter estrictamente orientativo y son recopilados a partir de información de dominio público, disponible de manera directa en los sitios web oficiales de diversas entidades y asociaciones de profesionales electricistas. Villaser Gestión no garantiza la exactitud, vigencia o actualización en tiempo real de dichos montos. La fijación del precio final del servicio es responsabilidad exclusiva del usuario profesional, quedando la plataforma absolutamente eximida de cualquier reclamo, responsabilidad o controversia vinculada a discrepancias tarifarias.</p>
+                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">5. Privacidad de los Clientes Finales</p>
+                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Eres el único responsable legal por los datos personales (nombres, direcciones, teléfonos) de los clientes que ingreses al generar un presupuesto. La plataforma Villaser no vende, comparte ni audita esta información de terceros.</p>
                 </div>
                 
+                <!-- Botón de Descarga PDF (Se muestra/oculta por JS según de donde se abra) -->
                 <div id="btnDescargaPdfContainer" style="margin-top: 15px;">
                     <a href="./terminos_villaser.pdf" download="Terminos_Villaser_Gestion.pdf" class="ngc-btn" style="text-decoration: none; width: 100%; display: flex; justify-content: center; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;">
                         <i class="fa-solid fa-file-pdf"></i> Descargar copia en PDF
@@ -224,5 +228,4 @@
     <!-- Tu lógica principal -->
     <script src="./script.js"></script>
 </body>
-</html>                   
-                                                                                                                                                                                                                   
+</html>
