@@ -294,18 +294,22 @@ function guardarConfiguracion() {
         perfilData.logo = logoPreview;
     }
 
-    alert("¡Datos y preferencias guardadas correctamente!");
+    // Cerrar modal de config y abrir el Modal de Éxito Corporativo
     cerrarConfiguracion();
+    document.getElementById('modalExitoCorp').classList.remove('oculto');
 
     // Sincronizar con Firebase EN SEGUNDO PLANO
     db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
         .then(() => console.log("Datos sincronizados exitosamente."))
         .catch((error) => {
-            alert("Firebase bloqueó el guardado. Motivo: " + error.message);
             console.error("Error nube:", error);
         });
 }
 
+// Función para cerrar el Modal de Éxito
+function cerrarModalExitoCorp() {
+    document.getElementById('modalExitoCorp').classList.add('oculto');
+}
 
 // ==========================================
 // 4. FUNCIONES DE FIREBASE (AUTH)
