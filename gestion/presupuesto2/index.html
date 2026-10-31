@@ -92,6 +92,45 @@
     </div>
 </div>
 
+    <!-- MODAL ALERTA GENÉRICA (Reemplaza alert nativo) -->
+<div id="modalAlertaCorp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-circle-exclamation corp-modal-icon" style="color: var(--ngc-warning);"></i>
+        <h3 id="modalAlertaTitulo" style="margin-bottom: 10px;">Atención</h3>
+        <p id="modalAlertaMensaje" style="margin-bottom: 20px;">Mensaje de alerta.</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn primary-action" onclick="cerrarModalAlertaCorp()">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN SIN AGENDA (Reemplaza confirm nativo) -->
+<div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">¿Continuar sin Nube?</h3>
+        <p style="margin-bottom: 20px;">Al no estar en tu agenda, este presupuesto NO se guardará en los borradores de la nube. ¿Deseas continuar de todos modos?</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border);" onclick="cerrarModalConfirmarSinAgenda()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarContinuarSinAgenda()">Continuar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GUARDAR BORRADOR (Reemplaza prompt nativo) -->
+<div id="modalGuardarBorrador" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-cloud-arrow-up corp-modal-icon" style="color: var(--ngc-neon);"></i>
+        <h3 style="margin-bottom: 10px; text-align: left; justify-content: flex-start;">Guardar Borrador</h3>
+        <p style="margin-bottom: 15px; text-align: left;">Verifica o edita el nombre del archivo:</p>
+        <input type="text" id="inputNombreBorrador" class="corp-input" style="margin-bottom: 20px; font-weight: 600; font-size: 1rem;">
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalGuardarBorrador()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="ejecutarGuardarBorrador()">Guardar</button>
+        </div>
+    </div>
+</div>
+    
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
     <main class="container">
@@ -191,7 +230,8 @@
                                 <button class="corp-btn-small danger" onclick="borrarTodasNotas()" title="Borrar"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
-                        <textarea id="obsManual" class="corp-input" rows="2" placeholder="Notas aclaratorias..." readonly></textarea>
+                        <textarea id="obsManual" class="corp-input" rows="4" placeholder="Notas aclaratorias..." readonly style="min-height: 90px;"></textarea>
+                        
                     </div>
                     
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 15px;">
