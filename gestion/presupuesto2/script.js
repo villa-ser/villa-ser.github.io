@@ -12,6 +12,7 @@ let precioEditado = null;
 let contactosAgenda = []; 
 let totalMontoActual = 0; 
 let nombreBorradorActual = null; // Memoria del archivo abierto (Guardar Como...)
+let telefonoClienteActual = "";
 
 // Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
@@ -104,6 +105,56 @@ function mostrarAlertaCorp(titulo, mensaje) {
 function cerrarModalAlertaCorp() {
     document.getElementById('modalAlertaCorp').classList.add('oculto');
 }
+function filtrarAgenda() {
+    const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
+    const contenedor = document.getElementById('listaAgenda'); contenedor.innerHTML = '';
+    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto) || (c.telefono || '').includes(texto));
+    
+    if (filtrados.length === 0) { contenedor.innerHTML = "<p style='color:var(--ngc-text-faded);'>Sin resultados.</p>"; return; }
+    
+    filtrados.forEach(c => {
+        const div = document.createElement('div'); div.className = "modal-list-item";
+        div.innerHTML = `<div><h4>${c.nombre}</h4><small>${c.dir || 'Sin dirección'}</small></div>
+            <button class="corp-btn-small" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${(c.telefono || '').replace(/'/g, "\\'")}')">Usar</button>`;
+        contenedor.appendChild(div);
+    });
+}
+
+function seleccionarContacto(nombre, dir, tel = "") {
+    inputCliNombre.value = nombre; document.getElementById('cliDireccion').value = dir;
+    telefonoClienteActual = tel; 
+    clienteDesdeAgenda = true; permiteGuardarNube = true; 
+    guardarEstadoLocal(); cerrarModalAgenda(); mostrarToast("Cliente Seleccionado", "Importado de agenda.");
+}
+
+function guardarEstadoLocal() {
+    localStorage.setItem('presupuesto_estado_actual', JSON.stringify({ 
+        cliNombre: inputCliNombre.value, 
+        cliDireccion: document.getElementById('cliDireccion').value, 
+        cliProyecto: document.getElementById('cliProyecto').value, 
+        obsGenerales: document.getElementById('obsGenerales').value, 
+        items: listaItems, nro: nroPresupuestoGlobal, clienteDesdeAgenda: clienteDesdeAgenda, 
+        permiteGuardarNube: permiteGuardarNube, nombreBorradorActual: nombreBorradorActual,
+        telefonoClienteActual: telefonoClienteActual
+    }));
+}
+
+function cargarEstadoGuardado() {
+    const str = localStorage.getItem('presupuesto_estado_actual');
+    if (str) {
+        const est = JSON.parse(str);
+        if (est.cliNombre) inputCliNombre.value = est.cliNombre;
+        if (est.cliDireccion) document.getElementById('cliDireccion').value = est.cliDireccion;
+        if (est.cliProyecto) document.getElementById('cliProyecto').value = est.cliProyecto;
+        if (est.obsGenerales) document.getElementById('obsGenerales').value = est.obsGenerales;
+        listaItems = est.items || [];
+        if (est.nro) nroPresupuestoGlobal = est.nro;
+        if (est.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = est.clienteDesdeAgenda;
+        if (est.permiteGuardarNube !== undefined) permiteGuardarNube = est.permiteGuardarNube;
+        if (est.nombreBorradorActual !== undefined) nombreBorradorActual = est.nombreBorradorActual;
+        if (est.telefonoClienteActual !== undefined) telefonoClienteActual = est.telefonoClienteActual;
+    }
+}
 
 // ==========================================
 // INTEGRACIÓN AGENDA Y FLUJO
@@ -125,7 +176,7 @@ function iniciarPresupuesto() {
 function accionAgendarCliente() {
     const nombre = encodeURIComponent(inputCliNombre.value.trim());
     const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
-    window.location.href = `../nuevo_cliente/index.html?nombre=${nombre}&dir=${dir}`;
+    window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
 }
 
 function opcionBuscarAgenda() { 
@@ -173,26 +224,6 @@ function abrirModalAgenda() {
 }
 
 function cerrarModalAgenda() { document.getElementById('modalAgenda').classList.add('oculto'); }
-function filtrarAgenda() {
-    const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
-    const contenedor = document.getElementById('listaAgenda'); contenedor.innerHTML = '';
-    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto));
-    
-    if (filtrados.length === 0) { contenedor.innerHTML = "<p style='color:var(--ngc-text-faded);'>Sin resultados.</p>"; return; }
-    
-    filtrados.forEach(c => {
-        const div = document.createElement('div'); div.className = "modal-list-item";
-        div.innerHTML = `<div><h4>${c.nombre}</h4><small>${c.dir || 'Sin dirección'}</small></div>
-            <button class="corp-btn-small" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}')">Usar</button>`;
-        contenedor.appendChild(div);
-    });
-}
-
-function seleccionarContacto(nombre, dir) {
-    inputCliNombre.value = nombre; document.getElementById('cliDireccion').value = dir;
-    clienteDesdeAgenda = true; permiteGuardarNube = true; 
-    guardarEstadoLocal(); cerrarModalAgenda(); mostrarToast("Cliente Seleccionado", "Importado de agenda.");
-}
 
 // ==========================================
 // BORRADORES NUBE (Guardar Como... UI)
@@ -316,36 +347,6 @@ function guardarClienteGlobal() {
     };
     localStorage.setItem('villaser_cliente_global', JSON.stringify(obj)); 
     guardarEstadoLocal(); 
-}
-
-function guardarEstadoLocal() {
-    localStorage.setItem('presupuesto_estado_actual', JSON.stringify({ 
-        cliNombre: inputCliNombre.value, 
-        cliDireccion: document.getElementById('cliDireccion').value, 
-        cliProyecto: document.getElementById('cliProyecto').value, 
-        obsGenerales: document.getElementById('obsGenerales').value, 
-        items: listaItems, 
-        nro: nroPresupuestoGlobal, 
-        clienteDesdeAgenda: clienteDesdeAgenda, 
-        permiteGuardarNube: permiteGuardarNube,
-        nombreBorradorActual: nombreBorradorActual
-    }));
-}
-
-function cargarEstadoGuardado() {
-    const str = localStorage.getItem('presupuesto_estado_actual');
-    if (str) {
-        const est = JSON.parse(str);
-        if (est.cliNombre) inputCliNombre.value = est.cliNombre;
-        if (est.cliDireccion) document.getElementById('cliDireccion').value = est.cliDireccion;
-        if (est.cliProyecto) document.getElementById('cliProyecto').value = est.cliProyecto;
-        if (est.obsGenerales) document.getElementById('obsGenerales').value = est.obsGenerales;
-        listaItems = est.items || [];
-        if (est.nro) nroPresupuestoGlobal = est.nro;
-        if (est.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = est.clienteDesdeAgenda;
-        if (est.permiteGuardarNube !== undefined) permiteGuardarNube = est.permiteGuardarNube;
-        if (est.nombreBorradorActual !== undefined) nombreBorradorActual = est.nombreBorradorActual;
-    }
 }
 
 // ==========================================
@@ -652,14 +653,48 @@ async function generarPDF() {
     finally { if (window.innerWidth < 992) element.style.display = 'none'; }
 }
 
+// ==========================================
+// NUEVO SISTEMA WHATSAPP
+// ==========================================
 function enviarWhatsApp() { 
-    const tel = prompt("Número de WhatsApp del cliente (Ej: 3511234567):"); 
-    if(!tel) return;
+    document.getElementById('modalWhatsApp').classList.remove('oculto');
+    const btnActual = document.getElementById('btnWspGuardado');
     
+    if (telefonoClienteActual) {
+        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente (${telefonoClienteActual})`;
+        btnActual.style.display = 'flex';
+    } else {
+        btnActual.style.display = 'none';
+    }
+}
+
+function cerrarModalWsp() {
+    document.getElementById('modalWhatsApp').classList.add('oculto');
+}
+
+function armarMensajeWsp() {
     let m = `*${(localStorage.getItem('villaser_conf_nombre') || 'PRESUPUESTO').toUpperCase()}*\nProyecto: ${document.getElementById('cliProyecto').value}\n\n`; 
-    listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
+    listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
+    m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
+    return m;
+}
+
+function enviarWspClienteActual() {
+    if (!telefonoClienteActual) return;
     
-    window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
+    let cleanNumber = telefonoClienteActual.replace(/\D/g, '');
+    if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
+    else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
+    
+    const msg = armarMensajeWsp();
+    window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+    cerrarModalWsp();
+}
+
+function buscarEnWhatsApp() {
+    const msg = armarMensajeWsp();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    cerrarModalWsp();
 }
 
 // ==========================================
