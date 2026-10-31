@@ -128,3 +128,152 @@
                 </button>
             </section>
             
+            <!-- PASO 2: ÍTEMS -->
+            <section id="step-trabajo" class="oculto">
+                <div class="corp-card gpu-accel">
+                    <h4 class="corp-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
+                    
+                    <div class="row-group">
+                        <label>Rubro</label>
+                        <select id="selTema" class="corp-input native-select">
+                            <option value="">-- SELECCIONE RUBRO --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row-group">
+                        <label>Trabajo</label>
+                        <div style="display:flex; gap:8px;">
+                            <select id="selConcepto" class="corp-input native-select" disabled>
+                                <option value="">-- SELECCIONE TRABAJO --</option>
+                            </select>
+                            <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
+                        </div>
+                        <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
+                    </div>
+                    
+                    <div class="row-group-stretch" style="align-items: center;">
+                        <div class="flex-1">
+                            <label>Cantidad</label>
+                            <div class="corp-stepper">
+                                <button class="btn-step" onclick="step('cantidad', -1)">-</button>
+                                <input type="number" id="cantidad" class="corp-input-step" value="1" min="1">
+                                <button class="btn-step" onclick="step('cantidad', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label>Desc %</label>
+                            <div class="corp-stepper">
+                                <button class="btn-step" onclick="step('porcentajeDesc', -5)">-</button>
+                                <input type="number" id="porcentajeDesc" class="corp-input-step" value="0" min="0" max="100">
+                                <button class="btn-step" onclick="step('porcentajeDesc', 5)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="margin:0;">Notas del Ítem</label>
+                            <div style="display:flex; gap:5px;">
+                                <button class="corp-btn-small" onclick="habilitarEdicionObs()" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button class="corp-btn-small" onclick="volverNotasOriginales()" title="Deshacer"><i class="fa-solid fa-rotate-left"></i></button>
+                                <button class="corp-btn-small danger" onclick="borrarTodasNotas()" title="Borrar"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <textarea id="obsManual" class="corp-input" rows="2" placeholder="Notas aclaratorias..." readonly></textarea>
+                    </div>
+                    
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div>
+                            <strong id="unitarioLabel" style="color:var(--ngc-warning); font-size: 1.1rem;">Unit: $ 0,00</strong>
+                            <button id="btnEditPrecio" class="corp-btn-small oculto" onclick="editarPrecioTemporal()" style="margin-left: 5px;"><i class="fa-solid fa-pen"></i></button>
+                            <span id="badgePrecio" class="badge-edit oculto" style="display:block;">Precio editado</span>
+                        </div>
+                        <button class="corp-btn success-btn" style="width: auto; padding: 10px 20px;" onclick="agregarTrabajo()">
+                            <i class="fa-solid fa-plus"></i> Agregar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABLA RESULTADOS -->
+                <div id="zonaCaptura" class="capture-zone gpu-accel">
+                    <table class="corp-table">
+                        <tbody id="cuerpoTabla"></tbody>
+                    </table>
+                    <div id="totalDisplay" class="total-display">TOTAL: $ 0</div>
+                </div>
+
+                <!-- NOTAS GLOBALES -->
+                <div class="corp-card gpu-accel">
+                    <label>Notas Globales del Presupuesto</label>
+                    <textarea id="obsGenerales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..." onchange="guardarEstadoLocal(); renderTabla();"></textarea>
+                </div>
+
+                <!-- ACCIONES FINALES -->
+                <div class="action-grid-main">
+                    <button class="corp-btn" onclick="tomarCaptura()"><i class="fa-solid fa-image"></i> Captura</button>
+                    <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="enviarWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- VISTA PDF A4 (Se mantiene igual para que html2pdf funcione perfecto) -->
+    <aside class="preview-panel">
+        <div id="plantilla-pdf">
+            <div class="pdf-container">
+                <header class="pdf-header">
+                    <div class="pdf-info-box">
+                        <h2>PRESUPUESTO</h2>
+                        <div class="pdf-row"><b>Nro:</b> <span id="pdf-nro"></span></div>
+                        <div class="pdf-row"><b>Fecha:</b> <span id="pdf-fecha"></span></div>
+                        <div class="pdf-row"><b>Cliente:</b> <span id="pdf-cliente"></span></div>
+                        <div class="pdf-row"><b>Dirección:</b> <span id="pdf-direccion"></span></div>
+                        <div class="pdf-row"><b>Proyecto:</b> <span id="pdf-proyecto"></span></div>
+                    </div>
+                    <div class="pdf-logo-box">
+                        <img id="pdf-img-logo" src="" alt="Logo" style="max-width:100px; max-height:100px; float:right; display:none;">
+                        <h1 id="pdf-text-logo" style="margin:0; font-size:24px; color:#0088aa; display:none;"></h1>
+                    </div>
+                </header>
+                <table class="pdf-table">
+                    <thead><tr><th>Cód</th><th>Descripción</th><th>Cant</th><th>P. Unitario</th><th>Subtotal</th></tr></thead>
+                    <tbody id="pdf-tbody"></tbody>
+                </table>
+                <div class="pdf-body-lower">
+                    <div class="pdf-notas-box">
+                        <h3>Detalle Operativo</h3>
+                        <div id="pdf-notas" class="pdf-notas-content"></div>
+                    </div>
+                    <div class="pdf-totales-box">
+                        <div class="pdf-total-row"><span>Subtotal:</span> <span id="pdf-subtotal"></span></div>
+                        <div class="pdf-total-row" style="color: #d9534f;"><span>Descuentos:</span> <span id="pdf-descuentos"></span></div>
+                        <div class="pdf-total-row final-total"><span>TOTAL:</span> <b id="pdf-total"></b></div>
+                    </div>
+                </div>
+                <footer class="pdf-footer">
+                    <div class="pdf-pagos">
+                        <h4>Condiciones</h4>
+                        <p>Los precios están sujetos a modificaciones sin previo aviso.<br>Validez del presupuesto: 7 días.</p>
+                    </div>
+                    <div class="pdf-right-footer">
+                        <div id="pdf-slogan" class="pdf-slogan"></div>
+                        <div id="headerMembrete" class="pdf-contacto" style="font-weight:bold;"></div>
+                        <div id="pdf-tel" class="pdf-contacto"></div>
+                        <div id="pdf-email" class="pdf-contacto"></div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- NUEVO MENÚ INFERIOR TIPO APP -->
+<nav class="corp-bottom-nav">
+    <div class="corp-scroll-container" id="corpFooterMenu"></div>
+</nav>
+
+<script src="../firebase-config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
