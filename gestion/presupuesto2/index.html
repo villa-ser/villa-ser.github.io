@@ -144,6 +144,25 @@
         </div>
     </div>
 </div>
+
+    <!-- MODAL ENVIAR WHATSAPP -->
+<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar Presupuesto</h3>
+        <p style="margin-bottom: 20px;">¿A quién deseas enviarle el PDF por WhatsApp?</p>
+        
+        <div class="corp-modal-actions">
+            <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspClienteActual()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+            <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWhatsApp()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            <button class="corp-btn danger-btn" style="margin-top: 10px;" onclick="cerrarModalWsp()">Cancelar</button>
+        </div>
+    </div>
+</div>
     
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
