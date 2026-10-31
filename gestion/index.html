@@ -31,16 +31,20 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA (Splash Screen Profesional) -->
-    <div id="customSplashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
-        <div class="splash-spinner-container">
-            <div class="splash-spinner"></div>
+    <!-- PANTALLA DE CARGA (Splash Screen Estilo META / FACEBOOK) -->
+    <div id="customSplashScreen" class="meta-splash">
+        <div class="meta-splash-center">
             <!-- LOGO MODO OSCURO (Logo Blanco) -->
-            <img src="./blanco512.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-oscuro">
+            <img src="./blanco512.png" alt="Villaser" class="logo-splash-oscuro pulse-anim">
             <!-- LOGO MODO CLARO (Logo Negro) -->
-            <img src="./negro512.png" alt="Cargando Villaser..." class="splash-logo-center logo-splash-claro">
+            <img src="./negro512.png" alt="Villaser" class="logo-splash-claro pulse-anim">
         </div>
-        <p style="margin-top: 25px; font-size: 0.8rem; font-weight: bold; color: var(--ngc-text-faded); letter-spacing: 2px; text-transform: uppercase; animation: pulse 2s infinite;">Cargando Sistema</p>
+        <div class="meta-splash-bottom">
+            <span class="meta-from">from</span>
+            <div class="meta-brand-container">
+                <span class="meta-brand">VILLASER</span>
+            </div>
+        </div>
     </div>
 
     <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
@@ -167,7 +171,7 @@
             </div>
         </div>
 
-                <!-- MODAL DE TÉRMINOS Y CONDICIONES (ACTUALIZADO FIREBASE/NUBE) -->
+        <!-- MODAL DE TÉRMINOS Y CONDICIONES (ACTUALIZADO FIREBASE/NUBE) -->
         <div id="modalTerminos" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10001; display: flex; justify-content: center; align-items: center;">
             <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; position: relative;">
                 <button onclick="cerrarTerminos()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
@@ -221,3 +225,4 @@
     <script src="./script.js"></script>
 </body>
 </html>                   
+                                                                                                                                                                                                                   
