@@ -231,6 +231,19 @@
     </div>
 </div>
     
+    <!-- MODAL CONFIRMAR ELIMINAR BORRADOR -->
+<div id="modalConfirmarEliminar" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-trash-can corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Eliminar Borrador</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de eliminar este borrador de la nube? Esta acción no se puede deshacer.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalEliminarBorrador()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarEliminarBorrador()">Eliminar</button>
+        </div>
+    </div>
+</div>
+    
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
     <main class="container">
