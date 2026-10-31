@@ -1,24 +1,21 @@
 let db = null;
-const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM';
-const URL_MAT = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Materiales`;
+const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM'; // ID Materiales
+const URL_MATERIALES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
 
-let dataMat = [];
-let listaItems = []; 
-let nombreBorradorActual = null;
-let telefonoClienteActual = "";
+let dbMateriales = [];
+let listaItems = [];
 let contactosAgenda = []; 
-let clienteDesdeAgenda = false;
-let permiteGuardarNube = true;
 let uidSeguro = null;
 
-const selects = [
-    document.getElementById('sel0'), document.getElementById('sel1'), 
-    document.getElementById('sel2'), document.getElementById('sel3'), 
-    document.getElementById('sel4'), document.getElementById('sel5')
-];
+// Controles de Nube y Agenda
+let clienteDesdeAgenda = false;
+let permiteGuardarNube = true;
+
+const selTema = document.getElementById('selTema');
+const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN Y CARGA
+// INICIALIZACIÓN BLINDADA (Con Firebase)
 // ==========================================
 function arrancarModulo() {
     try {
@@ -30,79 +27,48 @@ function arrancarModulo() {
                 });
             }
         }
-    } catch (e) {
-        console.warn("Aviso: Firebase no pudo iniciar, funcionando en modo local.", e);
-    }
-    
-    try {
-        cargarEstadoGuardado();
-    } catch (e) {
-        console.warn("Aviso: Memoria local reseteada.");
-        localStorage.removeItem('materiales_estado_actual');
-    }
-    
-    initDatosSheets();
+    } catch (e) { console.warn("Aviso: Firebase funcionando en modo local.", e); }
+
+    try { cargarEstadoGuardado(); } 
+    catch (e) { localStorage.removeItem('materiales_estado_actual'); }
+
+    fetchData();
 }
 
-window.onload = () => { arrancarModulo(); };
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', arrancarModulo); } 
+else { arrancarModulo(); }
 
-function obtenerUidSeguro() {
+function obtenerUid() {
     if (uidSeguro) return uidSeguro;
-    if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
-        return firebase.auth().currentUser.uid;
-    }
-    if (typeof currentUserUid !== 'undefined' && currentUserUid) return currentUserUid;
+    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) return firebase.auth().currentUser.uid;
     return null;
 }
 
-async function initDatosSheets() {
+async function fetchData() {
     try {
-        const resMat = await fetch(URL_MAT);
-        dataMat = parseCSV(await resMat.text());
+        const res = await fetch(URL_MATERIALES);
+        const txt = await res.text();
+        const json = JSON.parse(txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1));
         
-        document.getElementById('loading').classList.add('oculto');
+        dbMateriales = json.table.rows.filter(r => r.c[1] && r.c[1].v !== "Concepto").map(r => ({ 
+            tema: r.c[0]?.v || 'Gral', 
+            concepto: r.c[1]?.v || '' 
+        }));
         
-        // CORRECCIÓN: Asegurar que el contenedor global se muestre SIEMPRE
+        poblarTemas();
+        if (selTema) selTema.addEventListener('change', cambioTema);
+        
+        document.getElementById('loading').classList.add('oculto'); 
         document.getElementById('app').classList.remove('oculto');
-        
-        if (listaItems.length === 0) {
-            document.getElementById('section-client').classList.remove('oculto');
-        } else {
-            document.getElementById('main-content').classList.remove('oculto');
-        }
-        
-        fillSelect(0, [...new Set(dataMat.map(item => item.c0))].filter(v => v));
-        selects[0].disabled = false;
 
-        setupEventListeners();
+        if (listaItems.length > 0) avanzarPasoTrabajo();
     } catch (e) { 
-        const loadingDiv = document.getElementById('loading');
-        if (loadingDiv) {
-            loadingDiv.innerHTML = `⚠️ Error al leer los datos.<br><br><button class="ngc-btn" onclick="location.reload()">Reintentar</button>`;
-        }
-        console.error(e);
+        document.getElementById('loading').innerHTML = `⚠️ Error leyendo Google Sheets.<br><br><button class="corp-btn" onclick="location.reload()">Reintentar</button>`;
     }
 }
 
-function parseCSV(text) {
-    return text.split('\n').slice(1).map(line => {
-        const cells = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => {
-            let val = c.trim();
-            if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
-            return val.replace(/""/g, '"').trim();
-        });
-        return { c0: cells[0]||"", c1: cells[1]||"", c2: cells[2]||"", c3: cells[3]||"", c4: cells[4]||"", c5: cells[5]||"" };
-    }).filter(item => item.c0);
-}
-
-function setupEventListeners() {
-    selects.forEach((sel, index) => {
-        sel.addEventListener('change', () => updateDropdown(index + 1));
-    });
-}
-
 // ==========================================
-// INTEGRACIÓN AGENDA (FIREBASE)
+// AGENDA Y MODALES (Flujo idéntico a Presupuesto)
 // ==========================================
 function marcarClienteManual() {
     clienteDesdeAgenda = false;
@@ -110,25 +76,19 @@ function marcarClienteManual() {
 }
 
 function abrirModalAgenda() {
-    const uid = obtenerUidSeguro();
-    if (!uid || !db) {
-        alert("⚠️ No hay sesión detectada.");
-        return;
-    }
+    const uid = obtenerUid();
+    if (!uid || !db) return alert("⚠️ No hay sesión detectada para la agenda.");
 
     document.getElementById('modalAgenda').classList.remove('oculto');
     document.getElementById('buscadorAgenda').value = "";
     
-    db.collection("perfiles").doc(uid).collection("contactos")
-      .orderBy("nombre").get()
+    db.collection("perfiles").doc(uid).collection("contactos").orderBy("nombre").get()
       .then((snapshot) => {
           contactosAgenda = [];
           snapshot.forEach((doc) => { contactosAgenda.push(doc.data()); });
           filtrarAgenda();
       })
-      .catch((error) => {
-          document.getElementById('listaAgenda').innerHTML = "<p style='color:var(--error-red); text-align:center;'>Error al cargar contactos.</p>";
-      });
+      .catch((error) => { document.getElementById('listaAgenda').innerHTML = "<p style='color:var(--error-red); text-align:center;'>Error al cargar contactos.</p>"; });
 }
 
 function cerrarModalAgenda() { document.getElementById('modalAgenda').classList.add('oculto'); }
@@ -138,35 +98,26 @@ function filtrarAgenda() {
     const contenedor = document.getElementById('listaAgenda');
     contenedor.innerHTML = '';
     
-    const filtrados = contactosAgenda.filter(c => 
-        (c.nombre || '').toLowerCase().includes(texto) ||
-        (c.dir || '').toLowerCase().includes(texto) ||
-        (c.tel || '').toLowerCase().includes(texto)
-    );
-    
-    if (filtrados.length === 0) {
-        contenedor.innerHTML = "<p style='color:var(--ngc-text-faded); text-align:center;'>No se encontraron contactos.</p>";
-        return;
-    }
+    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto));
+    if (filtrados.length === 0) return contenedor.innerHTML = "<p style='color:var(--ngc-text-faded); text-align:center;'>No se encontraron contactos.</p>";
     
     filtrados.forEach(c => {
         const div = document.createElement('div');
         div.style.cssText = "background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;";
         div.innerHTML = `
             <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ngc-text-main);">${c.nombre}</h4>
+                <h4 style="margin: 0; color: var(--ngc-text-main); font-size: 0.95rem;">${c.nombre}</h4>
                 <small style="color: var(--ngc-text-faded);"><i class="fa-solid fa-location-dot"></i> ${c.dir || 'Sin dirección'}</small>
             </div>
-            <button class="ngc-btn-small" style="color: var(--ngc-neon); border-color: var(--ngc-neon); background: transparent;" onclick="seleccionarContactoAgenda('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${(c.tel || '').replace(/'/g, "\\'")}')">Usar</button>
+            <button class="corp-btn-small" style="color: var(--ngc-neon); border: 1px solid var(--ngc-neon); background: transparent;" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}')">Usar</button>
         `;
         contenedor.appendChild(div);
     });
 }
 
-function seleccionarContactoAgenda(nombre, dir, tel = "") {
+function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre;
-    document.getElementById('cliDir').value = dir;
-    telefonoClienteActual = tel; 
+    document.getElementById('cliDireccion').value = dir;
     clienteDesdeAgenda = true;
     permiteGuardarNube = true; 
     guardarClienteGlobal();
@@ -174,9 +125,6 @@ function seleccionarContactoAgenda(nombre, dir, tel = "") {
     mostrarToast("Cliente Seleccionado", "Datos de agenda importados.");
 }
 
-// ==========================================
-// CONTROL DE FLUJO
-// ==========================================
 function iniciarLista() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if(!nombre) {
@@ -184,140 +132,88 @@ function iniciarLista() {
         document.getElementById('cliNombre').focus();
         return;
     }
-    if (!clienteDesdeAgenda) {
-        document.getElementById('modalAgendarCliente').classList.remove('oculto');
-        return; 
-    }
-    avanzarPasoLista();
+    if (!clienteDesdeAgenda) return document.getElementById('modalOpcionesCliente').classList.remove('oculto');
+    avanzarPasoTrabajo();
 }
 
 function opcionBuscarAgenda() {
-    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    document.getElementById('modalOpcionesCliente').classList.add('oculto');
     abrirModalAgenda();
 }
 
 function opcionContinuarSinAgenda() {
-    if (confirm("⚠️ AVISO: Al no estar en tu agenda, esta lista NO podrá guardarse en la nube.\n\n¿Estás seguro de continuar?")) {
-        permiteGuardarNube = false; 
-        document.getElementById('modalAgendarCliente').classList.add('oculto');
-        avanzarPasoLista();
-    }
+    document.getElementById('modalOpcionesCliente').classList.add('oculto');
+    document.getElementById('modalAdvertenciaBorrador').classList.remove('oculto');
 }
 
-function avanzarPasoLista() {
-    document.getElementById('section-client').classList.add('oculto');
-    document.getElementById('app').classList.remove('oculto');
-    document.getElementById('main-content').classList.remove('oculto');
-    document.getElementById('main-content').classList.add('flex-column', 'gap-15');
-    document.getElementById('btnNuevoListado').classList.remove('oculto');
-    
-    const nombre = document.getElementById('cliNombre').value.trim();
-    if (nombre && listaItems.length === 0) {
-        const dir = document.getElementById('cliDir').value;
-        const fecha = new Date().toLocaleDateString('es-AR');
-        listaItems.push({ 
-            id: Date.now(), type: 'CLI', 
-            raw: `CLI\t${nombre}\t${dir}`, 
-            html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${fecha} - ${nombre}</strong>` 
-        });
-    }
+function confirmarListaTemporal() {
+    permiteGuardarNube = false; 
+    document.getElementById('modalAdvertenciaBorrador').classList.add('oculto');
+    avanzarPasoTrabajo();
+}
+function cancelarListaTemporal() { document.getElementById('modalAdvertenciaBorrador').classList.add('oculto'); }
+
+function avanzarPasoTrabajo() {
+    document.getElementById('step-cliente').classList.add('oculto');
+    document.getElementById('step-trabajo').classList.remove('oculto');
+    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
     guardarClienteGlobal();
-    renderItems();
+    renderTabla();
 }
-
 // ==========================================
-// BORRADORES NUBE (FIREBASE)
+// BORRADORES EN NUBE (Firebase)
 // ==========================================
-function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
-    const uid = obtenerUidSeguro();
-    if (!uid || !db) {
-        if (mostrarAlerta) alert("⚠️ Sesión no detectada para la nube.");
-        return;
-    }
-    if (!permiteGuardarNube) {
-        if (mostrarAlerta) alert("⚠️ Acción bloqueada: Esta lista pertenece a un cliente no agendado.");
-        return;
-    }
+function guardarBorradorFirebase(mostrarAlerta = false) {
+    const uid = obtenerUid();
+    if (!uid || !db) return mostrarAlerta && alert("⚠️ Sesión no detectada para la nube.");
+    if (!permiteGuardarNube) return mostrarAlerta && alert("⚠️ Acción bloqueada: Cliente no agendado.");
     if (listaItems.length === 0 && !document.getElementById('cliNombre').value) return;
-    
-    const nombreCli = (document.getElementById('cliNombre').value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
-    const proyCli = (document.getElementById('cliObs').value.trim() || 'Proyecto').replace(/\s+/g, '_');
-    let nombreSugerido = `${nombreCli}_${proyCli}_borrador_materiales`;
-    let nombreFinal = nombreSugerido;
-
-    if (!autoGuardado) {
-        const nombreIngresado = prompt("Guardar borrador de materiales como:", nombreBorradorActual || nombreSugerido);
-        if (nombreIngresado === null) return; 
-        nombreFinal = nombreIngresado.trim() || nombreSugerido;
-        nombreBorradorActual = nombreFinal;
-    } else {
-        nombreFinal = nombreBorradorActual || nombreSugerido;
-    }
     
     const estado = {
         cliNombre: document.getElementById('cliNombre').value,
-        cliDir: document.getElementById('cliDir').value,
-        cliObs: document.getElementById('cliObs').value,
+        cliDireccion: document.getElementById('cliDireccion').value,
+        cliProyecto: document.getElementById('cliProyecto').value,
         obsGenerales: document.getElementById('obsGenerales').value,
         items: listaItems,
-        timestamp: Date.now(),
-        nombreBorrador: nombreFinal
+        fechaGuardado: Date.now()
     };
     
-    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
-    
-    db.collection("perfiles").doc(uid).collection("borradores_materiales").doc(docId).set(estado)
-      .then(() => { if (mostrarAlerta) mostrarToast("Borrador Guardado", "Sincronizado con tu cuenta."); })
+    let docId = (estado.cliNombre || "Borrador").replace(/\s+/g, '_').toLowerCase();
+    db.collection("perfiles").doc(uid).collection("materiales").doc(docId).set(estado)
+      .then(() => { if (mostrarAlerta) mostrarToast("Borrador Guardado", "Sincronizado con la nube."); })
       .catch((error) => console.error("Error guardando en la nube: ", error));
 }
 
 function abrirModalBorradores() {
-    const uid = obtenerUidSeguro();
-    if (!uid || !db) {
-        alert("⚠️ Sesión no detectada.");
-        return;
-    }
-    const nombreClienteActual = document.getElementById('cliNombre').value.trim();
-    if (!nombreClienteActual) {
-        alert("⚠️ Primero ingresá el Nombre del Cliente para buscar sus borradores.");
-        document.getElementById('cliNombre').focus();
-        return;
-    }
+    const uid = obtenerUid();
+    if (!uid || !db) return alert("⚠️ Sesión no detectada.");
+    const nombreCliente = document.getElementById('cliNombre').value.trim();
+    if (!nombreCliente) return alert("⚠️ Ingresá el Nombre del Cliente para buscar sus borradores.");
 
-    const modal = document.getElementById('modalBorradores');
-    modal.classList.remove('oculto');
+    document.getElementById('modalBorradores').classList.remove('oculto');
     const contenedor = document.getElementById('listaBorradores');
     contenedor.innerHTML = `<div style="text-align: center; color: #e91e63;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando borradores...</div>`;
     
-    db.collection("perfiles").doc(uid).collection("borradores_materiales")
-      .where("cliNombre", "==", nombreClienteActual).get()
+    db.collection("perfiles").doc(uid).collection("materiales").where("cliNombre", "==", nombreCliente).get()
       .then((snapshot) => {
           contenedor.innerHTML = '';
-          if (snapshot.empty) {
-              contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay borradores guardados para este cliente.</p>`;
-              return;
-          }
+          if (snapshot.empty) return contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay listas guardadas.</p>`;
+          
           let borradores = [];
           snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
-          borradores.sort((a, b) => (b.data.timestamp || 0) - (a.data.timestamp || 0));
+          borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
           borradores.forEach((b) => {
-              let p = b.data;
-              const fechaStr = p.timestamp ? new Date(p.timestamp).toLocaleDateString() : 'Sin fecha';
-              const cantItems = p.items ? p.items.length : 0;
-              const nombreArchivo = p.nombreBorrador || `${p.cliNombre}_borrador`.replace(/\s+/g, '_');
-              
+              const p = b.data;
+              const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString() : 'Sin fecha';
               const div = document.createElement('div');
-              div.style.cssText = "background: var(--ngc-bg-input); border-left: 3px solid #e91e63; padding: 12px; margin-bottom: 10px;";
+              div.style.cssText = "background: var(--ngc-bg-input); border-left: 3px solid #e91e63; padding: 12px; margin-bottom: 10px; border-radius: 8px;";
               div.innerHTML = `
-                  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                      <strong style="color: var(--ngc-text-main); word-break: break-word; line-height: 1.2; font-size: 0.95rem;">${nombreArchivo}</strong>
-                      <span style="color: var(--success-green); margin-left: 10px; font-size: 0.8rem; font-weight: bold;">${cantItems} Ítems</span>
-                  </div>
-                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-top: 4px; margin-bottom: 10px;">Última vez: ${fechaStr}</div>
+                  <strong style="color: var(--ngc-text-main); display: block;">${p.cliNombre || 'Sin Nombre'}</strong>
+                  <div style="color: var(--ngc-text-faded); font-size: 0.75rem; margin-bottom: 10px;">Última vez: ${fechaStr}</div>
                   <div style="display: flex; gap: 8px;">
-                      <button class="ngc-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
-                      <button class="ngc-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
+                      <button class="corp-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                      <button class="corp-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
                   </div>
               `;
               contenedor.appendChild(div);
@@ -328,18 +224,17 @@ function abrirModalBorradores() {
 function cerrarModalBorradores() { document.getElementById('modalBorradores').classList.add('oculto'); }
 
 function cargarBorradorNube(docId) {
-    const uid = obtenerUidSeguro();
+    const uid = obtenerUid();
     if (!uid || !db) return;
-    db.collection("perfiles").doc(uid).collection("borradores_materiales").doc(docId).get().then((doc) => {
+    db.collection("perfiles").doc(uid).collection("materiales").doc(docId).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
             data.clienteDesdeAgenda = true;
             data.permiteGuardarNube = true;
-            nombreBorradorActual = data.nombreBorrador || null; 
-
             localStorage.setItem('materiales_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado();
             guardarClienteGlobal();
+            avanzarPasoTrabajo();
             cerrarModalBorradores();
             mostrarToast("Borrador Abierto", "Los datos han sido cargados.");
         }
@@ -347,429 +242,165 @@ function cargarBorradorNube(docId) {
 }
 
 function eliminarBorradorNube(docId, btnElement) {
-    const uid = obtenerUidSeguro();
+    const uid = obtenerUid();
     if (!uid || !db) return;
     if (confirm("¿Eliminar este borrador de la nube?")) {
-        db.collection("perfiles").doc(uid).collection("borradores_materiales").doc(docId).delete().then(() => {
-            btnElement.closest('div').parentElement.remove();
-        });
+        db.collection("perfiles").doc(uid).collection("materiales").doc(docId).delete().then(() => btnElement.closest('div').remove());
     }
 }
 
 // ==========================================
-// MEMORIA Y ESTADO LOCAL
+// MEMORIA LOCAL, LISTAS Y WSP
 // ==========================================
 function guardarClienteGlobal() {
-    const clienteObj = {
-        nombre: document.getElementById('cliNombre').value.trim(),
-        direccion: document.getElementById('cliDir').value.trim(),
-        proyecto: document.getElementById('cliObs').value.trim()
-    };
-    localStorage.setItem('villaser_cliente_global', JSON.stringify(clienteObj));
-    guardarEstado(); 
+    const obj = { nombre: document.getElementById('cliNombre').value.trim(), direccion: document.getElementById('cliDireccion').value.trim(), proyecto: document.getElementById('cliProyecto').value.trim() };
+    localStorage.setItem('villaser_cliente_global', JSON.stringify(obj));
+    guardarEstadoLocal(); 
 }
 
-function guardarEstado() {
-    const estado = {
-        cliNombre: document.getElementById('cliNombre').value,
-        cliDir: document.getElementById('cliDir').value,
-        cliObs: document.getElementById('cliObs').value,
-        obsGenerales: document.getElementById('obsGenerales').value,
-        items: listaItems,
-        clienteDesdeAgenda: clienteDesdeAgenda,
-        permiteGuardarNube: permiteGuardarNube,
-        telefonoCliente: telefonoClienteActual,
-        nombreBorrador: nombreBorradorActual
-    };
+function guardarEstadoLocal() {
+    const estado = { cliNombre: document.getElementById('cliNombre').value, cliDireccion: document.getElementById('cliDireccion').value, cliProyecto: document.getElementById('cliProyecto').value, obsGenerales: document.getElementById('obsGenerales').value, items: listaItems, clienteDesdeAgenda, permiteGuardarNube };
     localStorage.setItem('materiales_estado_actual', JSON.stringify(estado));
 }
 
 function cargarEstadoGuardado() {
-    const estadoStr = localStorage.getItem('materiales_estado_actual');
+    const estadoStr = localStorage.getItem('materiales_estado_actual') || localStorage.getItem('villaser_cliente_global'); // Fallback a memoria global
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
-        if (estado.cliNombre) document.getElementById('cliNombre').value = estado.cliNombre;
-        if (estado.cliDir) document.getElementById('cliDir').value = estado.cliDir;
-        if (estado.cliObs) document.getElementById('cliObs').value = estado.cliObs;
+        if (estado.cliNombre || estado.nombre) document.getElementById('cliNombre').value = estado.cliNombre || estado.nombre;
+        if (estado.cliDireccion || estado.direccion) document.getElementById('cliDireccion').value = estado.cliDireccion || estado.direccion;
+        if (estado.cliProyecto || estado.proyecto) document.getElementById('cliProyecto').value = estado.cliProyecto || estado.proyecto;
         if (estado.obsGenerales) document.getElementById('obsGenerales').value = estado.obsGenerales;
-        
+        listaItems = estado.items || [];
         if (estado.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = estado.clienteDesdeAgenda;
         if (estado.permiteGuardarNube !== undefined) permiteGuardarNube = estado.permiteGuardarNube;
-        if (estado.telefonoCliente !== undefined) telefonoClienteActual = estado.telefonoCliente;
-        if (estado.nombreBorrador !== undefined) nombreBorradorActual = estado.nombreBorrador;
-        
-        listaItems = estado.items || [];
-        if (listaItems.length > 0) {
-            document.getElementById('section-client').classList.add('oculto');
-            document.getElementById('app').classList.remove('oculto');
-            document.getElementById('main-content').classList.remove('oculto');
-            document.getElementById('main-content').classList.add('flex-column');
-            document.getElementById('btnNuevoListado').classList.remove('oculto');
-            renderItems();
-        }
     }
 }
 
 function nuevoListado() {
-    if(confirm("¿Estás seguro de iniciar una nueva lista?")) {
-        document.getElementById('cliNombre').value = '';
-        document.getElementById('cliDir').value = '';
-        document.getElementById('cliObs').value = '';
-        document.getElementById('obsGenerales').value = '';
-        listaItems = [];
-        clienteDesdeAgenda = false;
-        permiteGuardarNube = true;
-        nombreBorradorActual = null;
-        telefonoClienteActual = "";
-        
-        guardarEstado();
-        guardarClienteGlobal();
-        
-        document.getElementById('main-content').classList.add('oculto');
-        document.getElementById('app').classList.remove('oculto');
-        document.getElementById('section-client').classList.remove('oculto');
-        document.getElementById('btnNuevoListado').classList.add('oculto');
-        renderItems();
+    if(confirm("¿Iniciar nueva lista?")) {
+        document.getElementById('cliNombre').value = ''; document.getElementById('cliDireccion').value = ''; document.getElementById('cliProyecto').value = ''; document.getElementById('obsGenerales').value = '';
+        listaItems = []; clienteDesdeAgenda = false; permiteGuardarNube = true;
+        guardarEstadoLocal(); guardarClienteGlobal();
+        document.getElementById('step-trabajo').classList.add('oculto'); document.getElementById('step-cliente').classList.remove('oculto');
+        renderTabla();
     }
 }
 
 function mostrarToast(titulo, mensaje) {
-    const titleEl = document.getElementById('toastTitle');
-    const msgEl = document.getElementById('toastMessage');
-    const toast = document.getElementById('toastCliente');
-    if (!titleEl || !msgEl || !toast) return;
-    titleEl.innerText = titulo; msgEl.innerText = mensaje;
-    toast.classList.remove('oculto');
+    document.getElementById('toastTitle').innerText = titulo; document.getElementById('toastMessage').innerText = mensaje;
+    const toast = document.getElementById('toastCliente'); toast.classList.remove('oculto');
     setTimeout(() => toast.classList.add('mostrar'), 100);
-    setTimeout(() => {
-        toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400);
-    }, 4000); 
+    setTimeout(() => { toast.classList.remove('mostrar'); setTimeout(() => toast.classList.add('oculto'), 400); }, 4000); 
 }
 
-// ==========================================
-// ÍTEMS Y MATERIALES
-// ==========================================
-function updateDropdown(index) {
-    for (let i = index; i < selects.length; i++) { 
-        selects[i].innerHTML = '<option value="">-- Selección --</option>';
-        selects[i].value = ""; selects[i].disabled = true;
-    }
-    if (index >= selects.length) return; 
+function step(id, val) { const el = document.getElementById(id); if(el) el.value = Math.max(el.min ? parseInt(el.min) : 1, (parseInt(el.value || 0) + val)); }
 
-    const filtered = dataMat.filter(item => {
-        for (let i = 0; i < index; i++) { if (item[`c${i}`] !== selects[i].value) return false; }
-        return true;
-    });
-    
-    const uniqueVals = [...new Set(filtered.map(item => item[`c${index}`]))].filter(v => v);
-    if (uniqueVals.length > 0) {
-        selects[index].disabled = false;
-        fillSelect(index, uniqueVals);
-    }
+function poblarTemas() { if(selTema) { selTema.innerHTML = '<option value="">-- SELECCIONE CATEGORÍA --</option>'; [...new Set(dbMateriales.map(i => i.tema))].sort().forEach(t => selTema.appendChild(new Option(t, t))); } }
+function cambioTema() { const t = selTema.value; selConcepto.innerHTML = '<option value="">-- SELECCIONE MATERIAL --</option>'; if(t) { selConcepto.disabled = false; dbMateriales.filter(i => i.tema === t).forEach(i => selConcepto.appendChild(new Option(i.concepto, i.concepto))); } else { selConcepto.disabled = true; } }
+
+function agregarTrabajo() {
+    if(!selConcepto.value) return alert("Selecciona un material.");
+    listaItems.push({ id: Date.now(), material: selConcepto.value, qty: document.getElementById('cantidad').value, unidad: document.querySelector('input[name="tipoUnidad"]:checked').value, obs: document.getElementById('obsManual').value.trim() });
+    guardarEstadoLocal(); renderTabla(); 
+    document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; selConcepto.value = ""; 
 }
 
-function fillSelect(index, vals) {
-    const sel = selects[index];
-    sel.innerHTML = '<option value="">-- Selección --</option>';
-    vals.forEach(v => { 
-        const opt = document.createElement('option');
-        opt.value = v; opt.textContent = v; sel.appendChild(opt);
-    });
-}
-
-function changeQty(v) {
-    const input = document.getElementById('cantidad');
-    input.value = Math.max(1, parseInt(input.value || 0) + v);
-}
-
-function renderItems() {
-    const container = document.getElementById('itemsContainer');
-    container.innerHTML = '';
-    
+function renderTabla() {
+    const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; 
     listaItems.forEach(i => {
-        const div = document.createElement('div');
-        let className = i.type === 'CLI' ? 'client-header' : '';
-        div.className = "row-item " + className;
-        div.setAttribute('data-raw', i.raw);
-        div.innerHTML = `<div style="flex:1; overflow:hidden; text-overflow:ellipsis;">${i.html}</div>
-                         <button class="btn-delete" aria-label="Eliminar ítem" onclick="borrarItem(${i.id})"><i class="fa-solid fa-trash"></i></button>`;
-        container.appendChild(div);
+        const div = document.createElement('div'); div.className = 'row-item';
+        div.innerHTML = `<div style="flex:1;"><strong>${i.material}</strong><br><span style="color:var(--ngc-text-faded); font-size:0.75rem;">${i.obs ? i.obs : 'Sin nota'}</span></div><div style="font-weight:bold; color:var(--ngc-neon); text-align:right; margin-right:10px;">${i.qty} ${i.unidad}</div><button class="btn-delete" onclick="borrarItem(${i.id})"><i class="fa-solid fa-trash"></i></button>`;
+        tbody.appendChild(div);
     });
+}
 
-    const og = document.getElementById('obsGenerales').value;
-    if(og) {
-        const div = document.createElement('div');
-        div.className = "row-item general-header";
-        div.innerHTML = `<div style="flex:1;"><i style="color:var(--ngc-text-main); opacity:0.8;">Notas Globales: ${og}</i></div>`;
-        container.appendChild(div);
+function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guardarEstadoLocal(); renderTabla(); }
+
+// --- WSP Y PDF ---
+let telClienteAgendado = null;
+function abrirModalWhatsApp() {
+    if(listaItems.length === 0) return alert("Agregá materiales primero.");
+    document.getElementById('wspNumeroManual').value = '';
+    const btnAgendado = document.getElementById('wspOpcionAgendado');
+    btnAgendado.style.display = 'none';
+    
+    const uid = obtenerUid();
+    if(uid && db && document.getElementById('cliNombre').value) {
+        db.collection("perfiles").doc(uid).collection("contactos").where("nombre", "==", document.getElementById('cliNombre').value).get().then(snap => {
+            if(!snap.empty) {
+                telClienteAgendado = snap.docs[0].data().tel;
+                if(telClienteAgendado) btnAgendado.style.display = 'flex';
+            }
+        });
     }
-    
-    sincronizarVistaPreviaPDF();
+    document.getElementById('modalWhatsApp').classList.remove('oculto');
+}
+function cerrarModalWhatsApp() { document.getElementById('modalWhatsApp').classList.add('oculto'); }
+
+function ejecutarEnvioWsp(tel) {
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
+    let m = `*${profNombre.toUpperCase()} - LISTA DE MATERIALES*\nProyecto: ${document.getElementById('cliProyecto').value || '-'}\n\n`; 
+    listaItems.forEach(i => { m += `• ${i.qty} ${i.unidad} | ${i.material} ${i.obs ? '('+i.obs+')' : ''}\n`; }); 
+    const og = document.getElementById('obsGenerales').value; if(og) m += `\n*Notas:* ${og}`;
+    window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
+    cerrarModalWhatsApp();
+}
+function enviarWspAgendado() { if(telClienteAgendado) ejecutarEnvioWsp(telClienteAgendado); }
+function enviarWspManual() {
+    const tel = document.getElementById('wspNumeroManual').value;
+    if(tel.length < 8) return alert("Ingrese un número válido.");
+    ejecutarEnvioWsp(tel);
 }
 
-function borrarItem(id) {
-    listaItems = listaItems.filter(i => i.id !== id);
-    guardarEstado(); renderItems();
-}
-
-function addItem() {
-    let textParts = [];
-    selects.forEach(s => { if (s.value) textParts.push(s.value); });
-    if (textParts.length === 0) return;
-    
-    const cant = document.getElementById('cantidad').value;
-    const unit = document.querySelector('input[name="um"]:checked').value;
-    const obs = document.getElementById('observaciones').value;
-    
-    listaItems.push({ 
-        id: Date.now(), type: 'ITM', 
-        raw: `ITM\t${cant}\t${unit}\t${textParts.join(' ')}\t${obs}`, 
-        html: `<b>${cant} ${unit.substring(0,4).toUpperCase()}</b> | ${textParts.join('/')} ${obs ? `<span style="color:var(--ngc-neon);">[${obs}]</span>` : ''}` 
-    });
-    
-    selects[0].value = ""; updateDropdown(1); 
-    document.getElementById('observaciones').value = ""; document.getElementById('cantidad').value = "1";
-    guardarEstado(); renderItems();
-    btnAlert('btnMat', '<i class="fa-solid fa-cart-plus"></i> Agregar');
-}
-
-function agregarItemManual() {
-    const descripcion = prompt("Nombre o descripción del material libre:");
-    if (!descripcion || descripcion.trim() === "") return;
-
-    const cant = parseInt(prompt("Cantidad:", document.getElementById('cantidad').value || "1")) || 1;
-    const unRadio = document.querySelector('input[name="um"]:checked');
-    const unidadDefault = unRadio ? unRadio.value : "Unid";
-    
-    const unidadBruta = prompt("Unidad (Ej: Unid, Mts, Rollo, Pack):", unidadDefault) || unidadDefault;
-    const unit = unidadBruta.charAt(0).toUpperCase() + unidadBruta.slice(1).toLowerCase();
-    const obs = prompt("Notas del ítem (Opcional):", document.getElementById('observaciones').value || "") || "";
-
-    listaItems.push({ 
-        id: Date.now(), type: 'ITM', 
-        raw: `ITM\t${cant}\t${unit}\t${descripcion.trim()}\t${obs.trim()}`, 
-        html: `<b>${cant} ${unit.substring(0,4).toUpperCase()}</b> | ${descripcion.trim()} ${obs.trim() ? `<span style="color:var(--ngc-neon);">[${obs.trim()}]</span>` : ''}` 
-    });
-
-    document.getElementById('observaciones').value = ""; document.getElementById('cantidad').value = "1";
-    guardarEstado(); renderItems();
-}
-
-function btnAlert(id, htmlOriginal) {
-    const b = document.getElementById(id); 
-    b.innerHTML = "<i class='fa-solid fa-check'></i> ¡LISTO!"; 
-    b.style.background = 'var(--success-green)'; b.style.color = '#fff'; b.style.borderColor = 'var(--success-green)';
-    setTimeout(() => { b.innerHTML = htmlOriginal; b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; }, 800);
-}
-
-// ==========================================
-// EXPORTACIÓN PDF E IMAGEN
-// ==========================================
-function sincronizarVistaPreviaPDF() {
-    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
-    const profTel = localStorage.getItem('villaser_conf_telefono') || '';
-    const profSlogan = localStorage.getItem('villaser_conf_slogan') || '¡Electricidad Segura, Hogar Tranquilo!';
-    const profLogo = localStorage.getItem('villaser_conf_logo') || '';
-
-    const imgPdf = document.getElementById('pdf-img-logo');
-    const txtPdf = document.getElementById('pdf-text-logo');
-    
-    if (imgPdf && txtPdf) {
-        if (profLogo && profLogo.startsWith('data:image')) {
-            imgPdf.src = profLogo; imgPdf.style.display = 'block'; txtPdf.style.display = 'none';
-        } else {
-            imgPdf.style.display = 'none'; txtPdf.innerText = profNombre.toUpperCase(); txtPdf.style.display = 'block';
-        }
-    }
-
-    let clienteNombre = document.getElementById('cliNombre').value || "Cliente";
-    let clienteDireccion = document.getElementById('cliDir').value || "-";
-    let clienteProyecto = document.getElementById('cliObs').value || "-";
-    
-    const tbody = document.getElementById('pdf-tbody');
-    if(!tbody) return;
-    tbody.innerHTML = ''; 
-
-    listaItems.forEach((i) => {
-        const raw = i.raw.split('\t');
-        if (raw[0] === 'ITM') {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="text-align: center; font-weight: bold;">${raw[1]}</td><td style="text-align: center;">${raw[2].substring(0,4).toUpperCase()}</td><td>${raw[3]}</td><td style="font-size: 10.5px; color: #555; text-align: left;">${raw[4] || '-'}</td>`;
-            tbody.appendChild(tr);
-        }
-    });
-
-    if (document.getElementById('pdf-cliente')) document.getElementById('pdf-cliente').innerText = clienteNombre;
-    if (document.getElementById('pdf-dir')) document.getElementById('pdf-dir').innerText = clienteDireccion;
-    if (document.getElementById('pdf-proyecto')) document.getElementById('pdf-proyecto').innerText = clienteProyecto;
-    if (document.getElementById('pdf-fecha')) document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
-    
-    if (document.getElementById('pdf-slogan')) document.getElementById('pdf-slogan').innerText = profSlogan;
-    if (document.getElementById('pdf-tel-footer')) document.getElementById('pdf-tel-footer').innerText = profTel ? `📞 ${profTel}` : '';
-    
-    const boxNotas = document.getElementById('pdf-notas-box');
-    const og = document.getElementById('obsGenerales').value;
-
-    if(og && boxNotas) {
-        document.getElementById('pdf-notas').innerText = og;
-        boxNotas.style.display = 'block';
-    } else if (boxNotas) {
-        boxNotas.style.display = 'none';
-    }
+async function tomarCaptura() {
+    const zona = document.getElementById('zonaCaptura'); document.querySelectorAll('.btn-delete').forEach(b => b.style.display = 'none'); 
+    zona.style.color = "#ffffff"; const scrollY = window.scrollY; window.scrollTo(0, 0);
+    const canvas = await html2canvas(zona, { backgroundColor: "#1e1e1e", scale: 2, useCORS: true, scrollY: 0 }); 
+    window.scrollTo(0, scrollY);
+    const link = document.createElement('a'); link.download = `Materiales_${document.getElementById('cliNombre').value}.png`; link.href = canvas.toDataURL(); link.click(); 
+    document.querySelectorAll('.btn-delete').forEach(b => b.style.display = 'inline-block'); zona.style.color = ""; 
 }
 
 async function generarPDF() {
-    if (listaItems.length <= 1 && document.getElementById('cliNombre').value === '') { 
-        alert("Agrega materiales para generar el PDF."); 
-        return; 
-    }
-    sincronizarVistaPreviaPDF();
-
-    if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
-
-    const element = document.getElementById('plantilla-pdf');
-    const originalDisplay = getComputedStyle(element).display;
-    if (originalDisplay === 'none') element.style.display = 'block';
+    if(listaItems.length === 0) return alert("No hay materiales");
+    if(permiteGuardarNube) guardarBorradorFirebase(false);
     
-    window.scrollTo(0, 0); 
-    const clienteNombre = document.getElementById('cliNombre').value || "Cliente";
+    document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
+    document.getElementById('pdf-cliente').innerText = document.getElementById('cliNombre').value || 'Sin nombre';
+    document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'Sin dirección';
+    document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
     
-    const opt = {
-        margin:       0, 
-        filename:     `${clienteNombre.replace(/ /g, '_')}_Materiales.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    btnAlert('btnGenerarPDF', '<i class="fa-solid fa-file-pdf"></i> Generando...');
-    try { 
-        await html2pdf().set(opt).from(element).save(); 
-        if(permiteGuardarNube) mostrarToast("Generado con Éxito", "PDF guardado y copia respaldada en la nube.");
-    } 
-    catch (error) { console.error("Error PDF: ", error); alert("Hubo un error al generar el PDF."); } 
-    finally { if (window.innerWidth < 992) element.style.display = 'none'; }
-}
-
-function takeScreenshot() {
-    const area = document.getElementById('captureSection');
-    const deletes = area.querySelectorAll('.btn-delete');
-    deletes.forEach(b => b.style.visibility = 'hidden');
+    const tbody = document.getElementById('pdf-tbody'); tbody.innerHTML = '';
+    listaItems.forEach(i => { tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.obs}</td><td>${i.qty}</td><td>${i.unidad}</td>` })); });
+    document.getElementById('pdf-notas').innerText = document.getElementById('obsGenerales').value || 'Sin notas.';
     
-    const nameToUse = document.getElementById('cliNombre').value || "Lista";
-    const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-    const bgColor = isLightMode ? "#ffffff" : "#181818";
-    area.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
-    area.style.border = "none";
-    window.scrollTo(0, 0);
-
-    html2canvas(area, { backgroundColor: bgColor, scale: 2, useCORS: true, scrollY: 0 }).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL("image/png"); link.download = `${nameToUse}_materiales.png`;
-        document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        
-        deletes.forEach(b => b.style.visibility = 'visible');
-        area.style.color = ""; area.style.border = "";
-    });
-}
-
-function exportToTxt() {
-    const obsGen = document.getElementById('obsGenerales').value.replace(/\n/g, '\\n');
-    if (listaItems.length === 0 && !obsGen) { alert("La lista está vacía."); return; }
-
-    let content = listaItems.map(i => i.raw).join('\n');
-    if (obsGen) content += `\nGLOBAL_OBS\t${obsGen}`;
-
-    const blob = new Blob([content], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = (document.getElementById('cliNombre').value.trim() || "Lista") + "_Borrador.txt";
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-}
-
-function importFromTxt(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    const element = document.getElementById('plantilla-pdf'); element.style.display = 'block'; window.scrollTo(0, 0);
     
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const lines = e.target.result.split('\n');
-        listaItems = [];
-        document.getElementById('obsGenerales').value = "";
-        
-        lines.forEach(line => {
-            if (!line.trim()) return;
-            const raw = line.split('\t');
-            if (raw[0] === 'CLI') {
-                document.getElementById('cliNombre').value = raw[1] || '';
-                document.getElementById('cliDir').value = raw[2] || '';
-                listaItems.push({ id: Date.now() + Math.random(), type: 'CLI', raw: line, html: `<strong style="color:var(--success-green); font-size:0.95rem;"><i class="fa-solid fa-user-check"></i> ${new Date().toLocaleDateString('es-AR')} - ${raw[1]}</strong>` });
-            } else if (raw[0] === 'ITM') {
-                listaItems.push({ id: Date.now() + Math.random(), type: 'ITM', raw: line, html: `<b>${raw[1]} ${raw[2].substring(0,3).toUpperCase()}</b> | ${raw[3]} ${raw[4] ? `<span style="color:var(--ngc-neon);">[${raw[4]}]</span>` : ''}` });
-            } else if (raw[0] === 'GLOBAL_OBS') {
-                document.getElementById('obsGenerales').value = raw[1].replace(/\\n/g, '\n');
-            }
-        });
-        
-        event.target.value = ""; guardarEstado(); renderItems();
-        guardarClienteGlobal();
-        document.getElementById('section-client').classList.add('oculto');
-        document.getElementById('app').classList.remove('oculto');
-        document.getElementById('main-content').classList.remove('oculto');
-        document.getElementById('main-content').classList.add('flex-column');
-        document.getElementById('btnNuevoListado').classList.remove('oculto');
-    };
-    reader.readAsText(file);
+    try { await html2pdf().set({ margin: 0, filename: `Materiales_${document.getElementById('cliNombre').value}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save(); } 
+    catch (e) { alert("Error al generar PDF."); } finally { element.style.display = 'none'; }
 }
 
 // ==========================================
-// NUEVO SISTEMA WHATSAPP
+// MENÚ INFERIOR SCROLL (ESTILO META/FB)
 // ==========================================
-function enviarWhatsApp() { 
-    document.getElementById('modalWhatsApp').classList.remove('oculto');
-    const btnActual = document.getElementById('btnWspGuardado');
-    
-    if (telefonoClienteActual) {
-        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente (${telefonoClienteActual})`;
-        btnActual.disabled = false;
-        btnActual.style.opacity = '1';
-    } else {
-        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Cliente sin teléfono`;
-        btnActual.disabled = true;
-        btnActual.style.opacity = '0.5';
-    }
-}
-
-function cerrarModalWsp() { document.getElementById('modalWhatsApp').classList.add('oculto'); }
-
-function armarMensajeWsp() {
-    let text = "*VILLASER - MATERIALES SOLICITADOS*\n";
-    listaItems.forEach(i => {
-        const raw = i.raw.split('\t');
-        if (raw[0] === 'CLI') text += `\n*CLIENTE:* ${raw[1]}\n`;
-        else if (raw[0] === 'ITM') text += `• ${raw[1]} ${raw[2].substring(0,4).toUpperCase()} - ${raw[3]} ${raw[4] ? '('+raw[4]+')' : ''}\n`;
+document.addEventListener("DOMContentLoaded", () => {
+    const footer = document.getElementById('corpFooterMenu'); if (!footer) return;
+    const modulos = [
+        { nombre: 'Inicio', icon: 'fa-house', url: '../index.html' },
+        { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto2/index.html' },
+        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '#', active: true },
+        { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
+        { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
+        { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
+        { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' }
+    ];
+    modulos.forEach(mod => {
+        const btn = document.createElement('button');
+        btn.className = `corp-nav-item ${mod.active ? 'active' : ''}`;
+        btn.innerHTML = `<i class="fa-solid ${mod.icon}"></i><span>${mod.nombre}</span>`;
+        btn.onclick = () => { if(!mod.active) window.location.href = mod.url; };
+        footer.appendChild(btn);
     });
-
-    const obsGen = document.getElementById('obsGenerales').value;
-    if (obsGen) text += `\n*NOTAS GLOBALES:*\n${obsGen}\n`;
-    return text;
-}
-
-function enviarWspClienteActual() {
-    if (!telefonoClienteActual) return;
-    
-    let cleanNumber = telefonoClienteActual.replace(/\D/g, '');
-    if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
-    else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
-    
-    const msg = armarMensajeWsp();
-    window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-    cerrarModalWsp();
-}
-
-function buscarEnWhatsApp() {
-    const msg = armarMensajeWsp();
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-    cerrarModalWsp();
-        }
+});
+        
