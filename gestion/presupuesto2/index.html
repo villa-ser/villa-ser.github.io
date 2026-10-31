@@ -207,6 +207,30 @@
     </div>
 </div>
     
+    <!-- ================================================== -->
+<!-- MODAL DESCARGAR PDF (NUEVO) -->
+<!-- ================================================== -->
+<div id="modalDescargarPDF" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="padding-top: 30px;">
+        <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: var(--error-red); margin-bottom: 15px; display: block; text-align: center;"></i>
+        <h3 style="margin-bottom: 5px; font-size: 1.3rem;">Generar PDF</h3>
+        <p style="font-size: 0.9rem; color: var(--ngc-text-faded); text-align: center; margin-bottom: 25px;">Confirma el nombre para guardar tu archivo.</p>
+
+        <div style="position: relative; margin-bottom: 25px;">
+            <label style="position: absolute; top: -10px; left: 10px; background: var(--bg-body); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre del archivo</label>
+            <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
+                <input type="text" id="nombreArchivoPDF" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px; outline: none; box-shadow: none;">
+                <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.pdf</span>
+            </div>
+        </div>
+
+        <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
+            <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalPDF()">Cancelar</button>
+            <button id="btnConfirmarDescargaPDF" class="corp-btn danger-btn" style="width: auto; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaPDF()">Descargar</button>
+        </div>
+    </div>
+</div>
+    
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
     <main class="container">
