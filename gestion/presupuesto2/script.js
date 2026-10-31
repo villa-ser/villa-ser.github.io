@@ -616,20 +616,47 @@ function sincronizarVistaPreviaPDF() {
     document.getElementById('pdf-notas').innerHTML = not || 'Sin notas.';
 }
 
-async function generarPDF() {
+// ==========================================
+// NUEVA LÓGICA DE GENERACIÓN DE PDF CON MODAL
+// ==========================================
+function generarPDF() {
     if (listaItems.length === 0) {
         mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para generar el PDF.");
         return;
     }
     sincronizarVistaPreviaPDF();
     
+    // Sugerimos un nombre con un código único aleatorio. 
+    // Esto evita la molesta alerta nativa de Android de "El archivo ya existe".
+    const sugerido = inputCliNombre.value.trim().replace(/ /g, '_') || 'Cliente';
+    const uniqueSuffix = Math.floor(Math.random() * 9000) + 1000;
+    document.getElementById('nombreArchivoPDF').value = `Presupuesto_${sugerido}_${uniqueSuffix}`;
+    
+    // Mostramos el nuevo modal corporativo
+    document.getElementById('modalDescargarPDF').classList.remove('oculto');
+}
+
+function cerrarModalPDF() {
+    document.getElementById('modalDescargarPDF').classList.add('oculto');
+    document.getElementById('btnConfirmarDescargaPDF').innerHTML = "Descargar";
+}
+
+async function ejecutarDescargaPDF() {
+    const btn = document.getElementById('btnConfirmarDescargaPDF');
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
+    
     // Auto-guardado silencioso en Nube al generar PDF
     if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
     
-    const element = document.getElementById('plantilla-pdf'); element.style.display = 'block'; window.scrollTo(0, 0);
+    const element = document.getElementById('plantilla-pdf'); 
+    element.style.display = 'block'; 
+    window.scrollTo(0, 0);
+    
+    const nombreFinal = document.getElementById('nombreArchivoPDF').value.trim() || 'Presupuesto';
+
     const opt = { 
         margin: 0, 
-        filename: `${inputCliNombre.value.replace(/ /g, '_')}_Presupuesto.pdf`, 
+        filename: `${nombreFinal}.pdf`, 
         image: { type: 'jpeg', quality: 0.98 }, 
         html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
@@ -638,10 +665,17 @@ async function generarPDF() {
     try { 
         await html2pdf().set(opt).from(element).save(); 
         mostrarToast("Generado con Éxito", permiteGuardarNube ? "PDF guardado y respaldado en la nube." : "PDF guardado (Local temporal)"); 
+        cerrarModalPDF(); // Cierra el modal exitosamente
     } 
-    catch (e) { mostrarAlertaCorp("Error", "Error al generar el PDF."); } 
-    finally { if (window.innerWidth < 992) element.style.display = 'none'; }
+    catch (e) { 
+        mostrarAlertaCorp("Error", "Error al generar el PDF."); 
+        btn.innerHTML = "Descargar";
+    } 
+    finally { 
+        if (window.innerWidth < 992) element.style.display = 'none'; 
+    }
 }
+
 
 // ==========================================
 // NUEVA LÓGICA DE CAPTURA DE PANTALLA
