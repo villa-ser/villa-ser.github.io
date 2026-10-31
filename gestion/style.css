@@ -168,36 +168,64 @@ input, textarea { user-select: auto; }
 .theme-switch-label { flex: 1; text-align: center; padding: 10px 2px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: var(--ngc-text-faded); transition: 0.3s; }
 input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon); color: #000 !important; }
 
-/* ================== ANIMACIÓN SPLASH SCREEN PROFESIONAL ================== */
-.splash-spinner-container {
-    position: relative;
-    width: 140px; 
-    height: 140px;
-    display: flex;
-    justify-content: center;
+/* ================== ANIMACIÓN SPLASH SCREEN ESTILO META/FACEBOOK ================== */
+.meta-splash {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-color: var(--bg-body); z-index: 999999; 
+    display: flex; flex-direction: column; 
+    transition: opacity 0.5s ease;
+}
+
+.meta-splash-center {
+    flex: 1; 
+    display: flex; 
+    justify-content: center; 
     align-items: center;
 }
 
-.splash-spinner {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 4px solid var(--ngc-privacy-border);
-    border-top: 4px solid var(--ngc-neon);
-    border-radius: 50%;
-    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    z-index: 1;
-}
-
-.splash-logo-center {
-    width: 80px; 
+.meta-splash-center img {
+    width: 100px; 
     height: auto;
-    animation: pulse 2s infinite;
-    z-index: 2;
 }
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+.meta-splash-bottom {
+    height: 100px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    padding-bottom: 30px;
+}
+
+.meta-from {
+    color: var(--ngc-text-faded); 
+    font-size: 0.85rem; 
+    font-weight: 500; 
+    margin-bottom: 4px;
+}
+
+.meta-brand-container {
+    display: flex; 
+    align-items: center;
+}
+
+.meta-brand {
+    background: linear-gradient(90deg, var(--ngc-neon), #8966ff); /* Gradiente moderno tipo Meta */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.4rem; 
+    font-weight: 800; 
+    letter-spacing: 1.5px; 
+    text-transform: uppercase;
+}
+
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+/* CONTROL DE LOGO SPLASH SCREEN */
+.logo-splash-oscuro { display: block; }
+.logo-splash-claro { display: none; }
+[data-theme="light"] .logo-splash-oscuro { display: none; }
+[data-theme="light"] .logo-splash-claro { display: block; }
 
 /* ================== TEXTOS Y DETALLES ================== */
 .ngc-title { color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
@@ -209,9 +237,3 @@ input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon);
 
 .oculto { display: none !important; }
 .gpu-accel { backface-visibility: hidden; transform: translateZ(0); }
-
-/* CONTROL DE LOGO SPLASH SCREEN */
-.logo-splash-oscuro { display: block; }
-.logo-splash-claro { display: none; }
-[data-theme="light"] .logo-splash-oscuro { display: none; }
-[data-theme="light"] .logo-splash-claro { display: block; }
