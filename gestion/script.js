@@ -194,7 +194,7 @@ document.addEventListener('click', (e) => {
     } 
 });
 
-// AHORA ABRIR CONFIGURACIÓN SE ASEGURA DE TRAER LOS DATOS SI SE HABÍAN BORRADO
+// ABRIR CONFIGURACIÓN SE ASEGURA DE TRAER LOS DATOS SI SE HABÍAN BORRADO
 async function abrirConfiguracion() {
     document.getElementById('modalConfig').classList.remove('oculto');
     document.getElementById('userDropdown').classList.add('oculto');
@@ -429,5 +429,5 @@ if (btnInstalar) {
         }
         eventoInstalacion = null;
     }); 
-        }
-        
+                         }
+            
