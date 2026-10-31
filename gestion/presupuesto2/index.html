@@ -163,6 +163,33 @@
         </div>
     </div>
 </div>
+  
+    <!-- MODAL DE CAPTURA DE PANTALLA -->
+<div id="modalDescargarCaptura" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="padding-top: 30px;">
+        <i class="fa-solid fa-download" style="font-size: 2rem; color: var(--ngc-text-main); margin-bottom: 15px; display: block; text-align: center;"></i>
+        <h3 style="margin-bottom: 5px; font-size: 1.3rem;">¿Descargar archivo?</h3>
+        <p id="pesoCaptura" style="font-size: 1.1rem; color: var(--ngc-text-main); font-weight: bold; text-align: center; margin-bottom: 25px;">(Calculando...)</p>
+        
+        <div style="position: relative; margin-bottom: 25px;">
+            <label style="position: absolute; top: -10px; left: 10px; background: var(--ngc-glass); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre</label>
+            <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
+                <input type="text" id="nombreArchivoCaptura" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px;" value="Materiales_Cliente">
+                <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.png</span>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px; color: var(--ngc-text-main); margin-bottom: 30px;">
+            <i class="fa-regular fa-folder-open" style="font-size: 1.2rem;"></i>
+            <span style="font-size: 0.9rem;">~/Download</span>
+        </div>
+        
+        <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
+            <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalCaptura()">Cancelar</button>
+            <button class="corp-btn" style="width: auto; background: #cba6f7; color: #1e1e2e; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaCaptura()">Descargar</button>
+        </div>
+    </div>
+</div>
     
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
