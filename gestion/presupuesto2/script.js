@@ -286,15 +286,60 @@ function cargarDetallePrecios() {
     } else { document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; obs.value = ""; }
 }
 
-function editarConceptoTemporal() {
-    const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); if (!item) return;
-    const n = prompt("Editar nombre:", conceptoEditado || item.concepto);
-    if (n && n.trim()) { conceptoEditado = n.trim(); document.getElementById('badgeConcepto').classList.remove('oculto'); }
+// ==========================================
+// EDICIÓN TEMPORAL CON MODAL CORPORATIVO
+// ==========================================
+let tipoEdicionActual = null; // Determina si editamos 'concepto' o 'precio'
+
+function abrirModalEdicion(tipo, valorActual) {
+    tipoEdicionActual = tipo;
+    const titulo = tipo === 'concepto' ? 'Editar nombre:' : 'Editar precio:';
+    document.getElementById('modalEdicionTitulo').innerText = titulo;
+    
+    const input = document.getElementById('modalEdicionInput');
+    input.type = tipo === 'precio' ? 'number' : 'text';
+    input.value = valorActual;
+    
+    document.getElementById('modalEdicionPersonalizada').classList.remove('oculto');
+    setTimeout(() => input.focus(), 100);
 }
+
+function cerrarModalEdicion() {
+    document.getElementById('modalEdicionPersonalizada').classList.add('oculto');
+}
+
+function guardarModalEdicion() {
+    const valor = document.getElementById('modalEdicionInput').value;
+    
+    if (tipoEdicionActual === 'concepto') {
+        if (valor && valor.trim() !== "") {
+            conceptoEditado = valor.trim();
+            document.getElementById('badgeConcepto').classList.remove('oculto');
+        }
+    } else if (tipoEdicionActual === 'precio') {
+        if (valor) {
+            const num = parseFloat(valor.toString().replace(/[^0-9.,]/g, '').replace(',', '.'));
+            if (!isNaN(num)) {
+                precioEditado = num;
+                document.getElementById('unitarioLabel').innerText = `Unit: $ ${num.toLocaleString('es-AR')}`;
+                document.getElementById('badgePrecio').classList.remove('oculto');
+            }
+        }
+    }
+    cerrarModalEdicion();
+}
+
+// Funciones gatillo que reemplazan a los prompt()
+function editarConceptoTemporal() {
+    const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); 
+    if (!item) return;
+    abrirModalEdicion('concepto', conceptoEditado || item.concepto);
+}
+
 function editarPrecioTemporal() {
-    const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); if (!item) return;
-    const p = prompt("Editar precio:", precioEditado || item.precio);
-    if (p) { const num = parseFloat(p.replace(/[^0-9.,]/g, '').replace(',', '.')); if (!isNaN(num)) { precioEditado = num; document.getElementById('unitarioLabel').innerText = `Unit: $ ${num.toLocaleString('es-AR')}`; document.getElementById('badgePrecio').classList.remove('oculto'); } }
+    const item = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value); 
+    if (!item) return;
+    abrirModalEdicion('precio', precioEditado !== null ? precioEditado : item.precio);
 }
 
 function habilitarEdicionObs() { document.getElementById('obsManual').readOnly = false; document.getElementById('obsManual').focus(); }
