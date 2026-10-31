@@ -105,17 +105,21 @@ function mostrarAlertaCorp(titulo, mensaje) {
 function cerrarModalAlertaCorp() {
     document.getElementById('modalAlertaCorp').classList.add('oculto');
 }
+
 function filtrarAgenda() {
     const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
     const contenedor = document.getElementById('listaAgenda'); contenedor.innerHTML = '';
-    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto) || (c.telefono || '').includes(texto));
+    
+    // Soporte simultáneo para c.tel y c.telefono según cómo esté guardado en Firebase
+    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto) || (c.telefono || c.tel || '').includes(texto));
     
     if (filtrados.length === 0) { contenedor.innerHTML = "<p style='color:var(--ngc-text-faded);'>Sin resultados.</p>"; return; }
     
     filtrados.forEach(c => {
+        const telVal = c.telefono || c.tel || ''; // Captura el teléfono correctamente
         const div = document.createElement('div'); div.className = "modal-list-item";
         div.innerHTML = `<div><h4>${c.nombre}</h4><small>${c.dir || 'Sin dirección'}</small></div>
-            <button class="corp-btn-small" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${(c.telefono || '').replace(/'/g, "\\'")}')">Usar</button>`;
+            <button class="corp-btn-small" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${telVal.replace(/'/g, "\\'")}')">Usar</button>`;
         contenedor.appendChild(div);
     });
 }
@@ -273,7 +277,20 @@ function ejecutarGuardarBorrador() {
 
 function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
     const uid = obtenerUid();
-    const estado = { cliNombre: inputCliNombre.value, cliDireccion: document.getElementById('cliDireccion').value, cliProyecto: document.getElementById('cliProyecto').value, obsGenerales: document.getElementById('obsGenerales').value, items: listaItems, nro: nroPresupuestoGlobal, totalMonto: totalMontoActual, fechaGuardado: Date.now(), nombreBorrador: nombreFinal };
+    
+    // Se agrega telefonoClienteActual al estado guardado
+    const estado = { 
+        cliNombre: inputCliNombre.value, 
+        cliDireccion: document.getElementById('cliDireccion').value, 
+        cliProyecto: document.getElementById('cliProyecto').value, 
+        obsGenerales: document.getElementById('obsGenerales').value, 
+        items: listaItems, 
+        nro: nroPresupuestoGlobal, 
+        totalMonto: totalMontoActual, 
+        fechaGuardado: Date.now(), 
+        nombreBorrador: nombreFinal,
+        telefonoClienteActual: telefonoClienteActual 
+    };
     
     let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
 
@@ -323,12 +340,19 @@ function cargarBorradorNube(docId) {
             const data = doc.data(); 
             data.clienteDesdeAgenda = true; 
             data.permiteGuardarNube = true;
-            nombreBorradorActual = data.nombreBorrador || docId; // Recuperar el nombre del archivo
+            nombreBorradorActual = data.nombreBorrador || docId; 
+            
+            // Reasigna el teléfono a la variable global si el borrador lo contenía
+            if (data.telefonoClienteActual !== undefined) {
+                telefonoClienteActual = data.telefonoClienteActual;
+            }
+            
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
             cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradores();
         }
     });
 }
+
 function eliminarBorradorNube(docId, btn) {
     const uid = obtenerUid(); if (!uid || !db) return;
     // La única excepción temporal será la confirmación de borrado
