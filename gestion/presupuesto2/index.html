@@ -299,4 +299,60 @@
                     </div>
                 </header>
                 <table class="pdf-table">
-                    <
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Concepto</th>
+                            <th>Cantidad</th>
+                            <th>Valor</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdf-tbody"></tbody>
+                </table>
+                <div class="pdf-body-lower">
+                    <div class="pdf-notas-box">
+                        <h3>Notas Aclaratorias</h3>
+                        <div id="pdf-notas" class="pdf-notas-content"></div>
+                    </div>
+                    <div class="pdf-totales-box">
+                        <div class="pdf-total-row"><span>Subtotal</span> <b id="pdf-subtotal"></b></div>
+                        <div class="pdf-total-row"><span>Descuentos</span> <b id="pdf-descuentos" style="color: #c00;"></b></div>
+                        <div class="pdf-total-row final-total"><span>Total</span> <b id="pdf-total"></b></div>
+                    </div>
+                </div>
+               <footer class="pdf-footer">
+                    <div class="pdf-pagos">
+                        <h4>Condiciones</h4>
+                        <p>Los precios están sujetos a modificaciones.<br>Validez del presupuesto: 10 días.</p>
+                    </div>
+                    <div class="pdf-right-footer">
+                        <div class="pdf-slogan" id="pdf-slogan"></div>
+                        <div class="pdf-contacto"><span id="pdf-email"></span></div>
+                        <div class="pdf-contacto"><span id="pdf-tel"></span></div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </aside>
+</div>
+
+        </aside>
+</div>
+
+<!-- ========================================== -->
+<!-- NUEVO MENÚ INFERIOR TIPO APP (SCROLL HORIZONTAL) -->
+<!-- ========================================== -->
+<nav class="corp-bottom-nav">
+    <div class="corp-scroll-container" id="corpFooterMenu">
+        <!-- Los botones se inyectan automáticamente desde el JS -->
+    </div>
+</nav>
+
+<!-- ... al final del HTML del módulo ... -->
+<script src="../firebase-config.js"></script>
+<script src="script.js"></script>
+</body>
+
+</body>
+</html>
