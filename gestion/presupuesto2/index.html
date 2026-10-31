@@ -6,6 +6,11 @@
     <meta name="theme-color" content="#18191A">
     <title>Presupuesto Corporativo | Villaser</title>
     
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -23,24 +28,64 @@
 </head>
 <body>
 
-<!-- MODAL MEMORIA CLIENTE (Estilo Corporativo) -->
+<!-- TOAST CORPORATIVO -->
+<div id="toastCliente" class="toast-corp oculto">
+    <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <div class="toast-content">
+        <div id="toastTitle" class="toast-title">Éxito</div>
+        <div id="toastMessage" class="toast-msg">Acción completada.</div>
+    </div>
+</div>
+
+<!-- TODOS LOS MODALES ESTANDARIZADOS -->
 <div id="modalRecuperarCliente" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
-        <i class="fa-solid fa-user-check corp-modal-icon"></i>
-        <h3>Cliente Detectado</h3>
-        <p>Hay datos de un cliente cargado recientemente. ¿Deseas utilizarlos para este presupuesto?</p>
+        <i class="fa-solid fa-rotate-left corp-modal-icon"></i>
+        <h3>Borrador Detectado</h3>
+        <p>Tienes un presupuesto pendiente. ¿Deseas recuperarlo?</p>
         <div class="corp-modal-actions">
-            <button class="corp-btn" onclick="usarClienteMemoria()"><i class="fa-solid fa-check"></i> Usar Datos</button>
-            <button class="corp-btn danger-btn" onclick="limpiarClienteMemoria()"><i class="fa-solid fa-rotate-right"></i> Empezar de Cero</button>
+            <button class="corp-btn primary-action" onclick="usarClienteMemoria()">Recuperar Borrador</button>
+            <button class="corp-btn danger-btn" onclick="nuevoPresupuesto()">Descartar e Iniciar Nuevo</button>
         </div>
     </div>
 </div>
 
+<div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-address-book corp-modal-icon"></i>
+        <h3>¿Vincular a la Agenda?</h3>
+        <p>Si este cliente no está en tu agenda, el presupuesto no se guardará en la nube.</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn success-btn" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-search"></i> Buscar en Agenda</button>
+            <button class="corp-btn primary-action" onclick="accionAgendarCliente()"><i class="fa-solid fa-user-plus"></i> Agendar Nuevo</button>
+            <button class="corp-btn danger-btn" onclick="opcionContinuarSinAgenda()">Continuar sin Nube</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-users"></i> Contactos</h3>
+        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar nombre o dirección..." oninput="filtrarAgenda()" style="margin-bottom: 10px;">
+        <div id="listaAgenda" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalAgenda()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+<div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Borradores en Nube</h3>
+        <div id="listaBorradores" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalBorradores()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+<!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
     <main class="container">
         
-        <!-- BARRA SUPERIOR: Sin menú, título alineado con botón rojo -->
-        <nav class="top-nav corp-top-nav">
+        <!-- TOP NAV ALINEADA (Sin botón menú) -->
+        <nav class="corp-top-nav">
             <div class="corp-nav-title">
                 <i class="fa-solid fa-file-invoice-dollar corp-accent-color"></i> Presupuestos
             </div>
@@ -49,122 +94,37 @@
             </button>
         </nav>
         
-        <div id="app">
-            <!-- DATOS DEL PROYECTO -->
+        <div id="loading" class="corp-card" style="text-align: center; margin-top: 20px; color: var(--ngc-neon);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <p style="font-weight: 600;">Sincronizando Precios...</p>
+        </div>
+
+        <div id="app" class="oculto">
+            <!-- PASO 1: CLIENTE -->
             <section id="step-cliente" class="corp-card gpu-accel">
                 <h4 class="corp-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
-                <p class="corp-subtext">Tus datos de profesional se añadirán al PDF.</p>
+                <div class="action-grid-main" style="margin-bottom: 15px;">
+                    <button class="corp-btn success-btn" onclick="abrirModalAgenda()"><i class="fa-solid fa-address-book"></i> Agenda</button>
+                    <button class="corp-btn primary-action" onclick="abrirModalBorradores()"><i class="fa-solid fa-cloud"></i> Borradores</button>
+                </div>
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
-                    <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Jose Lopez" onchange="guardarClienteGlobal()">
+                    <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Jose Lopez">
                 </div>
-                
                 <div class="row-group-stretch">
                     <div class="flex-1">
                         <label>Dirección</label>
-                        <input type="text" id="cliDir" class="corp-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
+                        <input type="text" id="cliDireccion" class="corp-input" placeholder="Ej: San Martín 123">
                     </div>
                     <div class="flex-1">
                         <label>Nombre del Proyecto</label>
-                        <input type="text" id="cliObs" class="corp-input" placeholder="Ej: Remodelación" onchange="guardarClienteGlobal()">
+                        <input type="text" id="cliProyecto" class="corp-input" placeholder="Ej: Remodelación">
                     </div>
                 </div>
                 
-                <button class="corp-btn primary-action" onclick="mostrarSeccionItems()">
+                <button class="corp-btn primary-action" style="margin-top: 10px;" onclick="iniciarPresupuesto()">
                     <i class="fa-solid fa-play"></i> Comenzar Carga de Ítems
                 </button>
             </section>
-                        <!-- SECCIÓN DE ÍTEMS -->
-            <section id="step-trabajo" class="oculto flex-column gap-15">
-                <div class="corp-card gpu-accel">
-                    <h4 class="corp-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
-                    
-                    <div class="row-group">
-                        <label>Rubro</label>
-                        <select id="selRubro" class="corp-input native-select">
-                            <option value="">-- SELECCIONE RUBRO --</option>
-                            <option value="Acometida">Acometida (amurado + conexión)</option>
-                            <option value="Cableado">Cableado (AAIERIC)</option>
-                            <option value="Canalizacion">Canalización Embutido</option>
-                        </select>
-                    </div>
-                    
-                    <div class="row-group">
-                        <label>Trabajo</label>
-                        <select id="selTrabajo" class="corp-input native-select">
-                            <option value="">-- SELECCIONE TRABAJO --</option>
-                            <option value="Instalacion Base">Instalación Base</option>
-                            <option value="Armado Tablero">Armado de Tablero</option>
-                        </select>
-                    </div>
-                    
-                    <div class="row-group-stretch">
-                        <div class="flex-1">
-                            <label>Cantidad</label>
-                            <div class="corp-stepper">
-                                <button class="btn-step" onclick="cambiarCant(-1)">-</button>
-                                <input type="number" id="itemCant" class="corp-input-step" value="1" min="1">
-                                <button class="btn-step" onclick="cambiarCant(1)">+</button>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <label>Desc %</label>
-                            <div class="corp-stepper">
-                                <button class="btn-step" onclick="cambiarDesc(-5)">-</button>
-                                <input type="number" id="itemDesc" class="corp-input-step" value="0" min="0" max="100">
-                                <button class="btn-step" onclick="cambiarDesc(5)">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row-group">
-                        <label>Notas del Ítem</label>
-                        <textarea id="itemNotas" class="corp-input" rows="2" placeholder="Notas aclaratorias..."></textarea>
-                    </div>
-                    
-                    <button class="corp-btn success-btn" onclick="agregarItem()">
-                        <i class="fa-solid fa-plus"></i> Agregar
-                    </button>
-                </div>
-
-                <!-- NOTAS GLOBALES -->
-                <div class="corp-card gpu-accel">
-                    <label>Notas Globales del Presupuesto</label>
-                    <textarea id="notasGlobales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..."></textarea>
-                </div>
-
-                <!-- ACCIONES FINALES -->
-                <div class="action-grid-main">
-                    <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button class="corp-btn" onclick="tomarCaptura()"><i class="fa-solid fa-image"></i> Captura</button>
-                </div>
-            </section>
-        </div>
-        
-        <!-- ESPACIO PARA EL MENÚ INFERIOR -->
-        <div style="height: 20px;"></div>
-    </main>
-
-    <!-- VISTA A4 (Solo PC) -->
-    <aside class="preview-panel">
-        <div id="plantilla-pdf">
-            <div class="pdf-container">
-                <header class="pdf-header">
-                    <h2>PRESUPUESTO</h2>
-                    <p>Cliente: <span id="pdf-cliente-print"></span></p>
-                </header>
-                <!-- Aquí va tu tabla de PDF estándar -->
-            </div>
-        </div>
-    </aside>
-</div>
-
-<!-- NUEVO MENÚ INFERIOR TIPO APP (SCROLL HORIZONTAL) -->
-<nav class="corp-bottom-nav">
-    <div class="corp-scroll-container" id="corpFooterMenu"></div>
-</nav>
-
-<script src="script.js"></script>
-</body>
-</html>
+            
