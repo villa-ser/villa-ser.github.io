@@ -1,42 +1,48 @@
 /* ============================================================== */
-/* ESTILOS VILLASER GESTIÓN (PWA Nativa Optimizada)               */
+/* ESTILO CORPORATIVO FLAT (Basado en Meta / FB App) - RAÍZ       */
 /* ============================================================== */
 
 :root {
-    --ngc-neon: #00d4ff; 
-    --ngc-neon-rgb: 0, 212, 255;
-    --ngc-glass: rgba(0, 0, 0, 0.5); 
-    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
-    --ngc-btn-bg: #181818;
-    --ngc-btn-hover: #242424;
-    --ngc-text: #ffffff;
-    --ngc-text-main: #ffffff; 
-    --ngc-text-faded: rgba(255, 255, 255, 0.5);
-    --bg-body: #121212;
-    --ngc-privacy-border: rgba(255, 255, 255, 0.1);
-    --card-shadow: rgba(0, 0, 0, 0.5);
-    --success-green: #28a745;
-    --error-red: #ff4b2b;
-    --ngc-bg-input: rgba(0, 0, 0, 0.6);
-}
+    /* MODO OSCURO (Por defecto) */
+    --bg-body: #18191A;
+    --corp-card-bg: #242526; 
+    --corp-border: 1px solid #3E4042;
+    --corp-btn-bg: #3A3B3C;
+    --corp-btn-hover: #4E4F50;
+    --corp-text-main: #E4E6EB;
+    --corp-text-faded: #B0B3B8;
+    --corp-input-bg: #3A3B3C;
     
-[data-theme="light"] {
-    --ngc-neon: #0056d6; 
-    --ngc-neon-rgb: 0, 86, 214;
-    --ngc-glass: rgba(255, 255, 255, 0.85); 
-    --ngc-border-glass: 1px solid rgba(var(--ngc-neon-rgb), 0.5);
-    --ngc-btn-bg: #FFFFFF;
-    --ngc-btn-hover: #F0F0F0;
-    --ngc-text: #111111;
-    --ngc-text-main: #1a1a1a; 
-    --ngc-text-faded: #666666;
-    --bg-body: #e0e5ec;
-    --ngc-privacy-border: rgba(0, 0, 0, 0.15);
-    --card-shadow: rgba(0, 0, 0, 0.15);
-    --ngc-bg-input: rgba(255, 255, 255, 0.8); 
+    /* Acentos Corporativos */
+    --corp-accent: #2374E1; 
+    --corp-success: #31A24C;
+    --corp-danger: #E41E3F;
+    --corp-shadow: rgba(0, 0, 0, 0.3);
+    
+    /* Aliases de compatibilidad estricta para el JS */
+    --ngc-neon: #2374E1;
+    --success-green: #31A24C;
+    --error-red: #E41E3F;
 }
 
-/* ================== ESTRUCTURA BASE ================== */
+[data-theme="light"] {
+    /* MODO CLARO */
+    --bg-body: #F0F2F5;
+    --corp-card-bg: #FFFFFF;
+    --corp-border: 1px solid transparent;
+    --corp-btn-bg: #E4E6EB;
+    --corp-btn-hover: #D8DADF;
+    --corp-text-main: #050505;
+    --corp-text-faded: #65676B;
+    --corp-input-bg: #F0F2F5;
+    
+    --corp-accent: #1877F2; 
+    --corp-shadow: rgba(0, 0, 0, 0.08);
+    
+    /* Aliases JS */
+    --ngc-neon: #1877F2;
+}
+
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -44,212 +50,277 @@
     -webkit-tap-highlight-color: transparent; 
 }
 
-html, body {
-    overscroll-behavior-y: none; 
-    touch-action: pan-x pan-y;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-body);
-    color: var(--ngc-text); 
-    display: flex; 
-    flex-direction: column;
-    align-items: center;
+    color: var(--corp-text-main); 
+    display: block; 
+    width: 100%; 
     min-height: 100svh;
-    padding: 0 10px; 
+    padding: 20px 15px;
+    overflow-x: hidden; 
     overflow-y: auto; 
-    user-select: none; 
-    transition: background-color 0.4s ease, color 0.4s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-input, textarea { user-select: auto; }
-
-.ngc-wrapper {
+.layout-wrapper {
     display: flex; 
     flex-direction: column; 
-    justify-content: space-between; 
-    align-items: center; 
     width: 100%; 
-    max-width: 480px;
-    min-height: 100svh;
-    padding: 10px 0;
+    max-width: 450px; 
+    margin: 0 auto; 
+    gap: 15px; 
 }
 
-/* ================== DISTRIBUCIÓN PANTALLAS (LOGIN VS APP) ================== */
-#mainHeader, #loginScreen {
-    width: 100%;
-    margin-top: 10px !important; 
-    margin-bottom: 10px !important;
+/* ================== COMPONENTES FLAT ================== */
+.corp-card {
+    background: var(--corp-card-bg);
+    border: var(--corp-border); 
+    border-radius: 12px; 
+    padding: 20px;
+    box-shadow: 0 1px 3px var(--corp-shadow);
 }
 
-#appScreen {
+.header-card {
+    text-align: center;
+    padding: 15px 20px;
+}
+
+.corp-hero-title {
+    color: var(--corp-accent);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.corp-subtext {
+    font-size: 0.8rem;
+    color: var(--corp-text-faded);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.corp-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(49, 162, 76, 0.1);
+    color: var(--corp-success);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* ================== FORMULARIOS ================== */
+.row-group { margin-bottom: 12px; width: 100%; }
+
+label {
+    font-size: 0.8rem;
+    color: var(--corp-text-faded);
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.corp-input {
     width: 100%;
+    padding: 14px 15px;
+    background: var(--corp-input-bg);
+    border: var(--corp-border);
+    border-radius: 8px;
+    color: var(--corp-text-main);
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.corp-input:focus {
+    border-color: var(--corp-accent);
+}
+
+.corp-btn {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    flex: 1;
-    padding-top: 65px !important; 
-    margin-bottom: 10px !important; 
+    gap: 8px;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
 }
 
-/* ================== COMPONENTES Y TARJETAS ================== */
-.gnc-hero-card, .ngc-privacy-card {
-    background: var(--ngc-glass); 
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); 
-    border-radius: 16px; 
-    padding: 20px; 
-    width: 100%;
-    box-shadow: 0 10px 30px var(--card-shadow); 
-    transition: all 0.3s ease;
+.corp-btn:active { transform: scale(0.98); }
+
+.primary-btn {
+    background: var(--corp-accent);
+    color: #ffffff;
 }
 
-/* ================== INPUTS Y BOTONES ================== */
-.form-group { margin-bottom: 12px; }
-
-.ngc-input {
-    width: 100%; padding: 14px 15px; background: var(--ngc-bg-input);
-    border: 1px solid var(--ngc-privacy-border); border-radius: 12px;
-    color: var(--ngc-text-main); font-size: 1rem; outline: none; transition: 0.3s;
+.secondary-btn {
+    background: var(--corp-btn-bg);
+    color: var(--corp-text-main);
 }
-.ngc-input:focus { border-color: var(--ngc-neon); }
+.secondary-btn:hover { background: var(--corp-btn-hover); }
 
-.ngc-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px; background: var(--ngc-btn-bg); border: var(--ngc-border-glass);
-    border-radius: 12px; color: var(--ngc-text-main); font-size: 0.9rem; font-weight: 700;
-    text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px var(--card-shadow);
+/* ================== CHECKBOX & TEXTOS ================== */
+.corp-checkbox-group {
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin-top: 15px; 
+    font-size: 0.8rem; 
+    color: var(--corp-text-faded);
 }
-.ngc-btn i { font-size: 1.2rem; color: var(--ngc-neon); }
-.ngc-btn:active { transform: scale(0.97); }
-
-/* ================== MENÚ FLOTANTE Y CABECERA ================== */
-.hero-logo-icon {
-    position: fixed; top: 12px; right: 12px; z-index: 9999; 
-    width: 48px; height: 48px; 
-    border-radius: 12px; background: var(--ngc-glass); backdrop-filter: blur(15px);
-    border: var(--ngc-border-glass); box-shadow: 0 4px 15px var(--card-shadow);
-    display: flex; justify-content: center; align-items: center; cursor: pointer;
+.corp-checkbox-group input[type="checkbox"] {
+    accent-color: var(--corp-accent);
+    width: 16px; height: 16px; cursor: pointer;
 }
-.hero-logo-icon i { font-size: 1.4rem; color: var(--ngc-neon); }
-
-.dropdown-flotante-content {
-    position: absolute; top: 56px; right: 0; width: 190px;
-    background: var(--bg-body); border: 2px solid var(--ngc-neon);
-    border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.85); padding: 8px; z-index: 10000;
+.corp-checkbox-group a {
+    color: var(--corp-accent); text-decoration: none; font-weight: 600;
 }
-[data-theme="light"] .dropdown-flotante-content { background: #ffffff; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-.dropdown-flotante-content p { color: var(--ngc-text-faded); font-size: 0.75rem; text-align: center; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid var(--ngc-privacy-border); word-break: break-all; }
-.dropdown-flotante-content a { color: var(--ngc-text-main); text-decoration: none; padding: 12px 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; }
-.dropdown-flotante-content a:hover { background: rgba(var(--ngc-neon-rgb), 0.15); color: var(--ngc-neon); }
 
-/* ================== GRILLA DE MÓDULOS (3 Columnas PRO) ================== */
-.ngc-button-grid {
+.forgot-password { text-align: center; margin-top: 15px; font-size: 0.85rem; font-weight: 600; }
+.forgot-password a { color: var(--corp-accent); text-decoration: none; }
+
+.error-text {
+    margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--corp-danger);
+}
+
+/* ================== MENÚ FLOTANTE ================== */
+.corp-fab {
+    position: fixed; top: 15px; right: 15px; 
+    background: var(--corp-card-bg); border: var(--corp-border);
+    width: 45px; height: 45px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px var(--corp-shadow);
+    z-index: 9999; cursor: pointer;
+}
+.corp-fab i { color: var(--corp-accent); font-size: 1.2rem; }
+
+.corp-dropdown {
+    position: absolute; top: 55px; right: 0; width: 200px;
+    background: var(--corp-card-bg); border: var(--corp-border);
+    border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
+    padding: 8px; z-index: 10000;
+}
+[data-theme="light"] .corp-dropdown { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+.dropdown-email {
+    color: var(--corp-text-faded); font-size: 0.75rem; text-align: center; 
+    margin-bottom: 5px; padding-bottom: 8px; border-bottom: 1px solid var(--corp-border); 
+    word-break: break-all;
+}
+.corp-dropdown a {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--corp-text-main); text-decoration: none; 
+    padding: 12px 10px; font-size: 0.85rem; font-weight: 600; border-radius: 8px;
+}
+.corp-dropdown a:hover { background: var(--corp-btn-bg); }
+.corp-dropdown a.logout-link { color: var(--corp-danger); }
+
+/* ================== GRILLA DE MÓDULOS ================== */
+.corp-grid {
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 8px; 
+    gap: 10px; 
     width: 100%;
 }
 
-.btn-module {
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    height: 74px; 
-    padding: 6px 2px;
-    font-size: 0.65rem; 
-    text-align: center; 
-    font-weight: 600;
-    line-height: 1.1;
+.corp-grid-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 15px 5px; background: var(--corp-card-bg); border: var(--corp-border);
+    border-radius: 12px; color: var(--corp-text-main); font-size: 0.75rem; font-weight: 600;
+    gap: 8px; box-shadow: 0 1px 2px var(--corp-shadow); transition: 0.2s; cursor: pointer;
 }
-.btn-module i { font-size: 1.5rem; margin-bottom: 4px; }
+.corp-grid-btn i { font-size: 1.5rem; color: var(--corp-accent); }
+.corp-grid-btn:active { background: var(--corp-btn-bg); transform: scale(0.97); }
 
-/* ================== MODAL DE CONFIGURACIÓN ================== */
-.theme-switch-wrapper { display: flex; background: var(--bg-body); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
-.theme-switch-label { flex: 1; text-align: center; padding: 10px 2px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: var(--ngc-text-faded); transition: 0.3s; margin: 0; }
-input[type="radio"]:checked + .theme-switch-label { background: var(--ngc-neon); color: #000 !important; }
+/* ================== MODALES CORPORATIVOS ================== */
+.corp-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 10000;
+    display: flex; justify-content: center; align-items: center;
+}
+.corp-modal-card {
+    background: var(--corp-card-bg); border: var(--corp-border);
+    border-radius: 12px; width: 90%; max-width: 450px; padding: 20px;
+    position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+}
+.corp-modal-close {
+    position: absolute; top: 15px; right: 15px; background: transparent; 
+    border: none; color: var(--corp-text-faded); font-size: 1.2rem; cursor: pointer;
+}
+.corp-modal-title {
+    color: var(--corp-text-main); font-size: 1.1rem; font-weight: 700;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 5px;
+}
+.corp-terms-content {
+    overflow-y: auto; margin-top: 15px; padding-right: 10px; 
+    font-size: 0.85rem; color: var(--corp-text-main); line-height: 1.5;
+}
+.corp-terms-content h4 { color: var(--corp-text-main); margin-bottom: 5px; font-size: 0.9rem; }
+.corp-terms-content p { color: var(--corp-text-faded); margin-bottom: 12px; }
 
-/* ================== ANIMACIÓN SPLASH SCREEN ESTILO META/FACEBOOK ================== */
+/* THEME SWITCHER */
+.corp-theme-switch { 
+    display: flex; background: var(--corp-input-bg); border: var(--corp-border); 
+    border-radius: 8px; overflow: hidden; 
+}
+.corp-theme-switch label { 
+    flex: 1; text-align: center; padding: 12px 5px; font-size: 0.75rem; 
+    font-weight: 700; cursor: pointer; color: var(--corp-text-faded); margin: 0; transition: 0.2s;
+}
+.corp-theme-switch input[type="radio"]:checked + label { 
+    background: var(--corp-accent); color: #ffffff !important; 
+}
+
+/* ================== ANIMACIÓN SPLASH Y EXTRAS ================== */
 .meta-splash {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
     background-color: var(--bg-body); z-index: 999999; 
     display: flex; flex-direction: column; 
     transition: opacity 0.5s ease;
 }
-
 .meta-splash-center {
-    flex: 1; 
-    display: flex; 
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center;
-    position: relative;
+    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;
 }
-
 .meta-splash-center img {
-    width: 80px; 
-    height: auto;
-    position: absolute; /* Para que quede en el medio exacto del spinner */
-    z-index: 2;
+    width: 80px; height: auto; position: absolute; z-index: 2;
 }
-
-/* SPINNER CIRCULAR NEÓN QUE RODEA EL LOGO */
 .meta-spinner {
-    width: 120px;
-    height: 120px;
-    border: 4px solid var(--ngc-privacy-border); /* Color apagado de fondo */
-    border-top: 4px solid var(--ngc-neon); /* Neón girando */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    z-index: 1;
+    width: 120px; height: 120px;
+    border: 3px solid var(--corp-btn-bg); border-top: 3px solid var(--corp-accent);
+    border-radius: 50%; animation: spin 1s linear infinite; z-index: 1;
 }
-
 .meta-splash-bottom {
-    height: 100px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center;
-    padding-bottom: 30px;
+    height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 30px;
 }
-
 .meta-from {
-    color: var(--ngc-text-faded); 
-    font-size: 0.85rem; 
-    font-weight: 500; 
-    margin-bottom: 4px;
+    color: var(--corp-text-faded); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;
 }
-
-.meta-brand-container {
-    display: flex; 
-    align-items: center;
-}
-
 .meta-brand {
-    background: linear-gradient(90deg, var(--ngc-neon), #8966ff); /* Gradiente moderno tipo Meta */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 1.4rem; 
-    font-weight: 800; 
-    letter-spacing: 1.5px; 
-    text-transform: uppercase;
+    background: linear-gradient(90deg, var(--corp-accent), #8966ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-size: 1.4rem; font-weight: 800; letter-spacing: 1.5px;
 }
+.corp-credits {
+    font-size: 0.75rem; color: var(--corp-text-faded); text-align: center;
+    margin-top: auto; padding-top: 20px; font-weight: 600;
+}
+.corp-credits span { color: var(--corp-text-main); }
 
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
 
-/* CONTROL DE LOGO SPLASH SCREEN */
 .logo-splash-oscuro { display: block; }
 .logo-splash-claro { display: none; }
 [data-theme="light"] .logo-splash-oscuro { display: none; }
 [data-theme="light"] .logo-splash-claro { display: block; }
-
-/* ================== TEXTOS Y DETALLES ================== */
-.ngc-title { color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-.hero-name { color: var(--ngc-neon); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }
-.ngc-footer-badge { display: inline-block; font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--success-green); color: var(--success-green); }
-.ngc-site-credits { font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: auto; padding-top: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 100%; }
-.ngc-site-credits span { color: var(--ngc-neon); font-weight: bold; }
-.error-text { margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--error-red); }
-
 .oculto { display: none !important; }
-.gpu-accel { backface-visibility: hidden; transform: translateZ(0); }
