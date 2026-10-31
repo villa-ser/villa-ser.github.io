@@ -54,10 +54,12 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-body);
     color: var(--corp-text-main); 
-    display: block; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
     width: 100%; 
     min-height: 100svh;
-    padding: 20px 15px;
+    padding: 15px;
     overflow-x: hidden; 
     overflow-y: auto; 
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -68,7 +70,7 @@ body {
     flex-direction: column; 
     width: 100%; 
     max-width: 450px; 
-    margin: 0 auto; 
+    flex: 1; /* Permite usar todo el alto disponible para empujar los créditos */
     gap: 15px; 
 }
 
@@ -331,3 +333,22 @@ label {
 [data-theme="light"] .logo-splash-oscuro { display: none; }
 [data-theme="light"] .logo-splash-claro { display: block; }
 .oculto { display: none !important; }
+
+/* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
+.logo-header-oscuro, .logo-header-claro {
+    width: 75px;
+    height: auto;
+    margin: 0 auto 15px auto;
+}
+.logo-header-oscuro { display: block; }
+.logo-header-claro { display: none; }
+[data-theme="light"] .logo-header-oscuro { display: none; }
+[data-theme="light"] .logo-header-claro { display: block; }
+
+#mainHeader {
+    margin-top: auto; /* Empuja la cabecera y el login al centro exacto */
+}
+
+#appScreen {
+    margin-top: 75px !important; /* ÁREA SEGURA: Distancia estricta para no pisar el botón de perfil */
+}
