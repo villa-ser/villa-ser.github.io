@@ -24,42 +24,95 @@
 </head>
 <body>
 
-<!-- MODAL DE CONFIRMACIÓN (NUEVA LISTA) -->
-<div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card">
-        <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
-        <h3 style="margin-bottom: 10px;">Nueva Lista</h3>
-        <p style="margin-bottom: 20px;">¿Estás seguro de iniciar una nueva lista de materiales? Se borrarán los datos actuales no guardados.</p>
-        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
-            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border);" onclick="cerrarModalConfirmarNuevo()">Cancelar</button>
-            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevoListado()">Aceptar</button>
-        </div>
+<!-- TOAST NOTIFICACIÓN -->
+<div id="toastCliente" class="corp-toast oculto gpu-accel">
+    <i class="fa-solid fa-circle-check" style="color: var(--success-green); font-size: 1.5rem;"></i>
+    <div class="toast-content">
+        <strong id="toastTitle">Éxito</strong>
+        <p id="toastMessage">Operación realizada.</p>
     </div>
 </div>
 
-<!-- MODAL MEMORIA CLIENTE -->
-<div id="modalRecuperarCliente" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card">
-        <i class="fa-solid fa-user-check corp-modal-icon"></i>
-        <h3>Cliente Detectado</h3>
-        <p>Hay datos de un cliente en memoria. ¿Deseas utilizarlos para esta lista de materiales?</p>
+<!-- MODAL: OPCIONES CLIENTE NO AGENDADO -->
+<div id="modalOpcionesCliente" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="border-left: 4px solid var(--ngc-neon);">
+        <i class="fa-solid fa-address-book corp-modal-icon"></i>
+        <h3>Cliente no agendado</h3>
+        <p>Este nombre fue escrito manualmente. Para mantener el orden, ¿qué deseas hacer?</p>
         <div class="corp-modal-actions">
-            <button class="corp-btn" onclick="usarClienteMemoria()"><i class="fa-solid fa-check"></i> Usar Datos</button>
-            <button class="corp-btn danger-btn" onclick="limpiarClienteMemoria()"><i class="fa-solid fa-rotate-right"></i> Empezar de Cero</button>
+            <button class="corp-btn" onclick="accionAgendarCliente()"><i class="fa-solid fa-user-plus"></i> Agendar Nuevo</button>
+            <button class="corp-btn outline" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-magnifying-glass"></i> Buscar de mi Agenda</button>
+            <button class="corp-btn danger-outline" onclick="opcionContinuarSinAgenda()">No por el momento</button>
         </div>
     </div>
 </div>
 
+<!-- MODAL: ADVERTENCIA BORRADOR -->
+<div id="modalAdvertenciaBorrador" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="border-left: 4px solid var(--error-red);">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--error-red); margin-bottom: 15px;"></i>
+        <h3>¡Atención!</h3>
+        <p>Si decides no agendar ni buscar a este cliente, la lista será temporal y <b>NO podrá ser guardada en la nube</b>.</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn danger-btn" onclick="confirmarListaTemporal()">Continuar de todos modos</button>
+            <button class="corp-btn outline" onclick="cancelarListaTemporal()">Volver atrás</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: BUSCADOR AGENDA -->
+<div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Mi Agenda</h3>
+            <button class="corp-btn-icon" onclick="cerrarModalAgenda()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar por nombre o dirección..." onkeyup="filtrarAgenda()" style="margin-bottom: 15px;">
+        <div id="listaAgenda" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; text-align: left;"></div>
+    </div>
+</div>
+
+<!-- MODAL: BORRADORES EN LA NUBE -->
+<div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Borradores en la Nube</h3>
+            <button class="corp-btn-icon" onclick="cerrarModalBorradores()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="listaBorradores" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; text-align: left;"></div>
+    </div>
+</div>
+
+<!-- MODAL: WHATSAPP -->
+<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: var(--success-green); margin-bottom: 15px;"></i>
+        <h3>Enviar por WhatsApp</h3>
+        <p>¿A qué número deseas enviar esta lista de materiales?</p>
+        <div id="wspOpcionAgendado" class="corp-modal-actions" style="margin-bottom: 10px; display: none;">
+            <button class="corp-btn" style="background: rgba(49, 162, 76, 0.1); color: var(--success-green); border: 1px solid var(--success-green);" onclick="enviarWspAgendado()">
+                <i class="fa-solid fa-address-book"></i> Enviar al cliente agendado
+            </button>
+        </div>
+        <div class="row-group">
+            <input type="number" id="wspNumeroManual" class="corp-input" placeholder="Ej: 3511234567 (Número nuevo)">
+        </div>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn outline" style="flex: 1;" onclick="cerrarModalWhatsApp()">Cancelar</button>
+            <button class="corp-btn" style="flex: 1; background: var(--success-green); color: white;" onclick="enviarWspManual()">Enviar</button>
+        </div>
+    </div>
+</div>
 <div class="layout-wrapper">
     <main class="container">
         
         <!-- BARRA SUPERIOR ESTANDARIZADA -->
         <nav class="corp-top-nav" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
             <div style="display: flex; justify-content: flex-start;">
-                <!-- Botón atrás eliminado por el menú inferior -->
+                <!-- Espacio libre, navegación al pie -->
             </div>
-            <div class="corp-nav-title" style="text-align: center; justify-content: center;">
-                <i class="fa-solid fa-boxes-stacked corp-accent-color"></i> Materiales
+            <div class="corp-nav-title" style="text-align: center; justify-content: center; font-size: 0.9rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                <i class="fa-solid fa-boxes-stacked"></i> Materiales
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <button class="corp-btn-icon danger" onclick="nuevoListado()" title="Nueva Lista">
@@ -67,35 +120,47 @@
                 </button>
             </div>
         </nav>
+
+        <div id="loading" class="corp-card" style="text-align: center; padding: 40px 20px;">
+            <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 10px;"></i>
+            <br>Sincronizando Base de Datos...
+        </div>
         
-        <div id="app">
+        <div id="app" class="oculto">
+            
             <!-- DATOS DEL PROYECTO -->
             <section id="step-cliente" class="corp-card gpu-accel">
                 <h4 class="corp-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
-                <p class="corp-subtext">La lista se vinculará a este cliente.</p>
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
-                    <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Jose Lopez" onchange="guardarClienteGlobal()">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Familia Gómez" oninput="marcarClienteManual()">
+                        <button type="button" class="corp-btn-icon" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
+                            <i class="fa-solid fa-magnifying-glass" style="color: var(--ngc-neon);"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="row-group-stretch">
                     <div class="flex-1">
                         <label>Dirección</label>
-                        <input type="text" id="cliDir" class="corp-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
+                        <input type="text" id="cliDireccion" class="corp-input" placeholder="Ej: San Martín 123" onchange="guardarClienteGlobal()">
                     </div>
                     <div class="flex-1">
-                        <label>Nombre del Proyecto</label>
-                        <input type="text" id="cliObs" class="corp-input" placeholder="Ej: Remodelación" onchange="guardarClienteGlobal()">
+                        <label>Proyecto</label>
+                        <input type="text" id="cliProyecto" class="corp-input" placeholder="Ej: Remodelación" onchange="guardarClienteGlobal()">
                     </div>
                 </div>
                 
-                <button class="corp-btn primary-action" onclick="mostrarSeccionItems()" style="width: 100%;">
-                    <i class="fa-solid fa-play"></i> Cargar Materiales
+                <button class="corp-btn primary-action" onclick="iniciarLista()" style="width: 100%; margin-top: 15px;">
+                    <i class="fa-solid fa-play"></i> Comenzar Carga
                 </button>
             </section>
-                        <!-- ZONA DE CARGA DE MATERIALES -->
+
+            <!-- ZONA DE TRABAJO -->
             <section id="step-trabajo" class="oculto flex-column gap-15">
+
                 <div class="corp-card gpu-accel">
                     <h4 class="corp-card-title"><i class="fa-solid fa-box-open"></i> Agregar Material</h4>
 
@@ -113,8 +178,7 @@
                         </select>
                     </div>
 
-                    <!-- SELECTOR MTS/UNID Y NOTAS (Con diseño Flex) -->
-                    <div class="row-group-stretch" style="align-items: stretch;">
+                    <div class="row-group-stretch" style="align-items: stretch; margin-top: 15px;">
                         <div style="flex: 0 0 100px;">
                             <label>UNIDAD</label>
                             <div class="unit-toggle">
@@ -126,7 +190,7 @@
                             </div>
                         </div>
                         <div style="flex: 1;">
-                            <label>NOTAS DEL ÍTEM</label>
+                            <label>NOTAS DEL ÍTEM (Opcional)</label>
                             <input type="text" id="obsManual" class="corp-input" placeholder="Ej: Color blanco..." style="height: 45px;">
                         </div>
                     </div>
@@ -136,7 +200,7 @@
                             <label>Cantidad</label>
                             <div class="stepper">
                                 <button type="button" class="btn-step" onclick="step('cantidad', -1)">-</button>
-                                <input type="number" id="cantidad" class="ngc-input-step" value="1" min="1">
+                                <input type="number" id="cantidad" class="corp-input-step" value="1" min="1">
                                 <button type="button" class="btn-step" onclick="step('cantidad', 1)">+</button>
                             </div>
                         </div>
@@ -148,25 +212,37 @@
                     </div>
                 </div>       
                 
-                <!-- NOTAS GLOBALES -->
                 <div class="corp-card gpu-accel">
                     <label>Notas Globales de Materiales</label>
-                    <textarea id="obsGenerales" class="corp-input" placeholder="Ej: Entregar materiales por la mañana..." style="height: 75px; resize: none;"></textarea>
+                    <textarea id="obsGenerales" class="corp-input" placeholder="Ej: Entregar por la mañana..." style="height: 75px; resize: none;" oninput="guardarEstadoLocal(); renderTabla();"></textarea>
                 </div>
                 
-                <!-- TABLA -->
                 <div id="zonaCaptura" class="capture-zone gpu-accel">
                     <header class="header-brand">LISTA DE MATERIALES</header>
                     <div id="cuerpoTabla"></div>
                 </div>
                 
                 <!-- BOTONES PRINCIPALES -->
-                <div class="action-grid-main">
+                <div class="action-grid-main" style="margin-top: 15px;">
                     <button id="btnGenerarPDF" class="corp-btn danger-btn" onclick="generarPDF()">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
-                    <button class="corp-btn" onclick="enviarWhatsApp()" style="color: var(--success-green); border: 1px solid var(--success-green); background: transparent;">
-                        <i class="fa-brands fa-whatsapp"></i> Enviar a Cliente
+                    <button class="corp-btn" onclick="abrirModalWhatsApp()" style="color: var(--success-green); border: 1px solid var(--success-green); background: transparent;">
+                        <i class="fa-brands fa-whatsapp"></i> Enviar
+                    </button>
+                </div>
+
+                <button class="corp-btn outline" style="width: 100%; margin-top: 15px; color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="tomarCaptura()">
+                    <i class="fa-solid fa-image"></i> Descargar Imagen
+                </button>
+
+                <!-- UTILIDADES / BACKUP NUBE -->
+                <div class="action-grid-footer" style="margin-top: 20px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                    <button class="corp-btn-small" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
+                    </button>
+                    <button class="corp-btn-small" onclick="abrirModalBorradores()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: transparent; border-style: dashed;">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
                     </button>
                 </div>
 
@@ -199,12 +275,14 @@
     </aside>
 </div>
 
-<!-- NUEVO MENÚ INFERIOR TIPO APP -->
+<!-- MENÚ INFERIOR TIPO APP -->
 <nav class="corp-bottom-nav">
     <div class="corp-scroll-container" id="corpFooterMenu"></div>
 </nav>
 
+<!-- Scripts obligatorios de Firebase y configuración -->
 <script src="../firebase-config.js"></script>
 <script src="script.js"></script>
 </body>
-</html>
+                                                             </html>
+                                                             
