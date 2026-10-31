@@ -8,19 +8,25 @@ const db = firebase.firestore();
 let registrandoCuenta = false;
 let cargaInicial = true;
 
-// Lógica inteligente de Tema (3 Estados: Oscuro, Sistema, Claro)
+// Lógica inteligente de Tema Corporativo
 function aplicarTema(tema) {
+    const metaTheme = document.getElementById('themeColorMeta');
+    
     if (tema === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
+        if (metaTheme) metaTheme.setAttribute('content', '#F0F2F5');
     } else if (tema === 'system') {
         const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
         if (prefiereClaro) {
             document.documentElement.setAttribute('data-theme', 'light');
+            if (metaTheme) metaTheme.setAttribute('content', '#F0F2F5');
         } else {
             document.documentElement.removeAttribute('data-theme');
+            if (metaTheme) metaTheme.setAttribute('content', '#18191A');
         }
-    } else { // dark o fallback
+    } else { // dark
         document.documentElement.removeAttribute('data-theme');
+        if (metaTheme) metaTheme.setAttribute('content', '#18191A');
     }
 }
 
@@ -30,7 +36,7 @@ function cambiarTemaManual(nuevoTema) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Escuchar si el teléfono cambia de modo de noche a día (Solo funciona si eligieron Sistema)
+    // Escuchar si el teléfono cambia de modo automáticamente
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
         const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
         if (temaGuardado === 'system') aplicarTema('system');
@@ -53,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (data.logo) localStorage.setItem('villaser_conf_logo', data.logo);
                     }
                 } catch (error) {
-                    console.error("Error leyendo Firebase. Verifica las Reglas de Firestore.", error);
+                    console.error("Error leyendo Firebase. Verifica las Reglas.", error);
                 }
 
                 document.getElementById('errorMessage').classList.add('oculto');
@@ -67,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             mostrarPantallaLogin();
         }
 
-        // Ocultar splash screen SOLO DESPUÉS de comprobar todo el estado (App cargada)
+        // Ocultar splash screen SOLO DESPUÉS de comprobar todo el estado
         if (cargaInicial) {
             const splash = document.getElementById('customSplashScreen');
             if (splash) {
@@ -77,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cargaInicial = false;
         }
 
-        // Restaurar estado visual del botón Login si veníamos de un intento
+        // Restaurar estado visual del botón Login
         const btnLogin = document.getElementById('loginBtn');
         if (btnLogin) {
             btnLogin.innerHTML = '<i class="fa-solid fa-lock-open"></i> Ingresar';
@@ -144,11 +150,11 @@ function togglePasswordVisibility() {
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
-        toggleIcon.style.color = 'var(--ngc-neon)';
+        toggleIcon.style.color = 'var(--corp-accent)';
     } else {
         passwordInput.type = 'password';
         toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
-        toggleIcon.style.color = 'var(--ngc-text-faded)';
+        toggleIcon.style.color = 'var(--corp-text-faded)';
     }
 }
 
@@ -161,10 +167,10 @@ function mostrarMensaje(texto, tipo) {
     errorMsg.classList.remove('oculto');
     
     if (tipo === "exito") {
-        errorMsg.style.color = "var(--success-green)";
+        errorMsg.style.color = "var(--corp-success)";
         errorIcon.className = "fa-solid fa-circle-check";
     } else {
-        errorMsg.style.color = "var(--error-red)";
+        errorMsg.style.color = "var(--corp-danger)";
         errorIcon.className = "fa-solid fa-circle-exclamation";
     }
 }
@@ -218,12 +224,11 @@ async function abrirConfiguracion() {
         document.getElementById('logoPreview').style.display = 'none';
     }
 
-    // Asegurarse de que el switch marque la opción correcta en base a localStorage
     const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
     const radioTema = document.getElementById(`tema_${temaGuardado}`);
     if(radioTema) radioTema.checked = true;
 
-    // 2. Si no hay datos locales, forzamos una lectura a la nube
+    // 2. Si no hay datos locales, forzamos lectura a la nube
     const user = auth.currentUser;
     if (user && !document.getElementById('confNombre').value) {
         try {
@@ -274,7 +279,6 @@ function guardarConfiguracion() {
         return;
     }
 
-    // 1. Guardar INMEDIATAMENTE en LocalStorage
     localStorage.setItem('villaser_conf_nombre', nombre);
     localStorage.setItem('villaser_conf_slogan', slogan);
     localStorage.setItem('villaser_conf_telefono', telefono);
@@ -290,18 +294,15 @@ function guardarConfiguracion() {
         perfilData.logo = logoPreview;
     }
 
-    // 2. Cerramos el modal de inmediato
     alert("¡Datos y preferencias guardadas correctamente!");
     cerrarConfiguracion();
 
-    // 3. Sincronizar con Firebase EN SEGUNDO PLANO
+    // Sincronizar con Firebase EN SEGUNDO PLANO
     db.collection('perfiles').doc(user.uid).set(perfilData, { merge: true })
-        .then(() => {
-            console.log("Datos sincronizados en la nube exitosamente.");
-        })
+        .then(() => console.log("Datos sincronizados exitosamente."))
         .catch((error) => {
-            alert("Atención: Firebase bloqueó el guardado. Motivo: " + error.message);
-            console.error("Error al sincronizar en la nube:", error);
+            alert("Firebase bloqueó el guardado. Motivo: " + error.message);
+            console.error("Error nube:", error);
         });
 }
 
@@ -331,7 +332,7 @@ function crearCuenta() {
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').type = 'password';
                 document.getElementById('togglePasswordIcon').classList.replace('fa-eye-slash', 'fa-eye');
-                document.getElementById('togglePasswordIcon').style.color = 'var(--ngc-text-faded)';
+                document.getElementById('togglePasswordIcon').style.color = 'var(--corp-text-faded)';
                 document.getElementById('aceptaTerminos').checked = false; 
                 mostrarPantallaLogin();
             });
@@ -355,18 +356,13 @@ function iniciarSesion() {
     
     document.getElementById('errorMessage').classList.add('oculto');
 
-    // Cambiar estado visual del botón (Loader)
     const btnLogin = document.getElementById('loginBtn');
     btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
     btnLogin.disabled = true;
 
-    // Forzamos persistencia LOCAL
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-            return auth.signInWithEmailAndPassword(email, password);
-        })
+        .then(() => auth.signInWithEmailAndPassword(email, password))
         .catch((error) => {
-            // Restaurar botón si hay error
             btnLogin.innerHTML = '<i class="fa-solid fa-lock-open"></i> Ingresar';
             btnLogin.disabled = false;
 
@@ -381,7 +377,6 @@ function iniciarSesion() {
 }
 
 function cerrarSesion() {
-    // Limpiar caché local al salir (Mantiene tu preferencia de TEMA)
     localStorage.removeItem('villaser_conf_nombre');
     localStorage.removeItem('villaser_conf_slogan');
     localStorage.removeItem('villaser_conf_telefono');
@@ -419,7 +414,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     eventoInstalacion = e;
     if (btnInstalar) {
         btnInstalar.classList.remove('oculto'); 
-        btnInstalar.style.display = 'block'; 
+        btnInstalar.style.display = 'flex'; 
     }
 });
 
@@ -435,5 +430,5 @@ if (btnInstalar) {
         }
         eventoInstalacion = null;
     }); 
-                                 }
-                       
+        }
+        
