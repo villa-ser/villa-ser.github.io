@@ -361,11 +361,56 @@ function cargarBorradorNube(docId) {
     });
 }
 
+// ==========================================
+// ELIMINACIÓN DE BORRADOR (MODAL CORPORATIVO)
+// ==========================================
+let idBorradorAEliminar = null;
+let btnBorradorAEliminar = null;
+
 function eliminarBorradorNube(docId, btn) {
-    const uid = obtenerUid(); if (!uid || !db) return;
-    // La única excepción temporal será la confirmación de borrado
-    if (confirm("¿Eliminar borrador en nube?")) { db.collection("perfiles").doc(uid).collection("presupuestos").doc(docId).delete().then(() => { btn.closest('div.modal-list-item').remove(); }); }
-        }
+    // 1. Guardamos los datos del borrador temporalmente
+    idBorradorAEliminar = docId;
+    btnBorradorAEliminar = btn;
+    
+    // 2. Mostramos el nuevo modal corporativo
+    document.getElementById('modalConfirmarEliminar').classList.remove('oculto');
+}
+
+function cerrarModalEliminarBorrador() {
+    document.getElementById('modalConfirmarEliminar').classList.add('oculto');
+    idBorradorAEliminar = null;
+    btnBorradorAEliminar = null;
+}
+
+function ejecutarEliminarBorrador() {
+    const uid = obtenerUid(); 
+    if (!uid || !db || !idBorradorAEliminar) return;
+
+    // Cambiamos el botón a estado de carga
+    const btnConfirmar = document.querySelector('#modalConfirmarEliminar .danger-btn');
+    const textoOriginal = btnConfirmar.innerHTML;
+    btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+    // Ejecutamos el borrado en Firebase
+    db.collection("perfiles").doc(uid).collection("presupuestos").doc(idBorradorAEliminar).delete()
+        .then(() => { 
+            // Eliminamos el div visualmente de la lista de borradores
+            if (btnBorradorAEliminar) {
+                btnBorradorAEliminar.closest('div.modal-list-item').remove(); 
+            }
+            cerrarModalEliminarBorrador();
+            mostrarToast("Eliminado", "El borrador fue eliminado de la nube.");
+        })
+        .catch((e) => { 
+            console.error("Error eliminando borrador: ", e);
+            mostrarAlertaCorp("Error", "No se pudo eliminar el borrador.");
+            cerrarModalEliminarBorrador();
+        })
+        .finally(() => {
+            btnConfirmar.innerHTML = textoOriginal;
+        });
+}
+
   // ==========================================
 // MEMORIA LOCAL Y UI
 // ==========================================
