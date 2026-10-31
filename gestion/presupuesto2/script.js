@@ -311,11 +311,11 @@ function abrirModalBorradores() {
 
     document.getElementById('modalBorradores').classList.remove('oculto');
     const cont = document.getElementById('listaBorradores'); 
-    cont.innerHTML = `<div style="text-align:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
+    cont.innerHTML = `<div style="text-align:center; padding: 15px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
     
     db.collection("perfiles").doc(uid).collection("presupuestos").where("cliNombre", "==", nombre).get().then((snapshot) => {
           cont.innerHTML = '';
-          if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center;">No hay borradores en nube.</p>`; return; }
+          if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center; color: var(--ngc-text-faded);">No hay borradores en nube.</p>`; return; }
           let borradores = []; snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
@@ -323,9 +323,17 @@ function abrirModalBorradores() {
               const f = b.data.fechaGuardado ? new Date(b.data.fechaGuardado).toLocaleDateString() : '';
               const nombreBor = b.data.nombreBorrador || b.data.cliNombre;
               const div = document.createElement('div'); div.className = "modal-list-item"; div.style.borderLeft = "3px solid var(--ngc-neon)";
-              div.innerHTML = `<div><h4>${nombreBor}</h4><small>$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small></div>
-                  <div style="display:flex; gap:5px;"><button class="corp-btn-small" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
-                  <button class="corp-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button></div>`;
+              
+              // Se aplica Flexbox estricto con quiebre de palabras para evitar el desborde
+              div.innerHTML = `
+                  <div style="flex: 1; min-width: 0; padding-right: 10px;">
+                      <h4 style="word-break: break-word; line-height: 1.2; margin-bottom: 5px;">${nombreBor}</h4>
+                      <small style="color: var(--ngc-text-faded);">$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small>
+                  </div>
+                  <div style="display:flex; gap:5px; flex-shrink: 0;">
+                      <button class="corp-btn-small" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                      <button class="corp-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
+                  </div>`;
               cont.appendChild(div);
           });
       });
