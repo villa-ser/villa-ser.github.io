@@ -6,7 +6,7 @@
     <!-- Metas para WebApp -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212">
+    <meta name="theme-color" content="#18191A" id="themeColorMeta">
     <link rel="manifest" href="manifest.json">
     
     <title>Gestión Interna | Villaser</title>
@@ -25,6 +25,7 @@
             const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
             if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
                 document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById('themeColorMeta').setAttribute('content', '#F0F2F5');
             }
         })();
     </script>
@@ -34,11 +35,10 @@
     <!-- PANTALLA DE CARGA (Splash Screen Estilo META / FACEBOOK) -->
     <div id="customSplashScreen" class="meta-splash">
         <div class="meta-splash-center">
-            <!-- LOGO MODO OSCURO (Logo Blanco) -->
+            <!-- LOGO MODO OSCURO (Blanco) -->
             <img src="./blanco512.png" alt="Villaser" class="logo-splash-oscuro pulse-anim">
-            <!-- LOGO MODO CLARO (Logo Negro) -->
+            <!-- LOGO MODO CLARO (Negro) -->
             <img src="./negro512.png" alt="Villaser" class="logo-splash-claro pulse-anim">
-            <!-- ANILLO DE CARGA (SPINNER) -->
             <div class="meta-spinner"></div>
         </div>
         <div class="meta-splash-bottom">
@@ -49,183 +49,171 @@
         </div>
     </div>
 
-    <!-- CONTROLES FLOTANTES (Menú Usuario Sólido) -->
-    <div class="hero-logo-icon" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; cursor: pointer;" onclick="toggleUserMenu()">
-        <i class="fa-solid fa-user-tie" style="font-size: 1.8rem; color: var(--ngc-neon); display: flex; align-items: center; justify-content: center; height: 100%;"></i>
+    <!-- CONTROLES FLOTANTES (Menú Usuario Sólido Corporativo) -->
+    <div class="corp-fab" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none;" onclick="toggleUserMenu()">
+        <i class="fa-solid fa-user-tie"></i>
         
-        <div id="userDropdown" class="dropdown-flotante-content oculto" style="top: 70px; right: 0; left: auto; width: 180px; position: absolute;">
-            <p id="userEmailDisplay" style="color: var(--ngc-text-faded); font-size: 0.7rem; padding: 5px 10px; margin: 0; text-align: center; word-break: break-all; border-bottom: 1px solid var(--ngc-privacy-border);"></p>
+        <div id="userDropdown" class="corp-dropdown oculto">
+            <p id="userEmailDisplay" class="dropdown-email"></p>
             
             <a href="#" id="btn-instalar" class="oculto"><i class="fa-solid fa-download"></i> Instalar App</a>
             <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
-            
-            <!-- ENLACE A TÉRMINOS DESDE EL PERFIL -->
-            <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Térm. y Condiciones</a>
-            
-            <a href="#" onclick="cerrarSesion(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+            <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Términos de Uso</a>
+            <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
 
-    <main class="ngc-wrapper">
+    <main class="layout-wrapper">
         
         <!-- CABECERA -->
-        <div class="gnc-hero-card gpu-accel" id="mainHeader" style="margin-top: 5px;">
-            <p class="ngc-title" style="margin-bottom: 2px; color: var(--ngc-text-faded);">Plataforma Oficial</p>
-            <h1 class="hero-name" style="color: var(--ngc-neon); text-transform: uppercase; font-size: 2rem; margin-bottom: 5px;">Villaser Gestión</h1>
-            
-            <div class="ngc-footer-badge" style="margin-bottom: 0;">
-                <i class="fa-solid fa-circle" style="color: var(--success-green); font-size: 0.6rem; margin-right: 5px; animation: pulse 2s infinite;"></i> 
-                Sistema Activo
+        <div class="corp-card header-card" id="mainHeader">
+            <p class="corp-subtext" style="margin-bottom: 2px;">Plataforma Oficial</p>
+            <h1 class="corp-hero-title">Villaser Gestión</h1>
+            <div class="corp-status-badge">
+                <i class="fa-solid fa-circle pulse-anim" style="font-size: 0.5rem;"></i> Sistema Activo
             </div>
         </div>
 
         <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="ngc-privacy-card gpu-accel" style="margin-top: 15px; border-left: 4px solid var(--ngc-neon);">
-            <h2 class="privacy-title" style="margin-bottom: 12px; font-size: 1.2rem;">Acceso al Sistema</h2>
+        <div id="loginScreen" class="corp-card" style="border-left: 4px solid var(--corp-accent);">
+            <h2 style="font-size: 1.15rem; margin-bottom: 18px; color: var(--corp-text-main); font-weight: 700;">Acceso al Sistema</h2>
             
-            <div class="form-group">
-                <input type="email" id="emailInput" class="ngc-input" placeholder="Correo electrónico" autocomplete="email">
+            <div class="row-group">
+                <input type="email" id="emailInput" class="corp-input" placeholder="Correo electrónico" autocomplete="email">
             </div>
             
-            <div class="form-group" style="margin-top: 10px; position: relative;">
-                <input type="password" id="passwordInput" class="ngc-input" placeholder="Contraseña" style="padding-right: 45px;">
-                <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--ngc-text-faded); cursor: pointer; font-size: 1.2rem; transition: color 0.3s;"></i>
+            <div class="row-group" style="position: relative;">
+                <input type="password" id="passwordInput" class="corp-input" placeholder="Contraseña" style="padding-right: 45px;">
+                <i class="fa-solid fa-eye" id="togglePasswordIcon" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--corp-text-faded); cursor: pointer; font-size: 1.1rem;"></i>
             </div>
 
             <!-- CHECKBOX DE TÉRMINOS Y CONDICIONES -->
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.75rem; color: var(--ngc-text-faded); text-align: left;">
-                <input type="checkbox" id="aceptaTerminos" style="accent-color: var(--ngc-neon); width: 16px; height: 16px; cursor: pointer;">
+            <div class="corp-checkbox-group">
+                <input type="checkbox" id="aceptaTerminos">
                 <label for="aceptaTerminos">
-                    Acepto los <a href="#" onclick="abrirTerminos(true); return false;" style="color: var(--ngc-neon); text-decoration: underline;">Términos y Condiciones</a>
+                    Acepto los <a href="#" onclick="abrirTerminos(true); return false;">Términos y Condiciones</a>
                 </label>
             </div>
             
-            <button id="loginBtn" class="ngc-btn" style="width: 100%; margin-top: 12px;" onclick="iniciarSesion()">
+            <button id="loginBtn" class="corp-btn primary-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarSesion()">
                 <i class="fa-solid fa-lock-open"></i> Ingresar
             </button>
             
-            <button id="registerBtn" class="ngc-btn" style="width: 100%; margin-top: 8px; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;" onclick="crearCuenta()">
+            <button id="registerBtn" class="corp-btn secondary-btn" style="width: 100%; margin-top: 8px;" onclick="crearCuenta()">
                 <i class="fa-solid fa-user-plus"></i> Crear Cuenta
             </button>
             
-            <p id="errorMessage" class="error-text oculto" style="margin-top: 10px; font-size: 0.85rem; font-weight: bold; text-align: center;">
+            <p id="errorMessage" class="error-text oculto">
                 <i id="errorIcon" class="fa-solid fa-circle-exclamation"></i> <span id="errorTextContent"></span>
             </p>
 
-            <div style="margin-top: 12px; font-size: 0.8rem; text-align: center;">
-                <a href="#" onclick="recuperarPassword(); return false;" style="color: var(--ngc-neon); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+            <div class="forgot-password">
+                <a href="#" onclick="recuperarPassword(); return false;">¿Olvidaste tu contraseña?</a>
             </div>
         </div>
 
         <!-- INTERFAZ PRINCIPAL DE LA APP -->
         <div id="appScreen" class="oculto" style="width: 100%;">
-            
-            <!-- GRILLA DE MÓDULOS (3 Columnas Pro) -->
-            <div id="menuGrid" class="ngc-button-grid" style="margin-top: 15px;">
-                <button class="ngc-btn btn-module" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
-                <button class="ngc-btn btn-module" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
-                <button class="ngc-btn btn-module" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Técnico</button>
-                <button class="ngc-btn btn-module" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano de Obra</button>
-                <button class="ngc-btn btn-module" id="btnPotencia"><i class="fa-solid fa-bolt"></i> Potencia </button>
-                <button class="ngc-btn btn-module" id="btnAgenda"><i class="fa-solid fa-users-viewfinder"></i> Agenda</button>
-                <button class="ngc-btn btn-module" id="btnPresupuesto2"><i class="fa-solid fa-file-invoice"></i> Ppto 2</button>
-                <button class="ngc-btn btn-module" id="btnNuevoCliente"><i class="fa-solid fa-user-plus"></i> Nuevo Cliente</button>
-                <button class="ngc-btn btn-module" id="btnCatalogos"><i class="fa-solid fa-book-open"></i> Catálogos</button>
-                <button class="ngc-btn btn-module" id="btnFotos"><i class="fa-solid fa-camera"></i> Fotos</button>
-                <button class="ngc-btn btn-module"><i class="fa-brands fa-whatsapp"></i> Compartir WTS</button>
-                <button class="ngc-btn btn-module" id="btnPresupuestoPC"><i class="fa-solid fa-desktop"></i> Ppto. PC</button>
-                <button class="ngc-btn btn-module" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Materiales PC</button>
-                <button class="ngc-btn btn-module" id="btnPreguntas"><i class="fa-solid fa-circle-question"></i> Preguntas</button>
-                <button class="ngc-btn btn-module" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
-                <button class="ngc-btn btn-module" style="border-style: dashed;"><i class="fa-solid fa-plus"></i> Nuevo Módulo</button>
-            </div>
-        </div>
-
-        <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
-        <div id="modalConfig" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-            <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 400px; position: relative;">
-                <button onclick="cerrarConfiguracion()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-                
-                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-id-card"></i> Configuración</h3>
-                
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                    
-                    <!-- SELECTOR INTELIGENTE 3 OPCIONES -->
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
-                    <div class="theme-switch-wrapper">
-                        <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
-                        <label for="tema_dark" class="theme-switch-label">OSCURO</label>
-                        <input type="radio" id="tema_system" name="tema_app" value="system" onchange="cambiarTemaManual('system')" style="display:none">
-                        <label for="tema_system" class="theme-switch-label">SISTEMA</label>
-                        <input type="radio" id="tema_light" name="tema_app" value="light" onchange="cambiarTemaManual('light')" style="display:none">
-                        <label for="tema_light" class="theme-switch-label">CLARO</label>
-                    </div>
-
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left;"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
-                    <input type="text" id="confNombre" class="ngc-input" placeholder="Nombre (Ej: Sergio Villagra)">
-                    <input type="text" id="confSlogan" class="ngc-input" placeholder="Slogan (Ej: Electricista Cat. III)">
-                    <input type="text" id="confTelefono" class="ngc-input" placeholder="Teléfono de contacto">
-                    
-                    <label style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: left; margin-top: 2px;">Logo de la empresa (Máx 500KB)</label>
-                    <input type="file" id="confLogo" class="ngc-input" accept="image/*" style="padding: 10px;">
-                    <img id="logoPreview" src="" style="max-height: 70px; object-fit: contain; margin: 2px auto; display: none;">
-                    
-                    <button class="ngc-btn" style="margin-top: 5px;" onclick="guardarConfiguracion()">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL DE TÉRMINOS Y CONDICIONES (ACTUALIZADO FIREBASE/NUBE) -->
-        <div id="modalTerminos" class="oculto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10001; display: flex; justify-content: center; align-items: center;">
-            <div class="ngc-privacy-card gpu-accel" style="width: 90%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; position: relative;">
-                <button onclick="cerrarTerminos()" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-                
-                <h3 style="margin-top: 0; color: var(--ngc-neon); text-transform: uppercase; font-size: 1.1rem; text-align: center;"><i class="fa-solid fa-file-contract"></i> Términos de Uso</h3>
-                
-                <div style="overflow-y: auto; margin-top: 15px; padding-right: 10px; font-size: 0.8rem; color: var(--ngc-text-main); line-height: 1.6; text-align: left;">
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">1. Propósito de la Plataforma</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Villaser Gestión es una herramienta de uso administrativo y cálculo técnico orientada exclusivamente a profesionales del sector eléctrico.</p>
-                    
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">2. Recopilación y Seguridad de Datos</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Al registrarte, almacenamos tu correo electrónico. Tus contraseñas están cifradas de extremo a extremo y protegidas bajo la infraestructura de seguridad de Google Firebase.</p>
-                    
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">3. Permisos de Hardware (Cámara y Archivos)</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">La aplicación solicitará permisos para acceder a la cámara y galería de tu dispositivo <b>única y exclusivamente</b> cuando decidas cargar el logo de tu empresa o adjuntar fotografías a los informes técnicos. Villaser no accede remotamente a tu dispositivo.</p>
-                    
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">4. Almacenamiento Local de Preferencias</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Los datos de tu empresa (Nombre, Teléfono, Slogan y Logo) se guardan en la memoria local de tu propio navegador (LocalStorage) para autocompletar tus PDFs. Si limpias el caché de tu navegador, deberás cargarlos nuevamente.</p>
-                    
-                    <p style="color: var(--ngc-neon); font-weight: bold; margin-bottom: 5px;">5. Privacidad de los Clientes Finales</p>
-                    <p style="margin-bottom: 12px; color: var(--ngc-text-faded);">Eres el único responsable legal por los datos personales (nombres, direcciones, teléfonos) de los clientes que ingreses al generar un presupuesto. La plataforma Villaser no vende, comparte ni audita esta información de terceros.</p>
-                </div>
-                
-                <!-- Botón de Descarga PDF (Se muestra/oculta por JS según de donde se abra) -->
-                <div id="btnDescargaPdfContainer" style="margin-top: 15px;">
-                    <a href="./terminos_villaser.pdf" download="Terminos_Villaser_Gestion.pdf" class="ngc-btn" style="text-decoration: none; width: 100%; display: flex; justify-content: center; background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none;">
-                        <i class="fa-solid fa-file-pdf"></i> Descargar copia en PDF
-                    </a>
-                </div>
+            <!-- GRILLA DE MÓDULOS (Flat Design 3 Columnas) -->
+            <div id="menuGrid" class="corp-grid" style="margin-top: 5px;">
+                <button class="corp-grid-btn" id="btnPresupuesto"><i class="fa-solid fa-file-invoice-dollar"></i> Presupuesto</button>
+                <button class="corp-grid-btn" id="btnMateriales"><i class="fa-solid fa-boxes-stacked"></i> Materiales</button>
+                <button class="corp-grid-btn" id="btnInformeTecnico"><i class="fa-solid fa-clipboard-check"></i> Informe Téc.</button>
+                <button class="corp-grid-btn" id="btnCostos"><i class="fa-solid fa-hand-holding-dollar"></i> Mano Obra</button>
+                <button class="corp-grid-btn" id="btnPotencia"><i class="fa-solid fa-bolt"></i> Potencia </button>
+                <button class="corp-grid-btn" id="btnAgenda"><i class="fa-solid fa-users-viewfinder"></i> Agenda</button>
+                <button class="corp-grid-btn" id="btnPresupuesto2"><i class="fa-solid fa-file-invoice" style="color: #8966ff;"></i> Ppto. 2</button>
+                <button class="corp-grid-btn" id="btnNuevoCliente"><i class="fa-solid fa-user-plus"></i> Cliente</button>
+                <button class="corp-grid-btn" id="btnCatalogos"><i class="fa-solid fa-book-open"></i> Catálogos</button>
+                <button class="corp-grid-btn" id="btnFotos"><i class="fa-solid fa-camera"></i> Fotos</button>
+                <button class="corp-grid-btn"><i class="fa-brands fa-whatsapp"></i> Compartir</button>
+                <button class="corp-grid-btn" id="btnPresupuestoPC"><i class="fa-solid fa-desktop"></i> Ppto PC</button>
+                <button class="corp-grid-btn" id="btnMaterialesPC"><i class="fa-solid fa-microchip"></i> Mat. PC</button>
+                <button class="corp-grid-btn" id="btnPreguntas"><i class="fa-solid fa-circle-question"></i> Consultas</button>
+                <button class="corp-grid-btn" id="btnProveedores"><i class="fa-solid fa-truck-fast"></i> Proveedores</button>
             </div>
         </div>
 
         <!-- CRÉDITOS -->
-        <div class="ngc-site-credits" style="text-align: center; font-size: 0.65rem; color: var(--ngc-text-faded); margin-top: 8px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1.5px;">
-            &copy; 2026 Villaser. Diseñado por <span style="color: rgba(var(--ngc-neon-rgb), 0.8); font-weight: 700;">Sergio Villagra</span>.
+        <div class="corp-credits">
+            &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
         </div>
 
     </main>
+
+    <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
+    <div id="modalConfig" class="corp-modal oculto">
+        <div class="corp-modal-card">
+            <button class="corp-modal-close" onclick="cerrarConfiguracion()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h3 class="corp-modal-title"><i class="fa-solid fa-id-card"></i> Configuración</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <!-- SELECTOR INTELIGENTE 3 OPCIONES -->
+                <label><i class="fa-solid fa-circle-half-stroke"></i> Aspecto Visual</label>
+                <div class="corp-theme-switch">
+                    <input type="radio" id="tema_dark" name="tema_app" value="dark" onchange="cambiarTemaManual('dark')" style="display:none">
+                    <label for="tema_dark">OSCURO</label>
+                    <input type="radio" id="tema_system" name="tema_app" value="system" onchange="cambiarTemaManual('system')" style="display:none">
+                    <label for="tema_system">SISTEMA</label>
+                    <input type="radio" id="tema_light" name="tema_app" value="light" onchange="cambiarTemaManual('light')" style="display:none">
+                    <label for="tema_light">CLARO</label>
+                </div>
+
+                <label style="margin-top: 5px;"><i class="fa-solid fa-file-invoice"></i> Datos para PDFs</label>
+                <input type="text" id="confNombre" class="corp-input" placeholder="Nombre (Ej: Sergio Villagra)">
+                <input type="text" id="confSlogan" class="corp-input" placeholder="Slogan (Ej: Electricista Cat. III)">
+                <input type="text" id="confTelefono" class="corp-input" placeholder="Teléfono de contacto">
+                
+                <label style="margin-top: 5px;"><i class="fa-solid fa-image"></i> Logo de la empresa (Máx 500KB)</label>
+                <input type="file" id="confLogo" class="corp-input" accept="image/*" style="padding: 10px;">
+                <img id="logoPreview" src="" style="max-height: 70px; object-fit: contain; margin: 5px auto; display: none;">
+                
+                <button class="corp-btn primary-btn" style="margin-top: 10px;" onclick="guardarConfiguracion()">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
+    <div id="modalTerminos" class="corp-modal oculto">
+        <div class="corp-modal-card" style="max-height: 85vh; display: flex; flex-direction: column;">
+            <button class="corp-modal-close" onclick="cerrarTerminos()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h3 class="corp-modal-title"><i class="fa-solid fa-file-contract"></i> Términos de Uso</h3>
+            
+            <div class="corp-terms-content">
+                <h4>1. Propósito de la Plataforma</h4>
+                <p>Villaser Gestión es una herramienta de uso administrativo y cálculo técnico orientada exclusivamente a profesionales del sector eléctrico.</p>
+                
+                <h4>2. Recopilación y Seguridad de Datos</h4>
+                <p>Al registrarte, almacenamos tu correo electrónico. Tus contraseñas están cifradas de extremo a extremo y protegidas bajo la infraestructura de seguridad de Google Firebase.</p>
+                
+                <h4>3. Permisos de Hardware (Cámara y Archivos)</h4>
+                <p>La aplicación solicitará permisos para acceder a la cámara y galería de tu dispositivo <b>única y exclusivamente</b> cuando decidas cargar el logo de tu empresa o adjuntar fotografías a los informes técnicos. Villaser no accede remotamente a tu dispositivo.</p>
+                
+                <h4>4. Almacenamiento Local de Preferencias</h4>
+                <p>Los datos de tu empresa (Nombre, Teléfono, Slogan y Logo) se guardan en la memoria local de tu propio navegador (LocalStorage) para autocompletar tus PDFs. Si limpias el caché de tu navegador, deberás cargarlos nuevamente.</p>
+                
+                <h4>5. Privacidad de los Clientes Finales</h4>
+                <p>Eres el único responsable legal por los datos personales de los clientes que ingreses. La plataforma Villaser no vende, comparte ni audita esta información de terceros.</p>
+            </div>
+            
+            <div id="btnDescargaPdfContainer" style="margin-top: 15px;">
+                <a href="./terminos_villaser.pdf" download="Terminos_Villaser_Gestion.pdf" class="corp-btn secondary-btn" style="text-decoration: none; width: 100%;">
+                    <i class="fa-solid fa-file-pdf"></i> Descargar copia en PDF
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Librerías de Firebase primero -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- Tu puente de conexión -->
     <script src="./firebase-config.js"></script>
-
-    <!-- Tu lógica principal -->
     <script src="./script.js"></script>
 </body>
 </html>
