@@ -106,24 +106,6 @@ function cerrarModalAlertaCorp() {
     document.getElementById('modalAlertaCorp').classList.add('oculto');
 }
 
-function filtrarAgenda() {
-    const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
-    const contenedor = document.getElementById('listaAgenda'); contenedor.innerHTML = '';
-    
-    // Soporte simultáneo para c.tel y c.telefono según cómo esté guardado en Firebase
-    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto) || (c.telefono || c.tel || '').includes(texto));
-    
-    if (filtrados.length === 0) { contenedor.innerHTML = "<p style='color:var(--ngc-text-faded);'>Sin resultados.</p>"; return; }
-    
-    filtrados.forEach(c => {
-        const telVal = c.telefono || c.tel || ''; // Captura el teléfono correctamente
-        const div = document.createElement('div'); div.className = "modal-list-item";
-        div.innerHTML = `<div><h4>${c.nombre}</h4><small>${c.dir || 'Sin dirección'}</small></div>
-            <button class="corp-btn-small" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}', '${telVal.replace(/'/g, "\\'")}')">Usar</button>`;
-        contenedor.appendChild(div);
-    });
-}
-
 function seleccionarContacto(nombre, dir, tel = "") {
     inputCliNombre.value = nombre; document.getElementById('cliDireccion').value = dir;
     telefonoClienteActual = tel; 
@@ -210,24 +192,6 @@ function avanzarPasoTrabajo() {
     guardarClienteGlobal(); 
     renderTabla();
 }
-
-function abrirModalAgenda() {
-    const uid = obtenerUid();
-    if (!uid || !db) { 
-        mostrarAlertaCorp("Error", "Sin sesión detectada."); 
-        return; 
-    }
-    document.getElementById('modalAgenda').classList.remove('oculto');
-    document.getElementById('buscadorAgenda').value = "";
-    
-    db.collection("perfiles").doc(uid).collection("contactos").orderBy("nombre").get().then((snapshot) => {
-          contactosAgenda = [];
-          snapshot.forEach((doc) => { contactosAgenda.push(doc.data()); });
-          filtrarAgenda();
-    }).catch(() => { document.getElementById('listaAgenda').innerHTML = "<p style='color:var(--error-red);'>Error.</p>"; });
-}
-
-function cerrarModalAgenda() { document.getElementById('modalAgenda').classList.add('oculto'); }
 
 // ==========================================
 // BORRADORES NUBE (Guardar Como... UI)
@@ -338,8 +302,6 @@ function abrirModalBorradores() {
           });
       });
 }
-
-function cerrarModalBorradores() { document.getElementById('modalBorradores').classList.add('oculto'); }
 
 function cargarBorradorNube(docId) {
     const uid = obtenerUid(); if (!uid || !db) return;
