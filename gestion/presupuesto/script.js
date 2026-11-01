@@ -391,16 +391,9 @@ function guardarClienteGlobal() {
 // ==========================================
 // NUEVO PRESUPUESTO (MODAL CORPORATIVO)
 // ==========================================
-function nuevoPresupuesto() {
-    document.getElementById('modalConfirmarNuevo').classList.remove('oculto');
-}
-
-function cerrarModalConfirmarNuevo() {
-    document.getElementById('modalConfirmarNuevo').classList.add('oculto');
-}
 
 function ejecutarNuevoPresupuesto() {
-    cerrarModalConfirmarNuevo();
+    cerrarModalConfirmarNuevoGlobal(); // <-- Actualizado
     
     inputCliNombre.value = ''; 
     document.getElementById('cliDireccion').value = ''; 
@@ -412,8 +405,7 @@ function ejecutarNuevoPresupuesto() {
     clienteDesdeAgenda = false; 
     permiteGuardarNube = true;
     nombreBorradorActual = null;
-    
-    telefonoClienteActual = ""; // <--- ¡AÑADIR ESTA LÍNEA AQUÍ!
+    telefonoClienteActual = "";
     
     guardarEstadoLocal(); 
     document.getElementById('step-trabajo').classList.add('oculto'); 
