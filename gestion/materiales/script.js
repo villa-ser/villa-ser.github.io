@@ -67,6 +67,9 @@ function obtenerUid() {
     return null; // Solo si ninguna de las 3 capas lo detecta
 }
 
+// ==========================================
+// FETCH Y CASCADA DE 5 COLUMNAS
+// ==========================================
 async function fetchData() {
     try {
         const res = await fetch(URL_MATERIALES);
@@ -190,7 +193,6 @@ function seleccionarContacto(nombre, dir) {
     cerrarModalAgenda();
     mostrarToast("Cliente Seleccionado", "Datos de agenda importados.");
 }
-
 function iniciarLista() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if(!nombre) {
@@ -226,6 +228,7 @@ function avanzarPasoTrabajo() {
     guardarClienteGlobal();
     renderTabla();
 }
+
 // ==========================================
 // BORRADORES EN NUBE (Firebase)
 // ==========================================
@@ -316,7 +319,7 @@ function eliminarBorradorNube(docId, btnElement) {
 }
 
 // ==========================================
-// MEMORIA LOCAL, LISTAS Y WSP
+// MEMORIA LOCAL Y CARGA DE ITEMS
 // ==========================================
 function guardarClienteGlobal() {
     const obj = { nombre: document.getElementById('cliNombre').value.trim(), direccion: document.getElementById('cliDireccion').value.trim(), proyecto: document.getElementById('cliProyecto').value.trim() };
@@ -330,7 +333,7 @@ function guardarEstadoLocal() {
 }
 
 function cargarEstadoGuardado() {
-    const estadoStr = localStorage.getItem('materiales_estado_actual') || localStorage.getItem('villaser_cliente_global'); // Fallback a memoria global
+    const estadoStr = localStorage.getItem('materiales_estado_actual') || localStorage.getItem('villaser_cliente_global'); 
     if (estadoStr) {
         const estado = JSON.parse(estadoStr);
         if (estado.cliNombre || estado.nombre) document.getElementById('cliNombre').value = estado.cliNombre || estado.nombre;
@@ -362,13 +365,10 @@ function mostrarToast(titulo, mensaje) {
 
 function step(id, val) { const el = document.getElementById(id); if(el) el.value = Math.max(el.min ? parseInt(el.min) : 1, (parseInt(el.value || 0) + val)); }
 
-function poblarTemas() { if(selTema) { selTema.innerHTML = '<option value="">-- SELECCIONE CATEGORÍA --</option>'; [...new Set(dbMateriales.map(i => i.tema))].sort().forEach(t => selTema.appendChild(new Option(t, t))); } }
-function cambioTema() { const t = selTema.value; selConcepto.innerHTML = '<option value="">-- SELECCIONE MATERIAL --</option>'; if(t) { selConcepto.disabled = false; dbMateriales.filter(i => i.tema === t).forEach(i => selConcepto.appendChild(new Option(i.concepto, i.concepto))); } else { selConcepto.disabled = true; } }
-
 function agregarTrabajo() {
     if(!selConcepto.value) return alert("Selecciona al menos un material de la lista.");
     
-    // Concatenamos las selecciones ignorando las vacías
+    // Concatenamos las selecciones de las 5 columnas
     const partes = [selConcepto.value, selNivel3.value, selNivel4.value, selNivel5.value];
     const nombreCompletoMaterial = partes.filter(Boolean).join(' | ');
 
@@ -381,26 +381,27 @@ function agregarTrabajo() {
     guardarEstadoLocal(); 
     renderTabla(); 
     
-    // Reseteo rápido manteniendo la categoría principal
+    // Reseteo de campos
     document.getElementById('obsManual').value = ""; 
     document.getElementById('cantidad').value = 1; 
     selConcepto.value = "";
     llenarSelect(selNivel3, []); llenarSelect(selNivel4, []); llenarSelect(selNivel5, []);
 }
 
-
 function renderTabla() {
     const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; 
     listaItems.forEach(i => {
         const div = document.createElement('div'); div.className = 'row-item';
-        div.innerHTML = `<div style="flex:1;"><strong>${i.material}</strong><br><span style="color:var(--ngc-text-faded); font-size:0.75rem;">${i.obs ? i.obs : 'Sin nota'}</span></div><div style="font-weight:bold; color:var(--ngc-neon); text-align:right; margin-right:10px;">${i.qty} ${i.unidad}</div><button class="btn-delete" onclick="borrarItem(${i.id})"><i class="fa-solid fa-trash"></i></button>`;
+        div.innerHTML = `<div style="flex:1;"><strong>${i.material}</strong><br><span style="color:var(--ngc-text-faded); font-size:0.75rem;">${i.nota ? i.nota : 'Sin nota'}</span></div><div style="font-weight:bold; color:var(--ngc-neon); text-align:right; margin-right:10px;">${i.cantidad} ${i.unidad}</div><button class="btn-delete" onclick="borrarItem(${i.id})"><i class="fa-solid fa-trash"></i></button>`;
         tbody.appendChild(div);
     });
 }
 
 function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guardarEstadoLocal(); renderTabla(); }
 
-// --- WSP Y PDF ---
+// ==========================================
+// DESCARGAS (WSP, PNG, PDF)
+// ==========================================
 let telClienteAgendado = null;
 function abrirModalWhatsApp() {
     if(listaItems.length === 0) return alert("Agregá materiales primero.");
@@ -424,7 +425,7 @@ function cerrarModalWhatsApp() { document.getElementById('modalWhatsApp').classL
 function ejecutarEnvioWsp(tel) {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
     let m = `*${profNombre.toUpperCase()} - LISTA DE MATERIALES*\nProyecto: ${document.getElementById('cliProyecto').value || '-'}\n\n`; 
-    listaItems.forEach(i => { m += `• ${i.qty} ${i.unidad} | ${i.material} ${i.obs ? '('+i.obs+')' : ''}\n`; }); 
+    listaItems.forEach(i => { m += `• ${i.cantidad} ${i.unidad} | ${i.material} ${i.nota ? '('+i.nota+')' : ''}\n`; }); 
     const og = document.getElementById('obsGenerales').value; if(og) m += `\n*Notas:* ${og}`;
     window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); 
     cerrarModalWhatsApp();
@@ -455,7 +456,7 @@ async function generarPDF() {
     document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
     
     const tbody = document.getElementById('pdf-tbody'); tbody.innerHTML = '';
-    listaItems.forEach(i => { tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.obs}</td><td>${i.qty}</td><td>${i.unidad}</td>` })); });
+    listaItems.forEach(i => { tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.nota}</td><td>${i.cantidad}</td><td>${i.unidad}</td>` })); });
     document.getElementById('pdf-notas').innerText = document.getElementById('obsGenerales').value || 'Sin notas.';
     
     const element = document.getElementById('plantilla-pdf'); element.style.display = 'block'; window.scrollTo(0, 0);
@@ -486,4 +487,4 @@ document.addEventListener("DOMContentLoaded", () => {
         footer.appendChild(btn);
     });
 });
-        
+              
