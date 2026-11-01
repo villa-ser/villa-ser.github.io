@@ -395,22 +395,75 @@ function ejecutarDescargaCaptura() {
     cerrarModalCaptura();
 }
 
-async function generarPDF() {
-    if(listaItems.length === 0) return alert("No hay materiales");
+// ==========================================
+// LÓGICA DE GENERACIÓN DE PDF CON MODAL (MATERIALES)
+// ==========================================
+function generarPDF() {
+    if(listaItems.length === 0) return alert("No hay materiales para generar el PDF.");
+    
+    // Sugerimos un nombre para el archivo
+    const inputNombre = document.getElementById('cliNombre');
+    const sugerido = inputNombre ? inputNombre.value.trim().replace(/ /g, '_') : 'Cliente';
+    const uniqueSuffix = Math.floor(Math.random() * 9000) + 1000;
+    
+    // Pre-llenamos el input del modal
+    document.getElementById('nombreArchivoPDF').value = `Materiales_${sugerido}_${uniqueSuffix}`;
+    
+    // Mostramos el modal
+    document.getElementById('modalDescargarPDF').classList.remove('oculto');
+}
+
+function cerrarModalPDF() {
+    document.getElementById('modalDescargarPDF').classList.add('oculto');
+    document.getElementById('btnConfirmarDescargaPDF').innerHTML = "Descargar";
+}
+
+async function ejecutarDescargaPDF() {
+    const btn = document.getElementById('btnConfirmarDescargaPDF');
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
+    
     if(permiteGuardarNube) guardarBorradorFirebase(false);
     
+    // Preparar los datos visuales del PDF
     document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
     document.getElementById('pdf-cliente').innerText = document.getElementById('cliNombre').value || 'Sin nombre';
     document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'Sin dirección';
     document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
     
-    const tbody = document.getElementById('pdf-tbody'); tbody.innerHTML = '';
-    listaItems.forEach(i => { tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.nota}</td><td>${i.cantidad}</td><td>${i.unidad}</td>` })); });
+    const tbody = document.getElementById('pdf-tbody'); 
+    tbody.innerHTML = '';
+    
+    listaItems.forEach(i => { 
+        tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.nota}</td><td>${i.cantidad}</td><td>${i.unidad}</td>` })); 
+    });
+    
     document.getElementById('pdf-notas').innerText = document.getElementById('obsGenerales').value || 'Sin notas.';
     
-    const element = document.getElementById('plantilla-pdf'); element.style.display = 'block'; window.scrollTo(0, 0);
-    try { await html2pdf().set({ margin: 0, filename: `Materiales_${document.getElementById('cliNombre').value}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save(); } 
-    catch (e) { alert("Error al generar PDF."); } finally { element.style.display = 'none'; }
+    const element = document.getElementById('plantilla-pdf'); 
+    element.style.display = 'block'; 
+    window.scrollTo(0, 0);
+    
+    const nombreFinal = document.getElementById('nombreArchivoPDF').value.trim() || 'Materiales';
+
+    const opt = { 
+        margin: 0, 
+        filename: `${nombreFinal}.pdf`, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2, scrollY: 0 }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+    
+    try { 
+        await html2pdf().set(opt).from(element).save();
+        cerrarModalPDF();
+    } 
+    catch (e) { 
+        alert("Error al generar PDF."); 
+        btn.innerHTML = "Descargar";
+    } 
+    finally { 
+        element.style.display = 'none'; 
+    }
 }
 
 // ==========================================
@@ -435,4 +488,4 @@ document.addEventListener("DOMContentLoaded", () => {
         footer.appendChild(btn);
     });
 });
-                                                                 
+   
