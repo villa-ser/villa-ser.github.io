@@ -103,7 +103,7 @@ function marcarClienteManual() { clienteDesdeAgenda = false; permiteGuardarNube 
 
 function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre; document.getElementById('cliDireccion').value = dir;
-    clienteDesdeAgenda = true; permiteGuardarNube = true; guardarClienteGlobal(); cerrarModalAgenda();
+    clienteDesdeAgenda = true; permiteGuardarNube = true; guardarClienteGlobal(); cerrarModalAgendaGlobal();
     mostrarToast("Cliente Seleccionado", "Datos importados.");
 }
 function iniciarLista() {
@@ -112,7 +112,7 @@ function iniciarLista() {
     if (!clienteDesdeAgenda) return document.getElementById('modalOpcionesCliente').classList.remove('oculto');
     avanzarPasoTrabajo();
 }
-function opcionBuscarAgenda() { document.getElementById('modalOpcionesCliente').classList.add('oculto'); abrirModalAgenda(); }
+function opcionBuscarAgenda() { document.getElementById('modalOpcionesCliente').classList.add('oculto'); abrirModalAgendaGlobal(); }
 function opcionContinuarSinAgenda() { document.getElementById('modalOpcionesCliente').classList.add('oculto'); document.getElementById('modalAdvertenciaBorrador').classList.remove('oculto'); }
 function confirmarListaTemporal() { permiteGuardarNube = false; document.getElementById('modalAdvertenciaBorrador').classList.add('oculto'); avanzarPasoTrabajo(); }
 function cancelarListaTemporal() { document.getElementById('modalAdvertenciaBorrador').classList.add('oculto'); }
@@ -182,7 +182,7 @@ function cargarBorradorNube(docId) {
         if (doc.exists) {
             const data = doc.data(); data.clienteDesdeAgenda = true; data.permiteGuardarNube = true;
             localStorage.setItem('materiales_estado_actual', JSON.stringify(data));
-            cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradores();
+            cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradoresGlobal();
             mostrarToast("Abierto", "Datos cargados.");
         }
     });
