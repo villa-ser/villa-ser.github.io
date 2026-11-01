@@ -116,6 +116,18 @@
         </div>
     </div>
 </div>
+
+<div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Nueva Lista</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de iniciar una nueva lista? Se borrarán los materiales actuales no guardados.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalConfirmarNuevoGlobal()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevaLista()">Aceptar</button>
+        </div>
+    </div>
+</div>
     
 <div class="layout-wrapper">
     <main class="container">
