@@ -366,11 +366,28 @@ function poblarTemas() { if(selTema) { selTema.innerHTML = '<option value="">-- 
 function cambioTema() { const t = selTema.value; selConcepto.innerHTML = '<option value="">-- SELECCIONE MATERIAL --</option>'; if(t) { selConcepto.disabled = false; dbMateriales.filter(i => i.tema === t).forEach(i => selConcepto.appendChild(new Option(i.concepto, i.concepto))); } else { selConcepto.disabled = true; } }
 
 function agregarTrabajo() {
-    if(!selConcepto.value) return alert("Selecciona un material.");
-    listaItems.push({ id: Date.now(), material: selConcepto.value, qty: document.getElementById('cantidad').value, unidad: document.querySelector('input[name="tipoUnidad"]:checked').value, obs: document.getElementById('obsManual').value.trim() });
-    guardarEstadoLocal(); renderTabla(); 
-    document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; selConcepto.value = ""; 
+    if(!selConcepto.value) return alert("Selecciona al menos un material de la lista.");
+    
+    // Concatenamos las selecciones ignorando las vacías
+    const partes = [selConcepto.value, selNivel3.value, selNivel4.value, selNivel5.value];
+    const nombreCompletoMaterial = partes.filter(Boolean).join(' | ');
+
+    const qty = document.getElementById('cantidad').value;
+    const nota = document.getElementById('obsManual').value.trim();
+    const unidad = document.querySelector('input[name="tipoUnidad"]:checked').value;
+    
+    listaItems.push({ id: Date.now(), material: nombreCompletoMaterial, cantidad: qty, unidad: unidad, nota: nota });
+    
+    guardarEstadoLocal(); 
+    renderTabla(); 
+    
+    // Reseteo rápido manteniendo la categoría principal
+    document.getElementById('obsManual').value = ""; 
+    document.getElementById('cantidad').value = 1; 
+    selConcepto.value = "";
+    llenarSelect(selNivel3, []); llenarSelect(selNivel4, []); llenarSelect(selNivel5, []);
 }
+
 
 function renderTabla() {
     const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; 
