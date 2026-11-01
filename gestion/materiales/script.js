@@ -299,28 +299,35 @@ function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guar
 // DESCARGAS (WSP, PNG, PDF)
 // ==========================================
 let telClienteAgendado = null;
-function abrirModalWhatsApp() {
+
+// Preparar envío WhatsApp (Materiales)
+function prepararEnvioWhatsApp() {
     if(listaItems.length === 0) return alert("Agregá materiales primero.");
-    document.getElementById('wspNumeroManual').value = '';
-    const btnAgendado = document.getElementById('wspOpcionAgendado'); btnAgendado.style.display = 'none';
-    const uid = obtenerUid();
-    if(uid && db && document.getElementById('cliNombre').value) {
-        db.collection("perfiles").doc(uid).collection("contactos").where("nombre", "==", document.getElementById('cliNombre').value).get().then(snap => {
-            if(!snap.empty) { telClienteAgendado = snap.docs[0].data().tel; if(telClienteAgendado) btnAgendado.style.display = 'flex'; }
-        });
-    }
-    document.getElementById('modalWhatsApp').classList.remove('oculto');
-}
-function cerrarModalWhatsApp() { document.getElementById('modalWhatsApp').classList.add('oculto'); }
-function ejecutarEnvioWsp(tel) {
+    
+    // Armar el texto
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
-    let m = `*${profNombre.toUpperCase()} - LISTA DE MATERIALES*\nProyecto: ${document.getElementById('cliProyecto').value || '-'}\n\n`; 
-    listaItems.forEach(i => { m += `• ${i.cantidad} ${i.unidad} | ${i.material} ${i.nota ? '('+i.nota+')' : ''}\n`; }); 
-    const og = document.getElementById('obsGenerales').value; if(og) m += `\n*Notas:* ${og}`;
-    window.open(`https://wa.me/549${tel.replace(/\D/g, '')}?text=${encodeURIComponent(m)}`, '_blank'); cerrarModalWhatsApp();
+    let msg = `*${profNombre.toUpperCase()} - LISTA DE MATERIALES*\nProyecto: ${document.getElementById('cliProyecto').value || '-'}\n\n`; 
+    listaItems.forEach(i => { msg += `• ${i.cantidad} ${i.unidad} | ${i.material} ${i.nota ? '('+i.nota+')' : ''}\n`; }); 
+    const og = document.getElementById('obsGenerales').value; 
+    if(og) msg += `\n*Notas:* ${og}`;
+
+    // Buscar teléfono en Firestore y abrir global.js
+    const uid = obtenerUid();
+    const cliNombre = document.getElementById('cliNombre').value;
+    
+    if(uid && db && cliNombre) {
+        db.collection("perfiles").doc(uid).collection("contactos").where("nombre", "==", cliNombre).get().then(snap => {
+            let tel = null;
+            if(!snap.empty) {
+                const data = snap.docs[0].data();
+                tel = data.tel || data.telefono; 
+            }
+            abrirModalWspGlobal(tel, msg);
+        }).catch(() => abrirModalWspGlobal(null, msg));
+    } else {
+        abrirModalWspGlobal(null, msg);
+    }
 }
-function enviarWspAgendado() { if(telClienteAgendado) ejecutarEnvioWsp(telClienteAgendado); }
-function enviarWspManual() { const tel = document.getElementById('wspNumeroManual').value; if(tel.length < 8) return alert("Ingrese un número válido."); ejecutarEnvioWsp(tel); }
 
 async function tomarCaptura() {
     const zona = document.getElementById('zonaCaptura'); document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.display = 'none'); 
