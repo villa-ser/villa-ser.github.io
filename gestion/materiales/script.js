@@ -166,7 +166,7 @@ function abrirModalBorradores() {
         } else {
             alert("⚠️ Falta Cliente: Ingresá el Nombre del Cliente primero para buscar sus borradores.");
         }
-        if (inputNombre) inputNombre.focus(); 
+        // if (inputNombre) inputNombre.focus(); <-- ELIMINAR O COMENTAR ESTA LÍNEA
         return; 
     }
 
