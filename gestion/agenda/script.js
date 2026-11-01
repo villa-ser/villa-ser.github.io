@@ -55,15 +55,28 @@ function renderizarContactos() {
 
     filtrados.forEach(c => {
         const div = document.createElement('div');
-        div.className = 'contacto-card gpu-accel';
+        
+        // 1. Inyectamos los estilos corporativos directamente
+        div.style.cssText = "background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; transition: 0.2s;";
+        
+        // 2. Recreamos el efecto hover (iluminar el borde al tocar)
+        div.onmouseover = () => { div.style.borderColor = "var(--ngc-neon)"; div.style.transform = "translateY(-2px)"; };
+        div.onmouseout = () => { div.style.borderColor = "var(--ngc-privacy-border)"; div.style.transform = "none"; };
+        
         div.onclick = () => abrirDetalle(c.id);
         
         const codigoID = c.id.substring(0, 6).toUpperCase(); 
         
+        // 3. Estructura HTML interna con estilos inline
         div.innerHTML = `
-            <div class="contacto-info">
-                <h4>${c.nombre} <span style="font-size:0.6rem; color:var(--ngc-neon); border: 1px solid var(--ngc-neon); padding: 2px 4px; border-radius:4px; margin-left: 5px;">#${codigoID}</span></h4>
-                <p><i class="fa-solid fa-phone"></i> ${c.tel || 'Sin teléfono'}</p>
+            <div>
+                <h4 style="margin: 0 0 5px 0; font-size: 1rem; color: var(--ngc-text-main); display: flex; align-items: center;">
+                    ${c.nombre} 
+                    <span style="font-size:0.6rem; color:var(--ngc-neon); border: 1px solid var(--ngc-neon); padding: 2px 4px; border-radius:4px; margin-left: 8px;">#${codigoID}</span>
+                </h4>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--ngc-text-faded);">
+                    <i class="fa-solid fa-phone"></i> ${c.tel || 'Sin teléfono'}
+                </p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: var(--ngc-text-faded);"></i>
         `;
