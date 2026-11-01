@@ -64,7 +64,7 @@ async function fetchData() {
             concepto: r.c[1]?.v || '',
             nivel3: r.c[2]?.v || '', 
             nivel4: r.c[3]?.v || '', 
-            nivel5: r.c[5]?.v || ''  
+            nivel5: r.c[4]?.v || ''  
         })).filter(i => i.tema && i.concepto && i.concepto !== "Concepto");
         
         poblarTemas();
