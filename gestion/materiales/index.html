@@ -128,13 +128,13 @@
         
         <div id="app" class="oculto">
             
-            <!-- DATOS DEL PROYECTO -->
+                        <!-- DATOS DEL PROYECTO -->
             <section id="step-cliente" class="corp-card gpu-accel">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h4 class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
                 </div>
 
-                <!-- NUEVOS BOTONES AGENDA Y BORRADORES -->
+                <!-- BOTONES DE AGENDA Y BORRADORES NUBE -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                     <button class="corp-btn" style="background: rgba(49, 162, 76, 0.1); color: var(--success-green); border: 1px solid var(--success-green);" onclick="abrirModalAgenda()">
                         <i class="fa-solid fa-address-book"></i> Agenda
@@ -148,9 +148,7 @@
                     <label>Nombre del Cliente</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Familia Gómez" oninput="marcarClienteManual()">
-                        <button type="button" class="corp-btn-icon" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
-                            <i class="fa-solid fa-magnifying-glass" style="color: var(--ngc-neon);"></i>
-                        </button>
+                        <!-- Se removió la lupita azul que estaba acá para igualar la interfaz de presupuestos -->
                     </div>
                 </div>
                 
