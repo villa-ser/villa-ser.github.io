@@ -237,22 +237,24 @@ window.onclick = function(event) {
 }
 
 // ==========================================
-// NUEVO MENÚ INFERIOR TIPO APP
+// MENÚ INFERIOR SCROLL (MATCH GLOBAL)
 // ==========================================
-function generarMenuInferior() {
+document.addEventListener("DOMContentLoaded", () => {
     const footer = document.getElementById('corpFooterMenu'); if (!footer) return;
     const modulos = [
         { nombre: 'Inicio', icon: 'fa-house', url: '../index.html' },
         { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto/index.html' },
-        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '../materiales/index.html' },
+        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '#', active: true },
         { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
-        { nombre: 'Agenda', icon: 'fa-address-book', url: '#', active: true },
+        { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
         { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' }
     ];
     modulos.forEach(mod => {
-        const btn = document.createElement('button'); btn.className = `corp-nav-item ${mod.active ? 'active' : ''}`;
+        const btn = document.createElement('button');
+        btn.className = `corp-nav-item ${mod.active ? 'active' : ''}`;
         btn.innerHTML = `<i class="fa-solid ${mod.icon}"></i><span>${mod.nombre}</span>`;
-        btn.onclick = () => { if(!mod.active) window.location.href = mod.url; }; footer.appendChild(btn);
+        btn.onclick = () => { if(!mod.active) window.location.href = mod.url; };
+        footer.appendChild(btn);
     });
-}
+});
