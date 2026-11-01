@@ -8,7 +8,6 @@ const URL_MATERIALES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/
 
 let dbMateriales = [];
 let listaItems = [];
-let contactosAgenda = []; 
 let uidSeguro = null;
 
 let clienteDesdeAgenda = false;
