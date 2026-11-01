@@ -17,6 +17,9 @@ let permiteGuardarNube = true;
 
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
+const selNivel3 = document.getElementById('selNivel3');
+const selNivel4 = document.getElementById('selNivel4');
+const selNivel5 = document.getElementById('selNivel5');
 
 // ==========================================
 // INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
