@@ -19,7 +19,7 @@ const selNivel3 = document.getElementById('selNivel3');
 const selNivel4 = document.getElementById('selNivel4');
 const selNivel5 = document.getElementById('selNivel5');
 
-const inputCliNombre = document.getElementById('cliNombre');
+const inputNombre = document.getElementById('cliNombre');
 
 // ==========================================
 // INICIALIZACIÓN
