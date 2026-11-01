@@ -133,7 +133,7 @@
         
         <div id="app" class="oculto">
             
-                        <!-- DATOS DEL PROYECTO -->
+            <!-- DATOS DEL PROYECTO -->
             <section id="step-cliente" class="corp-card gpu-accel">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h4 class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
@@ -153,7 +153,6 @@
                     <label>Nombre del Cliente</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Familia Gómez" oninput="marcarClienteManual()">
-                        <!-- Se removió la lupita azul que estaba acá para igualar la interfaz de presupuestos -->
                     </div>
                 </div>
                 
@@ -173,7 +172,7 @@
                 </button>
             </section>
 
-                       <!-- ZONA DE TRABAJO -->
+            <!-- ZONA DE TRABAJO (Con las 5 Columnas) -->
             <section id="step-trabajo" class="oculto flex-column gap-15">
 
                 <div class="corp-card gpu-accel">
@@ -236,21 +235,20 @@
                     <div class="row-group-stretch" style="align-items: center; margin-top: 15px;">
                         <div style="flex: 1;">
                             <label>Cantidad</label>
-                            <div class="corp-stepper">
+                            <div class="stepper">
                                 <button type="button" class="btn-step" onclick="step('cantidad', -1)">-</button>
-                                <input type="number" id="cantidad" class="corp-input-step" value="1" min="1">
+                                <input type="number" id="cantidad" class="corp-input-step" value="1" min="1" style="background:transparent; border:none; text-align:center; width:100%; color:var(--ngc-text-main); font-weight:bold;">
                                 <button type="button" class="btn-step" onclick="step('cantidad', 1)">+</button>
                             </div>
                         </div>
                         <div style="flex: 1; align-self: flex-end;">
-                            <button id="btnAddItem" class="corp-btn success-btn" style="height: 46px;" onclick="agregarTrabajo()">
+                            <button id="btnAddItem" class="corp-btn" style="width: 100%; height: 45px; background: rgba(49, 162, 76, 0.1); color: var(--success-green);" onclick="agregarTrabajo()">
                                 <i class="fa-solid fa-plus"></i> Agregar
                             </button>
                         </div>
                     </div>
                 </div>  
 
-                
                 <div class="corp-card gpu-accel">
                     <label>Notas Globales de Materiales</label>
                     <textarea id="obsGenerales" class="corp-input" placeholder="Ej: Entregar por la mañana..." style="height: 75px; resize: none;" oninput="guardarEstadoLocal(); renderTabla();"></textarea>
@@ -323,5 +321,5 @@
 <script src="../firebase-config.js"></script>
 <script src="script.js"></script>
 </body>
-                                                             </html>
-                                                             
+                </html>
+                
