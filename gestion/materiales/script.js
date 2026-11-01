@@ -260,7 +260,7 @@ function step(id, val) { const el = document.getElementById(id); if(el) el.value
 
 function agregarTrabajo() {
     if(!selConcepto.value) return alert("Selecciona al menos un material.");
-    const partes = [selConcepto.value, selNivel3.value, selNivel4.value, selNivel5.value];
+    const partes = [selTema.value, selConcepto.value, selNivel3.value, selNivel4.value, selNivel5.value];
     const nombreCompleto = partes.filter(Boolean).join(' | ');
     const qty = document.getElementById('cantidad').value;
     const nota = document.getElementById('obsManual').value.trim();
