@@ -51,112 +51,110 @@
 </head>
 <body>
 
-    <body>
+<body>
 
-    <!-- TOAST NOTIFICACIÓN -->
-    <div id="toastAgenda" class="ngc-toast oculto gpu-accel">
-        <i id="toastIcon" class="fa-solid fa-check-circle" style="color: var(--success-green); font-size: 1.8rem;"></i>
+    <!-- TOAST NOTIFICACIÓN CORPORATIVA -->
+    <div id="toastAgenda" class="toast-corp oculto gpu-accel">
+        <div class="toast-icon"><i id="toastIcon" class="fa-solid fa-check-circle"></i></div>
         <div class="toast-content">
-            <strong id="toastTitle">Acción Exitosa</strong>
-            <p id="toastMessage">El contacto ha sido guardado.</p>
+            <div id="toastTitle" class="toast-title">Acción Exitosa</div>
+            <div id="toastMessage" class="toast-msg">El contacto ha sido guardado.</div>
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL (Usa la clase del CSS Raíz) -->
- <div class="layout-wrapper">
-    <main class="container">
-        
-        <!-- CABECERA Y BOTONERA SUPERIOR -->
-        <div class="ngc-privacy-card" style="margin-bottom: 15px; text-align: center;">
-            <h2 style="margin: 0 0 20px 0; color: var(--ngc-neon); font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px;">
-                <i class="fa-solid fa-address-book"></i> Mi Agenda
-            </h2>
-            <div class="ngc-button-grid">
-                <button class="ngc-btn" onclick="window.location.href='../index.html'">
-                    <i class="fa-solid fa-arrow-left"></i> Volver
-                </button>
-                <button class="ngc-btn" onclick="abrirModalFormulario()" style="color: var(--success-green); border-color: rgba(40,167,69,0.3);">
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="layout-wrapper">
+        <main class="container">
+            
+            <!-- CABECERA Y NAVEGACIÓN -->
+            <nav class="corp-top-nav">
+                <div class="corp-nav-title">
+                    <i class="fa-solid fa-address-book corp-accent-color"></i> Mi Agenda
+                </div>
+            </nav>
+
+            <!-- BOTONERA SUPERIOR -->
+            <div class="action-grid-main" style="margin-bottom: 10px;">
+                <button class="corp-btn success-btn" onclick="abrirModalFormulario()">
                     <i class="fa-solid fa-user-plus"></i> Nuevo
                 </button>
             </div>
-        </div>
 
-        <!-- BUSCADOR Y FILTROS -->
-        <div class="ngc-privacy-card" style="margin-bottom: 15px;">
-            <div class="form-group">
-                <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Contacto</label>
-                <input type="text" id="buscador" class="ngc-input" placeholder="Nombre, dirección o teléfono..." oninput="filtrarContactos()">
+            <!-- BUSCADOR Y FILTROS -->
+            <div class="corp-card" style="margin-bottom: 15px;">
+                <div class="row-group">
+                    <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Contacto</label>
+                    <input type="text" id="buscador" class="corp-input" placeholder="Nombre, dirección o teléfono..." oninput="filtrarContactos()">
+                </div>
+                <div class="row-group" style="margin-bottom: 0;">
+                    <label><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
+                    <select id="ordenador" class="corp-input native-select" onchange="renderizarContactos()">
+                        <option value="recientes">Más recientes primero</option>
+                        <option value="antiguos">Más antiguos primero</option>
+                        <option value="az">Alfabético (A-Z)</option>
+                        <option value="za">Alfabético (Z-A)</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-                <label><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
-                <select id="ordenador" class="ngc-input" onchange="renderizarContactos()" style="appearance: auto;">
-                    <option value="recientes">Más recientes primero</option>
-                    <option value="antiguos">Más antiguos primero</option>
-                    <option value="az">Alfabético (A-Z)</option>
-                    <option value="za">Alfabético (Z-A)</option>
-                </select>
-            </div>
-        </div>
 
-        <!-- LISTA DE CONTACTOS -->
-        <div id="listaContactos" style="width: 100%;">
-            <div id="loaderAgenda" style="text-align: center; color: var(--ngc-neon); padding: 30px; background: var(--ngc-glass); border-radius: 12px; border: var(--ngc-border-glass);">
-                <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
-                <p style="margin-top: 12px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Cargando contactos...</p>
+            <!-- LISTA DE CONTACTOS -->
+            <div id="listaContactos" style="width: 100%;">
+                <div id="loaderAgenda" class="corp-card" style="text-align: center; color: var(--ngc-neon);">
+                    <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                    <p style="margin-top: 12px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">Cargando contactos...</p>
+                </div>
             </div>
-        </div>
 
+        </main>
     </div>
 
-    <!-- MODAL FORMULARIO -->
-    <div id="modalFormulario" class="modal-overlay oculto">
-        <div class="ngc-privacy-card gpu-accel" style="max-width: 420px; width: 100%;">
-            <div class="modal-header">
-                <h3 id="formTitle"><i class="fa-solid fa-user-plus"></i> Nuevo Contacto</h3>
-                <button onclick="cerrarModal('modalFormulario')" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+    <!-- MODAL FORMULARIO DE CONTACTO -->
+    <div id="modalFormulario" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <h3 id="formTitle" style="margin: 0; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-user-plus corp-accent-color"></i> Nuevo Contacto</h3>
+                <button onclick="cerrarModal('modalFormulario')" class="corp-btn-icon" style="margin-top: -5px; margin-right: -5px;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div style="display: flex; flex-direction: column; width: 100%;">
                 <input type="hidden" id="contactoId">
                 
-                <div class="form-group">
+                <div class="row-group">
                     <label>Nombre / Empresa *</label>
-                    <input type="text" id="formNombre" class="ngc-input" placeholder="Ej: Familia Gómez">
+                    <input type="text" id="formNombre" class="corp-input" placeholder="Ej: Familia Gómez">
                 </div>
                 
-                <div class="form-group">
+                <div class="row-group">
                     <label>Dirección</label>
-                    <input type="text" id="formDir" class="ngc-input" placeholder="Ej: San Martín 123">
+                    <input type="text" id="formDir" class="corp-input" placeholder="Ej: San Martín 123">
                 </div>
                 
-                <div class="form-group">
+                <div class="row-group">
                     <label>Teléfono (WhatsApp)</label>
-                    <input type="tel" id="formTel" class="ngc-input" placeholder="Ej: 3511234567">
+                    <input type="tel" id="formTel" class="corp-input" placeholder="Ej: 3511234567">
                 </div>
                 
-                <div class="form-group">
+                <div class="row-group">
                     <label>Observaciones</label>
-                    <input type="text" id="formObs" class="ngc-input" placeholder="Ej: Referenciado por Juan">
+                    <input type="text" id="formObs" class="corp-input" placeholder="Ej: Referenciado por Juan">
                 </div>
                 
-                <!-- Botón adaptado a row para el formulario -->
-                <button class="ngc-btn" style="width: 100%; color: var(--success-green); border-color: rgba(40,167,69,0.5); flex-direction: row; padding: 15px; margin-top: 5px;" onclick="guardarContacto()">
-                    <i class="fa-solid fa-floppy-disk" style="margin: 0; font-size: 1.2rem;"></i> Guardar Contacto
+                <button class="corp-btn success-btn" style="width: 100%; margin-top: 10px;" onclick="guardarContacto()">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Contacto
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DETALLES -->
-    <div id="modalDetalle" class="modal-overlay oculto">
-        <div class="ngc-privacy-card gpu-accel" style="max-width: 420px; width: 100%;">
-            <div class="modal-header" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
-                <div></div>
-                <button onclick="cerrarModal('modalDetalle')" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+    <!-- MODAL DETALLES DEL CONTACTO -->
+    <div id="modalDetalle" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: -15px; position: relative; z-index: 2;">
+                <button onclick="cerrarModal('modalDetalle')" class="corp-btn-icon"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div style="text-align: center; margin-bottom: 25px;">
-                <div style="width: 75px; height: 75px; border-radius: 50%; background: rgba(var(--ngc-neon-rgb), 0.1); border: 2px solid var(--ngc-neon); display: inline-flex; justify-content: center; align-items: center; font-size: 2.2rem; color: var(--ngc-neon); margin-bottom: 12px; box-shadow: 0 0 15px rgba(var(--ngc-neon-rgb), 0.2);">
+                <div style="width: 75px; height: 75px; border-radius: 50%; background: rgba(35, 116, 225, 0.1); border: 2px solid var(--ngc-neon); display: inline-flex; justify-content: center; align-items: center; font-size: 2.2rem; color: var(--ngc-neon); margin-bottom: 12px; box-shadow: 0 0 15px rgba(35, 116, 225, 0.2);">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <h3 id="detNombre" style="margin: 0; color: var(--ngc-text-main); font-size: 1.5rem; text-transform: uppercase;">Nombre</h3>
@@ -183,26 +181,25 @@
             </div>
 
             <!-- Botonera Principal -->
-            <div class="ngc-button-grid" style="margin-bottom: 12px;">
-                <button id="btnMap" class="ngc-btn" style="color: var(--ngc-neon); border-color: rgba(var(--ngc-neon-rgb), 0.3);" onclick="abrirMaps()">
-                    <i class="fa-solid fa-map-location-dot"></i> Ir a Mapa
+            <div class="action-grid-main">
+                <button id="btnMap" class="corp-btn primary-action" onclick="abrirMaps()">
+                    <i class="fa-solid fa-map-location-dot"></i> Mapa
                 </button>
-                <button id="btnWts" class="ngc-btn" style="color: var(--success-green); border-color: rgba(40,167,69,0.3);" onclick="abrirWhatsApp()">
+                <button id="btnWts" class="corp-btn success-btn" onclick="abrirWhatsApp()">
                     <i class="fa-brands fa-whatsapp"></i> WhatsApp
                 </button>
             </div>
             
             <!-- Botonera Secundaria -->
             <div class="action-grid-main">
-                <button class="corp-btn" onclick="abrirModalFormulario(true)" style="color: var(--ngc-warning); border-style: dashed; border-color: rgba(245, 195, 59, 0.4); background: transparent;">
+                <button class="corp-btn" onclick="abrirModalFormulario(true)">
                     <i class="fa-solid fa-pen"></i> Editar
                 </button>
-                <button class="corp-btn" onclick="eliminarContacto()" style="color: var(--error-red); border-style: dashed; border-color: rgba(228, 30, 63, 0.4); background: transparent;">
+                <button class="corp-btn danger-btn" onclick="eliminarContacto()">
                     <i class="fa-solid fa-trash"></i> Eliminar
                 </button>
             </div>
         </div>
-    </main>
     </div>
         
 <!-- NUEVO MENÚ INFERIOR TIPO APP -->
