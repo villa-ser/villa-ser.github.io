@@ -130,7 +130,19 @@
             
             <!-- DATOS DEL PROYECTO -->
             <section id="step-cliente" class="corp-card gpu-accel">
-                <h4 class="corp-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                </div>
+
+                <!-- NUEVOS BOTONES AGENDA Y BORRADORES -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <button class="corp-btn" style="background: rgba(49, 162, 76, 0.1); color: var(--success-green); border: 1px solid var(--success-green);" onclick="abrirModalAgenda()">
+                        <i class="fa-solid fa-address-book"></i> Agenda
+                    </button>
+                    <button class="corp-btn" style="background: rgba(35, 116, 225, 0.1); color: var(--ngc-neon); border: 1px solid var(--ngc-neon);" onclick="abrirModalBorradores()">
+                        <i class="fa-solid fa-cloud"></i> Borradores
+                    </button>
+                </div>
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
