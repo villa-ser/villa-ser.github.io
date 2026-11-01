@@ -805,23 +805,17 @@ function ejecutarDescargaCaptura() {
 // ==========================================
 // NUEVO SISTEMA WHATSAPP ACTUALIZADO
 // ==========================================
-function enviarWhatsApp() { 
-    document.getElementById('modalWhatsApp').classList.remove('oculto');
-    const btnActual = document.getElementById('btnWspGuardado');
-    const inputManual = document.getElementById('inputWspManual');
-    
-    if (inputManual) inputManual.value = ""; // Limpiar el input manual al abrir
 
-    if (telefonoClienteActual && telefonoClienteActual.trim() !== "") {
-        btnActual.innerHTML = `<i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente (${telefonoClienteActual})`;
-        btnActual.style.display = 'flex';
-    } else {
-        btnActual.style.display = 'none';
+// Preparar envío WhatsApp (Presupuesto)
+function prepararEnvioWhatsApp() {
+    if (listaItems.length === 0) {
+        if (typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá trabajos primero.");
+        else alert("Agregá trabajos primero.");
+        return;
     }
-}
-
-function cerrarModalWsp() {
-    document.getElementById('modalWhatsApp').classList.add('oculto');
+    
+    const msg = armarMensajeWsp(); // Aprovechamos la función que ya tenías
+    abrirModalWspGlobal(telefonoClienteActual, msg);
 }
 
 function armarMensajeWsp() {
@@ -829,36 +823,6 @@ function armarMensajeWsp() {
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     return m;
-}
-
-function enviarWspClienteActual() {
-    if (!telefonoClienteActual) return;
-    procesarEnvioWhatsAppLibre(telefonoClienteActual);
-}
-
-function enviarWspManual() {
-    const numero = document.getElementById('inputWspManual').value.trim();
-    if (!numero) {
-        mostrarAlertaCorp("Faltan Datos", "Por favor, ingresá un número de celular válido.");
-        return;
-    }
-    procesarEnvioWhatsAppLibre(numero);
-}
-
-function procesarEnvioWhatsAppLibre(numero) {
-    let cleanNumber = numero.replace(/\D/g, '');
-    if (cleanNumber.length === 10) cleanNumber = "549" + cleanNumber;
-    else if (!cleanNumber.startsWith("54")) cleanNumber = "549" + cleanNumber;
-    
-    const msg = armarMensajeWsp();
-    window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-    cerrarModalWsp();
-}
-
-function buscarEnWhatsApp() {
-    const msg = armarMensajeWsp();
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-    cerrarModalWsp();
 }
 
 // ==========================================
