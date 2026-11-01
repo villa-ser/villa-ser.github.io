@@ -100,34 +100,6 @@ function cambioNivel4() { const t = selTema.value; const c = selConcepto.value; 
 // AGENDA
 // ==========================================
 function marcarClienteManual() { clienteDesdeAgenda = false; permiteGuardarNube = true; }
-function abrirModalAgenda() {
-    const uid = obtenerUid(); if (!uid || !db) return alert("⚠️ No hay sesión detectada.");
-    document.getElementById('modalAgenda').classList.remove('oculto'); document.getElementById('buscadorAgenda').value = "";
-    db.collection("perfiles").doc(uid).collection("contactos").orderBy("nombre").get().then((snapshot) => {
-        contactosAgenda = []; snapshot.forEach((doc) => { contactosAgenda.push(doc.data()); }); filtrarAgenda();
-    }).catch(() => { document.getElementById('listaAgenda').innerHTML = "<p style='text-align:center;'>Error al cargar contactos.</p>"; });
-}
-function cerrarModalAgenda() { document.getElementById('modalAgenda').classList.add('oculto'); }
-
-function filtrarAgenda() {
-    const texto = document.getElementById('buscadorAgenda').value.toLowerCase();
-    const contenedor = document.getElementById('listaAgenda'); contenedor.innerHTML = '';
-    const filtrados = contactosAgenda.filter(c => (c.nombre || '').toLowerCase().includes(texto) || (c.dir || '').toLowerCase().includes(texto));
-    if (filtrados.length === 0) return contenedor.innerHTML = "<p style='color:var(--ngc-text-faded); text-align:center;'>No se encontraron contactos.</p>";
-    
-    filtrados.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'modal-list-item'; // Mapeado a global.css
-        div.innerHTML = `
-            <div>
-                <h4>${c.nombre}</h4>
-                <small><i class="fa-solid fa-location-dot"></i> ${c.dir || 'Sin dirección'}</small>
-            </div>
-            <button class="corp-btn-small primary-action" onclick="seleccionarContacto('${c.nombre.replace(/'/g, "\\'")}', '${(c.dir || '').replace(/'/g, "\\'")}')">Usar</button>
-        `;
-        contenedor.appendChild(div);
-    });
-}
 
 function seleccionarContacto(nombre, dir) {
     document.getElementById('cliNombre').value = nombre; document.getElementById('cliDireccion').value = dir;
@@ -203,7 +175,6 @@ function abrirModalBorradores() {
           });
       });
 }
-function cerrarModalBorradores() { document.getElementById('modalBorradores').classList.add('oculto'); }
 
 function cargarBorradorNube(docId) {
     const uid = obtenerUid(); if (!uid || !db) return;
