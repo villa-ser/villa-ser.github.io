@@ -110,7 +110,7 @@ function seleccionarContacto(nombre, dir, tel = "") {
     inputCliNombre.value = nombre; document.getElementById('cliDireccion').value = dir;
     telefonoClienteActual = tel; 
     clienteDesdeAgenda = true; permiteGuardarNube = true; 
-    guardarEstadoLocal(); cerrarModalAgenda(); mostrarToast("Cliente Seleccionado", "Importado de agenda.");
+    guardarEstadoLocal(); cerrarModalAgendaGlobal(); mostrarToast("Cliente Seleccionado", "Importado de agenda.");
 }
 
 function guardarEstadoLocal() {
@@ -167,7 +167,7 @@ function accionAgendarCliente() {
 
 function opcionBuscarAgenda() { 
     document.getElementById('modalAgendarCliente').classList.add('oculto'); 
-    abrirModalAgenda(); 
+    abrirModalAgendaGlobal(); 
 }
 
 function opcionContinuarSinAgenda() {
@@ -318,7 +318,7 @@ function cargarBorradorNube(docId) {
             }
             
             localStorage.setItem('presupuesto_estado_actual', JSON.stringify(data));
-            cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradores();
+            cargarEstadoGuardado(); guardarClienteGlobal(); avanzarPasoTrabajo(); cerrarModalBorradoresGlobal();
         }
     });
 }
