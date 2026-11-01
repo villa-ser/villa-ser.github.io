@@ -73,13 +73,20 @@ async function fetchData() {
         const txt = await res.text();
         const json = JSON.parse(txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1));
         
-        dbMateriales = json.table.rows.filter(r => r.c[1] && r.c[1].v !== "Concepto").map(r => ({ 
-            tema: r.c[0]?.v || 'Gral', 
-            concepto: r.c[1]?.v || '' 
-        }));
+        // Mapeo exacto de las columnas A(0), B(1), C(2), D(3) y F(5)
+        dbMateriales = json.table.rows.map(r => ({ 
+            tema: r.c[0]?.v || '', 
+            concepto: r.c[1]?.v || '',
+            nivel3: r.c[2]?.v || '', 
+            nivel4: r.c[3]?.v || '', 
+            nivel5: r.c[5]?.v || ''  
+        })).filter(i => i.tema && i.concepto && i.concepto !== "Concepto");
         
         poblarTemas();
         if (selTema) selTema.addEventListener('change', cambioTema);
+        if (selConcepto) selConcepto.addEventListener('change', cambioConcepto);
+        if (selNivel3) selNivel3.addEventListener('change', cambioNivel3);
+        if (selNivel4) selNivel4.addEventListener('change', cambioNivel4);
         
         document.getElementById('loading').classList.add('oculto'); 
         document.getElementById('app').classList.remove('oculto');
@@ -88,6 +95,42 @@ async function fetchData() {
     } catch (e) { 
         document.getElementById('loading').innerHTML = `⚠️ Error leyendo Google Sheets.<br><br><button class="corp-btn" onclick="location.reload()">Reintentar</button>`;
     }
+}
+
+// Utilidad para limpiar y llenar selects dinámicamente
+function llenarSelect(selectEl, dataArray) {
+    if (!selectEl) return;
+    selectEl.innerHTML = '<option value="">-- SELECCIONE --</option>';
+    const unicos = [...new Set(dataArray)].filter(Boolean).sort();
+    unicos.forEach(val => selectEl.appendChild(new Option(val, val)));
+    selectEl.disabled = unicos.length === 0;
+}
+
+function poblarTemas() { 
+    if(selTema) llenarSelect(selTema, dbMateriales.map(i => i.tema)); 
+}
+
+function cambioTema() { 
+    const t = selTema.value; 
+    llenarSelect(selConcepto, dbMateriales.filter(i => i.tema === t).map(i => i.concepto));
+    llenarSelect(selNivel3, []); llenarSelect(selNivel4, []); llenarSelect(selNivel5, []);
+}
+
+function cambioConcepto() {
+    const t = selTema.value; const c = selConcepto.value;
+    llenarSelect(selNivel3, dbMateriales.filter(i => i.tema === t && i.concepto === c).map(i => i.nivel3));
+    llenarSelect(selNivel4, []); llenarSelect(selNivel5, []);
+}
+
+function cambioNivel3() {
+    const t = selTema.value; const c = selConcepto.value; const n3 = selNivel3.value;
+    llenarSelect(selNivel4, dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3).map(i => i.nivel4));
+    llenarSelect(selNivel5, []);
+}
+
+function cambioNivel4() {
+    const t = selTema.value; const c = selConcepto.value; const n3 = selNivel3.value; const n4 = selNivel4.value;
+    llenarSelect(selNivel5, dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3 && i.nivel4 === n4).map(i => i.nivel5));
 }
 
 // ==========================================
