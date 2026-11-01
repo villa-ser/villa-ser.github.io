@@ -210,13 +210,25 @@ function cargarEstadoGuardado() {
         if (estado.permiteGuardarNube !== undefined) permiteGuardarNube = estado.permiteGuardarNube;
     }
 }
-function nuevoListado() {
-    if(confirm("¿Iniciar nueva lista?")) {
-        document.getElementById('cliNombre').value = ''; document.getElementById('cliDireccion').value = ''; document.getElementById('cliProyecto').value = ''; document.getElementById('obsGenerales').value = '';
-        listaItems = []; clienteDesdeAgenda = false; permiteGuardarNube = true;
-        guardarEstadoLocal(); guardarClienteGlobal();
-        document.getElementById('step-trabajo').classList.add('oculto'); document.getElementById('step-cliente').classList.remove('oculto'); renderTabla();
-    }
+
+function ejecutarNuevaLista() {
+    cerrarModalConfirmarNuevoGlobal();
+    
+    document.getElementById('cliNombre').value = ''; 
+    document.getElementById('cliDireccion').value = ''; 
+    document.getElementById('cliProyecto').value = ''; 
+    document.getElementById('obsGenerales').value = '';
+    
+    listaItems = []; 
+    clienteDesdeAgenda = false; 
+    permiteGuardarNube = true;
+    
+    guardarEstadoLocal(); 
+    guardarClienteGlobal();
+    
+    document.getElementById('step-trabajo').classList.add('oculto'); 
+    document.getElementById('step-cliente').classList.remove('oculto'); 
+    renderTabla();
 }
 
 // TOAST GLOBAL CSS MATCH
