@@ -93,26 +93,32 @@
 <!-- MODAL: WHATSAPP -->
 <div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
-        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: var(--success-green);"></i>
-        <h3>Enviar por WhatsApp</h3>
-        <p>¿A qué número deseas enviar esta lista de materiales?</p>
+        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar por WhatsApp</h3>
+        <p style="margin-bottom: 20px;">¿A qué número deseas enviar esta lista de materiales?</p>
         
-        <div id="wspOpcionAgendado" class="corp-modal-actions" style="margin-bottom: 15px; display: none;">
-            <button class="corp-btn success-btn" onclick="enviarWspAgendado()">
-                <i class="fa-solid fa-address-book"></i> Al cliente agendado
-            </button>
-        </div>
+        <button id="wspOpcionAgendado" class="corp-btn" style="background: #25D366; color: white; display: none;"
+        onclick="enviarWspAgendado()">
+            <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+        </button>
         
-        <div class="row-group">
-            <input type="number" id="wspNumeroManual" class="corp-input" placeholder="Ej: 3511234567 (Número nuevo)">
+        <!-- Opción ingreso manual (Nuevo) -->
+        <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                <input type="number" id="inputWspManual" class="corp-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="wspNumeroManual()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
         </div>
         
         <div class="action-grid-main">
-            <button class="corp-btn" onclick="cerrarModalWhatsApp()">Cancelar</button>
-            <button class="corp-btn" style="background: var(--success-green); color: white;" onclick="enviarWspManual()">Enviar</button>
+             <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="enviarWspManual()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWhatsApp()">Cancelar</button>
         </div>
     </div>
 </div>
+    
 <div class="layout-wrapper">
     <main class="container">
         
