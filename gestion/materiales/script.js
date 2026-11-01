@@ -1,5 +1,5 @@
 let db = null;
-const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM'; // ID Materiales
+const SHEET_ID = '1XfQoCkNMXy5WLhQciVrRoc1Pz6yeKKiAZljR_KYpohM'; 
 const URL_MATERIALES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Hoja1`; 
 
 let dbMateriales = [];
@@ -7,7 +7,6 @@ let listaItems = [];
 let contactosAgenda = []; 
 let uidSeguro = null;
 
-// Controles de Nube y Agenda
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 
@@ -15,7 +14,7 @@ const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 
 // ==========================================
-// INICIALIZACIÓN BLINDADA (Con Firebase)
+// INICIALIZACIÓN (MOTOR ULTRA BLINDADO)
 // ==========================================
 function arrancarModulo() {
     try {
@@ -27,7 +26,9 @@ function arrancarModulo() {
                 });
             }
         }
-    } catch (e) { console.warn("Aviso: Firebase funcionando en modo local.", e); }
+    } catch (e) { 
+        console.warn("Aviso: Firebase funcionando en modo local.", e); 
+    }
 
     try { cargarEstadoGuardado(); } 
     catch (e) { localStorage.removeItem('materiales_estado_actual'); }
@@ -35,12 +36,21 @@ function arrancarModulo() {
     fetchData();
 }
 
-if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', arrancarModulo); } 
-else { arrancarModulo(); }
+if (document.readyState === 'loading') { 
+    document.addEventListener('DOMContentLoaded', arrancarModulo); 
+} else { 
+    arrancarModulo(); 
+}
 
+// ==========================================
+// RASTREADOR DE SESIÓN EN TIEMPO REAL
+// ==========================================
 function obtenerUid() {
     if (uidSeguro) return uidSeguro;
-    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) return firebase.auth().currentUser.uid;
+    if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function' && firebase.auth().currentUser) {
+        return firebase.auth().currentUser.uid;
+    }
+    if (typeof window.currentUserUid !== 'undefined' && window.currentUserUid) return window.currentUserUid;
     return null;
 }
 
@@ -66,6 +76,7 @@ async function fetchData() {
         document.getElementById('loading').innerHTML = `⚠️ Error leyendo Google Sheets.<br><br><button class="corp-btn" onclick="location.reload()">Reintentar</button>`;
     }
 }
+
 
 // ==========================================
 // AGENDA Y MODALES (Flujo idéntico a Presupuesto)
