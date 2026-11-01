@@ -148,7 +148,7 @@ function iniciarPresupuesto() {
     const nombre = inputCliNombre.value.trim();
     if(!nombre) { 
         mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente."); 
-        inputCliNombre.focus(); 
+        // inputCliNombre.focus(); <-- ELIMINAR O COMENTAR ESTA LÍNEA
         return; 
     }
     if (!clienteDesdeAgenda) { 
@@ -268,7 +268,7 @@ function abrirModalBorradores() {
     const nombre = inputCliNombre.value.trim();
     if (!nombre) { 
         mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
-        inputCliNombre.focus(); 
+        // inputCliNombre.focus(); <-- ELIMINAR O COMENTAR ESTA LÍNEA
         return; 
     }
 
