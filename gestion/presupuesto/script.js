@@ -9,7 +9,6 @@ let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
 
 let conceptoEditado = null;
 let precioEditado = null;
-let contactosAgenda = []; 
 let totalMontoActual = 0; 
 let nombreBorradorActual = null; // Memoria del archivo abierto (Guardar Como...)
 let telefonoClienteActual = "";
