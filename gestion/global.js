@@ -140,3 +140,15 @@ function cerrarModalBorradoresGlobal() {
     document.getElementById('modalBorradores').classList.add('oculto');
 }
 
+// ==========================================
+// global.js - MODAL REINICIO / NUEVO DOC
+// ==========================================
+function abrirModalConfirmarNuevoGlobal() {
+    const modal = document.getElementById('modalConfirmarNuevo');
+    if (modal) modal.classList.remove('oculto');
+}
+
+function cerrarModalConfirmarNuevoGlobal() {
+    const modal = document.getElementById('modalConfirmarNuevo');
+    if (modal) modal.classList.add('oculto');
+}
