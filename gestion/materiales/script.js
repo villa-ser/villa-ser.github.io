@@ -139,38 +139,41 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
 }
 
 function abrirModalBorradores() {
-    const uid = obtenerUid(); if (!uid || !db) return alert("⚠️ Sesión no detectada.");
-    const nombreCliente = document.getElementById('cliNombre').value.trim();
-    if (!nombreCliente) return alert("⚠️ Ingresá el Nombre del Cliente para buscar sus borradores.");
+    const uid = obtenerUid();
+    if (!uid || !db) return;
+    const nombre = inputCliNombre.value.trim();
+    if (!nombre) { 
+        mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
+        inputCliNombre.focus(); 
+        return; 
+    }
 
     document.getElementById('modalBorradores').classList.remove('oculto');
-    const contenedor = document.getElementById('listaBorradores');
-    contenedor.innerHTML = `<div style="text-align: center; color: var(--ngc-neon);"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
+    const cont = document.getElementById('listaBorradores'); 
+    cont.innerHTML = `<div style="text-align:center; padding: 15px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
     
-    db.collection("perfiles").doc(uid).collection("materiales").where("cliNombre", "==", nombreCliente).get()
-      .then((snapshot) => {
-          contenedor.innerHTML = '';
-          if (snapshot.empty) return contenedor.innerHTML = `<p style='color:var(--ngc-text-faded); text-align:center;'>No hay listas guardadas.</p>`;
+    db.collection("perfiles").doc(uid).collection("presupuestos").where("cliNombre", "==", nombre).get().then((snapshot) => {
+          cont.innerHTML = '';
+          if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center; color: var(--ngc-text-faded);">No hay borradores en nube.</p>`; return; }
           let borradores = []; snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
           borradores.forEach((b) => {
-              const p = b.data;
-              const fechaStr = p.fechaGuardado ? new Date(p.fechaGuardado).toLocaleDateString() : 'Sin fecha';
-              const div = document.createElement('div');
-              div.className = 'modal-list-item'; // Mapeado a global.css
-              div.style.cssText = "flex-direction: column; align-items: flex-start; gap: 8px; border-left: 3px solid #e91e63;";
+              const f = b.data.fechaGuardado ? new Date(b.data.fechaGuardado).toLocaleDateString() : '';
+              const nombreBor = b.data.nombreBorrador || b.data.cliNombre;
+              const div = document.createElement('div'); div.className = "modal-list-item"; div.style.borderLeft = "3px solid var(--ngc-neon)";
+              
+              // Se aplica Flexbox estricto con quiebre de palabras para evitar el desborde
               div.innerHTML = `
-                  <div style="width: 100%;">
-                      <h4>${p.cliNombre || 'Sin Nombre'}</h4>
-                      <small>Última vez: ${fechaStr}</small>
+                  <div style="flex: 1; min-width: 0; padding-right: 10px;">
+                      <h4 style="word-break: break-word; line-height: 1.2; margin-bottom: 5px;">${nombreBor}</h4>
+                      <small style="color: var(--ngc-text-faded);">$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small>
                   </div>
-                  <div style="display: flex; gap: 8px; width: 100%;">
-                      <button class="corp-btn-small" style="flex:1;" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
+                  <div style="display:flex; gap:5px; flex-shrink: 0;">
+                      <button class="corp-btn-small" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
                       <button class="corp-btn-small danger" onclick="eliminarBorradorNube('${b.id}', this)"><i class="fa-solid fa-trash"></i></button>
-                  </div>
-              `;
-              contenedor.appendChild(div);
+                  </div>`;
+              cont.appendChild(div);
           });
       });
 }
