@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const footer = document.getElementById('corpFooterMenu'); if (!footer) return;
     const modulos = [
         { nombre: 'Inicio', icon: 'fa-house', url: '../index.html' },
-        { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto2/index.html' },
+        { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto/index.html' },
         { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '#', active: true },
         { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
