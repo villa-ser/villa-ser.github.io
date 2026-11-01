@@ -149,39 +149,52 @@ function cerrarModalAlertaCorp() {
 }
 
 function abrirModalBorradores() {
-    const uid = obtenerUid();
+    const uid = typeof obtenerUid === 'function' ? obtenerUid() : obtenerUidSeguro();
     if (!uid || !db) return;
     
-    // CORRECCIÓN: Definir el input apuntando al ID correcto del HTML
-    const inputCliNombre = document.getElementById('cliNombre');
-    const nombre = inputCliNombre.value.trim();
-    
+    // CORRECCIÓN 1: Capturar el input correctamente usando document.getElementById
+    const inputNombre = document.getElementById('cliNombre');
+    const nombre = inputNombre ? inputNombre.value.trim() : '';
+
+    // CORRECCIÓN 2: Validar y mostrar el cartel si está vacío
     if (!nombre) { 
-        mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
-        inputCliNombre.focus(); 
+        if (typeof mostrarAlertaCorp === 'function') {
+            mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores.");
+        } else {
+            alert("⚠️ Falta Cliente: Ingresá el Nombre del Cliente primero para buscar sus borradores.");
+        }
+        if (inputNombre) inputNombre.focus(); 
         return; 
     }
 
     document.getElementById('modalBorradores').classList.remove('oculto');
     const cont = document.getElementById('listaBorradores'); 
-    cont.innerHTML = `<div style="text-align:center; padding: 15px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
+    cont.innerHTML = `<div style="text-align:center; padding: 15px;"><i class="fa-solid fa-circle-notch fa-spin" style="color: var(--ngc-neon);"></i> Buscando...</div>`;
     
+    // Buscar en la colección de materiales en lugar de presupuestos
     db.collection("perfiles").doc(uid).collection("materiales").where("cliNombre", "==", nombre).get().then((snapshot) => {
           cont.innerHTML = '';
-          if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center; color: var(--ngc-text-faded);">No hay borradores en nube.</p>`; return; }
-          let borradores = []; snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
+          if (snapshot.empty) { 
+              cont.innerHTML = `<p style="text-align:center; color: var(--ngc-text-faded);">No hay borradores en nube.</p>`; 
+              return; 
+          }
+          
+          let borradores = []; 
+          snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
           borradores.sort((a, b) => (b.data.fechaGuardado || 0) - (a.data.fechaGuardado || 0));
           
           borradores.forEach((b) => {
               const f = b.data.fechaGuardado ? new Date(b.data.fechaGuardado).toLocaleDateString() : '';
               const nombreBor = b.data.nombreBorrador || b.data.cliNombre;
-              const div = document.createElement('div'); div.className = "modal-list-item"; div.style.borderLeft = "3px solid var(--ngc-neon)";
+              const div = document.createElement('div'); 
+              div.className = "modal-list-item"; 
+              div.style.borderLeft = "3px solid var(--ngc-neon)";
               
-              // Se aplica Flexbox estricto con quiebre de palabras para evitar el desborde
+              // Se aplica Flexbox estricto con quiebre de palabras para evitar el desborde visual
               div.innerHTML = `
                   <div style="flex: 1; min-width: 0; padding-right: 10px;">
                       <h4 style="word-break: break-word; line-height: 1.2; margin-bottom: 5px;">${nombreBor}</h4>
-                      <small style="color: var(--ngc-text-faded);">$${(b.data.totalMonto || 0).toLocaleString()} | ${f}</small>
+                      <small style="color: var(--ngc-text-faded);">Última vez: ${f}</small>
                   </div>
                   <div style="display:flex; gap:5px; flex-shrink: 0;">
                       <button class="corp-btn-small" onclick="cargarBorradorNube('${b.id}')">Abrir</button>
