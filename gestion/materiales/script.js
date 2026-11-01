@@ -151,7 +151,11 @@ function cerrarModalAlertaCorp() {
 function abrirModalBorradores() {
     const uid = obtenerUid();
     if (!uid || !db) return;
+    
+    // CORRECCIÓN: Definir el input apuntando al ID correcto del HTML
+    const inputCliNombre = document.getElementById('cliNombre');
     const nombre = inputCliNombre.value.trim();
+    
     if (!nombre) { 
         mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
         inputCliNombre.focus(); 
@@ -187,6 +191,7 @@ function abrirModalBorradores() {
           });
       });
 }
+
 
 function cargarBorradorNube(docId) {
     const uid = obtenerUid(); if (!uid || !db) return;
