@@ -173,24 +173,47 @@
                 </button>
             </section>
 
-            <!-- ZONA DE TRABAJO -->
+                       <!-- ZONA DE TRABAJO -->
             <section id="step-trabajo" class="oculto flex-column gap-15">
 
                 <div class="corp-card gpu-accel">
                     <h4 class="corp-card-title"><i class="fa-solid fa-box-open"></i> Agregar Material</h4>
 
                     <div class="row-group">
-                        <label>Categoría</label>
+                        <label>1. Categoría (Columna A)</label>
                         <select id="selTema" class="corp-input native-select">
-                            <option value="">-- SELECCIONE CATEGORÍA --</option>
+                            <option value="">-- SELECCIONE --</option>
                         </select>
                     </div>
 
                     <div class="row-group">
-                        <label>Material</label>
+                        <label>2. Material (Columna B)</label>
                         <select id="selConcepto" class="corp-input native-select" disabled>
-                            <option value="">-- SELECCIONE MATERIAL --</option>
+                            <option value="">-- SELECCIONE --</option>
                         </select>
+                    </div>
+
+                    <div class="row-group">
+                        <label>3. Detalle (Columna C)</label>
+                        <select id="selNivel3" class="corp-input native-select" disabled>
+                            <option value="">-- SELECCIONE --</option>
+                        </select>
+                    </div>
+
+                    <!-- Columnas D y F agrupadas en la misma fila -->
+                    <div class="row-group-stretch">
+                        <div class="flex-1">
+                            <label>4. Medida (Col D)</label>
+                            <select id="selNivel4" class="corp-input native-select" disabled>
+                                <option value="">-- SELECCIONE --</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label>5. Extra (Col F)</label>
+                            <select id="selNivel5" class="corp-input native-select" disabled>
+                                <option value="">-- SELECCIONE --</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="row-group-stretch" style="align-items: stretch; margin-top: 15px;">
@@ -206,26 +229,27 @@
                         </div>
                         <div style="flex: 1;">
                             <label>NOTAS DEL ÍTEM (Opcional)</label>
-                            <input type="text" id="obsManual" class="corp-input" placeholder="Ej: Color blanco..." style="height: 45px;">
+                            <input type="text" id="obsManual" class="corp-input" placeholder="Ej: Color blanco..." style="height: 46px;">
                         </div>
                     </div>
 
                     <div class="row-group-stretch" style="align-items: center; margin-top: 15px;">
                         <div style="flex: 1;">
                             <label>Cantidad</label>
-                            <div class="stepper">
+                            <div class="corp-stepper">
                                 <button type="button" class="btn-step" onclick="step('cantidad', -1)">-</button>
                                 <input type="number" id="cantidad" class="corp-input-step" value="1" min="1">
                                 <button type="button" class="btn-step" onclick="step('cantidad', 1)">+</button>
                             </div>
                         </div>
                         <div style="flex: 1; align-self: flex-end;">
-                            <button id="btnAddItem" class="corp-btn" style="width: 100%; height: 45px; background: rgba(49, 162, 76, 0.1); color: var(--success-green);" onclick="agregarTrabajo()">
+                            <button id="btnAddItem" class="corp-btn success-btn" style="height: 46px;" onclick="agregarTrabajo()">
                                 <i class="fa-solid fa-plus"></i> Agregar
                             </button>
                         </div>
                     </div>
-                </div>       
+                </div>  
+
                 
                 <div class="corp-card gpu-accel">
                     <label>Notas Globales de Materiales</label>
