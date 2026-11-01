@@ -67,26 +67,22 @@
     </div>
 </div>
 
-<!-- MODAL: BUSCADOR AGENDA -->
+<!-- MODAL: AGENDA GLOBAL -->
 <div id="modalAgenda" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card" style="max-height: 80vh; display: flex; flex-direction: column; padding: 20px 15px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="margin: 0; justify-content: flex-start;"><i class="fa-solid fa-address-book corp-accent-color"></i> Mi Agenda</h3>
-            <button class="corp-btn-icon" onclick="cerrarModalAgenda()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar por nombre o dirección..." onkeyup="filtrarAgenda()" style="margin-bottom: 15px;">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-users"></i> Contactos</h3>
+        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar nombre o dirección..." oninput="filtrarAgendaGlobal()" style="margin-bottom: 10px;">
         <div id="listaAgenda" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalAgendaGlobal()" style="margin-top: 15px;">Cerrar</button>
     </div>
 </div>
 
-<!-- MODAL: BORRADORES EN LA NUBE -->
+<!-- MODAL: BORRADORES GLOBAL -->
 <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card" style="max-height: 80vh; display: flex; flex-direction: column; padding: 20px 15px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="margin: 0; justify-content: flex-start;"><i class="fa-solid fa-cloud corp-accent-color"></i> Borradores</h3>
-            <button class="corp-btn-icon" onclick="cerrarModalBorradores()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Borradores en Nube</h3>
         <div id="listaBorradores" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalBorradoresGlobal()" style="margin-top: 15px;">Cerrar</button>
     </div>
 </div>
 
