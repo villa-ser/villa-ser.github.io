@@ -138,6 +138,16 @@ function guardarBorradorFirebase(mostrarAlerta = false) {
       .catch(e => console.error("Error: ", e));
 }
 
+function mostrarAlertaCorp(titulo, mensaje) {
+    document.getElementById('modalAlertaTitulo').innerText = titulo;
+    document.getElementById('modalAlertaMensaje').innerText = mensaje;
+    document.getElementById('modalAlertaCorp').classList.remove('oculto');
+}
+
+function cerrarModalAlertaCorp() {
+    document.getElementById('modalAlertaCorp').classList.add('oculto');
+}
+
 function abrirModalBorradores() {
     const uid = obtenerUid();
     if (!uid || !db) return;
@@ -152,7 +162,7 @@ function abrirModalBorradores() {
     const cont = document.getElementById('listaBorradores'); 
     cont.innerHTML = `<div style="text-align:center; padding: 15px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando...</div>`;
     
-    db.collection("perfiles").doc(uid).collection("presupuestos").where("cliNombre", "==", nombre).get().then((snapshot) => {
+    db.collection("perfiles").doc(uid).collection("materiales").where("cliNombre", "==", nombre).get().then((snapshot) => {
           cont.innerHTML = '';
           if (snapshot.empty) { cont.innerHTML = `<p style="text-align:center; color: var(--ngc-text-faded);">No hay borradores en nube.</p>`; return; }
           let borradores = []; snapshot.forEach((doc) => borradores.push({ id: doc.id, data: doc.data() }));
