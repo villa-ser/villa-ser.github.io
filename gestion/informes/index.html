@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../global.css">
 
     <script>
     (function() {
@@ -41,12 +41,12 @@
 </head>
 <body>
 
-    <!-- TOAST NOTIFICACIÓN -->
-    <div id="toastCliente" class="ngc-toast oculto gpu-accel">
-        <i class="fa-solid fa-check-circle" style="color: var(--success-green); font-size: 1.5rem;"></i>
+    <!-- TOAST NOTIFICACIÓN CORPORATIVA -->
+    <div id="toastCliente" class="toast-corp oculto gpu-accel">
+        <div class="toast-icon"><i class="fa-solid fa-check-circle"></i></div>
         <div class="toast-content">
-            <strong id="toastTitle">Notificación</strong>
-            <p id="toastMessage">Operación realizada con éxito.</p>
+            <div id="toastTitle" class="toast-title">Notificación</div>
+            <div id="toastMessage" class="toast-msg">Operación realizada con éxito.</div>
         </div>
     </div>
 
@@ -54,45 +54,46 @@
     <div class="layout-wrapper">
         <main class="container">
             
-            <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú">
-                    <i class="fa-solid fa-arrow-left"></i> Menú
+            <!-- BARRA DE NAVEGACIÓN -->
+            <nav class="corp-top-nav">
+                <button class="corp-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
-                    <i class="fa-solid fa-clipboard-check"></i> Informe Técnico
+                <div class="corp-nav-title">
+                    <i class="fa-solid fa-clipboard-check corp-accent-color"></i> Informe Técnico
                 </div>
-                <button class="ngc-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
+                <button class="corp-btn-icon danger" onclick="nuevoInforme()" title="Nuevo Informe">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </nav>
 
             <!-- SECCIÓN CLIENTE -->
-            <section id="step-cliente" class="ngc-card gpu-accel">
-                <h4 class="ngc-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+            <section id="step-cliente" class="corp-card gpu-accel">
+                <h4 class="corp-card-title"><i class="fa-solid fa-user-tag corp-accent-color"></i> Datos del Proyecto</h4>
                 <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin-bottom: 15px;">Selecciona el cliente para iniciar el informe.</p>
                 
                 <div class="row-group">
                     <label>Nombre del Cliente</label>
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" style="flex: 1;" onchange="verificarClienteManual()">
-                        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="abrirModalAgenda()" title="Buscar en Agenda">
+                        <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Familia Gómez" style="flex: 1;" onchange="verificarClienteManual()">
+                        <button class="corp-btn-icon primary-action" onclick="abrirModalAgenda()" title="Buscar en Agenda">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </div>
                 </div>
                 
-                <div class="row-group-stretch" style="display: flex; gap: 10px;">
-                    <div style="flex: 1;">
+                <div class="row-group-stretch">
+                    <div class="flex-1">
                         <label>Teléfono</label>
-                        <input type="text" id="cliTel" class="ngc-input" placeholder="Opcional">
+                        <input type="text" id="cliTel" class="corp-input" placeholder="Opcional">
                     </div>
-                    <div style="flex: 1;">
+                    <div class="flex-1">
                         <label>Dirección</label>
-                        <input type="text" id="cliDir" class="ngc-input" placeholder="Opcional">
+                        <input type="text" id="cliDir" class="corp-input" placeholder="Opcional">
                     </div>
                 </div>
                 
-                <button class="ngc-btn" style="width: 100%; margin-top: 15px;" onclick="iniciarInforme()">
+                <button class="corp-btn primary-action" style="margin-top: 15px;" onclick="iniciarInforme()">
                     <i class="fa-solid fa-play"></i> Comenzar Informe
                 </button>
             </section>
@@ -100,13 +101,13 @@
             <!-- SECCIÓN TRABAJO -->
             <section id="step-trabajo" class="oculto flex-column gap-15">
                 
-                <div class="ngc-card gpu-accel">
-                    <h4 class="ngc-card-title"><i class="fa-solid fa-pen-to-square"></i> Redacción</h4>
+                <div class="corp-card gpu-accel">
+                    <h4 class="corp-card-title"><i class="fa-solid fa-pen-to-square corp-accent-color"></i> Redacción</h4>
                     <div class="row-group">
-                        <textarea id="textoInforme" class="ngc-input" placeholder="Redactar párrafo aquí..." style="height: 100px; resize: vertical;"></textarea>
+                        <textarea id="textoInforme" class="corp-input" placeholder="Redactar párrafo aquí..." style="height: 100px; resize: vertical;"></textarea>
                     </div>
                     
-                    <button class="ngc-btn" style="width: 100%; color: var(--success-green); border-color: var(--success-green); margin-top: 5px;" onclick="agregarParrafo()">
+                    <button class="corp-btn success-btn" style="margin-top: 5px;" onclick="agregarParrafo()">
                         <i class="fa-solid fa-plus"></i> AGREGAR PÁRRAFO
                     </button>
                     
@@ -114,39 +115,39 @@
                 </div>
 
                 <!-- NOTAS GLOBALES NORMALIZADAS -->
-                <div class="ngc-card gpu-accel">
+                <div class="corp-card gpu-accel">
                     <label>Notas Globales de Informe</label>
-                    <textarea id="obsGenerales" class="ngc-input" placeholder="Conclusiones finales o recomendaciones..." style="height: 75px; resize: none;" oninput="actualizarVistaPreviews();"></textarea>
+                    <textarea id="obsGenerales" class="corp-input" placeholder="Conclusiones finales o recomendaciones..." style="height: 75px; resize: none;" oninput="actualizarVistaPreviews();"></textarea>
                 </div>
 
                 <!-- ÁREA DE CAPTURA -->
                 <div id="captureSection" class="capture-zone gpu-accel">
-                    <header class="header-brand">VILLASER - INFORME TÉCNICO</header>
-                    <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--ngc-neon); line-height: 1.4; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;"></div>
+                    <header style="text-align: center; font-weight: bold; color: var(--ngc-neon); letter-spacing: 1px; border-bottom: 1px solid rgba(35, 116, 225, 0.3); padding-bottom: 10px; margin-bottom: 15px;">VILLASER - INFORME TÉCNICO</header>
+                    <div id="previewClientInfo" style="font-size: 0.85rem; margin-bottom: 12px; color: var(--ngc-neon); line-height: 1.4; border-bottom: 1px dashed var(--ngc-privacy-border); padding-bottom: 8px;"></div>
                     <div id="previewInforme" style="font-size: 0.9rem; white-space: normal; line-height: 1.5; padding: 4px;"></div>
-                    <div id="previewNotasGlobales" style="font-size: 0.85rem; margin-top: 12px; color: var(--ngc-text-faded); border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 8px; display: none; white-space: pre-wrap; font-style: italic;"></div>
+                    <div id="previewNotasGlobales" style="font-size: 0.85rem; margin-top: 12px; color: var(--ngc-text-faded); border-top: 1px dashed var(--ngc-privacy-border); padding-top: 8px; display: none; white-space: pre-wrap; font-style: italic;"></div>
                 </div>
 
                 <!-- BOTONES DE ACCIÓN NORMALIZADOS -->
                 <div class="action-grid-main" style="margin-top: 5px;">
-                    <button class="ngc-btn danger-btn" onclick="generarPDF()">
+                    <button class="corp-btn danger-btn" onclick="generarPDF()">
                         <i class="fa-solid fa-file-pdf"></i> Generar PDF
                     </button>
-                    <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="takeScreenshot()">
+                    <button class="corp-btn primary-action" onclick="takeScreenshot()">
                         <i class="fa-solid fa-image"></i> Captura (PNG)
                     </button>
                 </div>
                 
-                <button class="ngc-btn" style="width: 100%; margin-top: 10px; color: var(--success-green); border-color: var(--success-green);" onclick="abrirModalWhatsApp()">
+                <button class="corp-btn success-btn" style="margin-top: 10px;" onclick="abrirModalWhatsApp()">
                     <i class="fa-brands fa-whatsapp"></i> ENVIAR WHATSAPP
                 </button>
 
                 <!-- UTILIDADES FIREBASE -->
                 <div class="action-grid-footer" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
-                    <button class="ngc-btn-small" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); border-color: var(--ngc-warning); width: 100%; justify-content: center; background: rgba(255,193,7,0.1);">
+                    <button class="corp-btn-small" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
                     </button>
-                    <button class="ngc-btn-small" onclick="abrirModalBorradores()" style="color: #e91e63; border-color: #e91e63; width: 100%; justify-content: center; background: rgba(233,30,99,0.1);">
+                    <button class="corp-btn-small danger" onclick="abrirModalBorradores()">
                         <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
                     </button>
                 </div>
@@ -198,56 +199,58 @@
     </div>
 
     <!-- MODAL AGENDA -->
-    <div id="modalAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-        <div class="ngc-card" style="width: 90%; max-width: 400px; height: 80vh; display: flex; flex-direction: column;">
+    <div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="height: 80vh; display: flex; flex-direction: column; max-width: 420px; width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: var(--ngc-neon);"><i class="fa-solid fa-address-book"></i> Mis Clientes</h4>
-                <button onclick="cerrarModalAgenda()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="margin: 0;"><i class="fa-solid fa-address-book corp-accent-color"></i> Mis Clientes</h3>
+                <button onclick="cerrarModalAgenda()" class="corp-btn-icon"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <input type="text" id="buscadorAgenda" class="ngc-input" placeholder="Buscar por nombre..." onkeyup="filtrarAgenda()" style="margin-bottom: 15px;">
-            <div id="listaContactosModal" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;"></div>
+            <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar por nombre..." onkeyup="filtrarAgenda()" style="margin-bottom: 15px;">
+            <div id="listaContactosModal" class="modal-list-container" style="flex: 1; max-height: none;"></div>
         </div>
     </div>
 
     <!-- MODAL WHATSAPP -->
-    <div id="modalWhatsApp" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-        <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center; border-radius: 12px; padding: 25px 20px;">
-            <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: var(--success-green); margin-bottom: 15px;"></i>
-            <h3 style="color: var(--ngc-text-main); margin-top: 0; font-size: 1.2rem;">ENVIAR INFORME</h3>
-            <p style="color: var(--ngc-text-faded); font-size: 0.95rem; margin-bottom: 25px;">¿A quién deseas enviarle el Informe Técnico?</p>
+    <div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: var(--success-green);"></i>
+            <h3>ENVIAR INFORME</h3>
+            <p>¿A quién deseas enviarle el Informe Técnico?</p>
+            
             <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button id="btnWspGuardado" class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; justify-content: center; display: none;"></button>
+                <button id="btnWspGuardado" class="corp-btn success-btn" style="display: none;"></button>
                 <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
-                    <input type="number" id="inputWspManual" class="ngc-input" placeholder="Número (Ej: 3512345678)" style="flex: 1; text-align: center;">
-                    <button class="ngc-btn" style="background: var(--success-green); color: #fff; border: none; padding: 0 20px;" onclick="enviarWspManual()">
+                    <input type="number" id="inputWspManual" class="corp-input" placeholder="Número (Ej: 3512345678)" style="flex: 1; text-align: center;">
+                    <button class="corp-btn success-btn" style="width: auto; padding: 0 20px;" onclick="enviarWspManual()">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </div>
-                <button class="ngc-btn danger-btn" style="background: transparent; color: var(--error-red); border: 1px solid var(--error-red); justify-content: center;" onclick="cerrarModalWhatsApp()">CANCELAR</button>
+                <button class="corp-btn danger-btn" onclick="cerrarModalWhatsApp()">CANCELAR</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL BORRADORES -->
-    <div id="modalBorradores" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-        <div class="ngc-card" style="width: 90%; max-width: 400px; height: 70vh; display: flex; flex-direction: column;">
+    <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="height: 70vh; display: flex; flex-direction: column; max-width: 420px; width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #e91e63;"><i class="fa-solid fa-cloud-arrow-down"></i> Borradores de Informe</h4>
-                <button onclick="cerrarModalBorradores()" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="margin: 0; color: #e91e63;"><i class="fa-solid fa-cloud-arrow-down"></i> Borradores</h3>
+                <button onclick="cerrarModalBorradores()" class="corp-btn-icon"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="listaBorradores" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div id="listaBorradores" class="modal-list-container" style="flex: 1; max-height: none;"></div>
         </div>
     </div>
 
     <!-- MODAL ADVERTENCIA NO AGENDADO -->
-    <div id="modalAdvertenciaAgenda" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-        <div class="ngc-card" style="width: 90%; max-width: 400px; text-align: center;">
-            <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--ngc-warning); margin-bottom: 15px;"></i>
-            <h3 style="color: var(--ngc-text-main); margin-top: 0;">Cliente no Agendado</h3>
-            <p style="color: var(--ngc-text-faded); font-size: 0.95rem; margin-bottom: 25px;">Has ingresado el nombre manualmente. No podrás guardar borradores en la nube para este cliente.</p>
+    <div id="modalAdvertenciaAgenda" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--ngc-warning);"></i>
+            <h3>Cliente no Agendado</h3>
+            <p>Has ingresado el nombre manualmente. No podrás guardar borradores en la nube para este cliente.</p>
+            
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="ngc-btn" style="color: var(--ngc-neon); border-color: var(--ngc-neon); justify-content: center;" onclick="document.getElementById('modalAdvertenciaAgenda').classList.add('oculto'); abrirModalAgenda();">Buscar en Agenda</button>
-                <button class="ngc-btn danger-btn" style="justify-content: center;" onclick="continuarSinAgenda()">Continuar sin guardar en nube</button>
+                <button class="corp-btn primary-action" onclick="document.getElementById('modalAdvertenciaAgenda').classList.add('oculto'); abrirModalAgenda();">Buscar en Agenda</button>
+                <button class="corp-btn danger-btn" onclick="continuarSinAgenda()">Continuar sin guardar en nube</button>
             </div>
         </div>
     </div>
@@ -255,3 +258,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
