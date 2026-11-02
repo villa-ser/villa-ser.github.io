@@ -790,7 +790,8 @@ function generarMenuInferior() {
         { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
         { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
-        { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' }
+        { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' },
+        { nombre: 'Proveedores', icon: 'fa-solid fa-truck-fast', url: '../proveedores/index.html' }
     ];
     modulos.forEach(mod => {
         const btn = document.createElement('button'); btn.className = `corp-nav-item ${mod.active ? 'active' : ''}`;
