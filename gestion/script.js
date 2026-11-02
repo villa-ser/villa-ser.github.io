@@ -48,8 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (user) {
             if (user.emailVerified) {
-                // -------------------------------------------
-        // -------------------------------------------
                 // Descargamos de Firebase silenciosamente y actualizamos local
                 try {
                     const doc = await db.collection('perfiles').doc(user.uid).get();
@@ -127,14 +125,13 @@ const rutas = {
     'btnCostos': './costos/index.html',
     'btnPotencia': './potencia/index.html',
     'btnAgenda': './agenda/index.html',
-    'btnProveedores': './proveedores/index.html',
+    'btnProveedores': './proveedores/index.html'
     'btnPresupuesto2': './presupuesto2/index.html',
     'btnNuevoCliente': './nuevo_cliente/index.html',
     'btnCatalogos': './catalogos/index.html',
     'btnFotos': './fotos/index.html',
     'btnPresupuestoPC': './presupuestoPC/index.html',
     'btnMaterialesPC': './materialesPC/index.html',
-      'btnModuloPrueba': './nuevo_modulo/index.html' // Nueva ruta
     'btnPreguntas': './preguntas/index.html',
 };
 
