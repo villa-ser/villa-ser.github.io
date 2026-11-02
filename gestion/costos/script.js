@@ -234,6 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
         { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
         { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '#', active: true },
+        { nombre: 'Proveedores', icon: 'fa-solid fa-truck-fast', url: '../proveedores/index.html' }
     ];
     modulos.forEach(mod => {
         const btn = document.createElement('button');
