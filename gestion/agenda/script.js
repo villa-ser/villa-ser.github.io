@@ -244,10 +244,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const modulos = [
         { nombre: 'Inicio', icon: 'fa-house', url: '../index.html' },
         { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto/index.html' },
-        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '#', active: true },
+        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '../materiales/index.html' },
         { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
-        { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
+        { nombre: 'Agenda', icon: 'fa-address-book', url: '#', active: true },
         { nombre: 'Costos', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' },
         { nombre: 'Proveedores', icon: 'fa-solid fa-truck-fast', url: '../proveedores/index.html' }
     ];
