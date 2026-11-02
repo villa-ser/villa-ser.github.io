@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { nombre: 'Agenda', icon: 'fa-address-book', url: '#', active: true },
         { nombre: 'Mano de Obra', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' },
         { nombre: 'Proveedores', icon: 'fa-solid fa-truck-fast', url: '../proveedores/index.html' },
-        { nombre: 'Catalogos', icon: 'class="fa-solid fa-book-open', url: '../catalogos/index.html' }
+        { nombre: 'Catalogos', icon: 'fa-solid fa-book-open', url: '../catalogos/index.html' }
     ];
     modulos.forEach(mod => {
         const btn = document.createElement('button');
