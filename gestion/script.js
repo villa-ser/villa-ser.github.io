@@ -197,17 +197,6 @@ function mostrarAppPrincipal(emailUsuario) {
     document.getElementById('appScreen').classList.remove('oculto');
 }
 
-//function mostrarAppPrincipal(emailUsuario) {
-//    document.getElementById('loginScreen').classList.add('oculto');
-  //  document.getElementById('mainHeader').classList.add('oculto');
-    
-//    const emailDisplay = document.getElementById('userEmailDisplay');
-  //  if (emailDisplay) emailDisplay.innerText = emailUsuario;
-//
- //   document.getElementById('userMenuWrapper').style.display = 'flex';
-  //  document.getElementById('appScreen').classList.remove('oculto');
-// }
-
 function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
 }
@@ -466,44 +455,3 @@ async function manejarInstalacionPWA(e) {
 
 if (btnInstalarMenu) btnInstalarMenu.addEventListener('click', manejarInstalacionPWA);
 if (btnBannerInstalar) btnBannerInstalar.addEventListener('click', manejarInstalacionPWA);
-
-
-
-// ==========================================
-// 5. CONFIGURACIÓN PWA (INSTALACIÓN) vieja
-// ==========================================
-// if ('serviceWorker' in navigator) { 
- //   window.addEventListener('load', () => { 
- //       navigator.serviceWorker.register('./sw.js') 
- //       .then(reg => console.log('ServiceWorker registrado con éxito:', reg.scope)) 
- /       .catch(err => console.log('Error al registrar ServiceWorker:', err)); 
- /   }); 
-// }
-
-// let eventoInstalacion; 
-// const btnInstalar = document.getElementById('btn-instalar');
-
-// window.addEventListener('beforeinstallprompt', (e) => { 
- //   e.preventDefault(); 
- //   eventoInstalacion = e;
-  //  if (btnInstalar) {
-  //      btnInstalar.classList.remove('oculto'); 
-   //     btnInstalar.style.display = 'flex'; 
-   // }
-// });
-
-//if (btnInstalar) { 
- //   btnInstalar.addEventListener('click', async (e) => { 
-  //      e.preventDefault(); 
- //       if (!eventoInstalacion) return;
-   //     eventoInstalacion.prompt();
-  //      const { outcome } = await eventoInstalacion.userChoice;
-       // if (outcome === 'accepted') {
-        //    btnInstalar.classList.add('oculto');
-       //     btnInstalar.style.display = 'none';
-  //      }
-  //      eventoInstalacion = null;
- //   }); 
-  //      }//
-        
-// ==========================================
