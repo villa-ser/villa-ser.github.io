@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#18191A">
+    
+    <title>Proveedores | Villaser</title>
+    
+    <!-- Iconos y CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css">
+
+    <!-- Script de ejecución inmediata para el tema -->
+    <script>
+    (function() {
+        // Lee la configuración, si no hay nada asume 'system'
+        const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        
+        // Si el usuario eligió 'light', o si eligió 'system' y su celular está en modo claro
+        if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+</script>
+
+    <!-- 1. Cargar SDKs de Firebase (si no están ya en el HTML del módulo) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<!-- 2. Guardián de Seguridad -->
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyB993KWlnMrN5hwRKjL-OmTZ95F7v_FFk0",
+        authDomain: "villaser-gestion.firebaseapp.com",
+        projectId: "villaser-gestion",
+        storageBucket: "villaser-gestion.firebasestorage.app",
+        messagingSenderId: "1032102638132",
+        appId: "1:1032102638132:web:dd3a89e1c6a67de7d35061"
+    };
+
+    // Inicializar Firebase solo si no está inicializado previamente
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    // Verificar el estado de la sesión
+    firebase.auth().onAuthStateChanged(user => {
+        // Si el usuario no existe (no está logueado) o no verificó su mail, se lo expulsa
+        if (!user || !user.emailVerified) {
+            // Redirige un nivel hacia atrás, cayendo en el login (gestión/index.html)
+            window.location.replace('../index.html'); 
+        }
+    });
+</script>
+    
+</head>
+<body>
+    <div class="layout-wrapper">
+        <main class="container">
+            
+            <!-- BARRA DE NAVEGACIÓN -->
+            <nav class="corp-top-nav">
+                <!-- Ajustá la ruta del index.html según cómo tengas armada tu carpeta -->
+                <button class="corp-btn-icon" onclick="window.location.href='index.html'" aria-label="Volver al menú principal">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="corp-nav-title">
+                    <i class="fa-solid fa-store corp-accent-color"></i> Proveedores
+                </div>
+                <div style="width: 42px;"></div> <!-- Espaciador para centrar el título -->
+            </nav>
+
+            <!-- INDICADOR DE CARGA ESTANDARIZADO -->
+            <div id="loading" aria-live="polite" class="corp-card" style="text-align: center; padding: 40px 20px;">
+                <i class="fa-solid fa-satellite-dish fa-spin" style="color: var(--ngc-neon); font-size: 2rem; margin-bottom: 15px;"></i>
+                <br><span style="color: var(--ngc-text-faded); font-size: 0.9rem; text-transform: uppercase; font-weight: bold;">Sincronizando Proveedores...</span>
+            </div>
+            
+            <div id="app" style="display:none;">
+                
+                <!-- BUSCADOR UNIVERSAL -->
+                <section class="corp-card" style="position: sticky; top: 10px; z-index: 10;">
+                    <h4 class="corp-card-title"><i class="fa-solid fa-magnifying-glass corp-accent-color"></i> Buscador de Casas de Electricidad</h4>
+                    
+                    <div class="row-group" style="margin-bottom: 15px;">
+                        <label for="searchInput">Escribí Barrio, Calle o Nombre</label>
+                        <input type="text" id="searchInput" class="corp-input" placeholder="Ej: General Paz, San Martín, o Electro..." onkeyup="filtrarCasas()" autocomplete="off">
+                    </div>
+                    
+                    <!-- Botón para ver listado completo -->
+                    <button id="btnVerTodos" class="corp-btn" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);" onclick="mostrarListadoAgrupado()">
+                        <i class="fa-solid fa-list"></i> Ver Listado Completo por Barrios
+                    </button>
+                </section>
+
+                <!-- CONTENEDOR DE RESULTADOS (Oculto por defecto) -->
+                <section id="resultadosContainer" style="display: none; flex-direction: column; gap: 15px; margin-top: 15px;">
+                    <!-- Las tarjetas o grupos se generan acá con JS -->
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
