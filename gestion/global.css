@@ -207,3 +207,55 @@ select.corp-input option {
     font-size: 0.95rem;
     padding: 10px;
                }
+
+/* ============================================================== */
+/* ESTILOS PARA ACORDEONES NATIVOS (<details>)                    */
+/* ============================================================== */
+
+details summary {
+    cursor: pointer;
+    list-style: none;
+    outline: none;
+    user-select: none;
+}
+/* Oculta la flecha nativa de los navegadores basados en webkit */
+details summary::-webkit-details-marker {
+    display: none;
+}
+/* Animación del icono indicador */
+details[open] summary .acc-icon-indicator {
+    transform: rotate(180deg);
+}
+.acc-icon-indicator {
+    transition: transform 0.3s ease;
+    color: var(--ngc-text-faded);
+}
+
+/* ============================================================== */
+/* ESTILOS PARA EL VISOR DE PDF NATIVO                            */
+/* ============================================================== */
+
+.viewer-container {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--ngc-privacy-border);
+    background: var(--ngc-bg-input);
+    margin-top: 15px;
+}
+.viewer-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.loader-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: var(--ngc-bg-input);
+    color: var(--ngc-neon);
+    z-index: 1;
+}
