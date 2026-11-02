@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#18191A" id="themeColorMeta">
+    
+    <title>Módulo de Pruebas | Villaser</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Vincula al CSS global en la raíz -->
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Script de Tema -->
+    <script>
+        (function() {
+            const tema = localStorage.getItem('temaVillaser') || 'system';
+            if (tema === 'light' || (tema === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <main class="layout-wrapper">
+        
+        <!-- CABECERA DE NAVEGACIÓN -->
+        <div class="corp-card header-card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+            <button class="corp-btn secondary-btn" onclick="window.location.href='../index.html'" style="padding: 8px 12px; width: auto;">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <div style="text-align: right;">
+                <h2 style="font-size: 1.1rem; margin: 0; color: var(--corp-accent);">Entorno de Pruebas</h2>
+                <p style="font-size: 0.7rem; color: var(--success-green); margin: 0;">Acceso Restringido</p>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR PRINCIPAL DEL MÓDULO -->
+        <div class="corp-card" style="margin-top: 15px; text-align: center;">
+            <i class="fa-solid fa-flask-vial" style="font-size: 2.5rem; color: var(--corp-text-faded); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px;">Módulo en Desarrollo</h3>
+            <p style="font-size: 0.85rem; color: var(--corp-text-faded);">
+                Este entorno es invisible para los usuarios regulares. Puedes construir y probar la interfaz aquí sin afectar la aplicación en producción.
+            </p>
+            
+            <!-- Aquí construirás tu nueva interfaz -->
+            <div style="margin-top: 20px; border: 1px dashed var(--corp-text-faded); padding: 20px; border-radius: 8px;">
+                <p>Zona de trabajo</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- Archivos de conexión y lógica -->
+    <script src="../firebase-config.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
