@@ -142,6 +142,7 @@ const rutas = {
     'btnFotos': './fotos/index.html',
     'btnPresupuestoPC': './presupuestoPC/index.html',
     'btnMaterialesPC': './materialesPC/index.html',
+      'btnModuloPrueba': './nuevo_modulo/index.html' // Nueva ruta
     'btnPreguntas': './preguntas/index.html',
 };
 
