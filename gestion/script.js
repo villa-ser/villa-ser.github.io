@@ -125,6 +125,7 @@ const rutas = {
     'btnCostos': './costos/index.html',
     'btnPotencia': './potencia/index.html',
     'btnAgenda': './agenda/index.html',
+    'btnProveedores': './proveedores/index.html'
     'btnPresupuesto2': './presupuesto2/index.html',
     'btnNuevoCliente': './nuevo_cliente/index.html',
     'btnCatalogos': './catalogos/index.html',
@@ -132,7 +133,6 @@ const rutas = {
     'btnPresupuestoPC': './presupuestoPC/index.html',
     'btnMaterialesPC': './materialesPC/index.html',
     'btnPreguntas': './preguntas/index.html',
-    'btnProveedores': './proveedores/index.html'
 };
 
 Object.keys(rutas).forEach(id => {
