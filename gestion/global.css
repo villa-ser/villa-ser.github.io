@@ -90,6 +90,7 @@ textarea.corp-input { resize: vertical; }
 .corp-btn.success-btn { background: rgba(49, 162, 76, 0.1); color: var(--success-green); }
 
 .corp-btn-icon { background: var(--ngc-btn-bg); border: none; color: var(--ngc-text-main); width: 42px; height: 42px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.corp-btn-icon.success { background: rgba(49, 162, 76, 0.1); boder: none; color: var(--success-green); width: 42px; height: 42px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
 .corp-btn-icon.danger { color: var(--error-red); background: rgba(228, 30, 63, 0.1); }
 .corp-btn-small { background: var(--ngc-btn-bg); border: none; color: var(--ngc-text-main); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
 .corp-btn-small.danger { background: rgba(228, 30, 63, 0.1); color: var(--error-red); }
