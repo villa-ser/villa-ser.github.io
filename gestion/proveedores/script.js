@@ -1,24 +1,42 @@
-// Detectar tema claro/oscuro de tu sistema base
-document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('villaser_theme');
-    if (savedTheme === 'light') document.body.classList.add('light-mode');
-});
-
-// ID del Sheet que me compartiste
 const SHEET_ID_CASAS = '1jFvMWkTBPlqpIWJ_kjVy1vSw3gA_q9Jxvar0LajaDnM';
-// Asumo que la pestaña se llama 'Hoja1'.
 const URL_CASAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID_CASAS}/gviz/tq?tqx=out:json&sheet=Hoja1`;
 
 let dbCasas = [];
 let modoListadoCompleto = false;
 
-// Motor de arranque blindado (no espera a CSS, fuentes o Firebase para arrancar)
-if (document.readyState === 'loading') { 
-    document.addEventListener('DOMContentLoaded', fetchCasas); 
-} else { 
-    fetchCasas(); 
+// ==========================================
+// MOTOR DE ARRANQUE ULTRA BLINDADO
+// ==========================================
+function arrancarModulo() {
+    // 1. Guardián de Sesión Firebase (Idéntico a tu App Principal)
+    try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            if (typeof firebase.auth === 'function') {
+                firebase.auth().onAuthStateChanged(user => {
+                    // Si no hay usuario o no verificó email, lo patea al login
+                    if (!user || !user.emailVerified) {
+                        window.location.replace('../index.html'); 
+                    }
+                });
+            }
+        }
+    } catch (e) { 
+        console.warn("Aviso: Guardián de seguridad omitido.", e); 
+    }
+
+    // 2. Disparamos la búsqueda de la base de datos de proveedores
+    fetchCasas();
 }
 
+if (document.readyState === 'loading') { 
+    document.addEventListener('DOMContentLoaded', arrancarModulo); 
+} else { 
+    arrancarModulo(); 
+}
+
+// ==========================================
+// FUNCIONES DE PROVEEDORES
+// ==========================================
 async function fetchCasas() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -31,7 +49,6 @@ async function fetchCasas() {
         const jsonStr = txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1);
         const data = JSON.parse(jsonStr);
 
-        // Mapeo actualizado incluyendo columna H(7) para el Barrio
         dbCasas = data.table.rows.map(r => ({
             nombre: r.c[0]?.v || '',
             direccion: r.c[1]?.v || '',
@@ -54,11 +71,9 @@ async function fetchCasas() {
     }
 }
 
-// Función principal para generar el HTML de una tarjeta individual
 function generarHtmlTarjeta(casa) {
     const telLimpio = String(casa.telefono).replace(/\D/g, '');
     
-    // Botón secundario estandarizado al global.css
     const btnAccionSecundaria = telLimpio.length >= 7 
         ? `<button class="corp-btn success-btn" onclick="window.open('https://wa.me/549${telLimpio}', '_blank')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>` 
         : ``;
@@ -75,7 +90,6 @@ function generarHtmlTarjeta(casa) {
                 ${casa.comentarios ? `<div style="margin-top: 8px; border-top: 1px dashed var(--ngc-privacy-border); padding-top: 8px; color: var(--ngc-warning);"><b><i class="fa-solid fa-comment-dots"></i> Info:</b> ${casa.comentarios}</div>` : ''}
             </div>
 
-            <!-- Uso de la grilla de botones global -->
             <div class="action-grid-main">
                 <button class="corp-btn primary-action" onclick="abrirMaps('${escapeHtml(casa.nombre)}', '${escapeHtml(casa.direccion)}', '${casa.latitud}', '${casa.longitud}')">
                     <i class="fa-solid fa-map-location-dot"></i> MAPA
@@ -86,7 +100,6 @@ function generarHtmlTarjeta(casa) {
     `;
 }
 
-// Función para renderizar resultados de búsqueda normal
 function renderCasas(lista) {
     const contenedor = document.getElementById('resultadosContainer');
     contenedor.innerHTML = '';
@@ -104,13 +117,11 @@ function renderCasas(lista) {
     });
 }
 
-// Filtro en tiempo real (busca por nombre, dirección, barrio y comentarios)
 function filtrarCasas() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const contenedor = document.getElementById('resultadosContainer');
     const btnVerTodos = document.getElementById('btnVerTodos');
 
-    // Restaurar el botón si veníamos del modo listado completo
     if (modoListadoCompleto) {
         btnVerTodos.innerHTML = '<i class="fa-solid fa-list"></i> Ver Listado Completo por Barrios';
         btnVerTodos.className = "corp-btn";
@@ -119,13 +130,11 @@ function filtrarCasas() {
         modoListadoCompleto = false;
     }
 
-    // Si el buscador está vacío, ocultamos el contenedor
     if (query.trim() === '') {
         contenedor.style.display = 'none';
         return;
     }
 
-    // Si hay texto, mostramos el contenedor y filtramos
     contenedor.style.display = 'flex';
 
     const filtradas = dbCasas.filter(c => 
@@ -138,15 +147,12 @@ function filtrarCasas() {
     renderCasas(filtradas);
 }
 
-// Función para mostrar el listado completo agrupado por barrios
 function mostrarListadoAgrupado() {
     const contenedor = document.getElementById('resultadosContainer');
     const inputSearch = document.getElementById('searchInput');
     const btnVerTodos = document.getElementById('btnVerTodos');
 
-    // Lógica para alternar el botón (Abrir/Cerrar listado)
     if (modoListadoCompleto) {
-        // Cerrar listado
         contenedor.style.display = 'none';
         btnVerTodos.innerHTML = '<i class="fa-solid fa-list"></i> Ver Listado Completo por Barrios';
         btnVerTodos.className = "corp-btn";
@@ -156,18 +162,16 @@ function mostrarListadoAgrupado() {
         return;
     }
 
-    // Limpiar buscador y activar modo listado
     inputSearch.value = '';
     modoListadoCompleto = true;
     btnVerTodos.innerHTML = '<i class="fa-solid fa-xmark"></i> Cerrar Listado Completo';
-    btnVerTodos.className = "corp-btn danger-btn"; // Usamos clase estandar de global.css
+    btnVerTodos.className = "corp-btn danger-btn"; 
     btnVerTodos.style.color = "";
     btnVerTodos.style.background = "";
     
     contenedor.style.display = 'flex';
-    contenedor.innerHTML = ''; // Limpiar contenedor
+    contenedor.innerHTML = ''; 
 
-    // Agrupar casas por barrio
     const casasPorBarrio = dbCasas.reduce((acc, casa) => {
         const barrioKey = casa.barrio.trim() || 'Sin Barrio Especificado';
         if (!acc[barrioKey]) {
@@ -177,15 +181,11 @@ function mostrarListadoAgrupado() {
         return acc;
     }, {});
 
-    // Ordenar los barrios alfabéticamente
     const barriosOrdenados = Object.keys(casasPorBarrio).sort();
 
-    // Generar el HTML agrupado
     barriosOrdenados.forEach(barrio => {
-        // Ordenar los locales dentro del barrio alfabéticamente por nombre
         const localesDelBarrio = casasPorBarrio[barrio].sort((a, b) => a.nombre.localeCompare(b.nombre));
         
-        // Crear un contenedor visual para el grupo del barrio
         let grupoHtml = `
             <div style="margin-bottom: 20px;">
                 <h3 style="color: var(--ngc-warning); border-bottom: 1px solid var(--ngc-warning); padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
@@ -202,11 +202,9 @@ function mostrarListadoAgrupado() {
         contenedor.innerHTML += grupoHtml;
     });
 
-    // Scrollear suavemente hacia los resultados
     contenedor.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Lógica inteligente para usar coordenadas si existen
 function abrirMaps(nombre, direccion, lat, lng) {
     let query = '';
     
@@ -223,7 +221,7 @@ function abrirMaps(nombre, direccion, lat, lng) {
 
 function escapeHtml(unsafe) {
     return unsafe.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-          }
+}
 
 // ==========================================
 // MENÚ INFERIOR SCROLL (MATCH GLOBAL)
@@ -233,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const modulos = [
         { nombre: 'Inicio', icon: 'fa-house', url: '../index.html' },
         { nombre: 'Presupuestos', icon: 'fa-file-invoice-dollar', url: '../presupuesto/index.html' },
-        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '../materiales/index.html },
+        { nombre: 'Materiales', icon: 'fa-boxes-stacked', url: '../materiales/index.html' },
         { nombre: 'Informes', icon: 'fa-clipboard-check', url: '../informes/index.html' },
         { nombre: 'Potencia', icon: 'fa-bolt', url: '../potencia/index.html' },
         { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
@@ -248,3 +246,4 @@ document.addEventListener("DOMContentLoaded", () => {
         footer.appendChild(btn);
     });
 });
+        
