@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#18191A">
+    
+    <title>Catálogos | Villaser</title>
+    
+    <!-- Librería de Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS Global (Sube un nivel en la carpeta si es necesario, ej: href="../global.css") -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Script de detección de Tema Inmediato -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<!-- El <body> sigue igual a partir de aquí... -->
+  <body>
+
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="corp-top-nav" style="margin-bottom: 20px;">
+            <button class="corp-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="corp-nav-title">
+                <i class="fa-solid fa-book-open corp-accent-color"></i> Catálogos
+            </div>
+            <div style="width: 42px;"></div> <!-- Espaciador -->
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: RESIDENCIAL -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-house corp-accent-color"></i> RESIDENCIAL</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-A</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-M</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: ILUMINACIÓN -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-regular fa-lightbulb corp-accent-color"></i> ILUMINACIÓN</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-B</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: CABLES -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-plug corp-accent-color"></i> CABLES</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-B</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: INDUSTRIALES -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-industry corp-accent-color"></i> INDUSTRIALES</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-B</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: GENROD -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-box corp-accent-color"></i> GENROD</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Archivo 01-B</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1XUYNC3hnff0Z6bcxVzap8DvhAdSrmDHx/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: JELUZ -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-toggle-on corp-accent-color"></i> JELUZ</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Canalizaciones</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/10A-LbVoZagzJsc6CcWi_W4BEO-vL1SR2/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=10A-LbVoZagzJsc6CcWi_W4BEO-vL1SR2" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/10A-LbVoZagzJsc6CcWi_W4BEO-vL1SR2/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Iluminación</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/18ZH9gWd5GFleoQhJOS5QXBXMzxE9OCnU/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=18ZH9gWd5GFleoQhJOS5QXBXMzxE9OCnU" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/18ZH9gWd5GFleoQhJOS5QXBXMzxE9OCnU/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Productos 2023</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1xBSqbf4praQmj8oLZq_JOtIuA1EZ9XFo/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1xBSqbf4praQmj8oLZq_JOtIuA1EZ9XFo" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1xBSqbf4praQmj8oLZq_JOtIuA1EZ9XFo/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Protecciones 2023</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1c493u0J-OCcK30-8WT_nSPIl9WkGn5zy/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1c493u0J-OCcK30-8WT_nSPIl9WkGn5zy" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1c493u0J-OCcK30-8WT_nSPIl9WkGn5zy/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+
+                                        <!-- ============================================== -->
+        <!-- GRUPO: MACROLED -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-sun corp-accent-color"></i> MACROLED</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> General</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1jS4sYB4Sd7G7Z4eUlQnUOwqP8qy8bzXf/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1jS4sYB4Sd7G7Z4eUlQnUOwqP8qy8bzXf" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1jS4sYB4Sd7G7Z4eUlQnUOwqP8qy8bzXf/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Luminarias</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1TtYx8vhqKdbRFfa5gxLwbw6m2Cofnrh9/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1TtYx8vhqKdbRFfa5gxLwbw6m2Cofnrh9" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1TtYx8vhqKdbRFfa5gxLwbw6m2Cofnrh9/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Milán</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1Ht0h3y5QMWYepPsav8uAZyxhx_BG0WWb/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1Ht0h3y5QMWYepPsav8uAZyxhx_BG0WWb" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1Ht0h3y5QMWYepPsav8uAZyxhx_BG0WWb/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Proyectos</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1r8YyH00swvZulB5xw7HM-pPmazyoVPuX/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1r8YyH00swvZulB5xw7HM-pPmazyoVPuX" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1r8YyH00swvZulB5xw7HM-pPmazyoVPuX/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Skyline</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1AB-eoUMPL0tszNdqUWrngdoiTciHLqni/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1AB-eoUMPL0tszNdqUWrngdoiTciHLqni" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1AB-eoUMPL0tszNdqUWrngdoiTciHLqni/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Teclas - Tomas</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1NKZ3Mo0UfBjVnZ92hpbjzXjqfSu_2Y0s/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1NKZ3Mo0UfBjVnZ92hpbjzXjqfSu_2Y0s" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1NKZ3Mo0UfBjVnZ92hpbjzXjqfSu_2Y0s/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;"><i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Tiras - Perfiles</span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1hRcNuq_L7GkOu5_3vNVQKvJRZNAk5YdD/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-expand"></i> P. Completa
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1hRcNuq_L7GkOu5_3vNVQKvJRZNAk5YdD" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                        <div class="viewer-container">
+                            <div class="loader-overlay"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
+                            <iframe src="https://drive.google.com/file/d/1hRcNuq_L7GkOu5_3vNVQKvJRZNAk5YdD/preview" onload="hideLoader(this)"></iframe>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+        
+    </main>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
