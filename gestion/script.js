@@ -186,12 +186,27 @@ function mostrarAppPrincipal(emailUsuario) {
     document.getElementById('loginScreen').classList.add('oculto');
     document.getElementById('mainHeader').classList.add('oculto');
     
+    // Ocultar banner de PWA al ingresar a la app
+    const bannerPwa = document.getElementById('pwaInstallBanner');
+    if (bannerPwa) bannerPwa.classList.add('oculto');
+    
     const emailDisplay = document.getElementById('userEmailDisplay');
     if (emailDisplay) emailDisplay.innerText = emailUsuario;
 
     document.getElementById('userMenuWrapper').style.display = 'flex';
     document.getElementById('appScreen').classList.remove('oculto');
 }
+
+//function mostrarAppPrincipal(emailUsuario) {
+//    document.getElementById('loginScreen').classList.add('oculto');
+  //  document.getElementById('mainHeader').classList.add('oculto');
+    
+//    const emailDisplay = document.getElementById('userEmailDisplay');
+  //  if (emailDisplay) emailDisplay.innerText = emailUsuario;
+//
+ //   document.getElementById('userMenuWrapper').style.display = 'flex';
+  //  document.getElementById('appScreen').classList.remove('oculto');
+// }
 
 function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
