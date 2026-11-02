@@ -48,6 +48,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (user) {
             if (user.emailVerified) {
+                // -------------------------------------------
+        document.getElementById('errorMessage').classList.add('oculto');
+        mostrarAppPrincipal(user.email);
+        
+        // --- NUEVO: Revelar botón solo al Maestro ---
+        if (user.email === "contacto@villaser.com.ar") { // REEMPLAZA CON TU CORREO EXACTO
+            const btnPrueba = document.getElementById('btnModuloPrueba');
+            if (btnPrueba) btnPrueba.style.display = 'flex'; 
+        }
+        // -------------------------------------------
                 // Descargamos de Firebase silenciosamente y actualizamos local
                 try {
                     const doc = await db.collection('perfiles').doc(user.uid).get();
