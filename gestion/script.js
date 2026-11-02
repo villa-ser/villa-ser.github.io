@@ -411,28 +411,84 @@ if ('serviceWorker' in navigator) {
 }
 
 let eventoInstalacion; 
-const btnInstalar = document.getElementById('btn-instalar');
+const btnInstalarMenu = document.getElementById('btn-instalar');
+const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+const btnBannerInstalar = document.getElementById('btnBannerInstalar');
 
 window.addEventListener('beforeinstallprompt', (e) => { 
     e.preventDefault(); 
     eventoInstalacion = e;
-    if (btnInstalar) {
-        btnInstalar.classList.remove('oculto'); 
-        btnInstalar.style.display = 'flex'; 
+    
+    // Mostrar opción en el menú desplegable del perfil
+    if (btnInstalarMenu) {
+        btnInstalarMenu.classList.remove('oculto'); 
+        btnInstalarMenu.style.display = 'flex'; 
+    }
+
+    // Mostrar el cartel frontal solo si el usuario NO ha iniciado sesión (pantalla login activa)
+    if (pwaInstallBanner && !auth.currentUser) {
+        pwaInstallBanner.classList.remove('oculto');
     }
 });
 
-if (btnInstalar) { 
-    btnInstalar.addEventListener('click', async (e) => { 
-        e.preventDefault(); 
-        if (!eventoInstalacion) return;
-        eventoInstalacion.prompt();
-        const { outcome } = await eventoInstalacion.userChoice;
-        if (outcome === 'accepted') {
-            btnInstalar.classList.add('oculto');
-            btnInstalar.style.display = 'none';
+// Función centralizada para ambos botones
+async function manejarInstalacionPWA(e) {
+    e.preventDefault(); 
+    if (!eventoInstalacion) return;
+    
+    eventoInstalacion.prompt();
+    const { outcome } = await eventoInstalacion.userChoice;
+    
+    if (outcome === 'accepted') {
+        if (btnInstalarMenu) {
+            btnInstalarMenu.classList.add('oculto');
+            btnInstalarMenu.style.display = 'none';
         }
-        eventoInstalacion = null;
-    }); 
-        }
+        if (pwaInstallBanner) pwaInstallBanner.classList.add('oculto');
+    }
+    eventoInstalacion = null;
+}
+
+if (btnInstalarMenu) btnInstalarMenu.addEventListener('click', manejarInstalacionPWA);
+if (btnBannerInstalar) btnBannerInstalar.addEventListener('click', manejarInstalacionPWA);
+
+
+
+// ==========================================
+// 5. CONFIGURACIÓN PWA (INSTALACIÓN) vieja
+// ==========================================
+// if ('serviceWorker' in navigator) { 
+ //   window.addEventListener('load', () => { 
+ //       navigator.serviceWorker.register('./sw.js') 
+ //       .then(reg => console.log('ServiceWorker registrado con éxito:', reg.scope)) 
+ /       .catch(err => console.log('Error al registrar ServiceWorker:', err)); 
+ /   }); 
+// }
+
+// let eventoInstalacion; 
+// const btnInstalar = document.getElementById('btn-instalar');
+
+// window.addEventListener('beforeinstallprompt', (e) => { 
+ //   e.preventDefault(); 
+ //   eventoInstalacion = e;
+  //  if (btnInstalar) {
+  //      btnInstalar.classList.remove('oculto'); 
+   //     btnInstalar.style.display = 'flex'; 
+   // }
+// });
+
+//if (btnInstalar) { 
+ //   btnInstalar.addEventListener('click', async (e) => { 
+  //      e.preventDefault(); 
+ //       if (!eventoInstalacion) return;
+   //     eventoInstalacion.prompt();
+  //      const { outcome } = await eventoInstalacion.userChoice;
+       // if (outcome === 'accepted') {
+        //    btnInstalar.classList.add('oculto');
+       //     btnInstalar.style.display = 'none';
+  //      }
+  //      eventoInstalacion = null;
+ //   }); 
+  //      }//
         
+// ==========================================
