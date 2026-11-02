@@ -10,9 +10,14 @@ const SHEET_ID_CASAS = '1jFvMWkTBPlqpIWJ_kjVy1vSw3gA_q9Jxvar0LajaDnM';
 const URL_CASAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID_CASAS}/gviz/tq?tqx=out:json&sheet=Hoja1`;
 
 let dbCasas = [];
-let modoListadoCompleto = false; // Variable para controlar si estamos viendo el listado completo
+let modoListadoCompleto = false;
 
-window.onload = fetchCasas;
+// Motor de arranque blindado (no espera a CSS, fuentes o Firebase para arrancar)
+if (document.readyState === 'loading') { 
+    document.addEventListener('DOMContentLoaded', fetchCasas); 
+} else { 
+    fetchCasas(); 
+}
 
 async function fetchCasas() {
     const controller = new AbortController();
