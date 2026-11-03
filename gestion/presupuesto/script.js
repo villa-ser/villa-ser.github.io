@@ -488,7 +488,7 @@ function cargarDetallePrecios() {
 // ==========================================
 let tipoEdicionActual = null; 
 
-function abrirModalEdicion(tipo, valorActual) {
+/* function abrirModalEdicion(tipo, valorActual) {
     tipoEdicionActual = tipo;
     const titulo = tipo === 'concepto' ? 'Editar nombre:' : 'Editar precio:';
     document.getElementById('modalEdicionTitulo').innerText = titulo;
@@ -499,13 +499,9 @@ function abrirModalEdicion(tipo, valorActual) {
     
     document.getElementById('modalEdicionPersonalizada').classList.remove('oculto');
     setTimeout(() => input.focus(), 100);
-}
+} */
 
-function cerrarModalEdicion() {
-    document.getElementById('modalEdicionPersonalizada').classList.add('oculto');
-}
-
-function guardarModalEdicion() {
+/* function guardarModalEdicion() {
     const valor = document.getElementById('modalEdicionInput').value;
     
     if (tipoEdicionActual === 'concepto') {
@@ -524,6 +520,56 @@ function guardarModalEdicion() {
         }
     }
     cerrarModalEdicion();
+} */
+
+function abrirModalEdicion(tipo, valorActual) { 
+    tipoEdicionActual = tipo; 
+    const titulo = tipo === 'concepto' ? 'Editar nombre:' : 'Editar precio:'; 
+    document.getElementById('modalEdicionTitulo').innerText = titulo; 
+    
+    const inputNumber = document.getElementById('modalEdicionInput');
+    const inputTextarea = document.getElementById('modalEdicionTextarea');
+
+    if (tipo === 'precio') {
+        inputNumber.style.display = 'block';
+        inputTextarea.style.display = 'none';
+        inputNumber.value = valorActual;
+        document.getElementById('modalEdicionPersonalizada').classList.remove('oculto'); 
+        setTimeout(() => inputNumber.focus(), 100);
+    } else {
+        inputNumber.style.display = 'none';
+        inputTextarea.style.display = 'block';
+        inputTextarea.value = valorActual;
+        document.getElementById('modalEdicionPersonalizada').classList.remove('oculto'); 
+        setTimeout(() => inputTextarea.focus(), 100);
+    }
+}
+
+function guardarModalEdicion() { 
+    const valor = tipoEdicionActual === 'precio' 
+        ? document.getElementById('modalEdicionInput').value 
+        : document.getElementById('modalEdicionTextarea').value;
+    
+    if (tipoEdicionActual === 'concepto') { 
+        if (valor && valor.trim() !== "") { 
+            conceptoEditado = valor.trim(); 
+            document.getElementById('badgeConcepto').classList.remove('oculto'); 
+        } 
+    } else if (tipoEdicionActual === 'precio') { 
+        if (valor) { 
+            const num = parseFloat(valor.toString().replace(/[^0-9.,]/g, '').replace(',', '.')); 
+            if (!isNaN(num)) { 
+                precioEditado = num; 
+                document.getElementById('unitarioLabel').innerText = `Unit: $ ${num.toLocaleString('es-AR')}`; 
+                document.getElementById('badgePrecio').classList.remove('oculto'); 
+            } 
+        } 
+    } 
+    cerrarModalEdicion(); 
+}
+
+function cerrarModalEdicion() {
+    document.getElementById('modalEdicionPersonalizada').classList.add('oculto');
 }
 
 function editarConceptoTemporal() {
