@@ -14,11 +14,11 @@ let uidSeguro = null;
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 
-const selTema = document.getElementById('selTema');
+/*const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
 const selNivel3 = document.getElementById('selNivel3');
 const selNivel4 = document.getElementById('selNivel4');
-const selNivel5 = document.getElementById('selNivel5');
+const selNivel5 = document.getElementById('selNivel5');*/
 
 const inputNombre = document.getElementById('cliNombre');
 
@@ -84,7 +84,7 @@ async function fetchData() {
     }
 }
 
-function llenarSelect(selectEl, dataArray) {
+/* function llenarSelect(selectEl, dataArray) {
     if (!selectEl) return;
     selectEl.innerHTML = '<option value="">-- SELECCIONE --</option>';
     const unicos = [...new Set(dataArray)].filter(Boolean).sort();
@@ -97,6 +97,94 @@ function cambioTema() { const t = selTema.value; llenarSelect(selConcepto, dbMat
 function cambioConcepto() { const t = selTema.value; const c = selConcepto.value; llenarSelect(selNivel3, dbMateriales.filter(i => i.tema === t && i.concepto === c).map(i => i.nivel3)); llenarSelect(selNivel4, []); llenarSelect(selNivel5, []); }
 function cambioNivel3() { const t = selTema.value; const c = selConcepto.value; const n3 = selNivel3.value; llenarSelect(selNivel4, dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3).map(i => i.nivel4)); llenarSelect(selNivel5, []); }
 function cambioNivel4() { const t = selTema.value; const c = selConcepto.value; const n3 = selNivel3.value; const n4 = selNivel4.value; llenarSelect(selNivel5, dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3 && i.nivel4 === n4).map(i => i.nivel5)); }
+*/
+
+// ==========================================
+// NUEVO MOTOR DE CASCADA (ACORDEONES)
+// ==========================================
+function llenarSelectAcordeon(idSuffix, dataArray, onChangeCallback) {
+    const hiddenInput = document.getElementById('sel' + idSuffix);
+    const summary = document.getElementById('sum' + idSuffix);
+    const list = document.getElementById('list' + idSuffix);
+    const details = document.getElementById('det' + idSuffix);
+
+    if (!hiddenInput || !summary || !list || !details) return;
+
+    list.innerHTML = ''; 
+    hiddenInput.value = ''; 
+    summary.innerText = '-- SELECCIONE --'; 
+
+    const unicos = [...new Set(dataArray)].filter(Boolean).sort();
+    
+    if (unicos.length === 0) {
+        details.setAttribute('disabled', 'true');
+        details.style.pointerEvents = 'none';
+        details.style.opacity = '0.5';
+    } else {
+        details.removeAttribute('disabled');
+        details.style.pointerEvents = 'auto';
+        details.style.opacity = '1';
+
+        unicos.forEach(val => {
+            const option = document.createElement('div');
+            option.className = 'corp-select-option';
+            option.innerText = val;
+            option.onclick = () => {
+                hiddenInput.value = val;
+                summary.innerText = val;
+                details.removeAttribute('open'); // Cierra el menú al seleccionar
+                if (onChangeCallback) onChangeCallback();
+            };
+            list.appendChild(option);
+        });
+    }
+}
+
+function poblarTemas() { 
+    llenarSelectAcordeon('Tema', dbMateriales.map(i => i.tema), cambioTema); 
+}
+
+function cambioTema() { 
+    const t = document.getElementById('selTema').value; 
+    llenarSelectAcordeon('Concepto', dbMateriales.filter(i => i.tema === t).map(i => i.concepto), cambioConcepto); 
+    llenarSelectAcordeon('Nivel3', []); 
+    llenarSelectAcordeon('Nivel4', []); 
+    llenarSelectAcordeon('Nivel5', []); 
+}
+
+function cambioConcepto() { 
+    const t = document.getElementById('selTema').value; 
+    const c = document.getElementById('selConcepto').value; 
+    llenarSelectAcordeon('Nivel3', dbMateriales.filter(i => i.tema === t && i.concepto === c).map(i => i.nivel3), cambioNivel3); 
+    llenarSelectAcordeon('Nivel4', []); 
+    llenarSelectAcordeon('Nivel5', []); 
+}
+
+function cambioNivel3() { 
+    const t = document.getElementById('selTema').value; 
+    const c = document.getElementById('selConcepto').value; 
+    const n3 = document.getElementById('selNivel3').value; 
+    llenarSelectAcordeon('Nivel4', dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3).map(i => i.nivel4), cambioNivel4); 
+    llenarSelectAcordeon('Nivel5', []); 
+}
+
+function cambioNivel4() { 
+    const t = document.getElementById('selTema').value; 
+    const c = document.getElementById('selConcepto').value; 
+    const n3 = document.getElementById('selNivel3').value; 
+    const n4 = document.getElementById('selNivel4').value; 
+    llenarSelectAcordeon('Nivel5', dbMateriales.filter(i => i.tema === t && i.concepto === c && i.nivel3 === n3 && i.nivel4 === n4).map(i => i.nivel5)); 
+}
+
+// Cerrar acordeones si el usuario hace clic afuera de ellos
+document.addEventListener('click', function(event) {
+    const details = document.querySelectorAll('.corp-custom-select');
+    details.forEach(det => {
+        if (!det.contains(event.target)) {
+            det.removeAttribute('open');
+        }
+    });
+});
 
 // ==========================================
 // AGENDA
@@ -274,7 +362,7 @@ function mostrarToast(titulo, mensaje) {
 
 function step(id, val) { const el = document.getElementById(id); if(el) el.value = Math.max(el.min ? parseInt(el.min) : 1, (parseInt(el.value || 0) + val)); }
 
-function agregarTrabajo() {
+/*function agregarTrabajo() {
     if(!selConcepto.value) return alert("Selecciona al menos un material.");
     const partes = [selTema.value, selConcepto.value, selNivel3.value, selNivel4.value, selNivel5.value];
     const nombreCompleto = partes.filter(Boolean).join(' | ');
@@ -287,7 +375,52 @@ function agregarTrabajo() {
     
     document.getElementById('obsManual').value = ""; document.getElementById('cantidad').value = 1; 
     selConcepto.value = ""; llenarSelect(selNivel3, []); llenarSelect(selNivel4, []); llenarSelect(selNivel5, []);
+} */
+
+function agregarTrabajo() {
+    const valConcepto = document.getElementById('selConcepto').value;
+    
+    if(!valConcepto) {
+        return alert("Selecciona al menos un material.");
+    }
+
+    // Extraemos los valores de los inputs ocultos del sistema de acordeones
+    const valTema = document.getElementById('selTema').value;
+    const valNivel3 = document.getElementById('selNivel3').value;
+    const valNivel4 = document.getElementById('selNivel4').value;
+    const valNivel5 = document.getElementById('selNivel5').value;
+
+    // Concatenamos las partes ignorando las que estén vacías
+    const partes = [valTema, valConcepto, valNivel3, valNivel4, valNivel5];
+    const nombreCompleto = partes.filter(Boolean).join(' | ');
+    
+    const qty = document.getElementById('cantidad').value;
+    const nota = document.getElementById('obsManual').value.trim();
+    const unidad = document.getElementById('tipoUnidad').value; 
+    
+    listaItems.push({ 
+        id: Date.now(), 
+        material: nombreCompleto, 
+        cantidad: qty, 
+        unidad: unidad, 
+        nota: nota 
+    });
+    
+    guardarEstadoLocal(); 
+    renderTabla(); 
+    
+    // Reseteo rápido de campos de texto y cantidades
+    document.getElementById('obsManual').value = ""; 
+    document.getElementById('cantidad').value = 1; 
+    
+    // Reseteo de los acordeones secundarios (mantiene la Categoría principal seleccionada)
+    document.getElementById('selConcepto').value = "";
+    document.getElementById('sumConcepto').innerText = "-- SELECCIONE --";
+    llenarSelectAcordeon('Nivel3', []); 
+    llenarSelectAcordeon('Nivel4', []); 
+    llenarSelectAcordeon('Nivel5', []);
 }
+
 
 function renderTabla() {
     const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; 
@@ -309,6 +442,7 @@ function renderTabla() {
         tbody.appendChild(div);
     });
 }
+
 function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guardarEstadoLocal(); renderTabla(); }
 
 // ==========================================
