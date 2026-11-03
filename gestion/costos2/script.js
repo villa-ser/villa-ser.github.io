@@ -20,9 +20,18 @@ const sheetId = '1tZbCYSBxx3suGLKmE_bXi_hEm0iH0yqQedqR7kdShEU';
 let allData = [];
 let selectedFuentes = [];
 
-// Elementos de la interfaz
+/* // Elementos de la interfaz
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
+const resCard = document.getElementById('result-card'); */
+
+// Elementos de la interfaz (Variables unificadas para el nuevo select)
+const selTema = document.getElementById('selTema');
+const selConcepto = document.getElementById('selConcepto');
+const detTema = document.getElementById('detTema');
+const sumTema = document.getElementById('sumTema');
+const detConcepto = document.getElementById('detConcepto');
+const sumConcepto = document.getElementById('sumConcepto');
 const resCard = document.getElementById('result-card');
 
 // Inicializar Google Charts
