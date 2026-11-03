@@ -326,3 +326,81 @@ details[open] summary .acc-icon-indicator {
     transform: translateX(20px);
     background-color: #ffffff;
 }
+/* ======================================================= */
+/* CUSTOM SELECTS (DETAILS & SUMMARY COMO ACORDEÓN)        */
+/* ======================================================= */
+.corp-custom-select {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+/* Oculta la flecha nativa de los navegadores */
+.corp-custom-select summary::-webkit-details-marker { display: none; }
+.corp-custom-select summary {
+    list-style: none; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Estado deshabilitado translúcido */
+.corp-custom-select[disabled] summary {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Icono Chevron flotando a la derecha */
+.corp-custom-select summary::after {
+    content: '\f078'; /* Código del icono fa-chevron-down */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--corp-text-faded);
+    transition: transform 0.3s ease;
+    font-size: 0.85rem;
+}
+
+/* Rotación dinámica y color vibrante al abrir */
+.corp-custom-select[open] summary::after {
+    transform: rotate(180deg);
+    color: var(--corp-accent);
+}
+.corp-custom-select[open] summary {
+    border-color: var(--corp-accent);
+}
+
+/* Menú flotante estilo App */
+.corp-select-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: var(--corp-card-bg);
+    border: var(--corp-border);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px var(--corp-shadow);
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    scrollbar-width: thin;
+}
+
+/* Opciones individuales */
+.corp-select-option {
+    padding: 14px 15px;
+    color: var(--corp-text-main);
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.corp-select-option:hover, .corp-select-option:active {
+    background: var(--corp-input-bg);
+    color: var(--corp-accent);
+    font-weight: 600;
+}
