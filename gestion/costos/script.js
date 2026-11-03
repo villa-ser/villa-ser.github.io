@@ -205,12 +205,12 @@ function selectFuente(fuente, checkbox) {
         if (selectedFuentes.length === fuentesTotales.length && fuentesTotales.length > 0) {
             btnAll.classList.add('active');
         }
-    } */ // viejo
+    } 
     
     // Resetear cascada al cambiar filtros
     resetDropdownsCascade();
     updateTemas();
-}
+}  */ // viejo
 
 function updateTemas() {
     // Filtrar data global según las fuentes prendidas
