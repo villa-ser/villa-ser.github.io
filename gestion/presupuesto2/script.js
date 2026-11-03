@@ -20,6 +20,10 @@ let uidSeguro = null;
 
 const selTema = document.getElementById('selTema');
 const selConcepto = document.getElementById('selConcepto');
+const detTema = document.getElementById('detTema');
+const sumTema = document.getElementById('sumTema');
+const detConcepto = document.getElementById('detConcepto');
+const sumConcepto = document.getElementById('sumConcepto');
 const inputCliNombre = document.getElementById('cliNombre');
 
 // ==========================================
@@ -81,16 +85,7 @@ async function fetchData() {
     }
 }
 
-function setupEventListeners() {
-    if (selTema) selTema.addEventListener('change', cambioTema);
-    if (selConcepto) selConcepto.addEventListener('change', cargarDetallePrecios);
-    if (inputCliNombre) {
-        inputCliNombre.addEventListener('input', () => {
-            clienteDesdeAgenda = false; 
-            permiteGuardarNube = false; 
-        });
-    }
-}
+
 
 // ==========================================
 // NUEVOS MODALES DE ALERTA Y CONFIRMACIÓN
@@ -436,27 +431,111 @@ function step(id, val) {
     el.value = Math.max(el.min ? parseInt(el.min) : 0, parseInt(el.value || 0) + val); 
 }
 
+function setupEventListeners() {
+    // Se eliminan los listeners de 'change' porque los disparamos directamente al hacer clic en las opciones
+    if (inputCliNombre) {
+        inputCliNombre.addEventListener('input', () => {
+            clienteDesdeAgenda = false; 
+            permiteGuardarNube = false; 
+        });
+    }
+}
+
 function poblarTemas() { 
-    if(!selTema) return; selTema.innerHTML = '<option value="">-- SELECCIONE RUBRO --</option>';
-    [...new Set(dbPrecios.map(i => i.tema))].sort().forEach(t => { 
-        const opt = document.createElement('option'); opt.value = t; opt.textContent = t; selTema.appendChild(opt); 
-    }); 
+    const listTema = document.getElementById('listTema');
+    if(!listTema) return; 
+    
+    listTema.innerHTML = '';
+    selTema.value = '';
+    sumTema.innerText = '-- SELECCIONE RUBRO --';
+    
+    const temasUnicos = [...new Set(dbPrecios.map(i => i.tema))].sort();
+    
+    if(temasUnicos.length > 0) {
+        detTema.removeAttribute('disabled');
+        temasUnicos.forEach(t => { 
+            const opt = document.createElement('div'); 
+            opt.className = 'corp-select-option';
+            opt.innerText = t; 
+            opt.onclick = () => {
+                selTema.value = t;
+                sumTema.innerText = t;
+                detTema.removeAttribute('open');
+                cambioTema(); // Dispara la cascada manualmente
+            };
+            listTema.appendChild(opt); 
+        }); 
+    } else {
+        detTema.setAttribute('disabled', 'true');
+    }
 }
 
 function cambioTema() { 
-    const t = selTema.value; selConcepto.innerHTML = '<option value="">-- SELECCIONE TRABAJO --</option>';
+    const t = selTema.value; 
+    const listConcepto = document.getElementById('listConcepto');
+    
+    listConcepto.innerHTML = '';
+    selConcepto.value = '';
+    sumConcepto.innerText = '-- SELECCIONE TRABAJO --';
+    
     limpiarEdicionesTemporales(); 
     document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; 
     document.getElementById('obsManual').value = "";
     
     if(t) { 
-        selConcepto.disabled = false; 
-        dbPrecios.filter(i => i.tema === t).forEach(i => { 
-            const opt = document.createElement('option'); opt.value = i.concepto; opt.textContent = i.concepto; selConcepto.appendChild(opt); 
+        detConcepto.removeAttribute('disabled'); 
+        const conceptosFiltro = dbPrecios.filter(i => i.tema === t);
+        
+        conceptosFiltro.forEach(i => { 
+            const opt = document.createElement('div'); 
+            opt.className = 'corp-select-option';
+            opt.innerText = i.concepto; 
+            opt.onclick = () => {
+                selConcepto.value = i.concepto;
+                sumConcepto.innerText = i.concepto;
+                detConcepto.removeAttribute('open');
+                cargarDetallePrecios(); // Extrae precios y notas
+            };
+            listConcepto.appendChild(opt); 
         }); 
     } else { 
-        selConcepto.disabled = true; 
+        detConcepto.setAttribute('disabled', 'true'); 
     }
+}
+
+function agregarTrabajo() {
+    const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
+    if(!itemOriginal) { 
+        mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
+        return; 
+    }
+    
+    const qty = parseInt(document.getElementById('cantidad').value) || 1;
+    const desc = parseInt(document.getElementById('porcentajeDesc').value) || 0;
+    const fPrecio = precioEditado !== null ? precioEditado : itemOriginal.precio;
+    const fTotal = (fPrecio * qty) * (1 - desc / 100);
+          
+    listaItems.push({ 
+        id: Date.now(), 
+        concepto: conceptoEditado || itemOriginal.concepto, 
+        obs: document.getElementById('obsManual').value, 
+        qty, 
+        total: fTotal, 
+        unitario: fPrecio, 
+        desc 
+    });
+    
+    guardarEstadoLocal(); 
+    renderTabla(); 
+    
+    // Reseteo visual del formulario al agregar
+    document.getElementById('obsManual').value = ""; 
+    document.getElementById('cantidad').value = 1; 
+    document.getElementById('porcentajeDesc').value = 0; 
+    selConcepto.value = ""; 
+    sumConcepto.innerText = '-- SELECCIONE TRABAJO --';
+    limpiarEdicionesTemporales(); 
+    document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
 function limpiarEdicionesTemporales() {
@@ -587,13 +666,6 @@ function editarPrecioTemporal() {
 function habilitarEdicionObs() { document.getElementById('obsManual').readOnly = false; document.getElementById('obsManual').focus(); }
 function volverNotasOriginales() { document.getElementById('obsManual').value = notasOriginales; document.getElementById('obsManual').readOnly = true; }
 function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
-
-function agregarTrabajo() {
-    const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
-    if(!itemOriginal) { 
-        mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
-        return; 
-    }
     
     const qty = parseInt(document.getElementById('cantidad').value) || 1;
     const desc = parseInt(document.getElementById('porcentajeDesc').value) || 0;
@@ -846,3 +918,25 @@ function generarMenuInferior() {
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; }; footer.appendChild(btn);
     });
 }
+
+// ==========================================
+// COMPORTAMIENTO INTELIGENTE DE ACORDEONES
+// ==========================================
+document.addEventListener('click', (event) => {
+    const details = document.querySelectorAll('details.corp-custom-select');
+    details.forEach(det => {
+        if (det.open && !det.contains(event.target)) {
+            det.removeAttribute('open');
+        }
+    });
+});
+
+document.querySelectorAll('details.corp-custom-select').forEach(det => {
+    det.addEventListener('toggle', (e) => {
+        if (det.open) {
+            document.querySelectorAll('details.corp-custom-select').forEach(other => {
+                if (other !== det) other.removeAttribute('open');
+            });
+        }
+    });
+});
