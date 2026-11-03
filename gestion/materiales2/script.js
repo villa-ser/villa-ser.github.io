@@ -396,7 +396,8 @@ function agregarTrabajo() {
     
     const qty = document.getElementById('cantidad').value;
     const nota = document.getElementById('obsManual').value.trim();
-    const unidad = document.getElementById('tipoUnidad').value; 
+    const unidad = document.querySelector('input[name="tipoUnidad"]:checked').value;
+    
     
     listaItems.push({ 
         id: Date.now(), 
