@@ -38,8 +38,26 @@
     </div>
 </div>
 
-    <!-- MODAL DE EDICIÓN CORPORATIVO (Reemplaza al prompt nativo) -->
+<!-- MODAL DE EDICIÓN CORPORATIVO -->
 <div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
+        
+        <!-- Campo numérico (Solo visible al editar Precio) -->
+        <input type="number" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; display: none;">
+        
+        <!-- Área de texto (Solo visible al editar Nombre) -->
+        <textarea id="modalEdicionTextarea" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; min-height: 110px; resize: vertical; display: none;"></textarea>
+        
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalEdicion()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
+        </div>
+    </div>
+</div>
+    
+    <!-- MODAL DE EDICIÓN CORPORATIVO (Reemplaza al prompt nativo) -->
+<!-- <div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
         <input type="text" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px;">
@@ -48,7 +66,7 @@
             <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
         </div>
     </div>
-</div>
+</div> -->
     
 <!-- TODOS LOS MODALES ESTANDARIZADOS -->
 <div id="modalRecuperarCliente" class="modal-overlay oculto gpu-accel">
