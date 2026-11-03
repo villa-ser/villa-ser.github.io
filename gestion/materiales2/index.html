@@ -303,7 +303,7 @@
                             <input type="hidden" id="selNivel5" value="">
                         </div>
                     </div>
-
+<!--
                     <div class="row-group-stretch" style="align-items: stretch; margin-top: 15px;">
                         <div style="flex: 0 0 100px;">
                             <label>UNIDAD</label>
@@ -317,7 +317,25 @@
                             <input type="text" id="obsManual" class="corp-input" placeholder="Ej: Color blanco..." style="height: 46px;">
                         </div>
                     </div>
+-->
 
+                    <div class="row-group-stretch" style="align-items: stretch; margin-top: 15px;">
+                        <div style="flex: 0 0 110px;"> <!-- Ancho fijo y compacto -->
+                            <label>UNIDAD</label>
+                            <div class="unit-toggle" style="height: 46px;">
+                                <input type="radio" id="unitUnid" name="tipoUnidad" value="UNID" checked style="display:none;">
+                                <label for="unitUnid" class="unit-label">UNID</label>
+                                
+                                <input type="radio" id="unitMts" name="tipoUnidad" value="MTS" style="display:none;">
+                                <label for="unitMts" class="unit-label">MTS</label>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>NOTAS DEL ÍTEM</label>
+                            <input type="text" id="obsManual" class="corp-input" placeholder="Ej: Color blanco..." style="height: 46px;">
+                        </div>
+                    </div>
+                    
                     <div class="row-group-stretch" style="align-items: center; margin-top: 15px;">
                         <div style="flex: 1;">
                             <label>CANTIDAD</label>
