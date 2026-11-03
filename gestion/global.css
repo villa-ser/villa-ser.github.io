@@ -356,7 +356,7 @@ details[open] summary .acc-icon-indicator {
     content: '\f078'; /* Código del icono fa-chevron-down */
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
-    color: var(--corp-text-faded);
+    color: var(--ngc-text-faded); /* ACTUALIZADO */
     transition: transform 0.3s ease;
     font-size: 0.85rem;
 }
@@ -364,43 +364,52 @@ details[open] summary .acc-icon-indicator {
 /* Rotación dinámica y color vibrante al abrir */
 .corp-custom-select[open] summary::after {
     transform: rotate(180deg);
-    color: var(--corp-accent);
+    color: var(--ngc-neon); /* ACTUALIZADO */
 }
 .corp-custom-select[open] summary {
-    border-color: var(--corp-accent);
+    border-color: var(--ngc-neon); /* ACTUALIZADO */
 }
 
-/* Menú flotante estilo App */
+/* ========================================== */
+/* MENÚ FLOTANTE ESTILO APP (SOLUCIÓN FONDO)  */
+/* ========================================== */
 .corp-select-list {
     position: absolute;
     top: calc(100% + 6px);
     left: 0;
     width: 100%;
-    background: var(--corp-card-bg);
-    border: var(--corp-border);
+    background: var(--bg-body); /* ACTUALIZADO: Fondo sólido garantizado */
+    border: 1px solid var(--ngc-privacy-border); /* ACTUALIZADO */
     border-radius: 8px;
-    box-shadow: 0 5px 20px var(--corp-shadow);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Sombra fuerte para despegarlo del fondo */
     max-height: 250px;
     overflow-y: auto;
-    z-index: 10000;
+    z-index: 99999; /* Z-index extremo para que pase por encima de TODO */
     display: flex;
     flex-direction: column;
     padding: 6px;
     scrollbar-width: thin;
 }
+[data-theme="light"] .corp-select-list {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra más suave en modo claro */
+}
 
 /* Opciones individuales */
 .corp-select-option {
     padding: 14px 15px;
-    color: var(--corp-text-main);
+    color: var(--ngc-text-main); /* ACTUALIZADO */
     font-size: 0.9rem;
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
+    border-bottom: 1px solid rgba(150, 150, 150, 0.1); /* Línea divisoria sutil */
+}
+.corp-select-option:last-child {
+    border-bottom: none;
 }
 
 .corp-select-option:hover, .corp-select-option:active {
-    background: var(--corp-input-bg);
-    color: var(--corp-accent);
+    background: var(--ngc-bg-input); /* ACTUALIZADO */
+    color: var(--ngc-neon); /* ACTUALIZADO */
     font-weight: 600;
 }
