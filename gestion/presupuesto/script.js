@@ -503,41 +503,6 @@ function cambioTema() {
     }
 }
 
-/* function agregarTrabajo() {
-    const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
-    if(!itemOriginal) { 
-        mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
-        return; 
-    }
-    
-    const qty = parseInt(document.getElementById('cantidad').value) || 1;
-    const desc = parseInt(document.getElementById('porcentajeDesc').value) || 0;
-    const fPrecio = precioEditado !== null ? precioEditado : itemOriginal.precio;
-    const fTotal = (fPrecio * qty) * (1 - desc / 100);
-          
-    listaItems.push({ 
-        id: Date.now(), 
-        concepto: conceptoEditado || itemOriginal.concepto, 
-        obs: document.getElementById('obsManual').value, 
-        qty, 
-        total: fTotal, 
-        unitario: fPrecio, 
-        desc 
-    });
-    
-    guardarEstadoLocal(); 
-    renderTabla(); 
-    
-    // Reseteo visual del formulario al agregar
-    document.getElementById('obsManual').value = ""; 
-    document.getElementById('cantidad').value = 1; 
-    document.getElementById('porcentajeDesc').value = 0; 
-    selConcepto.value = ""; 
-    sumConcepto.innerText = '-- SELECCIONE TRABAJO --';
-    limpiarEdicionesTemporales(); 
-    document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
-} */
-
 function limpiarEdicionesTemporales() {
     conceptoEditado = null; precioEditado = null;
     document.getElementById('badgeConcepto').classList.add('oculto'); 
@@ -566,40 +531,6 @@ function cargarDetallePrecios() {
 // EDICIÓN TEMPORAL CON MODAL CORPORATIVO
 // ==========================================
 let tipoEdicionActual = null; 
-
-/* function abrirModalEdicion(tipo, valorActual) {
-    tipoEdicionActual = tipo;
-    const titulo = tipo === 'concepto' ? 'Editar nombre:' : 'Editar precio:';
-    document.getElementById('modalEdicionTitulo').innerText = titulo;
-    
-    const input = document.getElementById('modalEdicionInput');
-    input.type = tipo === 'precio' ? 'number' : 'text';
-    input.value = valorActual;
-    
-    document.getElementById('modalEdicionPersonalizada').classList.remove('oculto');
-    setTimeout(() => input.focus(), 100);
-} */
-
-/* function guardarModalEdicion() {
-    const valor = document.getElementById('modalEdicionInput').value;
-    
-    if (tipoEdicionActual === 'concepto') {
-        if (valor && valor.trim() !== "") {
-            conceptoEditado = valor.trim();
-            document.getElementById('badgeConcepto').classList.remove('oculto');
-        }
-    } else if (tipoEdicionActual === 'precio') {
-        if (valor) {
-            const num = parseFloat(valor.toString().replace(/[^0-9.,]/g, '').replace(',', '.'));
-            if (!isNaN(num)) {
-                precioEditado = num;
-                document.getElementById('unitarioLabel').innerText = `Unit: $ ${num.toLocaleString('es-AR')}`;
-                document.getElementById('badgePrecio').classList.remove('oculto');
-            }
-        }
-    }
-    cerrarModalEdicion();
-} */
 
 function abrirModalEdicion(tipo, valorActual) { 
     tipoEdicionActual = tipo; 
