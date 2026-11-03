@@ -503,7 +503,7 @@ function cambioTema() {
     }
 }
 
-function agregarTrabajo() {
+/* function agregarTrabajo() {
     const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
     if(!itemOriginal) { 
         mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
@@ -536,7 +536,7 @@ function agregarTrabajo() {
     sumConcepto.innerText = '-- SELECCIONE TRABAJO --';
     limpiarEdicionesTemporales(); 
     document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
-}
+} */
 
 function limpiarEdicionesTemporales() {
     conceptoEditado = null; precioEditado = null;
@@ -666,6 +666,14 @@ function editarPrecioTemporal() {
 function habilitarEdicionObs() { document.getElementById('obsManual').readOnly = false; document.getElementById('obsManual').focus(); }
 function volverNotasOriginales() { document.getElementById('obsManual').value = notasOriginales; document.getElementById('obsManual').readOnly = true; }
 function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
+
+function agregarTrabajo() {
+    const itemOriginal = dbPrecios.find(i => i.tema === selTema.value && i.concepto === selConcepto.value);
+    
+    if(!itemOriginal) { 
+        mostrarAlertaCorp("Atención", "Seleccione un trabajo primero."); 
+        return; 
+    }
     
     const qty = parseInt(document.getElementById('cantidad').value) || 1;
     const desc = parseInt(document.getElementById('porcentajeDesc').value) || 0;
@@ -685,10 +693,12 @@ function borrarTodasNotas() { document.getElementById('obsManual').value = ""; }
     guardarEstadoLocal(); 
     renderTabla(); 
     
+    // Reseteo visual del formulario al agregar
     document.getElementById('obsManual').value = ""; 
     document.getElementById('cantidad').value = 1; 
     document.getElementById('porcentajeDesc').value = 0; 
     selConcepto.value = ""; 
+    sumConcepto.innerText = '-- SELECCIONE TRABAJO --';
     limpiarEdicionesTemporales(); 
     document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
