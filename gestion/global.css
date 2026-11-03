@@ -259,3 +259,70 @@ details[open] summary .acc-icon-indicator {
     color: var(--ngc-neon);
     z-index: 1;
 }
+
+/* ============================================================== */
+/* TOGGLE SWITCHES PARA FILTROS (MÓDULO COSTOS)                   */
+/* ============================================================== */
+.fuentes-list-container {
+    display: flex;
+    flex-direction: column;
+    background: var(--ngc-bg-input);
+    border: 1px solid var(--ngc-privacy-border);
+    border-radius: 8px;
+    padding: 5px 12px;
+}
+.fuente-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ngc-privacy-border);
+}
+.fuente-row:last-child {
+    border-bottom: none;
+}
+.fuente-label {
+    font-size: 0.85rem;
+    color: var(--ngc-text-main);
+    font-weight: 500;
+}
+
+/* Interruptor (Toggle) */
+.corp-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    margin: 0;
+}
+.corp-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.corp-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--ngc-privacy-border);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+.corp-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--ngc-text-main);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+.corp-toggle input:checked + .corp-toggle-slider {
+    background-color: var(--ngc-neon);
+}
+.corp-toggle input:checked + .corp-toggle-slider:before {
+    transform: translateX(20px);
+    background-color: #ffffff;
+}
