@@ -315,22 +315,29 @@
                     <h4 class="corp-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
                     
                     <div class="row-group">
-                        <label>Rubro</label>
-                        <select id="selTema" class="corp-input native-select">
-                            <option value="">-- SELECCIONE RUBRO --</option>
-                        </select>
-                    </div>
+    <label>Rubro</label>
+    <details id="detTema" class="corp-custom-select">
+        <summary id="sumTema" class="corp-input">-- SELECCIONE RUBRO --</summary>
+        <div id="listTema" class="corp-select-list"></div>
+    </details>
+    <input type="hidden" id="selTema" value="">
+</div>
+
+<div class="row-group">
+    <label>Trabajo</label>
+    <div style="display:flex; gap:8px; width: 100%; align-items: center;">
+        <div style="flex: 1; position: relative;">
+            <details id="detConcepto" class="corp-custom-select" disabled>
+                <summary id="sumConcepto" class="corp-input">-- SELECCIONE TRABAJO --</summary>
+                <div id="listConcepto" class="corp-select-list"></div>
+            </details>
+            <input type="hidden" id="selConcepto" value="">
+        </div>
+        <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
+    </div>
+    <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
+</div>
                     
-                    <div class="row-group">
-                        <label>Trabajo</label>
-                        <div style="display:flex; gap:8px;">
-                            <select id="selConcepto" class="corp-input native-select" disabled>
-                                <option value="">-- SELECCIONE TRABAJO --</option>
-                            </select>
-                            <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
-                        </div>
-                        <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
-                    </div>
                     
                     <div class="row-group-stretch" style="align-items: center;">
                         <div class="flex-1">
