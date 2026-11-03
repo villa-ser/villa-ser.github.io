@@ -60,7 +60,8 @@ function handleResponse(response) {
         });
     }
 
-    // 1. Crear Selector de Fuentes (Filtros)
+    // codigo viejo
+  /*  // 1. Crear Selector de Fuentes (Filtros)
     const fuentesUnicas = [...new Set(allData.map(d => d.fuente))].filter(f => f).sort();
     const container = document.getElementById('fuente-container');
     container.innerHTML = '';
@@ -81,6 +82,55 @@ function handleResponse(response) {
         btn.innerText = f;
         btn.onclick = () => selectFuente(f, btn);
         container.appendChild(btn);
+    }); */  // codigo viejo
+
+        // 1. Crear Selector de Fuentes (Filtros)
+    const fuentesUnicas = [...new Set(allData.map(d => d.fuente))].filter(f => f).sort();
+    const container = document.getElementById('fuente-container');
+    container.innerHTML = '';
+
+    // Función constructora del nuevo diseño (Nombre a izq, Switch a der)
+    function createToggleRow(labelText, value, isAll = false) {
+        const row = document.createElement('div');
+        row.className = 'fuente-row';
+        
+        const label = document.createElement('span');
+        label.className = 'fuente-label';
+        label.innerText = labelText;
+        
+        const toggle = document.createElement('label');
+        toggle.className = 'corp-toggle';
+        
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = true; // Empiezan prendidos
+        
+        if (isAll) {
+            input.id = 'toggle-fuente-all';
+            input.onchange = () => selectFuente('ALL', input);
+        } else {
+            input.className = 'toggle-fuente-item';
+            input.onchange = () => selectFuente(value, input);
+        }
+        
+        const slider = document.createElement('span');
+        slider.className = 'corp-toggle-slider';
+        
+        toggle.appendChild(input);
+        toggle.appendChild(slider);
+        row.appendChild(label);
+        row.appendChild(toggle);
+        
+        return row;
+    }
+
+    // Fila "TODOS"
+    container.appendChild(createToggleRow('TODOS', 'ALL', true));
+    selectedFuentes = [...fuentesUnicas]; 
+
+    // Filas Individuales Dinámicas
+    fuentesUnicas.forEach(f => {
+        container.appendChild(createToggleRow(f, f, false));
     });
 
     // Iniciar desplegables y mostrar App
@@ -89,7 +139,43 @@ function handleResponse(response) {
     document.getElementById('app').classList.remove('oculto');
 }
 
-function selectFuente(fuente, btn) {
+function selectFuente(fuente, checkbox) {
+    const checkAll = document.getElementById('toggle-fuente-all');
+    const allChecks = document.querySelectorAll('.toggle-fuente-item');
+
+    if (fuente === 'ALL') {
+        const isNowActive = checkbox.checked;
+        if (isNowActive) {
+            allChecks.forEach(c => c.checked = true);
+            selectedFuentes = [...new Set(allData.map(d => d.fuente))].filter(f => f);
+        } else {
+            allChecks.forEach(c => c.checked = false);
+            selectedFuentes = [];
+        }
+    } else {
+        // Desmarcar "TODOS" visualmente al tocar uno específico
+        checkAll.checked = false;
+
+        if (checkbox.checked) {
+            selectedFuentes.push(fuente);
+        } else {
+            selectedFuentes = selectedFuentes.filter(f => f !== fuente);
+        }
+        
+        // Si el usuario prende todos uno por uno, encender "TODOS" automáticamente
+        const fuentesTotales = [...new Set(allData.map(d => d.fuente))].filter(f => f);
+        if (selectedFuentes.length === fuentesTotales.length && fuentesTotales.length > 0) {
+            checkAll.checked = true;
+        }
+    }
+    
+    resetDropdownsCascade();
+    updateTemas();
+}
+
+
+// viejo
+/* function selectFuente(fuente, btn) {
     const btnAll = document.getElementById('btn-fuente-all');
     const allButtons = document.querySelectorAll('.fuente-btn:not(#btn-fuente-all)');
 
@@ -119,7 +205,7 @@ function selectFuente(fuente, btn) {
         if (selectedFuentes.length === fuentesTotales.length && fuentesTotales.length > 0) {
             btnAll.classList.add('active');
         }
-    }
+    } */ // viejo
     
     // Resetear cascada al cambiar filtros
     resetDropdownsCascade();
@@ -212,6 +298,21 @@ function resetDropdownsCascade() {
 }
 
 function resetForm() {
+    // Resetear switches al estado inicial (Todos prendidos)
+    const checkAll = document.getElementById('toggle-fuente-all');
+    if(checkAll) checkAll.checked = true;
+    
+    const allChecks = document.querySelectorAll('.toggle-fuente-item');
+    allChecks.forEach(c => c.checked = true);
+    
+    selectedFuentes = [...new Set(allData.map(d => d.fuente))].filter(f => f);
+    
+    resetDropdownsCascade();
+    updateTemas();
+}
+
+// viejo
+/* function resetForm() {
     // Resetear fuentes a estado inicial (Todas)
     const allButtons = document.querySelectorAll('.fuente-btn');
     allButtons.forEach(b => b.classList.add('active'));
@@ -219,7 +320,7 @@ function resetForm() {
     
     resetDropdownsCascade();
     updateTemas();
-          }
+          }  */ // viejo
 
           // ==========================================
 // MENÚ INFERIOR SCROLL (MATCH GLOBAL)
