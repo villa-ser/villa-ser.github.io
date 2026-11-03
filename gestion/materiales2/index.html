@@ -333,4 +333,51 @@
                     <button class="corp-btn" onclick="tomarCaptura()"><i class="fa-solid fa-image"></i> Captura</button>
                     <button class="corp-btn danger-btn" id="btnGenerarPDF" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
-                    <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); backgrou
+                    <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
+                    </button>
+                    <button class="corp-btn" onclick="abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1);">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
+                    </button> 
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- VISTA PREVIA PDF -->
+    <aside class="preview-panel">
+        <div id="plantilla-pdf">
+            <div class="pdf-container">
+                <header class="pdf-header">
+                    <div class="pdf-info-box">
+                        <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
+                        <div class="pdf-row"><b>Cliente</b> <span id="pdf-cliente"></span></div>
+                        <div class="pdf-row"><b>Dirección</b> <span id="pdf-direccion"></span></div>
+                        <div class="pdf-row"><b>Proyecto</b> <span id="pdf-proyecto"></span></div>
+                    </div>
+                </header>
+                <table class="pdf-table">
+                    <thead><tr><th>Material</th><th>Detalle / Nota</th><th>Cant</th><th>Unid</th></tr></thead>
+                    <tbody id="pdf-tbody"></tbody>
+                </table>
+                <div class="pdf-notas-box" style="margin-top: 20px;">
+                    <h3>Notas Adicionales</h3>
+                    <div id="pdf-notas" class="pdf-notas-content"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- MENÚ INFERIOR TIPO APP -->
+<nav class="corp-bottom-nav">
+    <div class="corp-scroll-container" id="corpFooterMenu"></div>
+</nav>
+
+<!-- Scripts obligatorios de Firebase y configuración -->
+<script src="../firebase-config.js"></script>
+<script src="../global.js"></script>
+<script src="script.js"></script>
+</body>
+    </html>
+    
