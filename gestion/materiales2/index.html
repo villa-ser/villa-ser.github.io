@@ -258,29 +258,49 @@
                 <div class="corp-card gpu-accel">
                     <h4 class="corp-card-title"><i class="fa-solid fa-box-open"></i> Agregar Material</h4>
 
-                    <div class="row-group">
+                                        <div class="row-group">
                         <label>1. Categoría</label>
-                        <select id="selTema" class="corp-input native-select"><option value="">-- SELECCIONE --</option></select>
+                        <details id="detTema" class="corp-input corp-custom-select">
+                            <summary id="sumTema">-- SELECCIONE --</summary>
+                            <div id="listTema" class="corp-select-list"></div>
+                        </details>
+                        <input type="hidden" id="selTema" value="">
                     </div>
 
                     <div class="row-group">
                         <label>2. Material</label>
-                        <select id="selConcepto" class="corp-input native-select" disabled><option value="">-- SELECCIONE --</option></select>
+                        <details id="detConcepto" class="corp-input corp-custom-select" disabled style="opacity: 0.5; pointer-events: none;">
+                            <summary id="sumConcepto">-- SELECCIONE --</summary>
+                            <div id="listConcepto" class="corp-select-list"></div>
+                        </details>
+                        <input type="hidden" id="selConcepto" value="">
                     </div>
 
                     <div class="row-group">
                         <label>3. Detalle</label>
-                        <select id="selNivel3" class="corp-input native-select" disabled><option value="">-- SELECCIONE --</option></select>
+                        <details id="detNivel3" class="corp-input corp-custom-select" disabled style="opacity: 0.5; pointer-events: none;">
+                            <summary id="sumNivel3">-- SELECCIONE --</summary>
+                            <div id="listNivel3" class="corp-select-list"></div>
+                        </details>
+                        <input type="hidden" id="selNivel3" value="">
                     </div>
 
                     <div class="row-group-stretch">
                         <div class="flex-1">
                             <label>4. Extra I</label>
-                            <select id="selNivel4" class="corp-input native-select" disabled><option value="">-- SELECCIONE --</option></select>
+                            <details id="detNivel4" class="corp-input corp-custom-select" disabled style="opacity: 0.5; pointer-events: none;">
+                                <summary id="sumNivel4">-- SELECCIONE --</summary>
+                                <div id="listNivel4" class="corp-select-list"></div>
+                            </details>
+                            <input type="hidden" id="selNivel4" value="">
                         </div>
                         <div class="flex-1">
                             <label>5. Extra II</label>
-                            <select id="selNivel5" class="corp-input native-select" disabled><option value="">-- SELECCIONE --</option></select>
+                            <details id="detNivel5" class="corp-input corp-custom-select" disabled style="opacity: 0.5; pointer-events: none;">
+                                <summary id="sumNivel5">-- SELECCIONE --</summary>
+                                <div id="listNivel5" class="corp-select-list"></div>
+                            </details>
+                            <input type="hidden" id="selNivel5" value="">
                         </div>
                     </div>
 
