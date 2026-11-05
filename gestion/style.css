@@ -83,6 +83,14 @@ body {
     box-shadow: 0 1px 3px var(--corp-shadow);
 }
 
+.corp-card-loguin {
+    background: rgba(0, 0, 0, 0.0)
+    border: rgba(0, 0, 0, 0.0)
+    border-radius: 12px; 
+    padding: 20px;
+    box-shadow: 0 1px 3px var(--corp-shadow);
+}
+
 .header-card {
     text-align: center;
     padding: 15px 20px;
