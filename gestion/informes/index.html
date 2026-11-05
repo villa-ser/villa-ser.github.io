@@ -82,10 +82,22 @@
         <button class="corp-btn primary-action" onclick="abrirModalBorradores()"><i class="fa-solid fa-cloud"></i> Borradores</button>
     </div>
     
-    <div class="row-group">
+   <!-- <div class="row-group">
         <label>Nombre del Cliente</label>
         <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Jose Lopez">
+    </div> -->
+                <div class="row-group">
+    <label>Nombre del Cliente</label>
+    <div style="display: flex; gap: 8px;">
+        <!-- Se agrega el evento oninput aquí -->
+        <input type="text" id="cliNombre" class="ngc-input" placeholder="Ej: Familia Gómez" style="flex: 1;" oninput="marcarClienteManual()">
+        
+        <button class="ngc-btn-icon" style="color: var(--ngc-neon); border-color: var(--ngc-neon);" onclick="abrirModalAgendaGlobal()" title="Buscar en Agenda">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
     </div>
+                </div>
+                
     <div class="row-group-stretch">
         <div class="flex-1">
             <label>Dirección</label>
@@ -392,6 +404,33 @@
         </div>
     </div> -->
 
+    <!-- MODAL CLIENTE NO AGENDADO -->
+<div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="border-left: 4px solid var(--ngc-warning);">
+        <i class="fa-solid fa-address-book corp-modal-icon" style="color: var(--ngc-warning);"></i>
+        <h3 style="margin-bottom: 10px;">Cliente no agendado</h3>
+        <p style="margin-bottom: 20px;">Este nombre fue escrito manualmente. Para mantener el orden y guardar en la nube, ¿qué deseas hacer?</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="corp-btn" onclick="window.location.href='../agenda/index.html'"><i class="fa-solid fa-user-plus"></i> Agendar Nuevo Contacto</button>
+            <button class="corp-btn" style="background: transparent; color: var(--ngc-neon); border: 1px solid var(--ngc-neon);" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-magnifying-glass"></i> Buscar de mi Agenda</button>
+            <button class="corp-btn danger-btn" style="background: transparent; color: var(--error-red); border: 1px dashed var(--error-red);" onclick="opcionContinuarSinAgenda()">No por el momento</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN SIN AGENDA -->
+<div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="border-left: 4px solid var(--error-red);">
+        <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">¿Continuar sin Nube?</h3>
+        <p style="margin-bottom: 20px;">Al no estar en tu agenda, este informe NO se guardará en los borradores de la nube. ¿Deseas continuar de todos modos?</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border);" onclick="cerrarModalConfirmarSinAgenda()">Volver atrás</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarContinuarSinAgenda()">Continuar</button>
+        </div>
+    </div>
+</div>
+    
     <!-- NUEVO MENÚ INFERIOR TIPO APP -->
 <nav class="corp-bottom-nav">
     <div class="corp-scroll-container" id="corpFooterMenu"></div>
