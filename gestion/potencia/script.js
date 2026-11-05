@@ -202,26 +202,30 @@ function autoAjustarCircuitos(grado) {
     actualizarGestorCircuitos();
 }
 
-function actualizarGestorCircuitos() {
-    const container = document.getElementById('listaConfigCircuitos');
-    if(!container) return;
-    container.innerHTML = '';
-    circuitos.forEach((c, index) => {
+function actualizarGestorCircuitos() { 
+    const container = document.getElementById('listaConfigCircuitos'); 
+    if(!container) return; 
+    container.innerHTML = ''; 
+    
+    circuitos.forEach((c, index) => { 
+        // Armamos las opciones de tipos de circuito
+        const opciones = ['IUG', 'TUG', 'TUE', 'ACU', 'MBTF'].map(t => 
+            `<div class="corp-select-option" onclick="document.getElementById('detGestor_${index}').removeAttribute('open'); cambiarTipoCircuito(${index}, '${t}')">${t}</div>`
+        ).join('');
+
         container.innerHTML += `
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <b style="color:var(--ngc-text-main); width: 30px;">${c.id}</b>
-                <select class="native-select corp-input" style="padding: 6px; font-size: 0.8rem;" onchange="cambiarTipoCircuito(${index}, this.value)">
-                    <option value="IUG" ${c.tipo==='IUG'?'selected':''}>IUG</option>
-                    <option value="TUG" ${c.tipo==='TUG'?'selected':''}>TUG</option>
-                    <option value="TUE" ${c.tipo==='TUE'?'selected':''}>TUE</option>
-                    <option value="ACU" ${c.tipo==='ACU'?'selected':''}>ACU</option>
-                    <option value="MBTF" ${c.tipo==='MBTF'?'selected':''}>MBTF</option>
-                </select>
-                ${index >= 2 ? `<button onclick="eliminarCircuito(${index})" style="background:transparent; border:none; color:var(--error-red); cursor:pointer;"><i class="fa-solid fa-trash"></i></button>` : ''}
-            </div>`;
-    });
-    actualizarSelectoresEnFormulario();
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;"> 
+                <b style="color:var(--ngc-text-main); width: 30px;">${c.id}</b> 
+                <details id="detGestor_${index}" class="corp-custom-select" style="flex:1;">
+                    <summary class="corp-input" style="padding: 6px; font-size: 0.8rem; min-height: 32px;">${c.tipo}</summary>
+                    <div class="corp-select-list">${opciones}</div>
+                </details>
+                ${index >= 2 ? `<button onclick="eliminarCircuito(${index})" style="background:transparent; border:none; color:var(--error-red); cursor:pointer;"><i class="fa-solid fa-trash"></i></button>` : '<div style="width:14px;"></div>'} 
+            </div>`; 
+    }); 
+    actualizarSelectoresEnFormulario(); 
 }
+
 
 function cambiarTipoCircuito(index, nuevoTipo) {
     circuitos[index].tipo = nuevoTipo;
@@ -266,14 +270,52 @@ function eliminarCircuito(index) {
 }
 
 function actualizarSelectoresEnFormulario() {
-    const selects = document.querySelectorAll('.dynamic-circ-select');
-    selects.forEach(sel => {
-        let valActual = sel.value;
-        sel.innerHTML = '<option value="">-- Circ --</option>';
-        circuitos.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.id}${c.tipo}</option>`; });
-        sel.value = valActual; 
+    const ids = ['IUG', 'TUG', 'ESP'];
+    ids.forEach(sufijo => {
+        const hiddenInput = document.getElementById('circuito' + sufijo);
+        const summary = document.getElementById('sumCircuito' + sufijo);
+        const list = document.getElementById('listCircuito' + sufijo);
+        const details = document.getElementById('detCircuito' + sufijo);
+
+        if(!list || !hiddenInput) return;
+        
+        let valActual = hiddenInput.value;
+        list.innerHTML = '';
+        
+        // Opción vacía por defecto
+        const optVacia = document.createElement('div');
+        optVacia.className = 'corp-select-option';
+        optVacia.innerText = '-- Circ --';
+        optVacia.onclick = () => {
+            hiddenInput.value = '';
+            summary.innerText = '-- Circ --';
+            details.removeAttribute('open');
+        };
+        list.appendChild(optVacia);
+
+        // Opciones reales
+        let existe = false;
+        circuitos.forEach(c => {
+            if (c.id === valActual) existe = true;
+            const opt = document.createElement('div');
+            opt.className = 'corp-select-option';
+            opt.innerText = `${c.id} (${c.tipo})`;
+            opt.onclick = () => {
+                hiddenInput.value = c.id;
+                summary.innerText = `${c.id} (${c.tipo})`;
+                details.removeAttribute('open');
+            };
+            list.appendChild(opt);
+        });
+
+        // Limpiar visualmente si el circuito fue borrado
+        if (valActual && !existe) {
+            hiddenInput.value = '';
+            summary.innerText = '-- Circ --';
+        }
     });
 }
+
 
 function guardarAmbiente() {
     const tipo = document.getElementById('selAmbiente').value;
@@ -303,11 +345,26 @@ function guardarAmbiente() {
         cancelarEdicion();
     } else { listaAmbientes.push(obj); }
 
+    // Reseteo visual del formulario (Acordeones y Valores)
     document.getElementById('selAmbiente').value = "";
-    document.getElementById('inputAncho').value = ""; document.getElementById('inputLargo').value = "";
-    document.getElementById('bocasIUG').value = "0"; document.getElementById('circuitoIUG').value = "";
-    document.getElementById('bocasTUG').value = "0"; document.getElementById('circuitoTUG').value = "";
-    document.getElementById('bocasESP').value = "0"; document.getElementById('circuitoESP').value = ""; document.getElementById('descESP').value = "";
+    document.getElementById('sumAmbiente').innerText = "-- Seleccione Ambiente --";
+    
+    document.getElementById('inputAncho').value = ""; 
+    document.getElementById('inputLargo').value = "";
+    
+    document.getElementById('bocasIUG').value = "0"; 
+    document.getElementById('circuitoIUG').value = "";
+    document.getElementById('sumCircuitoIUG').innerText = "-- Circ --";
+    
+    document.getElementById('bocasTUG').value = "0"; 
+    document.getElementById('circuitoTUG').value = "";
+    document.getElementById('sumCircuitoTUG').innerText = "-- Circ --";
+    
+    document.getElementById('bocasESP').value = "0"; 
+    document.getElementById('circuitoESP').value = "";
+    document.getElementById('sumCircuitoESP').innerText = "-- Circ --";
+    
+    document.getElementById('descESP').value = "";
     
     calcularGradoYRenderizar();
 }
@@ -316,17 +373,44 @@ function editarAmbiente(id) {
     const amb = listaAmbientes.find(a => a.id === id);
     if(!amb) return;
     editandoId = id;
+    
     document.getElementById('titulo-form-ambiente').innerHTML = "<i class='fa-solid fa-pen'></i> Editando Ambiente";
     document.getElementById('btnGuardarAmbiente').innerHTML = "<i class='fa-solid fa-check'></i> Actualizar Ambiente";
     document.getElementById('btnCancelarEdicion').style.display = "flex";
+    
+    // Inyecta valores en campos ocultos y en el texto visible de los acordeones
     document.getElementById('selAmbiente').value = amb.tipo;
-    document.getElementById('inputAncho').value = amb.ancho || ""; document.getElementById('inputLargo').value = amb.largo || "";
-    document.getElementById('bocasIUG').value = amb.bIUG; document.getElementById('circuitoIUG').value = amb.circIUG;
-    document.getElementById('bocasTUG').value = amb.bTUG; document.getElementById('circuitoTUG').value = amb.circTUG;
-    document.getElementById('bocasESP').value = amb.bESP; document.getElementById('circuitoESP').value = amb.circESP;
+    document.getElementById('sumAmbiente').innerText = amb.tipo || "-- Seleccione Ambiente --";
+    
+    document.getElementById('inputAncho').value = amb.ancho || ""; 
+    document.getElementById('inputLargo').value = amb.largo || "";
+    
+    document.getElementById('bocasIUG').value = amb.bIUG; 
+    document.getElementById('circuitoIUG').value = amb.circIUG;
+    
+    // Busca en la lista de circuitos el ID guardado para mostrar "C1 (IUG)" en el acordeón
+    const cIUG = circuitos.find(c => c.id === amb.circIUG);
+    document.getElementById('sumCircuitoIUG').innerText = cIUG ? `${cIUG.id} (${cIUG.tipo})` : "-- Circ --";
+    
+    document.getElementById('bocasTUG').value = amb.bTUG; 
+    document.getElementById('circuitoTUG').value = amb.circTUG;
+    
+    const cTUG = circuitos.find(c => c.id === amb.circTUG);
+    document.getElementById('sumCircuitoTUG').innerText = cTUG ? `${cTUG.id} (${cTUG.tipo})` : "-- Circ --";
+    
+    document.getElementById('bocasESP').value = amb.bESP; 
+    document.getElementById('circuitoESP').value = amb.circESP;
+    
+    const cESP = circuitos.find(c => c.id === amb.circESP);
+    document.getElementById('sumCircuitoESP').innerText = cESP ? `${cESP.id} (${cESP.tipo})` : "-- Circ --";
+    
     document.getElementById('descESP').value = amb.descESP;
+    
     window.scrollTo(0, document.getElementById('step-trabajo').offsetTop);
-}
+        }
+
+
+
 
 function cancelarEdicion() {
     editandoId = null;
@@ -922,3 +1006,101 @@ function generarMenuInferior() {
         footer.appendChild(btn);
     });
                           }
+
+// ==========================================
+// NUEVO MOTOR DE ACORDEONES (POTENCIA)
+// ==========================================
+
+const ambientesOptions = [
+    "Sala de Estar", "Comedor", "Living", "Dormitorio", "Cocina",
+    "Baño", "Toilette", "Pasillo", "Lavadero", "Balcón (Semi)",
+    "Galería (Semi)", "Porche (Semi)", "Cochera (Semi)", "Exterior",
+    "Aire Acondicionado", "Motor / Bomba"
+];
+
+function inicializarAcordeonAmbiente() {
+    const listAmb = document.getElementById('listAmbiente');
+    if (!listAmb) return;
+    listAmb.innerHTML = '';
+    
+    ambientesOptions.forEach(amb => {
+        const opt = document.createElement('div');
+        opt.className = 'corp-select-option';
+        opt.innerText = amb;
+        opt.onclick = () => {
+            document.getElementById('selAmbiente').value = amb;
+            document.getElementById('sumAmbiente').innerText = amb;
+            document.getElementById('detAmbiente').removeAttribute('open');
+            // Si tenías un evento "onchange" nativo para ambiente, dispáralo aquí si es necesario
+        };
+        listAmb.appendChild(opt);
+    });
+}
+// Llama a la inicialización de ambientes al cargar
+document.addEventListener('DOMContentLoaded', inicializarAcordeonAmbiente);
+
+// Función para poblar dinámicamente los circuitos
+function poblarAcordeonCircuito(idSuffix, arrayNombresCircuitos) {
+    const hiddenInput = document.getElementById('circuito' + idSuffix);
+    const summary = document.getElementById('sumCircuito' + idSuffix);
+    const list = document.getElementById('listCircuito' + idSuffix);
+    const details = document.getElementById('detCircuito' + idSuffix);
+
+    if (!hiddenInput || !summary || !list || !details) return;
+    list.innerHTML = '';
+    
+    // Resetear visualmente si el circuito seleccionado fue borrado o ya no existe
+    if (hiddenInput.value && !arrayNombresCircuitos.includes(hiddenInput.value)) {
+        hiddenInput.value = '';
+        summary.innerText = '-- Circ --';
+    }
+
+    // Opción vacía por defecto
+    const optVacia = document.createElement('div');
+    optVacia.className = 'corp-select-option';
+    optVacia.innerText = '-- Circ --';
+    optVacia.onclick = () => {
+        hiddenInput.value = '';
+        summary.innerText = '-- Circ --';
+        details.removeAttribute('open');
+    };
+    list.appendChild(optVacia);
+
+    // Opciones reales de los circuitos que el usuario fue creando
+    arrayNombresCircuitos.forEach(circNombre => {
+        const opt = document.createElement('div');
+        opt.className = 'corp-select-option';
+        opt.innerText = circNombre;
+        opt.onclick = () => {
+            hiddenInput.value = circNombre;
+            summary.innerText = circNombre;
+            details.removeAttribute('open');
+        };
+        list.appendChild(opt);
+    });
+}
+
+// Disparador manual para el Suministro
+function cambiarSuministro(valor, texto) {
+    document.getElementById('selSuministro').value = valor;
+    document.getElementById('sumSuministro').innerText = texto;
+    document.getElementById('detSuministro').removeAttribute('open');
+    if (typeof renderTabla === 'function') renderTabla(); 
+}
+
+// Inteligencia de cierre (Click afuera o al abrir otro)
+document.addEventListener('click', (event) => {
+    const details = document.querySelectorAll('details.corp-custom-select');
+    details.forEach(det => {
+        if (det.open && !det.contains(event.target)) det.removeAttribute('open');
+    });
+});
+document.querySelectorAll('details.corp-custom-select').forEach(det => {
+    det.addEventListener('toggle', (e) => {
+        if (det.open) {
+            document.querySelectorAll('details.corp-custom-select').forEach(other => {
+                if (other !== det) other.removeAttribute('open');
+            });
+        }
+    });
+});
