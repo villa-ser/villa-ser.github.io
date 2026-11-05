@@ -221,7 +221,7 @@
     </div>
 
     <!-- MODAL WHATSAPP -->
-    <div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+ <!--   <div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
         <div class="corp-modal-card">
             <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: var(--success-green);"></i>
             <h3>ENVIAR INFORME</h3>
@@ -238,7 +238,38 @@
                 <button class="corp-btn danger-btn" onclick="cerrarModalWhatsApp()">CANCELAR</button>
             </div>
         </div>
+    </div> -->
+
+    <!-- MODAL: WHATSAPP UNIFICADO -->
+<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar por WhatsApp</h3>
+        <p style="margin-bottom: 20px;">¿A quién deseas enviarle el detalle?</p>
+        
+        <div class="corp-modal-actions">
+            <!-- Botón Contacto Agendado -->
+            <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspGuardadoGlobal()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+            
+            <!-- Opción ingreso manual -->
+            <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                <input type="number" id="inputWspManual" class="corp-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManualGlobal()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Búsqueda en App -->
+            <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWspGlobal()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            
+            <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWspGlobal()">Cancelar</button>
+        </div>
     </div>
+</div>
 
     <!-- MODAL BORRADORES -->
     <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
