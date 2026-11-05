@@ -300,10 +300,46 @@ async function takeScreenshot() {
 }
 
 // ==========================================
-// WHATSAPP
+// WHATSAPP (INTEGRACIÓN GLOBAL)
 // ==========================================
 
 function prepararEnvioWhatsApp() {
+    // 1. Validamos que haya párrafos escritos en el informe
+    if (informeParrafos.length === 0) {
+        if (typeof mostrarAlertaCorp === 'function') {
+            mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
+        } else {
+            alert("Agregá al menos un párrafo al informe primero.");
+        }
+        return;
+    }
+    
+    // 2. Armamos el texto específico del Informe Técnico
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
+    let msg = `*${profNombre.toUpperCase()} - INFORME TÉCNICO*\n`;
+    msg += `*Cliente:* ${document.getElementById('cliNombre').value || 'Sin Nombre'}\n\n`;
+    
+    informeParrafos.forEach(p => msg += `${p}\n\n`);
+    
+    const og = document.getElementById('obsGenerales').value;
+    if (og) msg += `*NOTAS GLOBALES:*\n${og}\n`;
+
+    // 3. Obtenemos el teléfono desde el input del HTML
+    const telefonoCliente = document.getElementById('cliTel').value.trim();
+    
+    // 4. Lanzamos el modal de global.js
+    if (typeof abrirModalWspGlobal === 'function') {
+        abrirModalWspGlobal(telefonoCliente, msg);
+    } else {
+        console.error("No se encontró abrirModalWspGlobal. Verifica que global.js esté enlazado en el HTML.");
+    }
+}
+
+// ==========================================
+// WHATSAPP
+// ==========================================
+
+/*function prepararEnvioWhatsApp() {
     if (listaItems.length === 0) {
         if (typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá trabajos primero.");
         else alert("Agregá trabajos primero.");
@@ -312,14 +348,14 @@ function prepararEnvioWhatsApp() {
     
     const msg = armarMensajeWsp(); // Aprovechamos la función que ya tenías
     abrirModalWspGlobal(telefonoClienteActual, msg);
-}
+} */
 
-function armarMensajeWsp() {
+/*function armarMensajeWsp() {
     let m = `*${(localStorage.getItem('villaser_conf_nombre') || 'PRESUPUESTO').toUpperCase()}*\nProyecto: ${document.getElementById('cliProyecto').value}\n\n`; 
     listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
     m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
     return m;
-}
+} */
 
 /* function abrirModalWhatsApp() {
     if (informeParrafos.length === 0) return alert("Debes cargar información primero.");
@@ -337,17 +373,17 @@ function armarMensajeWsp() {
     }
 } */
 
-function cerrarModalWhatsApp() {
+/* function cerrarModalWhatsApp() {
     document.getElementById('modalWhatsApp').classList.add('oculto');
-}
+} */
 
-function enviarWspManual() {
+/*function enviarWspManual() {
     const numero = document.getElementById('inputWspManual').value.trim();
     if (!numero) return alert("Por favor, ingresá un número válido.");
     procesarEnvioWsp(numero);
-}
+} */
 
-function procesarEnvioWsp(numero) {
+/*function procesarEnvioWsp(numero) {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
     let text = `*${profNombre.toUpperCase()} - INFORME TÉCNICO*\n`;
     text += `*Cliente:* ${document.getElementById('cliNombre').value}\n\n`;
@@ -363,7 +399,7 @@ function procesarEnvioWsp(numero) {
     
     window.open(`https://wa.me/${tel}?text=${encodeURIComponent(text)}`, '_blank');
     cerrarModalWhatsApp();
-}
+} */
 
 // ==========================================
 // NUBE (FIREBASE)
