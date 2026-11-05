@@ -197,20 +197,16 @@ label {
 }
 
 /* ================== MENÚ FLOTANTE ================== */
-.corp-fab {
-    position: fixed; top: 15px; right: 15px; 
-    background: var(--corp-card-bg); border: var(--corp-border);
-    width: 45px; height: 45px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px var(--corp-shadow);
-    z-index: 9999; cursor: pointer;
+
+/* ================== MENÚ DE USUARIO INTEGRADO (BARRA SUPERIOR) ================== */
+.corp-fab-inline {
+    display: flex;
+    align-items: center;
+    position: relative;
 }
-.corp-fab i { color: var(--corp-accent); font-size: 1.2rem; }
 
 .corp-dropdown {
     position: absolute; 
-    top: 60px; /* Aumentamos la distancia para separarlo del botón */
-    right: 0; 
     width: 200px;
     background: var(--corp-card-bg); 
     border: var(--corp-border);
@@ -219,8 +215,33 @@ label {
     padding: 8px; 
     z-index: 10000;
 }
-
 [data-theme="light"] .corp-dropdown { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+
+
+/*.corp-fab {
+    position: fixed; top: 15px; right: 15px; 
+    background: var(--corp-card-bg); border: var(--corp-border);
+    width: 45px; height: 45px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px var(--corp-shadow);
+    z-index: 9999; cursor: pointer;
+} */
+.corp-fab i { color: var(--corp-accent); font-size: 1.2rem; }
+
+/*.corp-dropdown {
+    position: absolute; 
+    top: 60px; /* Aumentamos la distancia para separarlo del botón */
+/*    right: 0; 
+    width: 200px;
+    background: var(--corp-card-bg); 
+    border: var(--corp-border);
+    border-radius: 12px; 
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
+    padding: 8px; 
+    z-index: 10000;
+}*/
+
+/*[data-theme="light"] .corp-dropdown { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }*/
 .dropdown-email {
     color: var(--corp-text-faded); font-size: 0.75rem; text-align: center; 
     margin-bottom: 5px; padding-bottom: 8px; border-bottom: 1px solid var(--corp-border); 
@@ -356,6 +377,22 @@ label {
 
 /* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
 .logo-header-oscuro, .logo-header-claro {
+    display: none;
+}
+.logo-header-oscuro { display: block; }
+[data-theme="light"] .logo-header-oscuro { display: none; }
+[data-theme="light"] .logo-header-claro { display: block; }
+
+#mainHeader {
+    margin-top: 15px; 
+}
+
+#appScreen {
+    margin-top: 25px; /* Empuja la grilla un poco más abajo dando el aire solicitado */
+}
+
+/* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
+/*.logo-header-oscuro, .logo-header-claro {
     width: 75px;
     height: auto;
     margin: 0 auto 15px auto;
@@ -367,8 +404,8 @@ label {
 
 #mainHeader {
     margin-top: auto; /* Empuja la cabecera y el login al centro exacto */
-}
+/*}
 
 #appScreen {
     margin-top: 75px !important; /* ÁREA SEGURA: Distancia estricta para no pisar el botón de perfil */
-}
+/*} */
