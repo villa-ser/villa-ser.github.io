@@ -59,7 +59,7 @@ function seleccionarContacto(nombre, dir, tel = "") {
     mostrarToast("Cliente Seleccionado", "Importado de agenda.");
 }
 
-function iniciarInforme() {
+/*function iniciarInforme() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if(!nombre) { 
         mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente."); 
@@ -70,7 +70,7 @@ function iniciarInforme() {
         return; 
     }
     avanzarPasoTrabajo();
-}
+} */
 
 function avanzarPasoTrabajo() {
     document.getElementById('step-cliente').classList.add('oculto');
@@ -79,8 +79,8 @@ function avanzarPasoTrabajo() {
     actualizarVistaPreviews();
 }
 
-function accionAgendarCliente() {
-    const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
+*/function accionAgendarCliente() {
+   /* const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
     const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
     window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
 }
@@ -103,7 +103,7 @@ function ejecutarContinuarSinAgenda() {
     cerrarModalConfirmarSinAgenda();
     permiteGuardarNube = false;
     avanzarPasoTrabajo();
-}
+} */
 
 // ==========================================
 // MODALES DE ALERTA Y REINICIO
@@ -626,6 +626,10 @@ function seleccionarContacto(nombre, dir, tel = "") {
     mostrarToast("Cliente Seleccionado", "Importado de agenda.");
 }
 
+// ==========================================
+// CONTROL DE FLUJO DE CLIENTE
+// ==========================================
+
 function marcarClienteManual() {
     clienteDesdeAgenda = false;
     permiteGuardarNube = false;
@@ -633,6 +637,54 @@ function marcarClienteManual() {
 
 // Botón "Comenzar Informe"
 function iniciarInforme() {
+    const nombre = document.getElementById('cliNombre').value.trim();
+    
+    if(!nombre) { 
+        if(typeof mostrarAlertaCorp === 'function') {
+            mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
+        } else {
+            alert("Por favor, ingresá el nombre.");
+        }
+        return; 
+    }
+    
+    // Si el cliente fue tipeado a mano, mostramos las opciones de la agenda
+    if (!clienteDesdeAgenda) { 
+        document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
+        return; 
+    }
+    
+    avanzarPasoTrabajo();
+}
+
+// Opciones del Modal
+function opcionBuscarAgenda() { 
+    document.getElementById('modalAgendarCliente').classList.add('oculto'); 
+    if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
+}
+
+function opcionContinuarSinAgenda() {
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
+}
+
+function cerrarModalConfirmarSinAgenda() {
+    document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
+}
+
+function ejecutarContinuarSinAgenda() {
+    cerrarModalConfirmarSinAgenda();
+    permiteGuardarNube = false;
+    avanzarPasoTrabajo();
+}
+
+/*function marcarClienteManual() {
+    clienteDesdeAgenda = false;
+    permiteGuardarNube = false;
+} */
+
+// Botón "Comenzar Informe"
+/*function iniciarInforme() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if(!nombre) { 
         if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
@@ -644,7 +696,7 @@ function iniciarInforme() {
         return; 
     }
     avanzarPasoTrabajo();
-}
+} */
 
 function avanzarPasoTrabajo() {
     document.getElementById('step-cliente').classList.add('oculto');
@@ -654,10 +706,10 @@ function avanzarPasoTrabajo() {
 }
 
 // Opciones del Modal de Advertencia de Agenda
-function opcionBuscarAgenda() { 
+/*function opcionBuscarAgenda() { 
     document.getElementById('modalAgendarCliente').classList.add('oculto'); 
     if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
-}
+}*/
 
 function accionAgendarCliente() {
     const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
@@ -665,16 +717,16 @@ function accionAgendarCliente() {
     window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
 }
 
-function opcionContinuarSinAgenda() {
+/*function opcionContinuarSinAgenda() {
     document.getElementById('modalAgendarCliente').classList.add('oculto');
     document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
-}
+} */
 
-function ejecutarContinuarSinAgenda() {
+/*function ejecutarContinuarSinAgenda() {
     document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
     permiteGuardarNube = false;
     avanzarPasoTrabajo();
-}
+} */
 
 // Función que intercepta el botón de Nuevo desde el modal Global
 function ejecutarNuevoInforme() {
