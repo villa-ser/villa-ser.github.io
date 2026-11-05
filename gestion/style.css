@@ -379,7 +379,7 @@ label {
 /* Control de tamaño estricto para los logos del Login */
 .logo-header-oscuro, .logo-header-claro {
     display: none;
-    width: 200px; /* Tamaño controlado para que no se vea gigante */
+    width: 220px; /* Tamaño controlado para que no se vea gigante */
     max-width: 100%;
     height: auto;
     margin: 0 auto 15px auto; /* Centrado automático */
