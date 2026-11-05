@@ -186,6 +186,27 @@ function mostrarAppPrincipal(emailUsuario) {
     document.getElementById('loginScreen').classList.add('oculto');
     document.getElementById('mainHeader').classList.add('oculto');
     
+    const bannerPwa = document.getElementById('pwaInstallBanner');
+    if (bannerPwa) bannerPwa.classList.add('oculto');
+    
+    const emailDisplay = document.getElementById('userEmailDisplay');
+    if (emailDisplay) emailDisplay.innerText = emailUsuario;
+
+    // Obtener y formatear el primer nombre configurado en la app
+    const nombreCompleto = localStorage.getItem('villaser_conf_nombre') || 'Usuario';
+    const primerNombre = nombreCompleto.split(" ")[0]; // Extrae solo la primera palabra
+    const nameDisplay = document.getElementById('userFirstNameDisplay');
+    if (nameDisplay) nameDisplay.innerText = "Usuario: " + primerNombre;
+
+    document.getElementById('userMenuWrapper').style.display = 'flex';
+    document.getElementById('appScreen').classList.remove('oculto');
+}
+
+
+/*function mostrarAppPrincipal(emailUsuario) {
+    document.getElementById('loginScreen').classList.add('oculto');
+    document.getElementById('mainHeader').classList.add('oculto');
+    
     // Ocultar banner de PWA al ingresar a la app
     const bannerPwa = document.getElementById('pwaInstallBanner');
     if (bannerPwa) bannerPwa.classList.add('oculto');
@@ -195,7 +216,7 @@ function mostrarAppPrincipal(emailUsuario) {
 
     document.getElementById('userMenuWrapper').style.display = 'flex';
     document.getElementById('appScreen').classList.remove('oculto');
-}
+} */
 
 function toggleUserMenu() {
     document.getElementById('userDropdown').classList.toggle('oculto');
