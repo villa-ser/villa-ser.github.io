@@ -376,7 +376,31 @@ label {
 .oculto { display: none !important; }
 
 /* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
+/* Control de tamaño estricto para los logos del Login */
 .logo-header-oscuro, .logo-header-claro {
+    display: none;
+    width: 200px; /* Tamaño controlado para que no se vea gigante */
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 15px auto; /* Centrado automático */
+}
+
+/* Lógica de modo oscuro/claro para el Login */
+.logo-header-oscuro { display: block; }
+[data-theme="light"] .logo-header-oscuro { display: none; }
+[data-theme="light"] .logo-header-claro { display: block; }
+
+#mainHeader {
+    margin-top: 15px; 
+}
+
+#appScreen {
+    margin-top: 25px; 
+}
+
+
+/* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
+/*.logo-header-oscuro, .logo-header-claro {
     display: none;
 }
 .logo-header-oscuro { display: block; }
@@ -389,7 +413,7 @@ label {
 
 #appScreen {
     margin-top: 25px; /* Empuja la grilla un poco más abajo dando el aire solicitado */
-}
+/*} */
 
 /* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
 /*.logo-header-oscuro, .logo-header-claro {
