@@ -224,8 +224,67 @@
         </aside>
     </div>
 
+    <!-- MODAL: AGENDA GLOBAL -->
+<div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-users"></i> Contactos</h3>
+        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar nombre o dirección..." oninput="filtrarAgendaGlobal()" style="margin-bottom: 10px;">
+        <div id="listaAgenda" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalAgendaGlobal()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL: BORRADORES GLOBAL -->
+<div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Borradores en Nube</h3>
+        <div id="listaBorradores" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalBorradoresGlobal()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL GUARDAR BORRADOR (Reemplaza prompt nativo) -->
+<div id="modalGuardarBorrador" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-cloud-arrow-up corp-modal-icon" style="color: var(--ngc-neon);"></i>
+        <h3 style="margin-bottom: 10px; text-align: left; justify-content: flex-start;">Guardar Borrador</h3>
+        <p style="margin-bottom: 15px; text-align: left;">Verifica o edita el nombre del archivo:</p>
+        <input type="text" id="inputNombreBorrador" class="corp-input" style="margin-bottom: 20px; font-weight: 600; font-size: 1rem;">
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalGuardarBorrador()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="ejecutarGuardarBorrador()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR BORRADOR (Reemplaza confirm nativo) -->
+<div id="modalConfirmarEliminar" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-trash-can corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Eliminar Borrador</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de eliminar este borrador de la nube? Esta acción no se puede deshacer.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalEliminarBorrador()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarEliminarBorrador()">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR NUEVO INFORME -->
+<div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Nuevo Informe</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de iniciar un nuevo informe? Se borrarán los datos actuales no guardados.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalConfirmarNuevoGlobal()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevoInforme()">Aceptar</button>
+        </div>
+    </div>
+</div>
+    
     <!-- MODALES DE CONTROL CLONADOS DE PRESUPUESTO -->
-<div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
+<!--<div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-address-book corp-modal-icon"></i>
         <h3>¿Vincular a la Agenda?</h3>
@@ -236,9 +295,9 @@
             <button class="corp-btn danger-btn" onclick="opcionContinuarSinAgenda()">Continuar sin Nube</button>
         </div>
     </div>
-</div>
+</div> -->
 
-<div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
+<!-- <div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
         <h3 style="margin-bottom: 10px;">¿Continuar sin Nube?</h3>
@@ -248,7 +307,7 @@
             <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarContinuarSinAgenda()">Continuar</button>
         </div>
     </div>
-</div>
+</div> -->
 
 <div id="modalAlertaCorp" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
@@ -308,7 +367,7 @@
 </div>
 
     <!-- MODAL BORRADORES -->
-    <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+<!--    <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
         <div class="corp-modal-card" style="height: 70vh; display: flex; flex-direction: column; max-width: 420px; width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin: 0; color: #e91e63;"><i class="fa-solid fa-cloud-arrow-down"></i> Borradores</h3>
@@ -316,7 +375,7 @@
             </div>
             <div id="listaBorradores" class="modal-list-container" style="flex: 1; max-height: none;"></div>
         </div>
-    </div>
+    </div>  -->
 
     <!-- MODAL ADVERTENCIA NO AGENDADO -->
  <!--   <div id="modalAdvertenciaAgenda" class="modal-overlay oculto gpu-accel">
