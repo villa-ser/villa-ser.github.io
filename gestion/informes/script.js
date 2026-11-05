@@ -8,7 +8,7 @@ let informeParrafos = [];
 let nombreBorradorActual = null; 
 let telefonoClienteActual = "";
 
-// Controles de Nube (Flujo Cliente Agendado clonado de Presupuesto)
+// Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 
@@ -25,8 +25,6 @@ function arrancarModulo() {
     } catch (e) {
         console.warn("Aviso: Firebase no pudo iniciar.", e);
     }
-    
-    // Generar menú inferior al cargar
     generarMenuInferior();
 }
 
@@ -45,8 +43,9 @@ function obtenerUid() {
 }
 
 // ==========================================
-// INTEGRACIÓN AGENDA Y FLUJO (CLON DE PRESUPUESTO)
+// INTEGRACIÓN AGENDA Y FLUJO DE CLIENTE
 // ==========================================
+
 function seleccionarContacto(nombre, dir, tel = "") {
     document.getElementById('cliNombre').value = nombre; 
     document.getElementById('cliDireccion').value = dir;
@@ -59,18 +58,29 @@ function seleccionarContacto(nombre, dir, tel = "") {
     mostrarToast("Cliente Seleccionado", "Importado de agenda.");
 }
 
-/*function iniciarInforme() {
+function marcarClienteManual() {
+    clienteDesdeAgenda = false;
+    permiteGuardarNube = false;
+}
+
+function iniciarInforme() {
     const nombre = document.getElementById('cliNombre').value.trim();
     if(!nombre) { 
-        mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente."); 
+        if(typeof mostrarAlertaCorp === 'function') {
+            mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
+        } else {
+            alert("Por favor, ingresá el nombre.");
+        }
         return; 
     }
+    
     if (!clienteDesdeAgenda) { 
         document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
         return; 
     }
+    
     avanzarPasoTrabajo();
-} */
+}
 
 function avanzarPasoTrabajo() {
     document.getElementById('step-cliente').classList.add('oculto');
@@ -79,15 +89,15 @@ function avanzarPasoTrabajo() {
     actualizarVistaPreviews();
 }
 
-*/function accionAgendarCliente() {
-   /* const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
-    const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
-    window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
-}
-
 function opcionBuscarAgenda() { 
     document.getElementById('modalAgendarCliente').classList.add('oculto'); 
     if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
+}
+
+function accionAgendarCliente() {
+    const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
+    const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
+    window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
 }
 
 function opcionContinuarSinAgenda() {
@@ -103,19 +113,6 @@ function ejecutarContinuarSinAgenda() {
     cerrarModalConfirmarSinAgenda();
     permiteGuardarNube = false;
     avanzarPasoTrabajo();
-} */
-
-// ==========================================
-// MODALES DE ALERTA Y REINICIO
-// ==========================================
-function mostrarAlertaCorp(titulo, mensaje) {
-    document.getElementById('modalAlertaTitulo').innerText = titulo;
-    document.getElementById('modalAlertaMensaje').innerText = mensaje;
-    document.getElementById('modalAlertaCorp').classList.remove('oculto');
-}
-
-function cerrarModalAlertaCorp() {
-    document.getElementById('modalAlertaCorp').classList.add('oculto');
 }
 
 function ejecutarNuevoInforme() {
@@ -135,6 +132,32 @@ function ejecutarNuevoInforme() {
     document.getElementById('step-trabajo').classList.add('oculto');
     document.getElementById('step-cliente').classList.remove('oculto');
     renderizarParrafos();
+}
+
+// ==========================================
+// MODALES DE ALERTA COMPARTIDOS
+// ==========================================
+function mostrarAlertaCorp(titulo, mensaje) {
+    document.getElementById('modalAlertaTitulo').innerText = titulo;
+    document.getElementById('modalAlertaMensaje').innerText = mensaje;
+    document.getElementById('modalAlertaCorp').classList.remove('oculto');
+}
+
+function cerrarModalAlertaCorp() {
+    document.getElementById('modalAlertaCorp').classList.add('oculto');
+}
+
+function mostrarToast(titulo, mensaje) {
+    const toast = document.getElementById('toastCliente');
+    if (!toast) return;
+    document.getElementById('toastTitle').innerText = titulo;
+    document.getElementById('toastMessage').innerText = mensaje;
+    toast.classList.remove('oculto');
+    setTimeout(() => toast.classList.add('mostrar'), 100);
+    setTimeout(() => {
+        toast.classList.remove('mostrar');
+        setTimeout(() => toast.classList.add('oculto'), 400);
+    }, 4000);
 }
 
 // ==========================================
@@ -208,7 +231,6 @@ function actualizarVistaPreviews() {
         previewGlobales.style.display = 'none';
     }
 
-    // Actualizar Mapeo de plantilla PDF
     const pdfFecha = document.getElementById('pdf-fecha');
     const pdfCliente = document.getElementById('pdf-cliente');
     const pdfDir = document.getElementById('pdf-dir');
@@ -315,9 +337,10 @@ async function tomarCaptura() {
 // ==========================================
 // WHATSAPP (INTEGRACIÓN GLOBAL)
 // ==========================================
-/*function prepararEnvioWhatsApp() {
+function prepararEnvioWhatsApp() {
     if (informeParrafos.length === 0) {
-        mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
+        if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
+        else alert("Agregá al menos un párrafo.");
         return;
     }
     
@@ -336,14 +359,10 @@ async function tomarCaptura() {
     } else {
         console.error("No se encontró abrirModalWspGlobal. Verifica que global.js esté enlazado.");
     }
-} */
+}
 
 // ==========================================
 // BORRADORES EN LA NUBE (FIREBASE)
-// ==========================================
-
-// ==========================================
-// BORRADORES EN LA NUBE CON MODALES FLOTANTES
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     const uid = obtenerUid();
@@ -363,7 +382,6 @@ function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     let nombreSugerido = `${nombreCli}_${proyCli}_${fechaHoy}`;
 
     if (!autoGuardado) {
-        // En lugar de prompt(), abrimos el Modal
         document.getElementById('inputNombreBorrador').value = nombreBorradorActual || nombreSugerido;
         document.getElementById('modalGuardarBorrador').classList.remove('oculto');
     } else {
@@ -411,7 +429,6 @@ function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
       });
 }
 
-// Lógica para Eliminar Borrador con Modal
 let idBorradorAEliminar = null;
 let btnBorradorAEliminar = null;
 
@@ -445,56 +462,6 @@ function ejecutarEliminarBorrador() {
             cerrarModalEliminarBorrador();
         });
 }
-
-/* async function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
-  /*  const uid = obtenerUid();
-    if (!uid || !db) {
-        if (mostrarAlerta) mostrarAlertaCorp("Error", "Sesión no detectada para la nube.");
-        return;
-    }
-    if (!permiteGuardarNube) {
-        if (mostrarAlerta) mostrarAlertaCorp("Bloqueado", "Cliente no agendado. No se guarda en nube.");
-        return;
-    }
-    if (informeParrafos.length === 0) return;
-    
-    const nombreCli = (document.getElementById('cliNombre').value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
-    const proyCli = (document.getElementById('cliProyecto').value.trim() || 'Informe').replace(/\s+/g, '_');
-    const fechaHoy = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
-    
-    let nombreSugerido = `${nombreCli}_${proyCli}_${fechaHoy}`;
-    let nombreFinal = nombreSugerido;
-
-    if (!autoGuardado) {
-        const nombreIngresado = prompt("Guardar borrador como:", nombreBorradorActual || nombreSugerido);
-        if (nombreIngresado === null) return;
-        nombreFinal = nombreIngresado.trim() || nombreSugerido;
-        nombreBorradorActual = nombreFinal;
-    } else {
-        nombreFinal = nombreBorradorActual || nombreSugerido;
-    }
-
-    const estado = {
-        cliNombre: document.getElementById('cliNombre').value,
-        cliDireccion: document.getElementById('cliDireccion').value,
-        cliProyecto: document.getElementById('cliProyecto').value,
-        obsGenerales: document.getElementById('obsGenerales').value,
-        parrafos: informeParrafos,
-        fechaGuardado: Date.now(),
-        nombreBorrador: nombreFinal,
-        telefonoClienteActual: telefonoClienteActual 
-    };
-    
-    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
-    
-    try {
-        await db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).set(estado);
-        if (mostrarAlerta) mostrarToast("Guardado", "Sincronizado con la nube.");
-    } catch (e) {
-        console.error("Error Firebase:", e);
-        if (mostrarAlerta) mostrarAlertaCorp("Error", "Error al guardar el borrador.");
-    }
-} */
 
 async function abrirModalBorradores() {
     const nombre = document.getElementById('cliNombre').value.trim();
@@ -581,198 +548,9 @@ async function cargarBorradorNube(docId) {
     }
 }
 
-/*function eliminarBorradorNube(docId, btnElement) {
-    const uid = obtenerUid();
-    if (!uid || !db) return;
-    if (confirm("¿Eliminar este borrador de la nube?")) {
-        db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).delete().then(() => {
-            btnElement.closest('div.modal-list-item').remove();
-            mostrarToast("Eliminado", "Borrador eliminado correctamente.");
-        });
-    }
-} */
-
 // ==========================================
-// UTILIDADES COMPARTIDAS (TOAST Y MENÚ)
+// MENÚ INFERIOR TIPO APP
 // ==========================================
-function mostrarToast(titulo, mensaje) {
-    const toast = document.getElementById('toastCliente');
-    if (!toast) return;
-    
-    document.getElementById('toastTitle').innerText = titulo;
-    document.getElementById('toastMessage').innerText = mensaje;
-    toast.classList.remove('oculto');
-    setTimeout(() => toast.classList.add('mostrar'), 100);
-    setTimeout(() => {
-        toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400);
-    }, 4000);
-}
-
-// ==========================================
-// CONEXIÓN CON GLOBAL.JS (AGENDA Y WSP)
-// ==========================================
-
-// Esta función recibe el clic desde el modal de Agenda Global
-function seleccionarContacto(nombre, dir, tel = "") {
-    document.getElementById('cliNombre').value = nombre; 
-    document.getElementById('cliDireccion').value = dir;
-    telefonoClienteActual = tel; 
-    
-    clienteDesdeAgenda = true; 
-    permiteGuardarNube = true; 
-    
-    if (typeof cerrarModalAgendaGlobal === 'function') cerrarModalAgendaGlobal(); 
-    mostrarToast("Cliente Seleccionado", "Importado de agenda.");
-}
-
-// ==========================================
-// CONTROL DE FLUJO DE CLIENTE
-// ==========================================
-
-function marcarClienteManual() {
-    clienteDesdeAgenda = false;
-    permiteGuardarNube = false;
-}
-
-// Botón "Comenzar Informe"
-function iniciarInforme() {
-    const nombre = document.getElementById('cliNombre').value.trim();
-    
-    if(!nombre) { 
-        if(typeof mostrarAlertaCorp === 'function') {
-            mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
-        } else {
-            alert("Por favor, ingresá el nombre.");
-        }
-        return; 
-    }
-    
-    // Si el cliente fue tipeado a mano, mostramos las opciones de la agenda
-    if (!clienteDesdeAgenda) { 
-        document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
-        return; 
-    }
-    
-    avanzarPasoTrabajo();
-}
-
-// Opciones del Modal
-function opcionBuscarAgenda() { 
-    document.getElementById('modalAgendarCliente').classList.add('oculto'); 
-    if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
-}
-
-function opcionContinuarSinAgenda() {
-    document.getElementById('modalAgendarCliente').classList.add('oculto');
-    document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
-}
-
-function cerrarModalConfirmarSinAgenda() {
-    document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
-}
-
-function ejecutarContinuarSinAgenda() {
-    cerrarModalConfirmarSinAgenda();
-    permiteGuardarNube = false;
-    avanzarPasoTrabajo();
-}
-
-/*function marcarClienteManual() {
-    clienteDesdeAgenda = false;
-    permiteGuardarNube = false;
-} */
-
-// Botón "Comenzar Informe"
-/*function iniciarInforme() {
-    const nombre = document.getElementById('cliNombre').value.trim();
-    if(!nombre) { 
-        if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
-        else alert("Por favor, ingresá el nombre.");
-        return; 
-    }
-    if (!clienteDesdeAgenda) { 
-        document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
-        return; 
-    }
-    avanzarPasoTrabajo();
-} */
-
-function avanzarPasoTrabajo() {
-    document.getElementById('step-cliente').classList.add('oculto');
-    document.getElementById('step-trabajo').classList.remove('oculto');
-    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
-    actualizarVistaPreviews();
-}
-
-// Opciones del Modal de Advertencia de Agenda
-/*function opcionBuscarAgenda() { 
-    document.getElementById('modalAgendarCliente').classList.add('oculto'); 
-    if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
-}*/
-
-function accionAgendarCliente() {
-    const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
-    const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
-    window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
-}
-
-/*function opcionContinuarSinAgenda() {
-    document.getElementById('modalAgendarCliente').classList.add('oculto');
-    document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
-} */
-
-/*function ejecutarContinuarSinAgenda() {
-    document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
-    permiteGuardarNube = false;
-    avanzarPasoTrabajo();
-} */
-
-// Función que intercepta el botón de Nuevo desde el modal Global
-function ejecutarNuevoInforme() {
-    if (typeof cerrarModalConfirmarNuevoGlobal === 'function') cerrarModalConfirmarNuevoGlobal(); 
-    
-    document.getElementById('cliNombre').value = '';
-    document.getElementById('cliDireccion').value = '';
-    document.getElementById('cliProyecto').value = '';
-    document.getElementById('obsGenerales').value = '';
-    
-    informeParrafos = [];
-    clienteDesdeAgenda = false;
-    permiteGuardarNube = true;
-    nombreBorradorActual = null;
-    telefonoClienteActual = "";
-    
-    document.getElementById('step-trabajo').classList.add('oculto');
-    document.getElementById('step-cliente').classList.remove('oculto');
-    renderizarParrafos();
-}
-
-// Arma el mensaje y se lo pasa a WhatsApp Global
-function prepararEnvioWhatsApp() {
-    if (informeParrafos.length === 0) {
-        if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
-        else alert("Agregá al menos un párrafo.");
-        return;
-    }
-    
-    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
-    let msg = `*${profNombre.toUpperCase()} - INFORME TÉCNICO*\n`;
-    msg += `*Cliente:* ${document.getElementById('cliNombre').value || 'Sin Nombre'}\n`;
-    msg += `*Proyecto:* ${document.getElementById('cliProyecto').value || '-'}\n\n`;
-    
-    informeParrafos.forEach(p => msg += `${p}\n\n`);
-    
-    const og = document.getElementById('obsGenerales').value;
-    if (og) msg += `*NOTAS GLOBALES:*\n${og}\n`;
-
-    if (typeof abrirModalWspGlobal === 'function') {
-        abrirModalWspGlobal(telefonoClienteActual, msg);
-    } else {
-        console.error("No se encontró abrirModalWspGlobal. Verifica que global.js esté enlazado.");
-    }
-        }
-
 function generarMenuInferior() {
     const footer = document.getElementById('corpFooterMenu'); 
     if (!footer) return;
@@ -796,5 +574,4 @@ function generarMenuInferior() {
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; };
         footer.appendChild(btn);
     });
-}
-
+        }
