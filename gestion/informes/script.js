@@ -302,7 +302,26 @@ async function takeScreenshot() {
 // ==========================================
 // WHATSAPP
 // ==========================================
-function abrirModalWhatsApp() {
+
+function prepararEnvioWhatsApp() {
+    if (listaItems.length === 0) {
+        if (typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá trabajos primero.");
+        else alert("Agregá trabajos primero.");
+        return;
+    }
+    
+    const msg = armarMensajeWsp(); // Aprovechamos la función que ya tenías
+    abrirModalWspGlobal(telefonoClienteActual, msg);
+}
+
+function armarMensajeWsp() {
+    let m = `*${(localStorage.getItem('villaser_conf_nombre') || 'PRESUPUESTO').toUpperCase()}*\nProyecto: ${document.getElementById('cliProyecto').value}\n\n`; 
+    listaItems.forEach(i => { m += `• ${i.concepto} (x${i.qty}) -> *$${i.total.toLocaleString('es-AR')}*\n`; }); 
+    m += `\n*TOTAL: ${document.getElementById('totalDisplay').innerText.split(': ')[1]}*`; 
+    return m;
+}
+
+/* function abrirModalWhatsApp() {
     if (informeParrafos.length === 0) return alert("Debes cargar información primero.");
     const telGuardado = document.getElementById('cliTel').value.trim();
     document.getElementById('inputWspManual').value = ""; 
@@ -316,7 +335,7 @@ function abrirModalWhatsApp() {
     } else {
         btnWspGuardado.style.display = 'none';
     }
-}
+} */
 
 function cerrarModalWhatsApp() {
     document.getElementById('modalWhatsApp').classList.add('oculto');
