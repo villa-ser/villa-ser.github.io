@@ -107,27 +107,14 @@
                     <input type="hidden" id="editandoId" value="">
                     
                     <div class="row-group">
-                        <label>Ambiente o Carga</label>
-                        <select id="selAmbiente" class="corp-input native-select">
-                            <option value="">-- Seleccione Ambiente --</option>
-                            <option value="Sala de Estar">Sala de Estar</option>
-                            <option value="Comedor">Comedor</option>
-                            <option value="Living">Living</option>
-                            <option value="Dormitorio">Dormitorio</option>
-                            <option value="Cocina">Cocina</option>
-                            <option value="Baño">Baño</option>
-                            <option value="Toilette">Toilette</option>
-                            <option value="Pasillo">Pasillo</option>
-                            <option value="Lavadero">Lavadero</option>
-                            <option value="Balcón (Semi)">Balcón (Semi al 50%)</option>
-                            <option value="Galería (Semi)">Galería (Semi al 50%)</option>
-                            <option value="Porche (Semi)">Porche (Semi al 50%)</option>
-                            <option value="Cochera (Semi)">Cochera (Semi al 50%)</option>
-                            <option value="Exterior">Exterior</option>
-                            <option value="Aire Acondicionado">Aire Acond. (Carga)</option>
-                            <option value="Motor / Bomba">Motor / Bomba (Carga)</option>
-                        </select>
+    <label>Ambiente o Carga</label>
+    <details id="detAmbiente" class="corp-custom-select">
+        <summary id="sumAmbiente" class="corp-input">-- Seleccione Ambiente --</summary>
+        <div id="listAmbiente" class="corp-select-list"></div>
+    </details>
+    <input type="hidden" id="selAmbiente" value="">
                     </div>
+                    
 
                     <div class="row-group-stretch">
                         <div class="flex-1">
@@ -140,24 +127,37 @@
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; background: var(--ngc-bg-input); padding: 12px; border-radius: 8px; border: 1px dashed var(--ngc-privacy-border);">
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas IUG</label>
-                            <input type="number" id="bocasIUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <select id="circuitoIUG" class="corp-input native-select dynamic-circ-select" style="margin-top:5px; font-size:0.75rem; padding: 6px;"><option value="">-- Circ --</option></select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas TUG</label>
-                            <input type="number" id="bocasTUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <select id="circuitoTUG" class="corp-input native-select dynamic-circ-select" style="margin-top:5px; font-size:0.75rem; padding: 6px;"><option value="">-- Circ --</option></select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas ESP</label>
-                            <input type="number" id="bocasESP" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <select id="circuitoESP" class="corp-input native-select dynamic-circ-select" style="margin-top:5px; font-size:0.75rem; padding: 6px;"><option value="">-- Circ --</option></select>
-                            <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
-                        </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; background: rgba(var(--ngc-neon-rgb), 0.05); padding: 12px; border-radius: 8px; border: 1px dashed rgba(var(--ngc-neon-rgb), 0.3);">
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas IUG</label>
+        <input type="number" id="bocasIUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+        <details id="detCircuitoIUG" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoIUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoIUG" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoIUG" value="">
+    </div>
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas TUG</label>
+        <input type="number" id="bocasTUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+        <details id="detCircuitoTUG" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoTUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoTUG" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoTUG" value="">
+    </div>
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas ESP</label>
+        <input type="number" id="bocasESP" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+        <details id="detCircuitoESP" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoESP" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoESP" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoESP" value="">
+        <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+    </div>
                     </div>
+                    
 
                     <button id="btnGuardarAmbiente" class="corp-btn success-btn" onclick="guardarAmbiente()">
                         <i class="fa-solid fa-plus"></i> Agregar Ambiente
@@ -176,13 +176,18 @@
                         <div><span style="font-size: 0.7rem; color: var(--ngc-text-faded);">Grado:</span> <b id="ui-grado" style="color:var(--ngc-warning); display:block;">MÍNIMO</b></div>
                         <div><span style="font-size: 0.7rem; color: var(--ngc-text-faded);">DPMS Total:</span> <b id="ui-dpms" style="color:var(--ngc-neon); display:block;">0 VA</b></div>
                         <div>
-                            <span style="font-size: 0.7rem; color: var(--ngc-text-faded);">Suministro:</span>
-                            <select id="selSuministro" class="corp-input native-select" style="font-size:0.75rem; padding: 4px; margin-top:2px;" onchange="renderTabla()">
-                                <option value="MONOFÁSICO">MONO</option>
-                                <option value="TRIFÁSICO">TRIFA</option>
-                            </select>
-                            <b id="ui-fase-alerta" style="font-size: 0.65rem; display:block; margin-top:4px;"></b>
+    <span style="font-size: 0.7rem; color: var(--ngc-text-faded);">Suministro:</span>
+    <details id="detSuministro" class="corp-custom-select" style="margin-top:2px;">
+        <summary id="sumSuministro" class="corp-input" style="font-size:0.75rem; padding: 4px;">MONO</summary>
+        <div id="listSuministro" class="corp-select-list">
+            <div class="corp-select-option" onclick="cambiarSuministro('MONOFÁSICO', 'MONO')">MONO</div>
+            <div class="corp-select-option" onclick="cambiarSuministro('TRIFÁSICO', 'TRIFA')">TRIFA</div>
+        </div>
+    </details>
+    <input type="hidden" id="selSuministro" value="MONOFÁSICO">
+    <b id="ui-fase-alerta" style="font-size: 0.65rem; display:block; margin-top:4px;"></b>
                         </div>
+                        
                     </div>
                     
                     <div class="table-scroll-container">
