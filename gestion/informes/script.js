@@ -315,7 +315,7 @@ async function tomarCaptura() {
 // ==========================================
 // WHATSAPP (INTEGRACIÓN GLOBAL)
 // ==========================================
-function prepararEnvioWhatsApp() {
+/*function prepararEnvioWhatsApp() {
     if (informeParrafos.length === 0) {
         mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
         return;
@@ -336,7 +336,7 @@ function prepararEnvioWhatsApp() {
     } else {
         console.error("No se encontró abrirModalWspGlobal. Verifica que global.js esté enlazado.");
     }
-}
+} */
 
 // ==========================================
 // BORRADORES EN LA NUBE (FIREBASE)
@@ -608,6 +608,118 @@ function mostrarToast(titulo, mensaje) {
         setTimeout(() => toast.classList.add('oculto'), 400);
     }, 4000);
 }
+
+// ==========================================
+// CONEXIÓN CON GLOBAL.JS (AGENDA Y WSP)
+// ==========================================
+
+// Esta función recibe el clic desde el modal de Agenda Global
+function seleccionarContacto(nombre, dir, tel = "") {
+    document.getElementById('cliNombre').value = nombre; 
+    document.getElementById('cliDireccion').value = dir;
+    telefonoClienteActual = tel; 
+    
+    clienteDesdeAgenda = true; 
+    permiteGuardarNube = true; 
+    
+    if (typeof cerrarModalAgendaGlobal === 'function') cerrarModalAgendaGlobal(); 
+    mostrarToast("Cliente Seleccionado", "Importado de agenda.");
+}
+
+function marcarClienteManual() {
+    clienteDesdeAgenda = false;
+    permiteGuardarNube = false;
+}
+
+// Botón "Comenzar Informe"
+function iniciarInforme() {
+    const nombre = document.getElementById('cliNombre').value.trim();
+    if(!nombre) { 
+        if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente.");
+        else alert("Por favor, ingresá el nombre.");
+        return; 
+    }
+    if (!clienteDesdeAgenda) { 
+        document.getElementById('modalAgendarCliente').classList.remove('oculto'); 
+        return; 
+    }
+    avanzarPasoTrabajo();
+}
+
+function avanzarPasoTrabajo() {
+    document.getElementById('step-cliente').classList.add('oculto');
+    document.getElementById('step-trabajo').classList.remove('oculto');
+    document.getElementById('step-trabajo').classList.add('flex-column', 'gap-15');
+    actualizarVistaPreviews();
+}
+
+// Opciones del Modal de Advertencia de Agenda
+function opcionBuscarAgenda() { 
+    document.getElementById('modalAgendarCliente').classList.add('oculto'); 
+    if(typeof abrirModalAgendaGlobal === 'function') abrirModalAgendaGlobal(); 
+}
+
+function accionAgendarCliente() {
+    const nombre = encodeURIComponent(document.getElementById('cliNombre').value.trim());
+    const dir = encodeURIComponent(document.getElementById('cliDireccion').value.trim());
+    window.location.href = `../agenda/index.html?nombre=${nombre}&dir=${dir}`;
+}
+
+function opcionContinuarSinAgenda() {
+    document.getElementById('modalAgendarCliente').classList.add('oculto');
+    document.getElementById('modalConfirmarSinAgenda').classList.remove('oculto');
+}
+
+function ejecutarContinuarSinAgenda() {
+    document.getElementById('modalConfirmarSinAgenda').classList.add('oculto');
+    permiteGuardarNube = false;
+    avanzarPasoTrabajo();
+}
+
+// Función que intercepta el botón de Nuevo desde el modal Global
+function ejecutarNuevoInforme() {
+    if (typeof cerrarModalConfirmarNuevoGlobal === 'function') cerrarModalConfirmarNuevoGlobal(); 
+    
+    document.getElementById('cliNombre').value = '';
+    document.getElementById('cliDireccion').value = '';
+    document.getElementById('cliProyecto').value = '';
+    document.getElementById('obsGenerales').value = '';
+    
+    informeParrafos = [];
+    clienteDesdeAgenda = false;
+    permiteGuardarNube = true;
+    nombreBorradorActual = null;
+    telefonoClienteActual = "";
+    
+    document.getElementById('step-trabajo').classList.add('oculto');
+    document.getElementById('step-cliente').classList.remove('oculto');
+    renderizarParrafos();
+}
+
+// Arma el mensaje y se lo pasa a WhatsApp Global
+function prepararEnvioWhatsApp() {
+    if (informeParrafos.length === 0) {
+        if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá al menos un párrafo al informe primero.");
+        else alert("Agregá al menos un párrafo.");
+        return;
+    }
+    
+    const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL';
+    let msg = `*${profNombre.toUpperCase()} - INFORME TÉCNICO*\n`;
+    msg += `*Cliente:* ${document.getElementById('cliNombre').value || 'Sin Nombre'}\n`;
+    msg += `*Proyecto:* ${document.getElementById('cliProyecto').value || '-'}\n\n`;
+    
+    informeParrafos.forEach(p => msg += `${p}\n\n`);
+    
+    const og = document.getElementById('obsGenerales').value;
+    if (og) msg += `*NOTAS GLOBALES:*\n${og}\n`;
+
+    if (typeof abrirModalWspGlobal === 'function') {
+        abrirModalWspGlobal(telefonoClienteActual, msg);
+    } else {
+        console.error("No se encontró abrirModalWspGlobal. Verifica que global.js esté enlazado.");
+    }
+        }
 
 function generarMenuInferior() {
     const footer = document.getElementById('corpFooterMenu'); 
