@@ -46,7 +46,7 @@
     </div>
 
     <!-- CONTROLES FLOTANTES (Menú Usuario Sólido Corporativo) -->
-    <div class="corp-fab" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none;" onclick="toggleUserMenu()">
+ <!--   <div class="corp-fab" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none;" onclick="toggleUserMenu()">
         <i class="fa-solid fa-user-tie"></i>
         
         <div id="userDropdown" class="corp-dropdown oculto">
@@ -57,9 +57,53 @@
             <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Términos de Uso</a>
             <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
-    </div>
+    </div> -->
 
-    <main class="layout-wrapper">
+        <!-- ================== BARRA SUPERIOR (LOGO, TITULO Y PERFIL) ================== -->
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; position: fixed; top: 0; left: 0; background: var(--bg-body); z-index: 9999; box-shadow: 0 1px 3px var(--corp-shadow);">
+        
+        <!-- Izquierda: LOGO -->
+        <div style="display: flex; align-items: center; height: 40px; width: 40px;">
+            <img src="./blanco1024.png" alt="Villaser" class="logo-header-oscuro" style="width: 100%; height: auto; margin: 0;">
+            <img src="./negro1024.png" alt="Villaser" class="logo-header-claro" style="width: 100%; height: auto; margin: 0;">
+        </div>
+
+        <!-- Centro: TEXTO PLATAFORMA VILLASER -->
+        <div style="display: flex; align-items: center; flex: 1; justify-content: center;">
+            <span class="meta-brand" style="font-size: 1.1rem; text-transform: uppercase;">Plataforma Villaser</span>
+        </div>
+
+        <!-- Derecha: BOTÓN DE PERFIL -->
+        <div class="corp-fab-inline" aria-label="Menu de Usuario" id="userMenuWrapper" style="display: none; position: relative; cursor: pointer;" onclick="toggleUserMenu()">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="userFirstNameDisplay" style="font-size: 0.8rem; font-weight: 700; color: var(--corp-text-main); text-transform: uppercase;"></span>
+                <div style="background: var(--corp-card-bg); border: var(--corp-border); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px var(--corp-shadow);">
+                    <i class="fa-solid fa-user-tie" style="color: var(--corp-accent); font-size: 1.1rem;"></i>
+                </div>
+            </div>
+            
+            <div id="userDropdown" class="corp-dropdown oculto" style="top: 50px; right: 0;">
+                <p id="userEmailDisplay" class="dropdown-email"></p>
+                <a href="#" id="btn-instalar" class="oculto"><i class="fa-solid fa-download"></i> Instalar App</a>
+                <a href="#" onclick="abrirConfiguracion(); return false;"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="#" onclick="abrirTerminos(false); return false;"><i class="fa-solid fa-file-contract"></i> Términos de Uso</a>
+                <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+    <!-- ========================================================================= -->
+
+ <!--   <main class="layout-wrapper" style="padding-top: 60px;"> --> <!-- Se agrega padding-top para esquivar la nueva barra fija -->
+        
+        <!-- CABECERA (Se mantiene solo para la pantalla de Login y Status) -->
+       <!-- <div class="corp-card header-card" id="mainHeader">
+            <h1 class="corp-hero-title" style="font-size: 1.5rem;">Gestión Interna</h1>
+            <div class="corp-status-badge">
+                <i class="fa-solid fa-circle pulse-anim" style="font-size: 0.5rem;"></i> Sistema Activo
+            </div>
+        </div> -->
+        
+    <main class="layout-wrapper" style="padding-top: 60px;"> <!-- Se agrega padding-top para esquivar la nueva barra fija -->
         
                 <!-- CABECERA -->
         <div class="corp-card header-card" id="mainHeader">
@@ -68,7 +112,7 @@
             <img src="./negro1024.png" alt="Villaser" class="logo-header-claro">
             
             <p class="corp-subtext" style="margin-bottom: 2px;">Plataforma Oficial</p>
-            <h1 class="corp-hero-title">Villaser Gestión</h1>
+            <h1 class="corp-hero-title">Villaser</h1>
             <div class="corp-status-badge">
                 <i class="fa-solid fa-circle pulse-anim" style="font-size: 0.5rem;"></i> Sistema Activo
             </div>
