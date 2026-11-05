@@ -395,6 +395,22 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL DE SELECCIÓN EN TABLA (Tensión y Sección) -->
+<div id="modalSeleccionTabla" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="padding-top: 20px;">
+        <h3 id="tituloModalSeleccion" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Seleccionar</h3>
+        
+        <!-- Contenedor dinámico para las opciones -->
+        <div id="listaOpcionesModal" class="modal-list-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;">
+            <!-- Las opciones se inyectan acá -->
+        </div>
+
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalSeleccionTabla()">Cancelar</button>
+        </div>
+    </div>
+</div>
     
     <!-- NUEVO MENÚ INFERIOR TIPO APP -->
     <nav class="corp-bottom-nav">
