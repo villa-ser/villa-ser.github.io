@@ -341,8 +341,113 @@ function prepararEnvioWhatsApp() {
 // ==========================================
 // BORRADORES EN LA NUBE (FIREBASE)
 // ==========================================
-async function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
+
+// ==========================================
+// BORRADORES EN LA NUBE CON MODALES FLOTANTES
+// ==========================================
+function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     const uid = obtenerUid();
+    if (!uid || !db) {
+        if (mostrarAlerta) mostrarAlertaCorp("Error", "Sesión no detectada para la nube.");
+        return;
+    }
+    if (!permiteGuardarNube) {
+        if (mostrarAlerta) mostrarAlertaCorp("Bloqueado", "Cliente no agendado. No se guarda en nube.");
+        return;
+    }
+    if (informeParrafos.length === 0) return;
+    
+    const nombreCli = (document.getElementById('cliNombre').value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
+    const proyCli = (document.getElementById('cliProyecto').value.trim() || 'Informe').replace(/\s+/g, '_');
+    const fechaHoy = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
+    let nombreSugerido = `${nombreCli}_${proyCli}_${fechaHoy}`;
+
+    if (!autoGuardado) {
+        // En lugar de prompt(), abrimos el Modal
+        document.getElementById('inputNombreBorrador').value = nombreBorradorActual || nombreSugerido;
+        document.getElementById('modalGuardarBorrador').classList.remove('oculto');
+    } else {
+        ejecutarGuardarNube(nombreBorradorActual || nombreSugerido, false);
+    }
+}
+
+function cerrarModalGuardarBorrador() {
+    document.getElementById('modalGuardarBorrador').classList.add('oculto');
+}
+
+function ejecutarGuardarBorrador() {
+    const nombreIngresado = document.getElementById('inputNombreBorrador').value.trim();
+    if (!nombreIngresado) {
+        mostrarAlertaCorp("Faltan Datos", "Debes ingresar un nombre para el borrador.");
+        return;
+    }
+    nombreBorradorActual = nombreIngresado;
+    cerrarModalGuardarBorrador();
+    ejecutarGuardarNube(nombreBorradorActual, true);
+}
+
+function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
+    const uid = obtenerUid();
+    const estado = {
+        cliNombre: document.getElementById('cliNombre').value,
+        cliDireccion: document.getElementById('cliDireccion').value,
+        cliProyecto: document.getElementById('cliProyecto').value,
+        obsGenerales: document.getElementById('obsGenerales').value,
+        parrafos: informeParrafos,
+        fechaGuardado: Date.now(),
+        nombreBorrador: nombreFinal,
+        telefonoClienteActual: telefonoClienteActual 
+    };
+    
+    let docId = nombreFinal.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
+    
+    db.collection("perfiles").doc(uid).collection("borradores_informe").doc(docId).set(estado)
+      .then(() => {
+          if (mostrarAlerta) mostrarToast("Guardado", "Sincronizado con la nube.");
+      })
+      .catch((e) => {
+          console.error("Error Firebase:", e);
+          if (mostrarAlerta) mostrarAlertaCorp("Error", "Error al guardar el borrador.");
+      });
+}
+
+// Lógica para Eliminar Borrador con Modal
+let idBorradorAEliminar = null;
+let btnBorradorAEliminar = null;
+
+function eliminarBorradorNube(docId, btnElement) {
+    idBorradorAEliminar = docId;
+    btnBorradorAEliminar = btnElement;
+    document.getElementById('modalConfirmarEliminar').classList.remove('oculto');
+}
+
+function cerrarModalEliminarBorrador() {
+    document.getElementById('modalConfirmarEliminar').classList.add('oculto');
+    idBorradorAEliminar = null;
+    btnBorradorAEliminar = null;
+}
+
+function ejecutarEliminarBorrador() {
+    const uid = obtenerUid();
+    if (!uid || !db || !idBorradorAEliminar) return;
+
+    db.collection("perfiles").doc(uid).collection("borradores_informe").doc(idBorradorAEliminar).delete()
+        .then(() => {
+            if (btnBorradorAEliminar) {
+                btnBorradorAEliminar.closest('div.modal-list-item').remove();
+            }
+            cerrarModalEliminarBorrador();
+            mostrarToast("Eliminado", "Borrador eliminado de la nube.");
+        })
+        .catch((e) => {
+            console.error("Error eliminando: ", e);
+            mostrarAlertaCorp("Error", "No se pudo eliminar el borrador.");
+            cerrarModalEliminarBorrador();
+        });
+}
+
+/* async function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
+  /*  const uid = obtenerUid();
     if (!uid || !db) {
         if (mostrarAlerta) mostrarAlertaCorp("Error", "Sesión no detectada para la nube.");
         return;
@@ -389,7 +494,7 @@ async function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = fal
         console.error("Error Firebase:", e);
         if (mostrarAlerta) mostrarAlertaCorp("Error", "Error al guardar el borrador.");
     }
-}
+} */
 
 async function abrirModalBorradores() {
     const nombre = document.getElementById('cliNombre').value.trim();
@@ -476,7 +581,7 @@ async function cargarBorradorNube(docId) {
     }
 }
 
-function eliminarBorradorNube(docId, btnElement) {
+/*function eliminarBorradorNube(docId, btnElement) {
     const uid = obtenerUid();
     if (!uid || !db) return;
     if (confirm("¿Eliminar este borrador de la nube?")) {
@@ -485,7 +590,7 @@ function eliminarBorradorNube(docId, btnElement) {
             mostrarToast("Eliminado", "Borrador eliminado correctamente.");
         });
     }
-}
+} */
 
 // ==========================================
 // UTILIDADES COMPARTIDAS (TOAST Y MENÚ)
