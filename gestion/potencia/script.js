@@ -495,7 +495,8 @@ function cerrarModalSeleccionTabla() {
 function buildButtonHtml(id, field, currentVal, validationColor) {
     let colorStyle = (currentVal !== "") ? `color: ${validationColor}; font-weight:bold;` : `color: inherit;`;
     let displayVal = currentVal !== "" ? currentVal : '-';
-    return `<button class="corp-input" style="${colorStyle} padding: 4px 6px; font-size: 0.8rem; min-height: 28px; display: flex; justify-content: space-between; align-items: center; width: 100%;" onclick="abrirModalTabla('${id}', '${field}', '${currentVal}')">
+    // Cambiamos 'corp-input' por 'circ-input' y eliminamos 'width: 100%;' de los estilos en línea
+    return `<button class="circ-input" style="${colorStyle} padding: 4px 6px; font-size: 0.8rem; min-height: 28px; display: flex; justify-content: space-between; align-items: center;" onclick="abrirModalTabla('${id}', '${field}', '${currentVal}')">
         <span>${displayVal}</span> <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem;"></i>
     </button>`;
 }
