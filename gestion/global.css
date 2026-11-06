@@ -101,7 +101,16 @@ textarea.corp-input { resize: vertical; }
 .badge-edit { font-size: 0.7rem; color: var(--ngc-warning); font-style: italic; margin-top: 4px; display: block; }
 
 /* TABLA CAPTURA */
-.capture-zone { background: var(--bg-body); border-radius: 12px; padding: 15px; margin-top: 5px; border: 1px solid var(--ngc-privacy-border); }
+.capture-zone { 
+    background: var(--bg-body); 
+    border-radius: 12px; 
+    padding: 15px; 
+    margin-top: 5px; 
+    border: 1px solid var(--ngc-privacy-border);
+    max-width: 100%; /* Frena el desbordamiento hacia la derecha */
+    overflow: hidden; /* Corta visualmente lo que exceda el 100% de la pantalla */
+}
+
 .corp-table { width: 100%; border-collapse: collapse; }
 .corp-table td { padding: 12px 5px; border-bottom: 1px solid var(--ngc-privacy-border); font-size: 0.9rem; }
 .total-display { margin-top: 15px; background: var(--ngc-glass); padding: 12px; border-radius: 8px; text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--ngc-text-main); border: 1px solid var(--ngc-privacy-border); }
@@ -113,7 +122,16 @@ textarea.corp-input { resize: vertical; }
 .corp-modal-card p { color: var(--ngc-text-faded); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; text-align: center;}
 .corp-modal-icon { font-size: 2.5rem; color: var(--ngc-neon); margin-bottom: 15px; display:block; text-align:center;}
 .corp-modal-actions { display: flex; flex-direction: column; gap: 10px; }
-.modal-list-container { max-height: 250px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; }
+.modal-list-container { 
+    max-height: 250px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    overscroll-behavior: contain; /* Evita que deslizar esta lista mueva accidentalmente la página de fondo */
+    -webkit-overflow-scrolling: touch; /* Activa el comportamiento táctil nativo */
+}
+
 .modal-list-item { background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
 .modal-list-item h4 { margin: 0; font-size: 0.95rem; color: var(--ngc-text-main); }
 .modal-list-item small { color: var(--ngc-text-faded); font-size: 0.75rem; }
@@ -456,4 +474,14 @@ details[open] summary .acc-icon-indicator {
     padding: 4px 1px;
     font-family: inherit;
     font-size: 0.75rem;
+}
+
+/* ============================================================== */
+/* TABLA RESPONSIVA (SOLUCIÓN SCROLL Y DESBORDAMIENTO)            */
+/* ============================================================== */
+.table-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Clave para el scroll fluido y táctil en móviles */
+    padding-bottom: 5px; /* Espacio mínimo para que la barra de scroll no pise los datos */
 }
