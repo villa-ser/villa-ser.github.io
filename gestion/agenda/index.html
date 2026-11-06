@@ -81,23 +81,23 @@
             <div class="row-group" style="margin-bottom: 0; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
     <label style="margin-bottom: 0; white-space: nowrap;"><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
     
-    <!-- Acordeón Custom Dropdown -->
-    <details class="custom-select-accordion" id="accordionOrden">
-        <summary class="corp-input" style="width: auto; padding: 6px 12px; font-size: 0.8rem; height: auto; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <span id="textoOrdenActual">Más recientes primero</span>
-            <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
-        </summary>
-        <div class="accordion-dropdown-content gpu-accel">
-            <div class="acc-option active" onclick="cambiarOrden('recientes', 'Más recientes primero', this)">Más recientes primero</div>
-            <div class="acc-option" onclick="cambiarOrden('antiguos', 'Más antiguos primero', this)">Más antiguos primero</div>
-            <div class="acc-option" onclick="cambiarOrden('az', 'Alfabético (A-Z)', this)">Alfabético (A-Z)</div>
-            <div class="acc-option" onclick="cambiarOrden('za', 'Alfabético (Z-A)', this)">Alfabético (Z-A)</div>
-        </div>
-    </details>
+    <!-- NUEVO ACORDEÓN TIPO APP -->
+    <div style="position: relative;">
+        <details id="detOrden" class="corp-custom-select">
+            <summary id="sumOrden" class="corp-input" style="padding: 6px 12px; font-size: 0.8rem; height: auto; min-width: 190px;">Más recientes primero</summary>
+            <div class="corp-select-list" style="right: 0; left: auto; min-width: 210px; top: calc(100% + 5px);">
+                <div class="corp-select-option" onclick="cambiarOrden('recientes', 'Más recientes primero')">Más recientes primero</div>
+                <div class="corp-select-option" onclick="cambiarOrden('antiguos', 'Más antiguos primero')">Más antiguos primero</div>
+                <div class="corp-select-option" onclick="cambiarOrden('az', 'Alfabético (A-Z)')">Alfabético (A-Z)</div>
+                <div class="corp-select-option" onclick="cambiarOrden('za', 'Alfabético (Z-A)')">Alfabético (Z-A)</div>
+            </div>
+        </details>
+    </div>
     
-    <!-- Input oculto: Mantiene vivo el JS original sin tocar renderizarContactos() -->
+    <!-- Input oculto: Mantiene la compatibilidad con renderizarContactos() -->
     <input type="hidden" id="ordenador" value="recientes">
             </div>
+            
             
 
             <!-- LISTA DE CONTACTOS -->
