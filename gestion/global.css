@@ -463,7 +463,7 @@ details[open] summary .acc-icon-indicator {
 }
 
 .circ-input {
-    width: 30px !important; /* Fuerza el ancho pequeño */
+    width: 45px !important; /* Fuerza el ancho pequeño */
     margin: 0 auto; /* Lo centra en la columna */
     display: block;
     background: rgba(0,0,0,0.3);
