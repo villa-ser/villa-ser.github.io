@@ -77,22 +77,34 @@
                 </button>
             </nav>
 
-            <!-- BUSCADOR Y FILTROS -->
-            <div class="row-group" style="margin-bottom: 0; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-    <label style="margin-bottom: 0; white-space: nowrap;"><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
-    
-    <!-- NUEVO ACORDEÓN TIPO APP -->
-    <div style="position: relative;">
-        <details id="detOrden" class="corp-custom-select">
-            <summary id="sumOrden" class="corp-input" style="padding: 6px 12px; font-size: 0.8rem; height: auto; min-width: 190px;">Más recientes primero</summary>
-            <div class="corp-select-list" style="right: 0; left: auto; min-width: 210px; top: calc(100% + 5px);">
-                <div class="corp-select-option" onclick="cambiarOrden('recientes', 'Más recientes primero')">Más recientes primero</div>
-                <div class="corp-select-option" onclick="cambiarOrden('antiguos', 'Más antiguos primero')">Más antiguos primero</div>
-                <div class="corp-select-option" onclick="cambiarOrden('az', 'Alfabético (A-Z)')">Alfabético (A-Z)</div>
-                <div class="corp-select-option" onclick="cambiarOrden('za', 'Alfabético (Z-A)')">Alfabético (Z-A)</div>
+                        <!-- BUSCADOR Y FILTROS -->
+            <div class="corp-card" style="margin-bottom: 15px;">
+                <div class="row-group">
+                    <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Contacto</label>
+                    <input type="text" id="buscador" class="corp-input" placeholder="Nombre, dirección o teléfono..." oninput="filtrarContactos()">
+                </div>
+
+                <div class="row-group" style="margin-bottom: 0; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                    <label style="margin-bottom: 0; white-space: nowrap;"><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
+                    
+                    <!-- NUEVO ACORDEÓN TIPO APP -->
+                    <div style="position: relative;">
+                        <details id="detOrden" class="corp-custom-select">
+                            <summary id="sumOrden" class="corp-input" style="padding: 6px 12px; font-size: 0.8rem; height: auto; min-width: 190px;">Más recientes primero</summary>
+                            <div class="corp-select-list" style="right: 0; left: auto; min-width: 210px; top: calc(100% + 5px);">
+                                <div class="corp-select-option" onclick="cambiarOrden('recientes', 'Más recientes primero')">Más recientes primero</div>
+                                <div class="corp-select-option" onclick="cambiarOrden('antiguos', 'Más antiguos primero')">Más antiguos primero</div>
+                                <div class="corp-select-option" onclick="cambiarOrden('az', 'Alfabético (A-Z)')">Alfabético (A-Z)</div>
+                                <div class="corp-select-option" onclick="cambiarOrden('za', 'Alfabético (Z-A)')">Alfabético (Z-A)</div>
+                            </div>
+                        </details>
+                    </div>
+                    
+                    <!-- Input oculto: Mantiene la compatibilidad con renderizarContactos() -->
+                    <input type="hidden" id="ordenador" value="recientes">
+                </div>
             </div>
-        </details>
-    </div>
+            
     
     <!-- Input oculto: Mantiene la compatibilidad con renderizarContactos() -->
     <input type="hidden" id="ordenador" value="recientes">
