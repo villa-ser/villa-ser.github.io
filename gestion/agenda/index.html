@@ -78,23 +78,27 @@
             </nav>
 
             <!-- BUSCADOR Y FILTROS -->
-            <div class="corp-card" style="margin-bottom: 15px;">
-                <div class="row-group">
-                    <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Contacto</label>
-                    <input type="text" id="buscador" class="corp-input" placeholder="Nombre, dirección o teléfono..." oninput="filtrarContactos()">
-                </div>
-
-                <div class="row-group" style="margin-bottom: 0; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-                     <label style="margin-bottom: 0; white-space: nowrap;"><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
-                     <select id="ordenador" class="corp-input native-select" onchange="renderizarContactos()" style="width: auto; padding: 6px 30px 6px 12px; font-size: 0.8rem; height: auto;">
-                          <option value="recientes">Más recientes primero</option>
-                          <option value="antiguos">Más antiguos primero</option>
-                          <option value="az">Alfabético (A-Z)</option>
-                          <option value="za">Alfabético (Z-A)</option>
-                     </select>
-                </div>
-                
+            <div class="row-group" style="margin-bottom: 0; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+    <label style="margin-bottom: 0; white-space: nowrap;"><i class="fa-solid fa-arrow-down-a-z"></i> Ordenar por</label>
+    
+    <!-- Acordeón Custom Dropdown -->
+    <details class="custom-select-accordion" id="accordionOrden">
+        <summary class="corp-input" style="width: auto; padding: 6px 12px; font-size: 0.8rem; height: auto; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <span id="textoOrdenActual">Más recientes primero</span>
+            <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+        </summary>
+        <div class="accordion-dropdown-content gpu-accel">
+            <div class="acc-option active" onclick="cambiarOrden('recientes', 'Más recientes primero', this)">Más recientes primero</div>
+            <div class="acc-option" onclick="cambiarOrden('antiguos', 'Más antiguos primero', this)">Más antiguos primero</div>
+            <div class="acc-option" onclick="cambiarOrden('az', 'Alfabético (A-Z)', this)">Alfabético (A-Z)</div>
+            <div class="acc-option" onclick="cambiarOrden('za', 'Alfabético (Z-A)', this)">Alfabético (Z-A)</div>
+        </div>
+    </details>
+    
+    <!-- Input oculto: Mantiene vivo el JS original sin tocar renderizarContactos() -->
+    <input type="hidden" id="ordenador" value="recientes">
             </div>
+            
 
             <!-- LISTA DE CONTACTOS -->
             <div id="listaContactos" style="width: 100%;">
