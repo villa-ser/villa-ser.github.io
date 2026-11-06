@@ -55,7 +55,6 @@ function obtenerUid() {
 // ==========================================
 // INTEGRACIÓN AGENDA Y FLUJO DE CLIENTE
 // ==========================================
-
 function seleccionarContacto(nombre, dir, tel = "") {
     document.getElementById('cliNombre').value = nombre; 
     document.getElementById('cliDireccion').value = dir;
@@ -181,7 +180,6 @@ function mostrarToast(titulo, mensaje) {
 // ==========================================
 // LÓGICA DE POTENCIA, AMBIENTES Y AEA
 // ==========================================
-
 function obtenerGradoElectrificacion(areaTotal) {
     if (areaTotal <= 60) return "MÍNIMO";
     if (areaTotal <= 130) return "MEDIO";
@@ -208,7 +206,6 @@ function actualizarGestorCircuitos() {
     container.innerHTML = ''; 
     
     circuitos.forEach((c, index) => { 
-        // Armamos las opciones de tipos de circuito
         const opciones = ['IUG', 'TUG', 'TUE', 'ACU', 'MBTF'].map(t => 
             `<div class="corp-select-option" onclick="document.getElementById('detGestor_${index}').removeAttribute('open'); cambiarTipoCircuito(${index}, '${t}')">${t}</div>`
         ).join('');
@@ -225,7 +222,6 @@ function actualizarGestorCircuitos() {
     }); 
     actualizarSelectoresEnFormulario(); 
 }
-
 
 function cambiarTipoCircuito(index, nuevoTipo) {
     circuitos[index].tipo = nuevoTipo;
@@ -282,7 +278,6 @@ function actualizarSelectoresEnFormulario() {
         let valActual = hiddenInput.value;
         list.innerHTML = '';
         
-        // Opción vacía por defecto
         const optVacia = document.createElement('div');
         optVacia.className = 'corp-select-option';
         optVacia.innerText = '-- Circ --';
@@ -293,7 +288,6 @@ function actualizarSelectoresEnFormulario() {
         };
         list.appendChild(optVacia);
 
-        // Opciones reales
         let existe = false;
         circuitos.forEach(c => {
             if (c.id === valActual) existe = true;
@@ -308,14 +302,12 @@ function actualizarSelectoresEnFormulario() {
             list.appendChild(opt);
         });
 
-        // Limpiar visualmente si el circuito fue borrado
         if (valActual && !existe) {
             hiddenInput.value = '';
             summary.innerText = '-- Circ --';
         }
     });
 }
-
 
 function guardarAmbiente() {
     const tipo = document.getElementById('selAmbiente').value;
@@ -345,25 +337,19 @@ function guardarAmbiente() {
         cancelarEdicion();
     } else { listaAmbientes.push(obj); }
 
-    // Reseteo visual del formulario (Acordeones y Valores)
     document.getElementById('selAmbiente').value = "";
     document.getElementById('sumAmbiente').innerText = "-- Seleccione Ambiente --";
-    
     document.getElementById('inputAncho').value = ""; 
     document.getElementById('inputLargo').value = "";
-    
     document.getElementById('bocasIUG').value = "0"; 
     document.getElementById('circuitoIUG').value = "";
     document.getElementById('sumCircuitoIUG').innerText = "-- Circ --";
-    
     document.getElementById('bocasTUG').value = "0"; 
     document.getElementById('circuitoTUG').value = "";
     document.getElementById('sumCircuitoTUG').innerText = "-- Circ --";
-    
     document.getElementById('bocasESP').value = "0"; 
     document.getElementById('circuitoESP').value = "";
     document.getElementById('sumCircuitoESP').innerText = "-- Circ --";
-    
     document.getElementById('descESP').value = "";
     
     calcularGradoYRenderizar();
@@ -378,17 +364,13 @@ function editarAmbiente(id) {
     document.getElementById('btnGuardarAmbiente').innerHTML = "<i class='fa-solid fa-check'></i> Actualizar Ambiente";
     document.getElementById('btnCancelarEdicion').style.display = "flex";
     
-    // Inyecta valores en campos ocultos y en el texto visible de los acordeones
     document.getElementById('selAmbiente').value = amb.tipo;
     document.getElementById('sumAmbiente').innerText = amb.tipo || "-- Seleccione Ambiente --";
-    
     document.getElementById('inputAncho').value = amb.ancho || ""; 
     document.getElementById('inputLargo').value = amb.largo || "";
-    
     document.getElementById('bocasIUG').value = amb.bIUG; 
     document.getElementById('circuitoIUG').value = amb.circIUG;
     
-    // Busca en la lista de circuitos el ID guardado para mostrar "C1 (IUG)" en el acordeón
     const cIUG = circuitos.find(c => c.id === amb.circIUG);
     document.getElementById('sumCircuitoIUG').innerText = cIUG ? `${cIUG.id} (${cIUG.tipo})` : "-- Circ --";
     
@@ -405,12 +387,8 @@ function editarAmbiente(id) {
     document.getElementById('sumCircuitoESP').innerText = cESP ? `${cESP.id} (${cESP.tipo})` : "-- Circ --";
     
     document.getElementById('descESP').value = amb.descESP;
-    
     window.scrollTo(0, document.getElementById('step-trabajo').offsetTop);
-        }
-
-
-
+}
 
 function cancelarEdicion() {
     editandoId = null;
@@ -421,6 +399,7 @@ function cancelarEdicion() {
 
 function borrarItem(id) { listaAmbientes = listaAmbientes.filter(i => i.id !== id); calcularGradoYRenderizar(); }
 
+// Actualizador Principal
 window.updC = function(id, field, value) {
     let c = (id === 'CS') ? circuitoCS : circuitos.find(x => x.id === id);
     if(c) {
@@ -431,20 +410,99 @@ window.updC = function(id, field, value) {
         }
         renderTabla();
     }
+    }
+// ==========================================
+// NUEVO MOTOR MODAL PARA TABLAS (REEMPLAZA SELECTS NATIVOS)
+// ==========================================
+let contextoSeleccionActual = null;
+
+function abrirModalTabla(idCircuito, campo, valorActual) {
+    contextoSeleccionActual = { id: idCircuito, campo: campo };
+    let titulo = 'Seleccionar';
+    let opciones = [];
+    let sufijo = '';
+
+    if(campo === 'tension') {
+        titulo = 'Seleccionar Tensión';
+        opciones = [220, 380];
+    } else if(campo === 'seccionLN') {
+        titulo = 'Selección L;N';
+        opciones = [1.5, 2.5, 4, 6, 10, 16];
+        sufijo = ' mm²';
+    } else if(campo === 'seccionPE') {
+        titulo = 'Selección PE';
+        opciones = [1.5, 2.5, 4, 6, 10, 16];
+        sufijo = ' mm²';
+    } else if(campo === 'in') {
+        titulo = 'Seleccionar In (A)';
+        opciones = [2, 4, 6, 10, 15, 16, 20, 25, 32, 40, 50, 63];
+        sufijo = ' A';
+    }
+
+    document.getElementById('tituloModalSeleccion').innerText = titulo;
+    dibujarOpcionesEnModal(opciones, valorActual, sufijo);
+    document.getElementById('modalSeleccionTabla').classList.remove('oculto');
 }
 
-function buildSelectHtml(id, field, currentVal, optionsList, validationColor) {
-    let colorStyle = (currentVal !== "") ? `color: ${validationColor}; font-weight:bold;` : `color: inherit;`;
-    let html = `<select class="corp-input" style="${colorStyle}; padding: 2px;" onchange="updC('${id}','${field}',this.value)">`;
-    html += `<option value="">-</option>`;
-    optionsList.forEach(opt => {
-        let sel = (currentVal !== "" && currentVal == opt) ? "selected" : "";
-        html += `<option value="${opt}" ${sel}>${opt}</option>`;
+function dibujarOpcionesEnModal(arrayOpciones, valorActual, sufijo) {
+    const contenedor = document.getElementById('listaOpcionesModal');
+    contenedor.innerHTML = '';
+    
+    arrayOpciones.forEach(opcion => {
+        const esSeleccionado = (opcion.toString() === valorActual.toString());
+        const div = document.createElement('div');
+        div.className = 'corp-select-option';
+        div.style.borderBottom = '1px solid rgba(150, 150, 150, 0.1)';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.cursor = 'pointer';
+        div.style.padding = '12px 15px';
+        
+        if (esSeleccionado) {
+            div.style.color = 'var(--ngc-neon)';
+            div.style.fontWeight = 'bold';
+        }
+        
+        div.innerHTML = `<span>${opcion}${sufijo}</span> ${esSeleccionado ? '<i class="fa-solid fa-check"></i>' : ''}`;
+        div.onclick = () => aplicarSeleccionDesdeModal(opcion);
+        contenedor.appendChild(div);
     });
-    html += `</select>`;
-    return html;
+    
+    // Opción para vaciar
+    const divVacio = document.createElement('div');
+    divVacio.className = 'corp-select-option';
+    divVacio.style.borderBottom = '1px solid rgba(150, 150, 150, 0.1)';
+    divVacio.style.padding = '12px 15px';
+    divVacio.style.cursor = 'pointer';
+    divVacio.style.color = 'var(--error-red)';
+    divVacio.innerHTML = `<span>- Vaciar Selección -</span>`;
+    divVacio.onclick = () => aplicarSeleccionDesdeModal('');
+    contenedor.appendChild(divVacio);
 }
 
+function aplicarSeleccionDesdeModal(valorSeleccionado) {
+    if (!contextoSeleccionActual) return;
+    const { id, campo } = contextoSeleccionActual;
+    window.updC(id, campo, valorSeleccionado);
+    cerrarModalSeleccionTabla();
+}
+
+function cerrarModalSeleccionTabla() {
+    document.getElementById('modalSeleccionTabla').classList.add('oculto');
+    contextoSeleccionActual = null;
+}
+
+function buildButtonHtml(id, field, currentVal, validationColor) {
+    let colorStyle = (currentVal !== "") ? `color: ${validationColor}; font-weight:bold;` : `color: inherit;`;
+    let displayVal = currentVal !== "" ? currentVal : '-';
+    return `<button class="corp-input" style="${colorStyle} padding: 4px 6px; font-size: 0.8rem; min-height: 28px; display: flex; justify-content: space-between; align-items: center; width: 100%;" onclick="abrirModalTabla('${id}', '${field}', '${currentVal}')">
+        <span>${displayVal}</span> <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem;"></i>
+    </button>`;
+}
+
+// ==========================================
+// RENDERIZADO DE TABLA
+// ==========================================
 function calcularGradoYRenderizar() {
     let areaTotal = 0;
     listaAmbientes.forEach(i => { if(!i.tipo.includes("Acondicionado") && !i.tipo.includes("Motor")) areaTotal += i.area; });
@@ -543,10 +601,11 @@ function renderTabla(areaTotal, gradoActual) {
 
     const evalVerdeRojo = (condicion) => condicion ? 'var(--success-green)' : 'var(--error-red)';
 
+    // SECCIÓN DE MODALES (Reemplazo de buildSelectHtml por buildButtonHtml)
     tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Tensión (V)</td>`;
     todosLosCircuitos.forEach(c => {
         let col = c.tension !== "" ? 'var(--success-green)' : 'inherit';
-        tfootStr += `<td>${buildSelectHtml(c.id, 'tension', c.tension, [220, 380], col)}</td>`;
+        tfootStr += `<td>${buildButtonHtml(c.id, 'tension', c.tension, col)}</td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
@@ -567,14 +626,14 @@ function renderTabla(areaTotal, gradoActual) {
     todosLosCircuitos.forEach(c => {
         let minL = (c.tipo === 'IUG' || c.tipo === 'MBTF') ? 1.5 : (c.id === 'CS' ? 4.0 : 2.5);
         let col = evalVerdeRojo(parseFloat(c.seccionLN) >= minL);
-        tfootStr += `<td>${buildSelectHtml(c.id, 'seccionLN', c.seccionLN, [1.5, 2.5, 4, 6, 10, 16], col)}</td>`;
+        tfootStr += `<td>${buildButtonHtml(c.id, 'seccionLN', c.seccionLN, col)}</td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
     tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;">Sección PE</td>`;
     todosLosCircuitos.forEach(c => {
         let col = evalVerdeRojo(c.seccionLN !== "" && parseFloat(c.seccionPE) >= parseFloat(c.seccionLN));
-        tfootStr += `<td>${buildSelectHtml(c.id, 'seccionPE', c.seccionPE, [1.5, 2.5, 4, 6, 10, 16], col)}</td>`;
+        tfootStr += `<td>${buildButtonHtml(c.id, 'seccionPE', c.seccionPE, col)}</td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
@@ -583,6 +642,7 @@ function renderTabla(areaTotal, gradoActual) {
         let col = evalVerdeRojo(c._ibCalc && parseFloat(c.iz) >= c._ibCalc);
         let valStr = c.iz === "" ? "" : c.iz;
         let style = c.iz !== "" ? `color: ${col}; font-weight:bold;` : 'color: inherit;';
+        // Para Iz dejamos el input ya que se puede tipear y se autocompleta.
         tfootStr += `<td><input type="number" class="corp-input" style="${style} padding: 2px;" placeholder="-" value="${valStr}" onchange="updC('${c.id}','iz',this.value)"></td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
@@ -594,7 +654,7 @@ function renderTabla(areaTotal, gradoActual) {
         let pIn = parseFloat(c.in);
         let cumpleIn = (pIn >= ib && pIn <= iz);
         let col = evalVerdeRojo(cumpleIn);
-        tfootStr += `<td>${buildSelectHtml(c.id, 'in', c.in, [2, 4, 6, 10, 15, 16, 20, 25, 32, 40, 50, 63], col)}</td>`;
+        tfootStr += `<td>${buildButtonHtml(c.id, 'in', c.in, col)}</td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
@@ -605,7 +665,6 @@ function renderTabla(areaTotal, gradoActual) {
 // ==========================================
 // VISTA PREVIA Y PDF
 // ==========================================
-
 function actualizarPDFHeaders() {
     const profNombre = localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL INDEPENDIENTE';
     const profTel = localStorage.getItem('villaser_conf_telefono') || '';
@@ -1005,12 +1064,11 @@ function generarMenuInferior() {
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; };
         footer.appendChild(btn);
     });
-                          }
+}
 
 // ==========================================
-// NUEVO MOTOR DE ACORDEONES (POTENCIA)
+// NUEVO MOTOR DE ACORDEONES (FORMULARIOS)
 // ==========================================
-
 const ambientesOptions = [
     "Sala de Estar", "Comedor", "Living", "Dormitorio", "Cocina",
     "Baño", "Toilette", "Pasillo", "Lavadero", "Balcón (Semi)",
@@ -1031,15 +1089,12 @@ function inicializarAcordeonAmbiente() {
             document.getElementById('selAmbiente').value = amb;
             document.getElementById('sumAmbiente').innerText = amb;
             document.getElementById('detAmbiente').removeAttribute('open');
-            // Si tenías un evento "onchange" nativo para ambiente, dispáralo aquí si es necesario
         };
         listAmb.appendChild(opt);
     });
 }
-// Llama a la inicialización de ambientes al cargar
 document.addEventListener('DOMContentLoaded', inicializarAcordeonAmbiente);
 
-// Función para poblar dinámicamente los circuitos
 function poblarAcordeonCircuito(idSuffix, arrayNombresCircuitos) {
     const hiddenInput = document.getElementById('circuito' + idSuffix);
     const summary = document.getElementById('sumCircuito' + idSuffix);
@@ -1049,13 +1104,11 @@ function poblarAcordeonCircuito(idSuffix, arrayNombresCircuitos) {
     if (!hiddenInput || !summary || !list || !details) return;
     list.innerHTML = '';
     
-    // Resetear visualmente si el circuito seleccionado fue borrado o ya no existe
     if (hiddenInput.value && !arrayNombresCircuitos.includes(hiddenInput.value)) {
         hiddenInput.value = '';
         summary.innerText = '-- Circ --';
     }
 
-    // Opción vacía por defecto
     const optVacia = document.createElement('div');
     optVacia.className = 'corp-select-option';
     optVacia.innerText = '-- Circ --';
@@ -1066,7 +1119,6 @@ function poblarAcordeonCircuito(idSuffix, arrayNombresCircuitos) {
     };
     list.appendChild(optVacia);
 
-    // Opciones reales de los circuitos que el usuario fue creando
     arrayNombresCircuitos.forEach(circNombre => {
         const opt = document.createElement('div');
         opt.className = 'corp-select-option';
@@ -1080,7 +1132,6 @@ function poblarAcordeonCircuito(idSuffix, arrayNombresCircuitos) {
     });
 }
 
-// Disparador manual para el Suministro
 function cambiarSuministro(valor, texto) {
     document.getElementById('selSuministro').value = valor;
     document.getElementById('sumSuministro').innerText = texto;
@@ -1088,7 +1139,6 @@ function cambiarSuministro(valor, texto) {
     if (typeof renderTabla === 'function') renderTabla(); 
 }
 
-// Inteligencia de cierre (Click afuera o al abrir otro)
 document.addEventListener('click', (event) => {
     const details = document.querySelectorAll('details.corp-custom-select');
     details.forEach(det => {
