@@ -443,3 +443,17 @@ details[open] summary .acc-icon-indicator {
     background: var(--ngc-neon); 
     color: #ffffff; 
 }
+
+.circ-input {
+    width: 45px !important; /* Fuerza el ancho pequeño */
+    margin: 0 auto; /* Lo centra en la columna */
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(var(--ngc-neon-rgb), 0.3);
+    color: inherit;
+    text-align: center;
+    border-radius: 4px;
+    padding: 4px 1px;
+    font-family: inherit;
+    font-size: 0.75rem;
+}
