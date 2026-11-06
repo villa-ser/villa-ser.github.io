@@ -70,7 +70,7 @@ label { font-size: 0.8rem; color: var(--ngc-text-faded); font-weight: 600; margi
 .flex-1 { flex: 1; }
 
 /* INPUTS (Letras más chicas, más aire) */
-.corp-input { width: 100%; padding: 14px 12px; background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; color: var(--ngc-text-main); font-size: 0.85rem; outline: none; font-family: inherit; }
+.corp-input { width: 50px; padding: 14px 12px; background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; color: var(--ngc-text-main); font-size: 0.85rem; outline: none; font-family: inherit; }
 .corp-input:focus { border-color: var(--ngc-neon); }
 textarea.corp-input { resize: vertical; }
 
