@@ -260,3 +260,28 @@ document.addEventListener("DOMContentLoaded", () => {
         footer.appendChild(btn);
     });
 });
+
+// ==========================================
+// COMPORTAMIENTO ACORDEÓN DEL ORDENADOR
+// ==========================================
+function cambiarOrden(valor, texto) {
+    // 1. Actualiza el input oculto y el texto visual
+    document.getElementById('ordenador').value = valor;
+    document.getElementById('sumOrden').innerText = texto;
+    
+    // 2. Cierra el menú desplegable
+    document.getElementById('detOrden').removeAttribute('open');
+    
+    // 3. Dispara la recarga de la lista
+    renderizarContactos();
+}
+
+// Cierre inteligente: repliega el menú si el usuario toca en cualquier otra parte
+document.addEventListener('click', function(event) {
+    const details = document.querySelectorAll('.corp-custom-select');
+    details.forEach(det => {
+        if (det.open && !det.contains(event.target)) {
+            det.removeAttribute('open');
+        }
+    });
+});
