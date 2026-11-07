@@ -487,3 +487,26 @@ details[open] summary .acc-icon-indicator {
     -webkit-overflow-scrolling: touch; /* Clave para el scroll fluido y táctil en móviles */
     padding-bottom: 5px; /* Espacio mínimo para que la barra de scroll no pise los datos */
 }
+
+/* ============================================================== */
+/* BOTÓN ACORDEÓN DE BÚSQUEDA (MÓDULO COSTOS)                     */
+/* ============================================================== */
+.corp-filtros-details summary {
+    list-style: none;
+    outline: none;
+    user-select: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.corp-filtros-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.corp-filtros-details summary:active {
+    transform: scale(0.98);
+}
+
+.corp-filtros-details[open] summary .acc-icon-indicator {
+    transform: rotate(180deg);
+}
