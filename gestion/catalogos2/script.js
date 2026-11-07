@@ -50,3 +50,51 @@ document.addEventListener("DOMContentLoaded", () => {
         footer.appendChild(btn);
     });
 });
+
+// ==========================================
+// VISOR DE CATÁLOGOS A PANTALLA COMPLETA
+// ==========================================
+
+function abrirCatalogoInterno(driveId, tituloCatalogo = 'Catálogo') {
+    const modal = document.getElementById('modalVisorPDF');
+    const iframe = document.getElementById('iframeVisor');
+    const loader = document.getElementById('visorLoader');
+    const tituloEl = document.getElementById('visorTitle');
+
+    // 1. Configuramos el título y mostramos el estado de carga
+    tituloEl.innerHTML = `<i class="fa-solid fa-book-open" style="color: var(--error-red);"></i> ${tituloCatalogo}`;
+    loader.style.display = 'block';
+    iframe.style.opacity = '0'; // Se mantiene invisible hasta que cargue 100%
+
+    // 2. Mostramos el Modal ocupando toda la pantalla
+    modal.classList.remove('oculto');
+    // Para asegurar que bloquee el scroll del fondo en móviles
+    document.body.style.overflow = 'hidden'; 
+
+    // 3. Inyectamos la URL. SOLO AQUÍ SE CONSUMEN LOS DATOS.
+    iframe.src = `https://drive.google.com/file/d/${driveId}/preview`;
+}
+
+function ocultarLoaderVisor() {
+    const iframe = document.getElementById('iframeVisor');
+    const loader = document.getElementById('visorLoader');
+    
+    // Verificamos que el iframe no esté vacío antes de mostrarlo
+    if (iframe.src && iframe.src !== window.location.href) {
+        loader.style.display = 'none';
+        iframe.style.opacity = '1';
+    }
+}
+
+function cerrarCatalogoInterno() {
+    const modal = document.getElementById('modalVisorPDF');
+    const iframe = document.getElementById('iframeVisor');
+    
+    // 1. Ocultamos el Modal y devolvemos el scroll a la app
+    modal.classList.add('oculto');
+    document.body.style.overflow = '';
+    
+    // 2. VACIADO CRÍTICO: Rompemos el enlace para liberar RAM y cortar consumo de datos
+    iframe.src = '';
+    iframe.style.opacity = '0';
+}
