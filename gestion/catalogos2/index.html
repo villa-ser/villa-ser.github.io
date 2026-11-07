@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#18191A">
+    
+    <title>Catálogos | Villaser</title>
+    
+    <!-- Librería de Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="../global.css">
+
+    <!-- Script de detección de Tema Inmediato -->
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="corp-top-nav" style="margin-bottom: 20px;">
+            <button class="corp-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="corp-nav-title">
+                <i class="fa-solid fa-book-open corp-accent-color"></i> Catálogos
+            </div>
+            <div style="width: 42px;"></div> <!-- Espaciador -->
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: JELUZ -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-toggle-on corp-accent-color"></i> JELUZ</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                
+                <!-- ÍTEM: PRODUCTOS 2023 -->
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;">
+                            <i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Productos 2023
+                        </span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 15px; line-height: 1.4;">
+                            <strong>Contenido:</strong> Catálogo residencial completo. Incluye líneas de interruptores Verona, Mito y Siglo XXI, tomacorrientes y cajas de embutir.
+                        </p>
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1xBSqbf4praQmj8oLZq_JOtIuA1EZ9XFo/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-eye"></i> Abrir Catálogo
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1xBSqbf4praQmj8oLZq_JOtIuA1EZ9XFo" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- ÍTEM: CANALIZACIONES -->
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;">
+                            <i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> Canalizaciones
+                        </span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 15px; line-height: 1.4;">
+                            <strong>Contenido:</strong> Especificaciones técnicas de cañerías, conectores y accesorios para instalaciones eléctricas a la vista y embutidas.
+                        </p>
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/10A-LbVoZagzJsc6CcWi_W4BEO-vL1SR2/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-eye"></i> Abrir Catálogo
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=10A-LbVoZagzJsc6CcWi_W4BEO-vL1SR2" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- GRUPO: MACROLED -->
+        <!-- ============================================== -->
+        <details class="corp-card gpu-accel gnc-main-acc" style="margin-bottom: 15px; padding: 15px;">
+            <summary style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="corp-card-title" style="margin: 0;"><i class="fa-solid fa-sun corp-accent-color"></i> MACROLED</span>
+                <i class="fa-solid fa-chevron-down acc-icon-indicator"></i>
+            </summary>
+            
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                
+                <!-- ÍTEM: GENERAL -->
+                <details class="gnc-sub-acc" style="background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); border-radius: 8px; padding: 12px;">
+                    <summary style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--ngc-text-main); font-weight: 600; font-size: 0.95rem;">
+                            <i class="fa-regular fa-file-pdf" style="color: var(--error-red); margin-right: 5px;"></i> General
+                        </span>
+                        <i class="fa-solid fa-angle-down acc-icon-indicator" style="font-size: 0.8rem;"></i>
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 15px; line-height: 1.4;">
+                            <strong>Contenido:</strong> Portfolio completo de soluciones en iluminación LED. Lámparas, paneles, plafones y reflectores.
+                        </p>
+                        <div class="action-grid-main">
+                            <a href="https://drive.google.com/file/d/1jS4sYB4Sd7G7Z4eUlQnUOwqP8qy8bzXf/view" target="_blank" class="corp-btn primary-action" style="text-decoration: none;">
+                                <i class="fa-solid fa-eye"></i> Abrir Catálogo
+                            </a>
+                            <a href="https://drive.google.com/uc?export=download&id=1jS4sYB4Sd7G7Z4eUlQnUOwqP8qy8bzXf" target="_blank" class="corp-btn success-btn" style="text-decoration: none;">
+                                <i class="fa-solid fa-download"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </details>
+        
+    </main>
+</div>
+
+<!-- NUEVO MENÚ INFERIOR TIPO APP -->
+<nav class="corp-bottom-nav">
+    <div class="corp-scroll-container" id="corpFooterMenu"></div>
+</nav>
+
+<script src="../firebase-config.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
