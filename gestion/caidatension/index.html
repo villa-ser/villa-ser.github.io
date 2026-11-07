@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#18191A">
+    <title>Caída de Tensión | Villaser Gestión</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css">
+
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    <style>
+        /* Estilos específicos del módulo de calculadora */
+        .calc-box {
+            background: var(--ngc-bg-input);
+            border: 1px solid var(--ngc-privacy-border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .calc-box.active {
+            border-color: var(--ngc-neon);
+            background: rgba(35, 116, 225, 0.1); /* Tinte corporativo */
+        }
+        .calc-val {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--ngc-text-main);
+            display: block;
+            margin-top: 4px;
+        }
+        .numpad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .numpad-grid .corp-btn {
+            font-size: 1.1rem;
+            padding: 18px 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MODAL DE ALERTA DE ARRANQUE -->
+    <div id="modalArranque" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-triangle-exclamation corp-modal-icon"></i>
+            <h3>Recordatorio Importante</h3>
+            <p>En el arranque de motores la intensidad (Amp) sube entre <b>5 y 8 veces</b>. Asegúrese de ingresar el valor de corriente de arranque para un cálculo correcto.</p>
+            <div class="corp-modal-actions">
+                <button class="corp-btn primary-action" onclick="closeModal()">Comprendido</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-wrapper">
+        <main class="container">
+            
+            <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+            <nav class="corp-top-nav">
+                <button class="corp-btn-icon" onclick="window.location.href='../index.html#menu'" aria-label="Volver">
+                    <i class="fa-solid fa-arrow-left corp-accent-color"></i>
+                </button>
+                <div class="corp-nav-title">
+                    <i class="fa-solid fa-bolt corp-accent-color"></i> CAÍDA DE TENSIÓN
+                </div>
+                <button class="corp-btn-icon danger" onclick="resetAll()" title="Reiniciar Valores">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </nav>
+
+            <section class="corp-card flex-column gap-15">
+                
+                <p style="color: var(--ngc-text-faded); font-size: 0.8rem; margin: -5px 0 10px 0; text-align: center;">Cálculo de caída ΔU (AEA 90364-5-52)</p>
+
+                <!-- TARJETAS DE RESULTADO SUPERIORES -->
+                <div class="row-group-stretch" style="background: var(--ngc-bg-input); padding: 15px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); text-align: center; margin-bottom: 0;">
+                    <div class="flex-1">
+                        <span style="font-size: 0.7rem; color: var(--ngc-text-faded); display: block; font-weight: bold; margin-bottom: 4px;">Caída (V)</span>
+                        <b id="out_u" style="color: var(--ngc-warning); font-size: 1.1rem;">0.00 V</b>
+                    </div>
+                    <div class="flex-1" style="border-left: 1px solid var(--ngc-privacy-border); border-right: 1px solid var(--ngc-privacy-border);">
+                        <span style="font-size: 0.7rem; color: var(--ngc-text-faded); display: block; font-weight: bold; margin-bottom: 4px;">Caída (%)</span>
+                        <b id="out_pct" style="color: var(--error-red); font-size: 1.1rem;">0.00 %</b>
+                    </div>
+                    <div class="flex-1">
+                        <span style="font-size: 0.7rem; color: var(--ngc-text-faded); display: block; font-weight: bold; margin-bottom: 4px;">Llegada</span>
+                        <b id="out_fin" style="color: var(--success-green); font-size: 1.1rem;">0.00 V</b>
+                    </div>
+                </div>
+
+                <!-- SELECTORES SEGMENTADOS (Sistema / Material) -->
+                <div class="row-group-stretch" style="margin-bottom: 0;">
+                    <div class="unit-toggle flex-1">
+                        <input type="radio" name="sis" id="sis-mono" value="2" checked onchange="calc()" class="oculto">
+                        <label for="sis-mono" class="unit-label">Mono</label>
+                        <input type="radio" name="sis" id="sis-tri" value="1.732" onchange="calc()" class="oculto">
+                        <label for="sis-tri" class="unit-label">Trif</label>
+                    </div>
+                    <div class="unit-toggle flex-1">
+                        <input type="radio" name="mat" id="mat-cu" value="cu" checked onchange="updateTable()" class="oculto">
+                        <label for="mat-cu" class="unit-label">CU</label>
+                        <input type="radio" name="mat" id="mat-al" value="al" onchange="updateTable()" class="oculto">
+                        <label for="mat-al" class="unit-label">AL</label>
+                    </div>
+                </div>
+
+                <!-- SELECTOR DE TIPO DE CARGA -->
+                <div class="unit-toggle">
+                    <input type="radio" name="preset" id="pre-normal" value="normal" checked onclick="setPreset(0.85, 0.53)" class="oculto">
+                    <label for="pre-normal" class="unit-label">Carga Normal</label>
+                    <input type="radio" name="preset" id="pre-motor" value="motor" onclick="setPreset(0.30, 0.95)" class="oculto">
+                    <label for="pre-motor" class="unit-label">Arranque Motor</label>
+                </div>
+
+                <!-- PRIMERA FILA DE ENTRADAS -->
+                <div class="row-group-stretch" style="margin-bottom: 0;">
+                    <div class="flex-1 calc-box active" id="grp-amp" onclick="setActive('amp')">
+                        <label style="margin:0;">Amp (I)</label>
+                        <span id="disp-amp" class="calc-val">0</span>
+                    </div>
+                    <div class="flex-1 calc-box" id="grp-mts" onclick="setActive('mts')">
+                        <label style="margin:0;">Metros (L)</label>
+                        <span id="disp-mts" class="calc-val">0</span>
+                    </div>
+                    <div class="flex-1">
+                        <label style="margin: 0; text-align: center; margin-bottom: 4px;">Sec (mm²)</label>
+                        <details id="detSec" class="corp-custom-select">
+                            <summary id="disp-sec-sel" class="corp-input" style="padding: 10px; font-size: 1rem; font-weight:bold; text-align:center; display: flex; justify-content: space-around;">2.5</summary>
+                            <div class="corp-select-list">
+                                <div class="corp-select-option" onclick="setSec('1.0')">1.0 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('1.5')">1.5 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('2.5')">2.5 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('4')">4 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('6')">6 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('10')">10 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('16')">16 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('25')">25 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('35')">35 mm²</div>
+                                <div class="corp-select-option" onclick="setSec('50')">50 mm²</div>
+                            </div>
+                        </details>
+                        <input type="hidden" id="sec-val" value="2.5">
+                    </div>
+                </div>
+
+                <!-- SEGUNDA FILA DE ENTRADAS -->
+                <div class="row-group-stretch" style="margin-bottom: 0;">
+                    <div class="flex-1 calc-box" id="grp-vnom" onclick="setActive('vnom')">
+                        <label style="margin:0;">V. Nom</label>
+                        <span id="disp-vnom" class="calc-val">220</span>
+                    </div>
+                    <div class="flex-1 calc-box" id="grp-phi">
+                        <label style="margin:0;">cos φ | sen φ</label>
+                        <div class="calc-val" style="font-size:0.95rem;">
+                            <span id="disp-cosphi" onclick="setActive('cosphi')">0.85</span> | 
+                            <span id="disp-senphi" onclick="setActive('senphi')">0.53</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 calc-box" style="cursor: default;">
+                        <label style="margin:0;">R | X (Ω/km)</label>
+                        <div class="calc-val" style="font-size:0.95rem;">
+                            <span id="disp-res" style="color: var(--ngc-neon);">7.98</span> | <span style="color: var(--ngc-neon);">0.08</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TECLADO NUMÉRICO INTEGRADO -->
+                <div class="numpad-grid">
+                    <button class="corp-btn" onclick="press('7')">7</button>
+                    <button class="corp-btn" onclick="press('8')">8</button>
+                    <button class="corp-btn" onclick="press('9')">9</button>
+                    
+                    <button class="corp-btn" onclick="press('4')">4</button>
+                    <button class="corp-btn" onclick="press('5')">5</button>
+                    <button class="corp-btn" onclick="press('6')">6</button>
+                    
+                    <button class="corp-btn" onclick="press('1')">1</button>
+                    <button class="corp-btn" onclick="press('2')">2</button>
+                    <button class="corp-btn" onclick="press('3')">3</button>
+                    
+                    <button class="corp-btn danger-btn" onclick="clearVal()"><i class="fa-solid fa-delete-left"></i></button>
+                    <button class="corp-btn" onclick="press('0')">0</button>
+                    <button class="corp-btn" onclick="press('.')">.</button>
+                </div>
+
+                <div style="font-size: 0.75rem; color: var(--ngc-text-faded); text-align: center; border-top: 1px solid var(--ngc-privacy-border); padding-top: 12px; margin-top: 5px;">
+                    Fórmula: <b>ΔU = k · I · L · (R · cos φ + X · sen φ)</b><br>
+                    Donde <b>k</b> es 2 (Mono) o √3 (Trif); <b>L</b> en km; <b>X</b> = 0.08 Ω/km.
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+                          </html>
+                          
