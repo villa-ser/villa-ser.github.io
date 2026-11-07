@@ -1,12 +1,12 @@
 let inputActivo = 'inp-v';
 let modoActual = 'PRO';
+let toastTimeout;
 
 window.onload = () => {
-    // Al iniciar, dar foco al primer campo (Tensión)
     setFoco('inp-v');
 };
 
-// --- SISTEMA DE TOAST (NOTIFICACIONES) ---
+// --- SISTEMA DE TOAST CORPORATIVO ---
 function mostrarToast(titulo, mensaje, esError = false) {
     const toast = document.getElementById('toastNotificacion');
     if (!toast) return;
@@ -15,27 +15,25 @@ function mostrarToast(titulo, mensaje, esError = false) {
     document.getElementById('toastMessage').innerText = mensaje;
     
     const icon = document.getElementById('toastIcon');
+    
     if (esError) {
         toast.style.borderLeftColor = 'var(--error-red)';
-        icon.className = 'fa-solid fa-triangle-exclamation';
+        toast.style.borderColor = 'var(--error-red)';
+        icon.className = 'fa-solid fa-triangle-exclamation toast-icon';
         icon.style.color = 'var(--error-red)';
     } else {
         toast.style.borderLeftColor = 'var(--success-green)';
-        icon.className = 'fa-solid fa-check-circle';
+        toast.style.borderColor = 'var(--success-green)';
+        icon.className = 'fa-solid fa-check-circle toast-icon';
         icon.style.color = 'var(--success-green)';
     }
 
-    toast.classList.remove('oculto');
-    setTimeout(() => toast.classList.add('mostrar'), 10);
-    setTimeout(() => cerrarToast(), 3000);
-}
-
-function cerrarToast() {
-    const toast = document.getElementById('toastNotificacion');
-    if (toast) {
+    clearTimeout(toastTimeout);
+    toast.classList.add('mostrar');
+    
+    toastTimeout = setTimeout(() => {
         toast.classList.remove('mostrar');
-        setTimeout(() => toast.classList.add('oculto'), 400);
-    }
+    }, 3000);
 }
 
 // --- GESTIÓN DE LA INTERFAZ ---
@@ -51,7 +49,7 @@ function setFoco(id) {
     const el = document.getElementById(id);
     if(el) {
         el.style.borderColor = 'var(--ngc-neon)';
-        el.style.boxShadow = '0 0 10px rgba(var(--ngc-neon-rgb), 0.4)';
+        el.style.boxShadow = '0 0 0 3px rgba(35, 116, 225, 0.2)';
     }
 }
 
@@ -59,7 +57,6 @@ function cambiarModo(modo) {
     modoActual = modo;
     limpiarTodo();
     
-    // Reset visual botones
     document.querySelectorAll('#btn-ohm, #btn-watt, #btn-pro').forEach(btn => btn.classList.remove('modo-activo'));
     
     const contR = document.getElementById('cont-r');
@@ -94,9 +91,7 @@ function tecla(val) {
     if(!inputActivo) return;
     const el = document.getElementById(inputActivo);
     
-    // Evitar múltiples puntos decimales
     if(val === '.' && el.value.includes('.')) return;
-    
     el.value += val;
 }
 
@@ -107,11 +102,15 @@ function borrar() {
 }
 
 function limpiarTodo() {
-    document.querySelectorAll('.calc-input').forEach(el => el.value = '');
-    if(inputActivo) setFoco(inputActivo); // Restaura el foco visual
+    document.querySelectorAll('.calc-input').forEach(el => {
+        el.value = '';
+        el.style.borderColor = 'var(--ngc-privacy-border)';
+        el.style.boxShadow = 'none';
+    });
+    if(inputActivo) setFoco(inputActivo); 
 }
 
-// --- MOTOR MATEMÁTICO DE LEYES ---
+// --- MOTOR MATEMÁTICO ---
 function calcular() {
     let v = parseFloat(document.getElementById('inp-v').value);
     let i = parseFloat(document.getElementById('inp-i').value);
@@ -123,7 +122,6 @@ function calcular() {
     let r_ok = !isNaN(r);
     let p_ok = !isNaN(p);
 
-    // Contar cuántos valores válidos se ingresaron
     let activos = [v_ok, i_ok, r_ok, p_ok].filter(Boolean).length;
 
     if (activos < 2) {
@@ -131,65 +129,38 @@ function calcular() {
         return;
     }
     if (activos > 2) {
-        mostrarToast("Exceso de Datos", "Borra e ingresa solo 2 valores para calcular el resto.", true);
+        mostrarToast("Exceso de Datos", "Borra e ingresa solo 2 valores.", true);
         return;
     }
 
     try {
-        // Despejes combinados (Rueda Eléctrica Universal)
-        if (v_ok && i_ok) { 
-            p = v * i; 
-            r = v / i; 
-        } 
-        else if (v_ok && r_ok) { 
-            p = (v * v) / r; 
-            i = v / r; 
-        } 
-        else if (v_ok && p_ok) { 
-            i = p / v; 
-            r = (v * v) / p; 
-        } 
-        else if (i_ok && r_ok) { 
-            v = i * r; 
-            p = (i * i) * r; 
-        } 
-        else if (i_ok && p_ok) { 
-            v = p / i; 
-            r = p / (i * i); 
-        } 
-        else if (r_ok && p_ok) { 
-            v = Math.sqrt(p * r); 
-            i = Math.sqrt(p / r); 
-        }
+        if (v_ok && i_ok) { p = v * i; r = v / i; } 
+        else if (v_ok && r_ok) { p = (v * v) / r; i = v / r; } 
+        else if (v_ok && p_ok) { i = p / v; r = (v * v) / p; } 
+        else if (i_ok && r_ok) { v = i * r; p = (i * i) * r; } 
+        else if (i_ok && p_ok) { v = p / i; r = p / (i * i); } 
+        else if (r_ok && p_ok) { v = Math.sqrt(p * r); i = Math.sqrt(p / r); }
 
-        // Validación de divisiones por cero o negativos
         if (!isFinite(v) || !isFinite(i) || !isFinite(r) || !isFinite(p)) {
             throw new Error("División por cero");
         }
 
-        // Formateo y volcado a los inputs (hasta 2 decimales)
         document.getElementById('inp-v').value = v.toFixed(2).replace(/\.00$/, '');
         document.getElementById('inp-i').value = i.toFixed(2).replace(/\.00$/, '');
         
-        if (modoActual !== 'WATT') {
-            document.getElementById('inp-r').value = r.toFixed(2).replace(/\.00$/, '');
-        }
-        if (modoActual !== 'OHM') {
-            document.getElementById('inp-p').value = p.toFixed(2).replace(/\.00$/, '');
-        }
+        if (modoActual !== 'WATT') document.getElementById('inp-r').value = r.toFixed(2).replace(/\.00$/, '');
+        if (modoActual !== 'OHM') document.getElementById('inp-p').value = p.toFixed(2).replace(/\.00$/, '');
 
-        mostrarToast("¡Éxito!", "Cálculo realizado correctamente.", false);
+        mostrarToast("¡Cálculo Exitoso!", "Resultados obtenidos correctamente.", false);
         
-        // Efecto visual de éxito
         document.querySelectorAll('.calc-input').forEach(el => {
             if(el.value !== "") {
                 el.style.borderColor = 'var(--success-green)';
-                el.style.boxShadow = '0 0 10px rgba(40, 167, 69, 0.2)';
+                el.style.boxShadow = '0 0 0 2px rgba(49, 162, 76, 0.2)';
             }
         });
 
     } catch (error) {
-        mostrarToast("Error Matemático", "Los valores ingresados generan un cálculo imposible.", true);
+        mostrarToast("Error", "Cálculo matemáticamente imposible.", true);
     }
-    }
-          
+}
