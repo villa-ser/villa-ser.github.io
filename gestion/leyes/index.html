@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    <title>Leyes Eléctricas | Villaser Gestión</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css"> <!-- O ajusta la ruta a tu CSS global -->
+
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    <style>
+        /* Estilos específicos mínimos para mantener el diseño inalterable */
+        .toast-corp {
+            position: fixed; top: 20px; right: 20px; z-index: 10000;
+            background: var(--ngc-glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--ngc-privacy-border); border-left: 4px solid var(--ngc-neon);
+            border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 5px 15px var(--card-shadow);
+            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast-corp.mostrar { transform: translateX(0); }
+        .calc-input { font-size: 1.2rem; font-weight: bold; text-align: center; cursor: pointer; caret-color: transparent; }
+        .modo-activo { border-color: var(--ngc-neon) !important; color: var(--ngc-neon) !important; background: rgba(var(--ngc-neon-rgb), 0.1) !important; }
+    </style>
+</head>
+<body>
+
+<!-- SISTEMA DE TOAST -->
+<div id="toastNotificacion" class="toast-corp oculto">
+    <i id="toastIcon" class="fa-solid fa-circle-info" style="font-size: 1.5rem;"></i>
+    <div style="display: flex; flex-direction: column;">
+        <b id="toastTitle" style="color: var(--ngc-text-main); font-size: 0.9rem;"></b>
+        <span id="toastMessage" style="font-size: 0.8rem; color: var(--ngc-text-faded);"></span>
+    </div>
+</div>
+
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- BARRA DE NAVEGACIÓN -->
+        <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <button class="ngc-btn-icon" onclick="window.location.href='../index.html'" aria-label="Volver al menú principal" style="background: transparent; border: none; color: var(--ngc-text-main); font-size: 1rem; cursor: pointer;">
+                <i class="fa-solid fa-arrow-left" style="color: var(--ngc-neon);"></i> Menú
+            </button>
+            <div style="font-size: 0.85rem; color: var(--ngc-neon); font-weight: bold; text-transform: uppercase;">
+                <i class="fa-solid fa-calculator"></i> Leyes Eléctricas
+            </div>
+            <button class="ngc-btn-icon danger" onclick="limpiarTodo()" title="Borrar Todo" style="background: transparent; border: none; color: var(--error-red); cursor: pointer;">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </nav>
+        
+        <div id="app">
+            <section class="ngc-card gpu-accel flex-column gap-15">
+                
+                <!-- SELECTOR DE LEYES -->
+                <div style="display: flex; gap: 8px; margin-bottom: 5px;">
+                    <button class="ngc-btn modo-activo" id="btn-pro" style="flex: 1; font-size: 0.75rem; padding: 10px;" onclick="cambiarModo('PRO')">
+                        <i class="fa-solid fa-star"></i> Mágico
+                    </button>
+                    <button class="ngc-btn" id="btn-ohm" style="flex: 1; font-size: 0.75rem; padding: 10px;" onclick="cambiarModo('OHM')">
+                        Ley Ohm
+                    </button>
+                    <button class="ngc-btn" id="btn-watt" style="flex: 1; font-size: 0.75rem; padding: 10px;" onclick="cambiarModo('WATT')">
+                        Ley Watt
+                    </button>
+                </div>
+                
+                <p id="instruccion-modo" style="text-align: center; color: var(--ngc-text-faded); font-size: 0.8rem; margin: 0;">
+                    Calculadora PRO: Ingresa <b>2</b> valores para calcular el resto.
+                </p>
+
+                <!-- PANTALLA DE LA CALCULADORA -->
+                <div style="background: rgba(0,0,0,0.2); border: 1px dashed var(--ngc-privacy-border); border-radius: 12px; padding: 15px;">
+                    
+                    <div class="row-group-stretch" style="gap: 10px; margin-bottom: 10px;">
+                        <div class="flex-1" id="cont-v">
+                            <label style="color: #ffc107;"><i class="fa-solid fa-bolt"></i> Tensión (V)</label>
+                            <input type="text" id="inp-v" class="ngc-input calc-input" readonly onclick="setFoco('inp-v')" placeholder="Volts">
+                        </div>
+                        <div class="flex-1" id="cont-i">
+                            <label style="color: #00d4ff;"><i class="fa-solid fa-wave-square"></i> Corriente (A)</label>
+                            <input type="text" id="inp-i" class="ngc-input calc-input" readonly onclick="setFoco('inp-i')" placeholder="Amps">
+                        </div>
+                    </div>
+                    
+                    <div class="row-group-stretch" style="gap: 10px;" id="row-inferior">
+                        <div class="flex-1" id="cont-r">
+                            <label style="color: #28a745;"><i class="fa-solid fa-omega"></i> Resistencia (Ω)</label>
+                            <input type="text" id="inp-r" class="ngc-input calc-input" readonly onclick="setFoco('inp-r')" placeholder="Ohms">
+                        </div>
+                        <div class="flex-1" id="cont-p">
+                            <label style="color: #ff4b2b;"><i class="fa-solid fa-fire-flame-curved"></i> Potencia (W)</label>
+                            <input type="text" id="inp-p" class="ngc-input calc-input" readonly onclick="setFoco('inp-p')" placeholder="Watts">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TECLADO NUMÉRICO DE ELECTRICISTA -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 5px;">
+                    <!-- Fila 1 -->
+                    <button class="ngc-btn" onclick="tecla('7')">7</button>
+                    <button class="ngc-btn" onclick="tecla('8')">8</button>
+                    <button class="ngc-btn" onclick="tecla('9')">9</button>
+                    <button class="ngc-btn danger-btn" onclick="borrar()" style="background: rgba(255, 75, 43, 0.1);"><i class="fa-solid fa-delete-left"></i></button>
+                    
+                    <!-- Fila 2 -->
+                    <button class="ngc-btn" onclick="tecla('4')">4</button>
+                    <button class="ngc-btn" onclick="tecla('5')">5</button>
+                    <button class="ngc-btn" onclick="tecla('6')">6</button>
+                    <button class="ngc-btn danger-btn" onclick="limpiarTodo()">C</button>
+                    
+                    <!-- Fila 3 -->
+                    <button class="ngc-btn" onclick="tecla('1')">1</button>
+                    <button class="ngc-btn" onclick="tecla('2')">2</button>
+                    <button class="ngc-btn" onclick="tecla('3')">3</button>
+                    <button class="ngc-btn" style="grid-row: span 2; background: var(--success-green); border-color: var(--success-green); color: #fff; font-size: 1.5rem;" onclick="calcular()">=</button>
+                    
+                    <!-- Fila 4 -->
+                    <button class="ngc-btn" style="grid-column: span 2;" onclick="tecla('0')">0</button>
+                    <button class="ngc-btn" onclick="tecla('.')">.</button>
+                </div>
+
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+  </html>
+  
