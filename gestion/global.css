@@ -510,3 +510,38 @@ details[open] summary .acc-icon-indicator {
 .corp-filtros-details[open] summary .acc-icon-indicator {
     transform: rotate(180deg);
 }
+
+/* --- ESTILOS DEL CIRCUITO ANIMADO --- */
+.cable {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.cable.base {
+    stroke: var(--ngc-privacy-border);
+    stroke-width: 4;
+}
+
+.cable.flujo {
+    stroke-width: 2;
+    stroke-dasharray: 8 6; /* Segmentos de línea separados (el flujo) */
+}
+
+/* Estado apagado */
+.cable.flujo.apagado {
+    stroke: transparent;
+}
+
+/* Estado encendido / animado */
+.cable.flujo.animado-fijo,
+.cable.flujo.activo {
+    stroke: var(--error-red); /* Color del flujo (fase) */
+    animation: moverFlujo 0.8s linear infinite;
+}
+
+@keyframes moverFlujo {
+    to {
+        stroke-dashoffset: -14; /* Mueve los segmentos hacia adelante */
+    }
+}
