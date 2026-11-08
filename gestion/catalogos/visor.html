@@ -12,26 +12,67 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../global.css">
 
-    <style>
-        /* Estilos estrictos para forzar el iframe a usar toda la pantalla */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000000; }
+    
+        <style>
+        /* Estilos estrictos para forzar el visor a ocupar TODO el dispositivo */
+        body, html { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100vw !important; 
+            height: 100vh !important; 
+            overflow: hidden !important; 
+            background: #000000; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+        }
+        
         .visor-header {
-            display: flex; justify-content: space-between; align-items: center; 
-            background: #18191A; padding: 15px 1px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #18191A; 
+            padding: 15px 20px; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-            box-sizing: border-box; width: 100%; flex-shrink: 0;
+            box-sizing: border-box; 
+            width: 100vw; /* Forzar ancho completo de la barra */
+            flex-shrink: 0;
+            z-index: 10;
+            position: relative;
         }
+        
         .iframe-container {
-            position: relative; width: 100%; height: calc(100vh - 65px); background: #ffffff;
+            position: relative; 
+            width: 100vw !important; /* Forzar el 100% del ancho visual */
+            height: calc(100vh - 65px) !important; 
+            background: #ffffff;
+            margin: 0 !important; 
+            padding: 0 !important;
+            max-width: none !important; /* Rompe el límite max-width: 500px global */
         }
+        
         .iframe-container iframe {
-            width: 100%; height: 100%; border: none; display: block; position: relative; z-index: 2;
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block; 
+            position: relative; 
+            z-index: 2;
         }
+        
         .loader-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            color: #00d4ff; text-align: center; z-index: 1;
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            color: #00d4ff; 
+            text-align: center; 
+            z-index: 1;
         }
-    </style>
+        </style>
+    
 </head>
 <body>
 
