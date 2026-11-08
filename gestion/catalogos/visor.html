@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <!-- Habilita el zoom y redimensionamiento dinámico en móviles -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#18191A">
+    <meta name="theme-color" content="#000000">
     
     <title>Visor de Catálogo | Villaser</title>
     
-    <!-- SÓLO la librería de íconos (necesaria para la flecha y el libro) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- CERO CSS GLOBAL. Estilos estrictos para pantalla completa -->
+    <!-- CERO CSS GLOBAL. Estilos estrictos para forzar el ancho total -->
     <style>
-        html, body {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        html, body {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
@@ -24,6 +27,11 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         /* Barra superior */
@@ -32,10 +40,9 @@
             justify-content: space-between;
             align-items: center;
             background-color: #18191A;
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-sizing: border-box;
+            padding: 10px 15px;
             width: 100%;
+            height: 60px; /* Altura fija para el cálculo exacto del iframe */
             flex-shrink: 0;
             z-index: 10;
         }
@@ -43,42 +50,50 @@
         .visor-title {
             color: #ffffff;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 60%;
+            max-width: 65%;
         }
 
         .btn-volver {
             background: rgba(255, 75, 43, 0.1);
             color: #ff4b2b;
             border: 1px solid #ff4b2b;
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-transform: uppercase;
         }
 
-        /* Contenedor del PDF ocupando el espacio restante exacto */
+        /* Contenedor del PDF forzando márgenes cero absolutos */
         .iframe-container {
-            flex-grow: 1;
-            width: 100%;
+            flex: 1;
+            width: 100vw;
+            height: calc(100vh - 60px);
             position: relative;
             background-color: #ffffff;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: none !important;
+            overflow: hidden;
         }
 
+        /* El iframe rompe cualquier límite */
         .iframe-container iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+            margin: 0;
+            padding: 0;
             position: relative;
             z-index: 2;
         }
@@ -127,7 +142,8 @@
             }
 
             if(docId) {
-                document.getElementById('pdfFrame').src = `https://drive.google.com/file/d/${docId}/preview`;
+                // Al agregar rm=minimal forzamos a la UI de Google a colapsar barras laterales y controles
+                document.getElementById('pdfFrame').src = `https://drive.google.com/file/d/${docId}/preview?rm=minimal`;
             } else {
                 document.getElementById('loaderVisor').innerHTML = "<p style='color: red;'>Error: No se encontró el documento.</p>";
             }
