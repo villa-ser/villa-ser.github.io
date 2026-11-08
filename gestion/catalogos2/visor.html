@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- LA CLAVE DEL ZOOM ESTÁ AQUÍ (Sin maximum-scale=1.0) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#18191A">
+    
+    <title>Visor de Catálogo | Villaser</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css">
+
+    <style>
+        /* Estilos estrictos para forzar el iframe a usar toda la pantalla */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000000; }
+        .visor-header {
+            display: flex; justify-content: space-between; align-items: center; 
+            background: #18191A; padding: 15px 20px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            box-sizing: border-box; width: 100%; flex-shrink: 0;
+        }
+        .iframe-container {
+            position: relative; width: 100%; height: calc(100vh - 65px); background: #ffffff;
+        }
+        .iframe-container iframe {
+            width: 100%; height: 100%; border: none; display: block; position: relative; z-index: 2;
+        }
+        .loader-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            color: #00d4ff; text-align: center; z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR FIJA -->
+    <div class="visor-header">
+        <span style="color: #ffffff; font-weight: 600; font-size: 1rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;" id="docTitle">
+            <i class="fa-solid fa-book-open"></i> Catálogo
+        </span>
+        <button onclick="window.location.href='index.html'" class="corp-btn danger-btn" style="width: auto; padding: 8px 18px; margin: 0; border-radius: 20px; font-weight: bold; background: rgba(255, 75, 43, 0.1); color: #ff4b2b; border: 1px solid #ff4b2b;">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </button>
+    </div>
+
+    <!-- CONTENEDOR DEL PDF -->
+    <div class="iframe-container">
+        <div class="loader-center" id="loaderVisor">
+            <i class="fa-solid fa-circle-notch fa-spin fa-3x"></i>
+            <p style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; color: #333;">Cargando documento...</p>
+        </div>
+        <iframe id="pdfFrame" src="" onload="document.getElementById('loaderVisor').style.display='none'"></iframe>
+    </div>
+
+    <!-- SCRIPT PARA EXTRAER EL ID DE LA URL Y CARGARLO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const docId = urlParams.get('id');
+            const docTitle = urlParams.get('titulo');
+
+            if(docTitle) {
+                document.getElementById('docTitle').innerHTML = `<i class="fa-solid fa-book-open" style="color: #ff4b2b;"></i> ${docTitle}`;
+            }
+
+            if(docId) {
+                // Inyectamos el ID en el iframe
+                document.getElementById('pdfFrame').src = `https://drive.google.com/file/d/${docId}/preview`;
+            } else {
+                document.getElementById('loaderVisor').innerHTML = "<p style='color: red;'>Error: No se encontró el documento.</p>";
+            }
+        });
+    </script>
+</body>
+</html>
