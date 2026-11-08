@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#18191A">
+    
+    <title>Prueba de Circuito | Villaser</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- ESTILOS EXCLUSIVOS DEL CIRCUITO DE PRUEBA -->
+    <style>
+        .cable { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .cable.base { stroke: var(--ngc-privacy-border); stroke-width: 4; }
+        .cable.flujo { stroke-width: 2; stroke-dasharray: 8 6; }
+        .cable.flujo.apagado { stroke: transparent; }
+        .cable.flujo.activo { stroke: var(--error-red); animation: moverFlujo 0.8s linear infinite; }
+        @keyframes moverFlujo { to { stroke-dashoffset: -14; } }
+    </style>
+</head>
+<body>
+    <main class="ngc-wrapper">
+        
+        <!-- CABECERA DE NAVEGACIÓN -->
+        <div class="gnc-hero-card gpu-accel" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-top: 5px;">
+            <button class="ngc-btn" style="background: transparent; border: 1px dashed var(--ngc-neon); box-shadow: none; width: auto; padding: 8px 15px;" onclick="window.location.href='../index.html'">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <div style="text-align: right;">
+                <h2 style="font-size: 1.1rem; margin: 0; color: var(--ngc-neon);">Laboratorio SVG</h2>
+                <p style="font-size: 0.7rem; color: var(--success-green); margin: 0;">Sesión Requerida</p>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR PRINCIPAL: SOLO EL BOTÓN -->
+        <div class="ngc-privacy-card gpu-accel" style="margin-top: 15px; text-align: center; border-left: 4px solid var(--ngc-warning);">
+            <i class="fa-solid fa-microchip" style="font-size: 2.5rem; color: var(--ngc-warning); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px;">Renderizado de Planos</h3>
+            <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 20px;">
+                Presiona el botón para abrir el modal encapsulado y probar la animación de flujo eléctrico en el esquema SVG.
+            </p>
+            
+            <button class="ngc-btn" style="width: 100%; border-style: dashed; color: var(--ngc-neon);" onclick="abrirModalCircuito()">
+                <i class="fa-solid fa-bolt"></i> Abrir Esquema Interactivo
+            </button>
+        </div>
+
+    </main>
+
+    <!-- MODAL DEL CIRCUITO ENCAPSULADO -->
+    <div id="modalCircuitoEncapsulado" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--ngc-glass); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center; padding: 15px;">
+        <div class="ngc-privacy-card" style="width: 100%; max-width: 600px; text-align: center; border: 1px solid var(--ngc-neon); display: flex; flex-direction: column;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--ngc-privacy-border); padding-bottom: 10px;">
+                <h4 style="color: var(--ngc-neon); margin: 0; text-transform: uppercase;"><i class="fa-solid fa-sitemap"></i> Circuito de Mando</h4>
+                <button onclick="cerrarModalCircuito()" style="background: transparent; border: none; color: var(--error-red); font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Contenedor del SVG -->
+            <div style="background: var(--bg-body); border-radius: 8px; padding: 20px; overflow-x: auto; border: 1px solid var(--ngc-privacy-border);">
+                <svg viewBox="0 0 400 250" style="width: 100%; max-width: 500px; height: auto;">
+                    <text x="10" y="25" fill="#ff4b2b" font-size="12" font-weight="bold">R</text>
+                    <line x1="30" y1="20" x2="380" y2="20" stroke="#ff4b2b" stroke-width="3" />
+                    
+                    <text x="10" y="235" fill="#00d4ff" font-size="12" font-weight="bold">N</text>
+                    <line x1="30" y1="230" x2="380" y2="230" stroke="#00d4ff" stroke-width="3" />
+
+                    <line x1="200" y1="230" x2="200" y2="170" stroke="#00d4ff" stroke-width="2" />
+                    <line x1="300" y1="230" x2="300" y2="170" stroke="#00d4ff" stroke-width="2" />
+
+                    <line x1="100" y1="20" x2="100" y2="70" class="cable base" />
+                    <line x1="100" y1="20" x2="100" y2="70" class="cable flujo activo" />
+                    
+                    <circle cx="100" cy="70" r="4" fill="var(--ngc-text-main)" />
+                    <line id="svgPulsador" x1="90" y1="80" x2="120" y2="70" stroke="var(--ngc-text-main)" stroke-width="2" style="transition: all 0.2s;" />
+                    <circle cx="100" cy="90" r="4" fill="var(--ngc-text-main)" />
+
+                    <path d="M 100 90 L 100 130 L 200 130 L 200 150" class="cable base" />
+                    <path d="M 200 130 L 300 130 L 300 150" class="cable base" />
+                    <path id="flujoMando" d="M 100 90 L 100 130 L 200 130 L 200 150" class="cable flujo apagado" />
+                    <path id="flujoDerivacion" d="M 200 130 L 300 130 L 300 150" class="cable flujo apagado" />
+
+                    <rect x="185" y="150" width="30" height="20" fill="none" stroke="var(--ngc-text-main)" stroke-width="2" />
+                    <text x="193" y="164" fill="var(--ngc-text-main)" font-size="10">C1</text>
+
+                    <circle id="svgLampara" cx="300" cy="160" r="10" fill="transparent" stroke="var(--ngc-text-main)" stroke-width="2" style="transition: fill 0.3s;" />
+                    <line x1="293" y1="153" x2="307" y2="167" stroke="var(--ngc-text-main)" stroke-width="1.5" />
+                    <line x1="307" y1="153" x2="293" y2="167" stroke="var(--ngc-text-main)" stroke-width="1.5" />
+                </svg>
+            </div>
+
+            <button id="btnSimularMando" class="ngc-btn" style="margin-top: 15px; border: 1px solid var(--ngc-border-glass);" onclick="simularCircuito()">
+                <i class="fa-solid fa-power-off"></i> Pulsar S1
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Conexión a tu configuración central de Firebase -->
+    <script src="../firebase-config.js"></script>
+    <script src="./script.js"></script>
+</body>
+                      </html>
+                      
