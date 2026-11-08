@@ -2,86 +2,106 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- LA CLAVE DEL ZOOM ESTÁ AQUÍ (Sin maximum-scale=1.0) -->
+    <!-- Habilita el zoom y redimensionamiento dinámico en móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#18191A">
     
     <title>Visor de Catálogo | Villaser</title>
     
+    <!-- SÓLO la librería de íconos (necesaria para la flecha y el libro) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../global.css">
-
     
-        <style>
-        /* Estilos estrictos para forzar el visor a ocupar TODO el dispositivo */
-        body, html { 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            width: 100vw !important; 
-            height: 100vh !important; 
-            overflow: hidden !important; 
-            background: #000000; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
+    <!-- CERO CSS GLOBAL. Estilos estrictos para pantalla completa -->
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
         }
-        
+
+        /* Barra superior */
         .visor-header {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #18191A; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-            box-sizing: border-box; 
-            width: 100vw; /* Forzar ancho completo de la barra */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #18191A;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-sizing: border-box;
+            width: 100%;
             flex-shrink: 0;
             z-index: 10;
-            position: relative;
         }
-        
+
+        .visor-title {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+
+        .btn-volver {
+            background: rgba(255, 75, 43, 0.1);
+            color: #ff4b2b;
+            border: 1px solid #ff4b2b;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Contenedor del PDF ocupando el espacio restante exacto */
         .iframe-container {
-            position: relative; 
-            width: 100vw !important; /* Forzar el 100% del ancho visual */
-            height: calc(100vh - 65px) !important; 
-            background: #ffffff;
-            margin: 0 !important; 
-            padding: 0 !important;
-            max-width: none !important; /* Rompe el límite max-width: 500px global */
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
+            background-color: #ffffff;
         }
-        
+
         .iframe-container iframe {
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-            display: block; 
-            position: relative; 
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            position: relative;
             z-index: 2;
         }
-        
+
         .loader-center {
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            color: #00d4ff; 
-            text-align: center; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00d4ff;
+            text-align: center;
             z-index: 1;
         }
-        </style>
-    
+    </style>
 </head>
 <body>
 
     <!-- BARRA SUPERIOR FIJA -->
     <div class="visor-header">
-        <span style="color: #ffffff; font-weight: 600; font-size: 1rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;" id="docTitle">
-            <i class="fa-solid fa-book-open"></i> Catálogo
+        <span class="visor-title" id="docTitle">
+            <i class="fa-solid fa-book-open" style="color: #ff4b2b;"></i> Catálogo
         </span>
-        <button onclick="window.location.href='index.html'" class="corp-btn danger-btn" style="width: auto; padding: 8px 18px; margin: 0; border-radius: 20px; font-weight: bold; background: rgba(255, 75, 43, 0.1); color: #ff4b2b; border: 1px solid #ff4b2b;">
+        <button onclick="window.location.href='index.html'" class="btn-volver">
             <i class="fa-solid fa-arrow-left"></i> Volver
         </button>
     </div>
@@ -90,7 +110,7 @@
     <div class="iframe-container">
         <div class="loader-center" id="loaderVisor">
             <i class="fa-solid fa-circle-notch fa-spin fa-3x"></i>
-            <p style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; color: #333;">Cargando documento...</p>
+            <p style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; color: #333;">Cargando...</p>
         </div>
         <iframe id="pdfFrame" src="" onload="document.getElementById('loaderVisor').style.display='none'"></iframe>
     </div>
@@ -107,7 +127,6 @@
             }
 
             if(docId) {
-                // Inyectamos el ID en el iframe
                 document.getElementById('pdfFrame').src = `https://drive.google.com/file/d/${docId}/preview`;
             } else {
                 document.getElementById('loaderVisor').innerHTML = "<p style='color: red;'>Error: No se encontró el documento.</p>";
