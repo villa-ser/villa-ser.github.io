@@ -8,12 +8,10 @@ let modoListadoCompleto = false;
 // MOTOR DE ARRANQUE ULTRA BLINDADO
 // ==========================================
 function arrancarModulo() {
-    // 1. Guardián de Sesión Firebase (Idéntico a tu App Principal)
     try {
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
             if (typeof firebase.auth === 'function') {
                 firebase.auth().onAuthStateChanged(user => {
-                    // Si no hay usuario o no verificó email, lo patea al login
                     if (!user || !user.emailVerified) {
                         window.location.replace('../index.html'); 
                     }
@@ -23,8 +21,6 @@ function arrancarModulo() {
     } catch (e) { 
         console.warn("Aviso: Guardián de seguridad omitido.", e); 
     }
-
-    // 2. Disparamos la búsqueda de la base de datos de proveedores
     fetchCasas();
 }
 
@@ -205,9 +201,11 @@ function mostrarListadoAgrupado() {
     contenedor.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ==========================================
+// VISOR DE MAPA PANTALLA COMPLETA
+// ==========================================
 function abrirMaps(nombre, direccion, lat, lng) {
     let query = '';
-    
     if (lat && lng && lat.toString().trim() !== '' && lng.toString().trim() !== '') {
         const cleanLat = String(lat).replace(',', '.').trim();
         const cleanLng = String(lng).replace(',', '.').trim();
@@ -216,7 +214,39 @@ function abrirMaps(nombre, direccion, lat, lng) {
         query = encodeURIComponent(`${nombre}, ${direccion}, Córdoba, Argentina`);
     }
     
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+    // Parámetro clave: &output=embed le indica a Google que formatee el mapa para inyectarlo en tu app
+    const urlEmbed = `https://www.google.com/maps?q=${query}&output=embed`;
+    
+    const iframe = document.getElementById('iframeMapa');
+    const modal = document.getElementById('modalVisorMapa');
+    const loader = document.getElementById('visorLoaderMapa');
+
+    iframe.style.opacity = '0';
+    loader.style.display = 'block';
+    iframe.src = urlEmbed;
+
+    modal.classList.remove('oculto');
+    modal.style.display = 'flex';
+}
+
+function ocultarLoaderMapa() {
+    const iframe = document.getElementById('iframeMapa');
+    const loader = document.getElementById('visorLoaderMapa');
+    
+    // Evita falsos disparos cuando el src está vacío
+    if (iframe.src && iframe.src !== window.location.href && iframe.src !== 'about:blank') {
+        loader.style.display = 'none';
+        iframe.style.opacity = '1';
+    }
+}
+
+function cerrarMapaInterno() {
+    const modal = document.getElementById('modalVisorMapa');
+    const iframe = document.getElementById('iframeMapa');
+    
+    modal.classList.add('oculto');
+    modal.style.display = 'none';
+    iframe.src = ''; // Limpia el iframe para ahorrar memoria caché del celular
 }
 
 function escapeHtml(unsafe) {
