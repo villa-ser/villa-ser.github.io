@@ -70,6 +70,34 @@
         <div class="corp-scroll-container" id="corpFooterMenu"></div>
     </nav>
     
+    <!-- ================================================== -->
+    <!-- MODAL VISOR DE MAPA A PANTALLA COMPLETA -->
+    <!-- ================================================== -->
+    <div id="modalVisorMapa" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 2147483647; display: none; flex-direction: column; overflow: hidden;">
+        
+        <!-- Barra superior minimalista adaptada -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #18191A; padding: 15px 20px; border-bottom: 1px solid var(--ngc-privacy-border); flex-shrink: 0; width: 100%; box-sizing: border-box;">
+            <span style="color: #ffffff; font-weight: 600; font-size: 1rem; text-transform: uppercase;" id="mapaTitle">
+                <i class="fa-solid fa-map-location-dot corp-accent-color"></i> Ubicación
+            </span>
+            <button onclick="cerrarMapaInterno()" class="corp-btn danger-btn" style="width: auto; padding: 8px 18px; margin: 0; border-radius: 20px; font-weight: bold;">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+        </div>
+
+        <!-- Contenedor del Iframe de Google Maps -->
+        <div style="position: relative; width: 100%; height: calc(100vh - 65px); background: #ffffff;">
+            <!-- Spinner de carga -->
+            <div id="visorLoaderMapa" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--ngc-neon); text-align: center; z-index: 1;">
+                <i class="fa-solid fa-circle-notch fa-spin fa-3x"></i>
+                <p style="margin-top: 15px; font-size: 0.9rem; font-weight: bold; color: #333;">Cargando Mapa...</p>
+            </div>
+            
+            <!-- Iframe embebido -->
+            <iframe id="iframeMapa" src="" style="width: 100%; height: 100%; border: none; display: block; position: relative; z-index: 2; opacity: 0; transition: opacity 0.3s ease;" onload="ocultarLoaderMapa()"></iframe>
+        </div>
+    </div>
+
     <!-- Librerías de Firebase Unificadas (Compatibles con toda la PWA) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
