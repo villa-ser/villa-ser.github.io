@@ -17,6 +17,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../global.css">
 
+    <style>
+        /* Oculta el botón de Vista Previa en PC (pantallas grandes) ya que tienen la vista en vivo */
+        @media (min-width: 992px) {
+            #btnVistaPreviaMobile { display: none !important; }
+        }
+    </style>
+
     <script>
         (function() {
             const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
@@ -42,31 +49,14 @@
 <div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
-        
-        <!-- Campo numérico (Solo visible al editar Precio) -->
         <input type="number" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; display: none;">
-        
-        <!-- Área de texto (Solo visible al editar Nombre) -->
         <textarea id="modalEdicionTextarea" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; min-height: 110px; resize: vertical; display: none;"></textarea>
-        
         <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
             <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalEdicion()">Cancelar</button>
             <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
         </div>
     </div>
 </div>
-    
-    <!-- MODAL DE EDICIÓN CORPORATIVO (Reemplaza al prompt nativo) -->
-<!-- <div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card">
-        <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
-        <input type="text" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px;">
-        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
-            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalEdicion()">Cancelar</button>
-            <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
-        </div>
-    </div>
-</div> -->
     
 <!-- TODOS LOS MODALES ESTANDARIZADOS -->
 <div id="modalRecuperarCliente" class="modal-overlay oculto gpu-accel">
@@ -113,7 +103,7 @@
     </div>
 </div>
 
-    <!-- MODAL ALERTA GENÉRICA (Reemplaza alert nativo) -->
+<!-- MODAL ALERTA GENÉRICA -->
 <div id="modalAlertaCorp" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-circle-exclamation corp-modal-icon" style="color: var(--ngc-warning);"></i>
@@ -125,7 +115,7 @@
     </div>
 </div>
 
-<!-- MODAL CONFIRMACIÓN SIN AGENDA (Reemplaza confirm nativo) -->
+<!-- MODAL CONFIRMACIÓN SIN AGENDA -->
 <div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
@@ -138,7 +128,7 @@
     </div>
 </div>
 
-<!-- MODAL GUARDAR BORRADOR (Reemplaza prompt nativo) -->
+<!-- MODAL GUARDAR BORRADOR -->
 <div id="modalGuardarBorrador" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-cloud-arrow-up corp-modal-icon" style="color: var(--ngc-neon);"></i>
@@ -152,6 +142,7 @@
     </div>
 </div>
 
+<!-- MODAL CONFIRMAR NUEVO -->
 <div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
@@ -160,34 +151,6 @@
         <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
             <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalConfirmarNuevoGlobal()">Cancelar</button>
             <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevoPresupuesto()">Aceptar</button>
-        </div>
-    </div>
-</div>
-    <!-- ================================================== -->
-<!-- NUEVO MODAL DE CAPTURA DE PANTALLA -->
-<!-- ================================================== -->
-<div id="modalDescargarCaptura" class="modal-overlay oculto gpu-accel">
-    <div class="corp-modal-card" style="padding-top: 30px;">
-        <i class="fa-solid fa-download" style="font-size: 2.5rem; color: var(--ngc-text-main); margin-bottom: 15px; display: block; text-align: center;"></i>
-        <h3 style="margin-bottom: 5px; font-size: 1.3rem;">¿Descargar archivo?</h3>
-        <p id="pesoCaptura" style="font-size: 1.1rem; color: var(--ngc-text-main); font-weight: bold; text-align: center; margin-bottom: 25px;">(Calculando...)</p>
-        
-        <div style="position: relative; margin-bottom: 25px;">
-            <label style="position: absolute; top: -10px; left: 10px; background: var(--bg-body); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre</label>
-            <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
-                <input type="text" id="nombreArchivoCaptura" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px; outline: none; box-shadow: none;" value="Presupuesto_Cliente">
-                <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.png</span>
-            </div>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 10px; color: var(--ngc-text-main); margin-bottom: 30px;">
-            <i class="fa-regular fa-folder-open" style="font-size: 1.2rem;"></i>
-            <span style="font-size: 0.9rem;">~/Download</span>
-        </div>
-        
-        <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
-            <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalCaptura()">Cancelar</button>
-            <button class="corp-btn" style="width: auto; background: #cba6f7; color: #1e1e2e; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaCaptura()">Descargar</button>
         </div>
     </div>
 </div>
@@ -200,32 +163,24 @@
         <p style="margin-bottom: 20px;">¿A quién deseas enviarle el detalle?</p>
         
         <div class="corp-modal-actions">
-            <!-- Botón Contacto Agendado -->
             <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspGuardadoGlobal()">
                 <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
             </button>
-            
-            <!-- Opción ingreso manual -->
             <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
                 <input type="number" id="inputWspManual" class="corp-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
                 <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManualGlobal()">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
-
-            <!-- Búsqueda en App -->
             <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWspGlobal()">
                 <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
             </button>
-            
             <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWspGlobal()">Cancelar</button>
         </div>
     </div>
 </div>
     
-    <!-- ================================================== -->
-<!-- MODAL DESCARGAR PDF (NUEVO) -->
-<!-- ================================================== -->
+<!-- MODAL DESCARGAR PDF -->
 <div id="modalDescargarPDF" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card" style="padding-top: 30px;">
         <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: var(--error-red); margin-bottom: 15px; display: block; text-align: center;"></i>
@@ -247,7 +202,7 @@
     </div>
 </div>
     
-    <!-- MODAL CONFIRMAR ELIMINAR BORRADOR -->
+<!-- MODAL CONFIRMAR ELIMINAR BORRADOR -->
 <div id="modalConfirmarEliminar" class="modal-overlay oculto gpu-accel">
     <div class="corp-modal-card">
         <i class="fa-solid fa-trash-can corp-modal-icon" style="color: var(--error-red);"></i>
@@ -259,12 +214,31 @@
         </div>
     </div>
 </div>
+
+<!-- ================================================== -->
+<!-- NUEVO MODAL: VISTA PREVIA MÓVIL A PANTALLA COMPLETA -->
+<!-- ================================================== -->
+<div id="modalVistaPrevia" class="modal-overlay oculto gpu-accel" style="z-index: 10000; background: #121212; flex-direction: column; padding: 0;">
+    <!-- Barra Superior -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #18191A; padding: 15px 20px; border-bottom: 1px solid var(--ngc-privacy-border); width: 100%; box-sizing: border-box; flex-shrink: 0;">
+        <button onclick="cerrarVistaPrevia()" class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main); font-weight: bold; border: 1px solid var(--ngc-privacy-border); margin: 0; padding: 8px 15px;">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </button>
+        <button onclick="cerrarVistaPrevia(); generarPDF();" class="corp-btn danger-btn" style="width: auto; font-weight: bold; margin: 0; padding: 8px 15px;">
+            <i class="fa-solid fa-file-pdf"></i> Generar PDF
+        </button>
+    </div>
+    <!-- Contenedor Scrollable para el Documento -->
+    <div style="flex: 1; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 20px 0; display: flex; flex-direction: column; align-items: center; background: #333;">
+        <div id="contenedorVistaPreviaMobile" style="width: 100%; display: flex; justify-content: center;"></div>
+    </div>
+</div>
     
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="layout-wrapper">
     <main class="container">
         
-        <!-- TOP NAV ALINEADA (Sin botón menú) -->        
+        <!-- TOP NAV ALINEADA -->        
         <nav class="corp-top-nav">
             <div style="width: 42px;"></div>
             <div class="corp-nav-title">
@@ -315,30 +289,29 @@
                     <h4 class="corp-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
                     
                     <div class="row-group">
-    <label>Rubro</label>
-    <details id="detTema" class="corp-custom-select">
-        <summary id="sumTema" class="corp-input">-- SELECCIONE RUBRO --</summary>
-        <div id="listTema" class="corp-select-list"></div>
-    </details>
-    <input type="hidden" id="selTema" value="">
-</div>
+                        <label>Rubro</label>
+                        <details id="detTema" class="corp-custom-select">
+                            <summary id="sumTema" class="corp-input">-- SELECCIONE RUBRO --</summary>
+                            <div id="listTema" class="corp-select-list"></div>
+                        </details>
+                        <input type="hidden" id="selTema" value="">
+                    </div>
 
-<div class="row-group">
-    <label>Trabajo</label>
-    <div style="display:flex; gap:8px; width: 100%; align-items: center;">
-        <div style="flex: 1; position: relative;">
-            <details id="detConcepto" class="corp-custom-select" disabled>
-                <summary id="sumConcepto" class="corp-input">-- SELECCIONE TRABAJO --</summary>
-                <div id="listConcepto" class="corp-select-list"></div>
-            </details>
-            <input type="hidden" id="selConcepto" value="">
-        </div>
-        <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
-    </div>
-    <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
-</div>
-                    
-                    
+                    <div class="row-group">
+                        <label>Trabajo</label>
+                        <div style="display:flex; gap:8px; width: 100%; align-items: center;">
+                            <div style="flex: 1; position: relative;">
+                                <details id="detConcepto" class="corp-custom-select" disabled>
+                                    <summary id="sumConcepto" class="corp-input">-- SELECCIONE TRABAJO --</summary>
+                                    <div id="listConcepto" class="corp-select-list"></div>
+                                </details>
+                                <input type="hidden" id="selConcepto" value="">
+                            </div>
+                            <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
+                        </div>
+                        <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
+                    </div>
+                                        
                     <div class="row-group-stretch" style="align-items: center;">
                         <div class="flex-1">
                             <label>Cantidad</label>
@@ -368,7 +341,6 @@
                             </div>
                         </div>
                         <textarea id="obsManual" class="corp-input" rows="4" placeholder="Notas aclaratorias..." readonly style="min-height: 90px;"></textarea>
-                        
                     </div>
                     
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 15px;">
@@ -399,7 +371,7 @@
 
                 <!-- ACCIONES FINALES -->
                 <div class="action-grid-main">
-                    <button class="corp-btn" onclick="tomarCaptura()"><i class="fa-solid fa-image"></i> Captura</button>
+                    <button id="btnVistaPreviaMobile" class="corp-btn" onclick="abrirVistaPreviaMobile()"><i class="fa-solid fa-eye"></i> Vista Previa</button>
                     <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
                     <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
@@ -413,11 +385,18 @@
         </div>
     </main>
 
-    <!-- VISTA PDF A4 (Se mantiene igual para que html2pdf funcione perfecto) -->
+    <!-- VISTA PDF A4 -->
     <aside class="preview-panel">
         <div id="plantilla-pdf">
-            <div class="pdf-container">
-                <header class="pdf-header">
+            <div class="pdf-container" style="position: relative;">
+                
+                <!-- SELLO DE AGUA PROTECCIÓN (30%) -->
+                <div id="selloAguaPDF" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.3; z-index: 9999; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+                    <img src="../negro1024.png" alt="Sello Villaser" style="max-width: 250px; margin-bottom: 10px;">
+                    <h1 style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 3rem; color: #000; margin: 0; font-weight: 900; letter-spacing: 2px;">PLATAFORMA<br>VILLASER</h1>
+                </div>
+
+                <header class="pdf-header" style="position: relative; z-index: 1;">
                     <div class="pdf-info-box">
                         <h2>PRESUPUESTO</h2>
                         <div class="pdf-row"><b>Nro:</b> <span id="pdf-nro"></span></div>
@@ -431,11 +410,11 @@
                         <h1 id="pdf-text-logo" style="margin:0; font-size:24px; color:#0088aa; display:none;"></h1>
                     </div>
                 </header>
-                <table class="pdf-table">
+                <table class="pdf-table" style="position: relative; z-index: 1;">
                     <thead><tr><th>Cód</th><th>Descripción</th><th>Cant</th><th>P. Unitario</th><th>Subtotal</th></tr></thead>
                     <tbody id="pdf-tbody"></tbody>
                 </table>
-                <div class="pdf-body-lower">
+                <div class="pdf-body-lower" style="position: relative; z-index: 1;">
                     <div class="pdf-notas-box">
                         <h3>Detalle Operativo</h3>
                         <div id="pdf-notas" class="pdf-notas-content"></div>
@@ -446,7 +425,7 @@
                         <div class="pdf-total-row final-total"><span>TOTAL:</span> <b id="pdf-total"></b></div>
                     </div>
                 </div>
-                <footer class="pdf-footer">
+                <footer class="pdf-footer" style="position: relative; z-index: 1;">
                     <div class="pdf-pagos">
                         <h4>Condiciones</h4>
                         <p>Los precios están sujetos a modificaciones sin previo aviso.<br>Validez del presupuesto: 7 días.</p>
@@ -468,7 +447,6 @@
     <div class="corp-scroll-container" id="corpFooterMenu"></div>
 </nav>
     
-<!-- Scripts obligatorios de Firebase y configuración -->
 <script src="../firebase-config.js"></script>
 <script src="../global.js"></script>
 <script src="script.js"></script>
