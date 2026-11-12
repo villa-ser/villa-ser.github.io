@@ -110,6 +110,7 @@ function guardarEstadoLocal() {
         cliDireccion: document.getElementById('cliDireccion').value, 
         cliProyecto: document.getElementById('cliProyecto').value, 
         obsGenerales: document.getElementById('obsGenerales').value, 
+        diasValidez: document.getElementById('diasValidez').value,
         items: listaItems, nro: nroPresupuestoGlobal, clienteDesdeAgenda: clienteDesdeAgenda, 
         permiteGuardarNube: permiteGuardarNube, nombreBorradorActual: nombreBorradorActual,
         telefonoClienteActual: telefonoClienteActual
@@ -124,6 +125,7 @@ function cargarEstadoGuardado() {
         if (est.cliDireccion) document.getElementById('cliDireccion').value = est.cliDireccion;
         if (est.cliProyecto) document.getElementById('cliProyecto').value = est.cliProyecto;
         if (est.obsGenerales) document.getElementById('obsGenerales').value = est.obsGenerales;
+        if (est.diasValidez) document.getElementById('diasValidez').value = est.diasValidez;
         listaItems = est.items || [];
         if (est.nro) nroPresupuestoGlobal = est.nro;
         if (est.clienteDesdeAgenda !== undefined) clienteDesdeAgenda = est.clienteDesdeAgenda;
@@ -233,6 +235,7 @@ function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
         cliDireccion: document.getElementById('cliDireccion').value, 
         cliProyecto: document.getElementById('cliProyecto').value, 
         obsGenerales: document.getElementById('obsGenerales').value, 
+        diasValidez: document.getElementById('diasValidez').value,
         items: listaItems, 
         nro: nroPresupuestoGlobal, 
         totalMonto: totalMontoActual, 
@@ -661,6 +664,8 @@ function sincronizarVistaPreviaPDF() {
     document.getElementById('pdf-descuentos').innerText = `-$ ${desc.toLocaleString('es-AR')}`; 
     document.getElementById('pdf-total').innerText = `$ ${(sub - desc).toLocaleString('es-AR')}`; 
     document.getElementById('pdf-notas').innerHTML = not || 'Sin notas.';
+        const dias = document.getElementById('diasValidez').value || '15';
+    document.getElementById('pdf-validez-texto').innerText = dias;
 }
 
 // ==========================================
@@ -837,3 +842,7 @@ document.querySelectorAll('details.corp-custom-select').forEach(det => {
         }
     });
 });
+
+function toggleAccionesMenu() {
+    document.getElementById('contenedorAcciones').classList.toggle('oculto');
+}
