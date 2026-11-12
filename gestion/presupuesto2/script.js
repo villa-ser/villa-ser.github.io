@@ -10,10 +10,9 @@ let nroPresupuestoGlobal = `PEM-${Math.floor(Math.random() * 9000) + 1000}`;
 let conceptoEditado = null;
 let precioEditado = null;
 let totalMontoActual = 0; 
-let nombreBorradorActual = null; // Memoria del archivo abierto (Guardar Como...)
+let nombreBorradorActual = null;
 let telefonoClienteActual = "";
 
-// Controles de Nube (Flujo Cliente Agendado)
 let clienteDesdeAgenda = false;
 let permiteGuardarNube = true;
 let uidSeguro = null;
@@ -85,8 +84,6 @@ async function fetchData() {
     }
 }
 
-
-
 // ==========================================
 // NUEVOS MODALES DE ALERTA Y CONFIRMACIÓN
 // ==========================================
@@ -143,7 +140,6 @@ function iniciarPresupuesto() {
     const nombre = inputCliNombre.value.trim();
     if(!nombre) { 
         mostrarAlertaCorp("Datos incompletos", "Por favor, ingresá al menos el Nombre del Cliente."); 
-        // inputCliNombre.focus(); <-- ELIMINAR O COMENTAR ESTA LÍNEA
         return; 
     }
     if (!clienteDesdeAgenda) { 
@@ -188,7 +184,7 @@ function avanzarPasoTrabajo() {
 }
 
 // ==========================================
-// BORRADORES NUBE (Guardar Como... UI)
+// BORRADORES NUBE
 // ==========================================
 function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     const uid = obtenerUid();
@@ -202,18 +198,15 @@ function guardarBorradorFirebase(mostrarAlerta = false, autoGuardado = false) {
     }
     if (listaItems.length === 0 && !inputCliNombre.value) return;
 
-    // Generar nombre sugerido: Cliente_Proyecto_Fecha
     const nombreCli = (inputCliNombre.value.trim() || 'Sin_Nombre').replace(/\s+/g, '_');
     const proyCli = (document.getElementById('cliProyecto').value.trim() || 'Presupuesto').replace(/\s+/g, '_');
     const fechaHoy = new Date().toLocaleDateString('es-AR').replace(/\//g, '-');
     let nombreSugerido = `${nombreCli}_${proyCli}_${fechaHoy}`;
 
     if (!autoGuardado) {
-        // Guardado Manual: Abrir Modal en lugar de prompt()
         document.getElementById('inputNombreBorrador').value = nombreBorradorActual || nombreSugerido;
         document.getElementById('modalGuardarBorrador').classList.remove('oculto');
     } else {
-        // Autoguardado: Directo a Firebase sin preguntar
         ejecutarGuardarNube(nombreBorradorActual || nombreSugerido, false);
     }
 }
@@ -235,8 +228,6 @@ function ejecutarGuardarBorrador() {
 
 function ejecutarGuardarNube(nombreFinal, mostrarAlerta) {
     const uid = obtenerUid();
-    
-    // Se agrega telefonoClienteActual al estado guardado
     const estado = { 
         cliNombre: inputCliNombre.value, 
         cliDireccion: document.getElementById('cliDireccion').value, 
@@ -263,7 +254,6 @@ function abrirModalBorradores() {
     const nombre = inputCliNombre.value.trim();
     if (!nombre) { 
         mostrarAlertaCorp("Falta Cliente", "Ingresá el Nombre del Cliente primero para buscar sus borradores."); 
-        // inputCliNombre.focus(); <-- ELIMINAR O COMENTAR ESTA LÍNEA
         return; 
     }
 
@@ -282,7 +272,6 @@ function abrirModalBorradores() {
               const nombreBor = b.data.nombreBorrador || b.data.cliNombre;
               const div = document.createElement('div'); div.className = "modal-list-item"; div.style.borderLeft = "3px solid var(--ngc-neon)";
               
-              // Se aplica Flexbox estricto con quiebre de palabras para evitar el desborde
               div.innerHTML = `
                   <div style="flex: 1; min-width: 0; padding-right: 10px;">
                       <h4 style="word-break: break-word; line-height: 1.2; margin-bottom: 5px;">${nombreBor}</h4>
@@ -306,7 +295,6 @@ function cargarBorradorNube(docId) {
             data.permiteGuardarNube = true;
             nombreBorradorActual = data.nombreBorrador || docId; 
             
-            // Reasigna el teléfono a la variable global si el borrador lo contenía
             if (data.telefonoClienteActual !== undefined) {
                 telefonoClienteActual = data.telefonoClienteActual;
             }
@@ -317,18 +305,12 @@ function cargarBorradorNube(docId) {
     });
 }
 
-// ==========================================
-// ELIMINACIÓN DE BORRADOR (MODAL CORPORATIVO)
-// ==========================================
 let idBorradorAEliminar = null;
 let btnBorradorAEliminar = null;
 
 function eliminarBorradorNube(docId, btn) {
-    // 1. Guardamos los datos del borrador temporalmente
     idBorradorAEliminar = docId;
     btnBorradorAEliminar = btn;
-    
-    // 2. Mostramos el nuevo modal corporativo
     document.getElementById('modalConfirmarEliminar').classList.remove('oculto');
 }
 
@@ -342,15 +324,12 @@ function ejecutarEliminarBorrador() {
     const uid = obtenerUid(); 
     if (!uid || !db || !idBorradorAEliminar) return;
 
-    // Cambiamos el botón a estado de carga
     const btnConfirmar = document.querySelector('#modalConfirmarEliminar .danger-btn');
     const textoOriginal = btnConfirmar.innerHTML;
     btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
 
-    // Ejecutamos el borrado en Firebase
     db.collection("perfiles").doc(uid).collection("presupuestos").doc(idBorradorAEliminar).delete()
         .then(() => { 
-            // Eliminamos el div visualmente de la lista de borradores
             if (btnBorradorAEliminar) {
                 btnBorradorAEliminar.closest('div.modal-list-item').remove(); 
             }
@@ -358,7 +337,6 @@ function ejecutarEliminarBorrador() {
             mostrarToast("Eliminado", "El borrador fue eliminado de la nube.");
         })
         .catch((e) => { 
-            console.error("Error eliminando borrador: ", e);
             mostrarAlertaCorp("Error", "No se pudo eliminar el borrador.");
             cerrarModalEliminarBorrador();
         })
@@ -367,9 +345,6 @@ function ejecutarEliminarBorrador() {
         });
 }
 
-  // ==========================================
-// MEMORIA LOCAL Y UI
-// ==========================================
 function inicializarClienteMemoria() { cargarEstadoGuardado(); }
 
 function guardarClienteGlobal() {
@@ -382,12 +357,8 @@ function guardarClienteGlobal() {
     guardarEstadoLocal(); 
 }
 
-// ==========================================
-// NUEVO PRESUPUESTO (MODAL CORPORATIVO)
-// ==========================================
-
 function ejecutarNuevoPresupuesto() {
-    cerrarModalConfirmarNuevoGlobal(); // <-- Actualizado
+    cerrarModalConfirmarNuevoGlobal(); 
     
     inputCliNombre.value = ''; 
     document.getElementById('cliDireccion').value = ''; 
@@ -432,7 +403,6 @@ function step(id, val) {
 }
 
 function setupEventListeners() {
-    // Se eliminan los listeners de 'change' porque los disparamos directamente al hacer clic en las opciones
     if (inputCliNombre) {
         inputCliNombre.addEventListener('input', () => {
             clienteDesdeAgenda = false; 
@@ -461,7 +431,7 @@ function poblarTemas() {
                 selTema.value = t;
                 sumTema.innerText = t;
                 detTema.removeAttribute('open');
-                cambioTema(); // Dispara la cascada manualmente
+                cambioTema();
             };
             listTema.appendChild(opt); 
         }); 
@@ -494,7 +464,7 @@ function cambioTema() {
                 selConcepto.value = i.concepto;
                 sumConcepto.innerText = i.concepto;
                 detConcepto.removeAttribute('open');
-                cargarDetallePrecios(); // Extrae precios y notas
+                cargarDetallePrecios();
             };
             listConcepto.appendChild(opt); 
         }); 
@@ -526,11 +496,6 @@ function cargarDetallePrecios() {
         document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00"; obs.value = ""; 
     }
 }
-
-// ==========================================
-// EDICIÓN TEMPORAL CON MODAL CORPORATIVO
-// ==========================================
-let tipoEdicionActual = null; 
 
 function abrirModalEdicion(tipo, valorActual) { 
     tipoEdicionActual = tipo; 
@@ -624,7 +589,6 @@ function agregarTrabajo() {
     guardarEstadoLocal(); 
     renderTabla(); 
     
-    // Reseteo visual del formulario al agregar
     document.getElementById('obsManual').value = ""; 
     document.getElementById('cantidad').value = 1; 
     document.getElementById('porcentajeDesc').value = 0; 
@@ -634,9 +598,6 @@ function agregarTrabajo() {
     document.getElementById('unitarioLabel').innerText = "Unit: $ 0,00";
 }
 
-// ==========================================
-// RENDER TABLAS
-// ==========================================
 function renderTabla() {
     const tbody = document.getElementById('cuerpoTabla'); tbody.innerHTML = ''; let total = 0;
     const f = new Date().toLocaleDateString('es-AR');
@@ -661,9 +622,6 @@ function renderTabla() {
 
 function borrarItem(id) { listaItems = listaItems.filter(i => i.id !== id); guardarEstadoLocal(); renderTabla(); }
 
-// ==========================================
-// EXPORTACIÓN, PDF Y CAPTURA
-// ==========================================
 function actualizarPDFHeaders() {
     document.getElementById('headerMembrete').innerText = (localStorage.getItem('villaser_conf_nombre') || 'PROFESIONAL').toUpperCase();
     document.getElementById('pdf-slogan').innerText = localStorage.getItem('villaser_conf_slogan') || '';
@@ -706,8 +664,42 @@ function sincronizarVistaPreviaPDF() {
 }
 
 // ==========================================
-// NUEVA LÓGICA DE GENERACIÓN DE PDF CON MODAL
+// VISTA PREVIA MÓVIL Y DESCARGA DE PDF
 // ==========================================
+function abrirVistaPreviaMobile() {
+    if (listaItems.length === 0) {
+        mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para ver la vista previa.");
+        return;
+    }
+    sincronizarVistaPreviaPDF(); 
+    
+    const plantilla = document.getElementById('plantilla-pdf');
+    const contenedor = document.getElementById('contenedorVistaPreviaMobile');
+    
+    contenedor.appendChild(plantilla);
+    plantilla.style.display = 'block'; 
+    
+    // Calcula la escala para emular el A4 dentro del celular
+    const scale = (window.innerWidth - 20) / 800; 
+    plantilla.style.zoom = scale < 1 ? scale : 1;
+    
+    document.getElementById('modalVistaPrevia').classList.remove('oculto');
+    document.body.style.overflow = 'hidden'; 
+}
+
+function cerrarVistaPrevia() {
+    const plantilla = document.getElementById('plantilla-pdf');
+    const aside = document.querySelector('.preview-panel');
+    
+    plantilla.style.zoom = '';
+    plantilla.style.display = ''; 
+    
+    aside.appendChild(plantilla);
+    
+    document.getElementById('modalVistaPrevia').classList.add('oculto');
+    document.body.style.overflow = '';
+}
+
 function generarPDF() {
     if (listaItems.length === 0) {
         mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para generar el PDF.");
@@ -715,13 +707,10 @@ function generarPDF() {
     }
     sincronizarVistaPreviaPDF();
     
-    // Sugerimos un nombre con un código único aleatorio. 
-    // Esto evita la molesta alerta nativa de Android de "El archivo ya existe".
     const sugerido = inputCliNombre.value.trim().replace(/ /g, '_') || 'Cliente';
     const uniqueSuffix = Math.floor(Math.random() * 9000) + 1000;
     document.getElementById('nombreArchivoPDF').value = `Presupuesto_${sugerido}_${uniqueSuffix}`;
     
-    // Mostramos el nuevo modal corporativo
     document.getElementById('modalDescargarPDF').classList.remove('oculto');
 }
 
@@ -734,10 +723,14 @@ async function ejecutarDescargaPDF() {
     const btn = document.getElementById('btnConfirmarDescargaPDF');
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
     
-    // Auto-guardado silencioso en Nube al generar PDF
     if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
     
     const element = document.getElementById('plantilla-pdf'); 
+    
+    // Ocultar Sello de Agua temporalmente antes de generar el PDF final
+    const selloAgua = document.getElementById('selloAguaPDF');
+    if (selloAgua) selloAgua.style.display = 'none';
+
     element.style.display = 'block'; 
     window.scrollTo(0, 0);
     
@@ -754,79 +747,33 @@ async function ejecutarDescargaPDF() {
     try { 
         await html2pdf().set(opt).from(element).save(); 
         mostrarToast("Generado con Éxito", permiteGuardarNube ? "PDF guardado y respaldado en la nube." : "PDF guardado (Local temporal)"); 
-        cerrarModalPDF(); // Cierra el modal exitosamente
+        cerrarModalPDF(); 
     } 
     catch (e) { 
         mostrarAlertaCorp("Error", "Error al generar el PDF."); 
         btn.innerHTML = "Descargar";
     } 
     finally { 
-        if (window.innerWidth < 992) element.style.display = 'none'; 
+        if (window.innerWidth < 992) {
+            element.style.display = 'none'; 
+        } else {
+            element.style.display = ''; 
+        }
+        
+        // Restaurar Sello de Agua para la vista en vivo
+        if (selloAgua) selloAgua.style.display = 'flex';
     }
 }
 
-
 // ==========================================
-// NUEVA LÓGICA DE CAPTURA DE PANTALLA
+// WHATSAPP
 // ==========================================
-let canvasGlobalParaDescarga = null;
-
-async function tomarCaptura() { 
-    const zona = document.getElementById('zonaCaptura'); 
-    
-    // Ocultar temporalmente los íconos de eliminar basurita visual
-    document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'hidden'); 
-    
-    zona.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body');
-    const scrollY = window.scrollY; window.scrollTo(0, 0);
-    
-    canvasGlobalParaDescarga = await html2canvas(zona, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-body'), scale: 2, useCORS: true, scrollY: 0 }); 
-    window.scrollTo(0, scrollY);
-    
-    // Restaurar íconos y fondo
-    document.querySelectorAll('.corp-btn-icon.danger').forEach(b => b.style.visibility = 'visible'); 
-    zona.style.background = ''; 
-    
-    // Calcular el peso simulado de la imagen (KB)
-    const dataUrl = canvasGlobalParaDescarga.toDataURL('image/png');
-    const pesoKB = Math.round((dataUrl.length * 0.75) / 1024);
-    document.getElementById('pesoCaptura').innerText = `(${pesoKB} KB)`;
-    
-    // Sugerir nombre dinámico
-    const sugerido = inputCliNombre.value.split(' ')[0] || 'Cliente';
-    document.getElementById('nombreArchivoCaptura').value = `Presupuesto_${sugerido}`;
-    
-    // Mostrar modal
-    document.getElementById('modalDescargarCaptura').classList.remove('oculto');
-}
-
-function cerrarModalCaptura() {
-    document.getElementById('modalDescargarCaptura').classList.add('oculto');
-}
-
-function ejecutarDescargaCaptura() {
-    if (!canvasGlobalParaDescarga) return;
-    const nombre = document.getElementById('nombreArchivoCaptura').value.trim() || 'Presupuesto';
-    const link = document.createElement('a'); 
-    link.download = `${nombre}.png`; 
-    link.href = canvasGlobalParaDescarga.toDataURL('image/png'); 
-    link.click(); 
-    cerrarModalCaptura();
-}
-
-// ==========================================
-// NUEVO SISTEMA WHATSAPP ACTUALIZADO
-// ==========================================
-
-// Preparar envío WhatsApp (Presupuesto)
 function prepararEnvioWhatsApp() {
     if (listaItems.length === 0) {
-        if (typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Agregá trabajos primero.");
-        else alert("Agregá trabajos primero.");
+        mostrarAlertaCorp("Faltan Datos", "Agregá trabajos primero.");
         return;
     }
-    
-    const msg = armarMensajeWsp(); // Aprovechamos la función que ya tenías
+    const msg = armarMensajeWsp();
     abrirModalWspGlobal(telefonoClienteActual, msg);
 }
 
@@ -838,7 +785,7 @@ function armarMensajeWsp() {
 }
 
 // ==========================================
-// NUEVO MENÚ INFERIOR TIPO APP
+// MENÚ INFERIOR APP
 // ==========================================
 function generarMenuInferior() {
     const footer = document.getElementById('corpFooterMenu'); if (!footer) return;
@@ -860,9 +807,6 @@ function generarMenuInferior() {
     });
 }
 
-// ==========================================
-// COMPORTAMIENTO INTELIGENTE DE ACORDEONES
-// ==========================================
 document.addEventListener('click', (event) => {
     const details = document.querySelectorAll('details.corp-custom-select');
     details.forEach(det => {
