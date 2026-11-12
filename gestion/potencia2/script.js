@@ -36,7 +36,6 @@ function arrancarModulo() {
     }
     generarMenuInferior();
     actualizarPDFHeaders();
-    inicializarZoomTactil(); // Nuevo Inicializador Zoom Inteligente
 }
 
 if (document.readyState === 'loading') {
@@ -660,7 +659,7 @@ function renderTabla(areaTotal, gradoActual) {
 
     tfoot.innerHTML = tfootStr;
     sincronizarVistaPreviaPDF(areaTotal, gradoActual, circuitoCS.dpms, sumElegido, totalesBocas, todosLosCircuitos);
-}
+    }
 
 // ==========================================
 // VISTA PREVIA Y PDF
@@ -692,7 +691,6 @@ function actualizarPDFHeaders() {
 
 function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, totalesBocas, todosArr) {
     actualizarPDFHeaders();
-    actualizarSelloAgua(); 
     
     const cliNombre = document.getElementById('cliNombre').value || 'Sin Nombre';
     document.getElementById('pdf-cliente').innerText = cliNombre;
@@ -753,31 +751,94 @@ function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, 
     document.getElementById('pdf-sum-val').innerText = suministro;
 }
 
+// ==========================================
+// CONTROL DEL MENÚ AGRUPADOR "ACCIONES"
+// ==========================================
+function toggleAccionesMenu() {
+    const menu = document.getElementById('accionesMenu');
+    if (menu.classList.contains('oculto')) {
+        menu.classList.remove('oculto');
+        setTimeout(() => menu.scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
+    } else {
+        menu.classList.add('oculto');
+    }
+}
+
+// ==========================================
+// VISTA PREVIA Y ZOOM INTELIGENTE
+// ==========================================
+function abrirVistaPrevia() {
+    if (listaAmbientes.length === 0) {
+        mostrarAlertaCorp("Sin Contenido", "Cargá ambientes antes de ver la vista previa.");
+        return;
+    }
+    
+    // Habilitar zoom táctil (efecto pinza) modificando el viewport temporalmente
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes");
+    
+    // Sincronizar datos frescos en el PDF
+    calcularGradoYRenderizar(); 
+    
+    // Mover la plantilla A4 al Modal Fullscreen
+    const element = document.getElementById('plantilla-pdf');
+    const previewWrapper = document.getElementById('previewWrapper');
+    element.style.display = 'block';
+    previewWrapper.appendChild(element);
+    
+    document.getElementById('modalVistaPrevia').classList.remove('oculto');
+}
+
+function cerrarVistaPrevia() {
+    // Restaurar bloqueo antizoom nativo de la PWA
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
+    
+    // Devolver A4 a su panel original (PC)
+    const element = document.getElementById('plantilla-pdf');
+    const originalContainer = document.querySelector('.preview-panel');
+    if(originalContainer) originalContainer.appendChild(element);
+    
+    if (window.innerWidth < 992) element.style.display = 'none';
+    
+    document.getElementById('modalVistaPrevia').classList.add('oculto');
+}
+
+// ==========================================
+// GENERADOR DE PDF CON CONTROL DE SELLO
+// ==========================================
 async function generarPDF() {
     if (listaAmbientes.length === 0) {
         mostrarAlertaCorp("Sin Contenido", "Debe cargar ambientes para generar el PDF.");
         return;
     }
     
-    cerrarMenuAcciones();
-    cerrarVistaPreviaMovil();
+    calcularGradoYRenderizar();
 
+    if (typeof permiteGuardarNube !== 'undefined' && permiteGuardarNube && typeof guardarBorradorFirebase === 'function') { 
+        guardarBorradorFirebase(false, true); 
+    }
+    
     const element = document.getElementById('plantilla-pdf');
-    const originalDisplay = getComputedStyle(element).display;
-    if (originalDisplay === 'none') element.style.display = 'block';
+    
+    if (document.getElementById('modalVistaPrevia').classList.contains('oculto')) {
+        element.style.display = 'block'; 
+        window.scrollTo(0, 0); 
+    }
 
-    window.scrollTo(0, 0); 
+    const marcaAgua = document.getElementById('marcaAguaPDF');
+    if (marcaAgua) marcaAgua.style.display = 'none';
+
     const shortName = (document.getElementById('cliNombre').value || "Proyecto").split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
+    const uniqueSuffix = Math.floor(Math.random() * 9000) + 1000;
     
     const opt = {
         margin:       0,
-        filename:     `${shortName}_Carga_Circuitos.pdf`,
+        filename:     `Carga_Circuitos_${shortName}_${uniqueSuffix}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     };
-    
-    if(permiteGuardarNube) { guardarBorradorFirebase(false, true); }
     
     try { 
         await html2pdf().set(opt).from(element).save(); 
@@ -787,43 +848,18 @@ async function generarPDF() {
         mostrarAlertaCorp("Error", "Ocurrió un error al generar el PDF.");
     } 
     finally { 
-        if (window.innerWidth < 992) element.style.display = 'none'; 
+        if (marcaAgua) marcaAgua.style.display = 'flex';
+        
+        if (window.innerWidth < 992 && document.getElementById('modalVistaPrevia').classList.contains('oculto')) { 
+            element.style.display = 'none'; 
+        } 
     }
-}
-
-async function tomarCaptura() {
-    if (listaAmbientes.length === 0) {
-        mostrarAlertaCorp("Sin Contenido", "El cálculo está vacío.");
-        return;
-    }
-    
-    cerrarMenuAcciones();
-    cerrarVistaPreviaMovil();
-    
-    const zona = document.getElementById('zonaCaptura'); 
-    
-    const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-    const bgColor = isLightMode ? "#ffffff" : "#181818";
-    const oldColor = zona.style.color;
-    
-    zona.style.color = isLightMode ? "#1a1a1a" : "#ffffff";
-    const scrollY = window.scrollY; window.scrollTo(0, 0);
-
-    const canvas = await html2canvas(zona, { backgroundColor: bgColor, scale: 2, useCORS: true, scrollY: 0 }); 
-    window.scrollTo(0, scrollY);
-    
-    const link = document.createElement('a'); 
-    const shortName = (document.getElementById('cliNombre').value || "Proyecto").split(' ')[0];
-    link.download = `Carga_Circuitos_${shortName}.png`; link.href = canvas.toDataURL(); link.click(); 
-    
-    zona.style.color = oldColor; 
 }
 
 // ==========================================
 // WHATSAPP (INTEGRACIÓN GLOBAL)
 // ==========================================
 function prepararEnvioWhatsApp() {
-    cerrarMenuAcciones();
     if (listaAmbientes.length === 0) {
         if(typeof mostrarAlertaCorp === 'function') mostrarAlertaCorp("Faltan Datos", "Cargá al menos un ambiente.");
         else alert("Cargá al menos un ambiente.");
@@ -1046,7 +1082,7 @@ async function cargarBorradorNube(docId) {
     } catch(e) {
         mostrarAlertaCorp("Error", "Error al cargar el borrador.");
     }
-}
+                }
 
 // ==========================================
 // MENÚ INFERIOR TIPO APP
@@ -1164,97 +1200,3 @@ document.querySelectorAll('details.corp-custom-select').forEach(det => {
         }
     });
 });
-
-// ==========================================
-// NUEVO MENÚ, ZOOM INTELIGENTE Y SELLO DE AGUA
-// ==========================================
-function abrirMenuAcciones() {
-    document.getElementById('modalMenuAcciones').classList.remove('oculto');
-}
-
-function cerrarMenuAcciones() {
-    document.getElementById('modalMenuAcciones').classList.add('oculto');
-}
-
-function abrirVistaPreviaMovil() {
-    const modal = document.getElementById('modalVistaPreviaMovil');
-    const plantilla = document.getElementById('plantilla-pdf');
-    const container = document.getElementById('contenedorZoomMovil');
-    
-    if(plantilla && container) {
-        container.appendChild(plantilla);
-        plantilla.style.display = 'block'; 
-        plantilla.style.transform = 'scale(1)'; 
-        plantilla.style.transformOrigin = 'top center';
-    }
-    modal.classList.remove('oculto');
-}
-
-function cerrarVistaPreviaMovil() {
-    const modal = document.getElementById('modalVistaPreviaMovil');
-    const plantilla = document.getElementById('plantilla-pdf');
-    const originalParent = document.querySelector('.preview-panel');
-    
-    if (originalParent && plantilla) {
-        originalParent.appendChild(plantilla);
-        if (window.innerWidth < 992) plantilla.style.display = 'none'; 
-    }
-    
-    escalaZoom = 1;
-    if(plantilla) plantilla.style.transform = `scale(1)`;
-    
-    modal.classList.add('oculto');
-}
-
-let escalaZoom = 1;
-let distanciaInicialTouch = null;
-
-function inicializarZoomTactil() {
-    const contenedor = document.getElementById('contenedorZoomMovil');
-    const plantilla = document.getElementById('plantilla-pdf');
-    
-    if(!contenedor) return;
-
-    contenedor.addEventListener('touchstart', (e) => {
-        if(e.touches.length === 2) {
-            distanciaInicialTouch = Math.hypot(
-                e.touches[0].pageX - e.touches[1].pageX,
-                e.touches[0].pageY - e.touches[1].pageY
-            );
-        }
-    }, {passive: false});
-
-    contenedor.addEventListener('touchmove', (e) => {
-        if(e.touches.length === 2 && distanciaInicialTouch) {
-            e.preventDefault(); 
-            const distanciaActual = Math.hypot(
-                e.touches[0].pageX - e.touches[1].pageX,
-                e.touches[0].pageY - e.touches[1].pageY
-            );
-            
-            const factorZoom = distanciaActual / distanciaInicialTouch;
-            escalaZoom = Math.min(Math.max(0.5, escalaZoom * factorZoom), 3);
-            
-            if(plantilla) {
-                plantilla.style.transform = `scale(${escalaZoom})`;
-                plantilla.style.transformOrigin = 'top center';
-            }
-            
-            distanciaInicialTouch = distanciaActual;
-        }
-    }, {passive: false});
-
-    contenedor.addEventListener('touchend', (e) => {
-        if(e.touches.length < 2) {
-            distanciaInicialTouch = null;
-        }
-    });
-}
-
-function actualizarSelloAgua() {
-    const sello = document.getElementById('selloAguaDinamico');
-    const nombre = document.getElementById('cliNombre').value.trim();
-    if(sello) {
-        sello.innerText = nombre ? nombre.toUpperCase() : 'BORRADOR';
-    }
-                 }
