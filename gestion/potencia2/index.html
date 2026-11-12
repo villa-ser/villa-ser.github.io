@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#18191A">
+    <title>Villaser - Potencia y Circuitos</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css">
+
+    <script>
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+    </script>
+
+    <!-- SDKs de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <!-- Puente de conexión centralizado -->
+    <script src="../firebase-config.js"></script>
+
+    <!-- Guardián de seguridad -->
+    <script>
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user || !user.emailVerified) window.location.replace('../index.html'); 
+        });
+    </script>
+</head>
+<body>
+
+    <!-- TOAST NOTIFICACIÓN CORPORATIVA -->
+    <div id="toastCliente" class="toast-corp oculto gpu-accel">
+        <div class="toast-icon"><i class="fa-solid fa-check-circle"></i></div>
+        <div class="toast-content">
+            <div id="toastTitle" class="toast-title">Notificación</div>
+            <div id="toastMessage" class="toast-msg">Operación realizada con éxito.</div>
+        </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="layout-wrapper">
+        <main class="container">
+
+            <nav class="corp-top-nav">
+                <div style="width: 42px;"></div>
+                <div class="corp-nav-title">
+                    <i class="fa-solid fa-bolt corp-accent-color"></i> CARGA Y CIRCUITOS
+                </div>
+                <button class="corp-btn-icon danger" onclick="abrirModalConfirmarNuevoGlobal()" title="Nuevo Cálculo">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </nav>
+
+            <!-- SECCIÓN CLIENTE -->
+            <section id="step-cliente" class="corp-card gpu-accel">
+                <h4 class="corp-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <div class="action-grid-main" style="margin-bottom: 15px;">
+                    <button class="corp-btn success-btn" onclick="abrirModalAgendaGlobal()"><i class="fa-solid fa-address-book"></i> Agenda</button>
+                    <button class="corp-btn primary-action" onclick="abrirModalBorradores()"><i class="fa-solid fa-cloud"></i> Borradores</button>
+                </div>
+                
+                <div class="row-group">
+                    <label>Nombre del Cliente</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Familia Gómez" style="flex: 1;" oninput="marcarClienteManual()">
+                    </div>
+                </div>
+                
+                <div class="row-group-stretch">
+                    <div class="flex-1">
+                        <label>Dirección</label>
+                        <input type="text" id="cliDireccion" class="corp-input" placeholder="Ej: San Martín 123">
+                    </div>
+                    <div class="flex-1">
+                        <label>Proyecto</label>
+                        <input type="text" id="cliProyecto" class="corp-input" placeholder="Ej: Vivienda Nueva">
+                    </div>
+                </div>
+                
+                <button class="corp-btn primary-action" style="margin-top: 10px;" onclick="iniciarCalculo()">
+                    <i class="fa-solid fa-play"></i> Comenzar Carga de Ambientes
+                </button>
+            </section>
+            
+            <!-- SECCIÓN TRABAJO -->
+            <section id="step-trabajo" class="oculto flex-column gap-15">
+                
+                <!-- PANEL DE AMBIENTES -->
+                <div class="corp-card gpu-accel">
+                    <h4 class="corp-card-title" id="titulo-form-ambiente"><i class="fa-solid fa-house-signal corp-accent-color"></i> Carga de Ambientes</h4>
+                    <input type="hidden" id="editandoId" value="">
+                    
+                    <div class="row-group">
+                        <label>Ambiente o Carga</label>
+                        <details id="detAmbiente" class="corp-custom-select">
+                            <summary id="sumAmbiente" class="corp-input">-- Seleccione Ambiente --</summary>
+                            <div id="listAmbiente" class="corp-select-list"></div>
+                        </details>
+                        <input type="hidden" id="selAmbiente" value="">
+                    </div>
+                    
+                    <div class="row-group-stretch">
+                        <div class="flex-1">
+                            <label>Ancho (m)</label>
+                            <input type="number" id="inputAncho" class="corp-input" placeholder="Ej: 3.5" step="0.01" min="0">
+                        </div>
+                        <div class="flex-1">
+                            <label>Largo (m)</label>
+                            <input type="number" id="inputLargo" class="corp-input" placeholder="Ej: 4" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; background: rgba(var(--ngc-neon-rgb), 0.05); padding: 12px; border-radius: 8px; border: 1px dashed rgba(var(--ngc-neon-rgb), 0.3);">
+                        <div>
+                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas IUG</label>
+                            <input type="number" id="bocasIUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+                            <details id="detCircuitoIUG" class="corp-custom-select" style="margin-top:5px;">
+                                <summary id="sumCircuitoIUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+                                <div id="listCircuitoIUG" class="corp-select-list"></div>
+                            </details>
+                            <input type="hidden" id="circuitoIUG" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas TUG</label>
+                            <input type="number" id="bocasTUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+                            <details id="detCircuitoTUG" class="corp-custom-select" style="margin-top:5px;">
+                                <summary id="sumCircuitoTUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+                                <div id="listCircuitoTUG" class="corp-select-list"></div>
+                            </details>
+                            <input type="hidden" id="circuitoTUG" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas ESP</label>
+                            <input type="number" id="bocasESP" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
+                            <details id="detCircuitoESP" class="corp-custom-select" style="margin-top:5px;">
+                                <summary id="sumCircuitoESP" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+                                <div id="listCircuitoESP" class="corp-select-list"></div>
+                            </details>
+                            <input type="hidden" id="circuitoESP" value="">
+                            <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+                        </div>
+                    </div>
+                    
+                    <button id="btnGuardarAmbiente" class="corp-btn success-btn" onclick="guardarAmbiente()">
+                        <i class="fa-solid fa-plus"></i> Agregar Ambiente
+                    </button>
+                    <button id="btnCancelarEdicion" class="corp-btn danger-btn" style="margin-top: 10px; display: none;" onclick="cancelarEdicion()">
+                        <i class="fa-solid fa-xmark"></i> Cancelar Edición
+                    </button>
+                </div>
+
+                <!-- ZONA DE RESULTADOS Y PLANILLA -->
+                <div id="zonaCaptura" class="capture-zone gpu-accel" style="padding: 15px 5px;">
+                    <header style="text-align: center; font-weight: bold; color: var(--ngc-neon); letter-spacing: 1px; border-bottom: 1px solid rgba(35, 116, 225, 0.3); padding-bottom: 10px; margin-bottom: 15px;">PLANILLA DE CARGA Y CIRCUITOS</header>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1.5fr 1.5fr; gap: 5px; background: var(--ngc-bg-input); padding: 10px; border-radius: 8px; margin-bottom: 10px; align-items: center; border: 1px solid var(--ngc-privacy-border);">
+                        <div><span style="font-size: 0.7rem; color: var(--ngc-text-faded);">SLA:</span> <b id="ui-sla" style="color:var(--ngc-neon); display:block;">0.00 m²</b></div>
+                        <div><span style="font-size: 0.7rem; color: var(--ngc-text-faded);">Grado:</span> <b id="ui-grado" style="color:var(--ngc-warning); display:block;">MÍNIMO</b></div>
+                        <div><span style="font-size: 0.7rem; color: var(--ngc-text-faded);">DPMS Total:</span> <b id="ui-dpms" style="color:var(--ngc-neon); display:block;">0 VA</b></div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: var(--ngc-text-faded);">Suministro:</span>
+                            <details id="detSuministro" class="corp-custom-select" style="margin-top:2px;">
+                                <summary id="sumSuministro" class="corp-input-tabla" style="font-size:0.75rem; padding: 4px;">MONO</summary>
+                                <div id="listSuministro" class="corp-select-list">
+                                    <div class="corp-select-option" onclick="cambiarSuministro('MONOFÁSICO', 'MONO')">MONO</div>
+                                    <div class="corp-select-option" onclick="cambiarSuministro('TRIFÁSICO', 'TRIFA')">TRIFA</div>
+                                </div>
+                            </details>
+                            <input type="hidden" id="selSuministro" value="MONOFÁSICO">
+                            <b id="ui-fase-alerta" style="font-size: 0.65rem; display:block; margin-top:4px;"></b>
+                        </div>
+                    </div>
+                    
+                    <div class="table-scroll-container">
+                        <table id="tablaMain" style="min-width: 100%; width: max-content; border-collapse: collapse; font-size: 0.75rem; text-align: center;">
+                            <thead id="cabeceraTabla"></thead>
+                            <tbody id="cuerpoTabla"></tbody>
+                            <tfoot id="pieTabla" style="border-top: 2px solid var(--ngc-neon);"></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GESTIÓN DE CIRCUITOS -->
+                <div class="corp-card gpu-accel" style="border: 1px solid rgba(245, 195, 59, 0.4);">
+                    <h4 class="corp-card-title" style="color: var(--ngc-warning); font-size: 0.95rem;"><i class="fa-solid fa-sliders"></i> Gestión de Circuitos</h4>
+                    <div id="listaConfigCircuitos" style="width: 180px; display: flex; flex-direction: column; gap: 8px;"></div>
+                    <button class="corp-btn-small" style="width: 100%; margin-top: 15px; border: 1px dashed var(--ngc-privacy-border);" onclick="agregarCircuitoManual()">
+                        <i class="fa-solid fa-plus"></i> Añadir Circuito Extra
+                    </button>
+                </div>
+
+                <!-- ACCIONES FINALES UNIFICADAS (MENU AGRUPADOR Y VISTA PREVIA) -->
+                <div class="action-grid-main" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="corp-btn primary-action" style="flex: 1;" onclick="abrirVistaPreviaMovil()">
+                        <i class="fa-solid fa-eye"></i> Vista Previa Móvil
+                    </button>
+                    <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-neon); color: var(--ngc-neon); background: rgba(var(--ngc-neon-rgb), 0.1);" onclick="abrirMenuAcciones()">
+                        <i class="fa-solid fa-layer-group"></i> Menú Acciones
+                    </button>
+                </div>
+                
+            </section>
+        </main>
+
+        <!-- PANEL DERECHO: PDF A4 -->
+        <aside class="preview-panel">
+            <div id="plantilla-pdf" style="position: relative; overflow: hidden; background: #ffffff; width: 100%;">
+                
+                <!-- SELLO DE AGUA DINÁMICO EXTRAGRANDE -->
+                <div id="selloAguaDinamico" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 8rem; color: rgba(150, 150, 150, 0.08); font-weight: 900; z-index: 0; pointer-events: none; text-align: center; text-transform: uppercase; user-select: none; white-space: nowrap;">BORRADOR</div>
+
+                <div class="pdf-container" style="position: relative; z-index: 1;">
+                    <header class="pdf-header">
+                        <div style="text-align: center; margin-bottom: 20px; width: 100%;">
+                            <h2 style="margin: 0; color: #0088aa; font-size: 22px; text-transform: uppercase;">Cálculo de Cargas y Circuitos</h2>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                            <div class="pdf-info-box">
+                                <div class="pdf-row"><b>Fecha</b> <span id="pdf-fecha"></span></div>
+                                <div class="pdf-row"><b>Cliente</b> <span id="pdf-cliente"></span></div>
+                                <div class="pdf-row"><b>Dirección</b> <span id="pdf-dir"></span></div>
+                                <div class="pdf-row"><b>Proyecto</b> <span id="pdf-proyecto"></span></div>
+                            </div>
+                            <div class="pdf-logo-box">
+                                <b id="pdf-text-logo" style="color: #0088aa; font-size: 14px;"></b>
+                                <img id="pdf-img-logo" src="" style="max-width: 100%; max-height: 70px; display: none; margin-left: auto;">
+                            </div>
+                        </div>
+                    </header>
+
+                    <table class="pdf-table" style="text-align: center; margin-top: 15px;">
+                        <thead id="pdf-thead"></thead>
+                        <tbody id="pdf-tbody"></tbody>
+                        <tfoot id="pdf-tfoot" style="font-weight: bold; background: #f0f0f0;"></tfoot>
+                    </table>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
+                        <table class="pdf-table" style="text-align: center; width: 45%; margin-top: 0;">
+                            <tbody>
+                                <tr><td style="text-align:left; font-weight:bold;">SLA</td><td id="pdf-sla-val" style="color:#0088aa; font-weight:bold;">0.00 m²</td></tr>
+                                <tr><td style="text-align:left; font-weight:bold;">Grado AEA</td><td id="pdf-grado-val" style="color:#0088aa; font-weight:bold;">MÍNIMO</td></tr>
+                                <tr><td style="text-align:left; font-weight:bold;">DPMS Total</td><td id="pdf-dpms-val" style="color:#0088aa; font-weight:bold;">0 VA</td></tr>
+                                <tr><td style="text-align:left; font-weight:bold;">Suministro</td><td id="pdf-sum-val" style="color:#0088aa; font-weight:bold;">-</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="pdf-footer">
+                        <div></div> 
+                        <div class="pdf-right-footer">
+                            <div class="pdf-slogan" id="pdf-slogan"></div>
+                            <div class="pdf-contacto">
+                                <span id="pdf-tel-footer"></span> &nbsp;|&nbsp; <span>🌐 villaser.com.ar</span>
+                            </div>
+                            <div class="pdf-contacto"><span id="pdf-credenciales"></span></div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODALES COMUNES Y GLOBALES -->
+    <div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <h3><i class="fa-solid fa-users"></i> Contactos</h3>
+            <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar nombre o dirección..." oninput="filtrarAgendaGlobal()" style="margin-bottom: 10px;">
+            <div id="listaAgenda" class="modal-list-container"></div>
+            <button class="corp-btn" onclick="cerrarModalAgendaGlobal()" style="margin-top: 15px;">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <h3><i class="fa-solid fa-cloud-arrow-down"></i> Borradores en Nube</h3>
+            <div id="listaBorradores" class="modal-list-container"></div>
+            <button class="corp-btn" onclick="cerrarModalBorradoresGlobal()" style="margin-top: 15px;">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="modalGuardarBorrador" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-cloud-arrow-up corp-modal-icon" style="color: var(--ngc-neon);"></i>
+            <h3 style="margin-bottom: 10px; text-align: left; justify-content: flex-start;">Guardar Borrador</h3>
+            <p style="margin-bottom: 15px; text-align: left;">Verifica o edita el nombre del archivo:</p>
+            <input type="text" id="inputNombreBorrador" class="corp-input" style="margin-bottom: 20px; font-weight: 600; font-size: 1rem;">
+            <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+                <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalGuardarBorrador()">Cancelar</button>
+                <button class="corp-btn success-btn" style="flex: 1;" onclick="ejecutarGuardarBorrador()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfirmarEliminar" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-trash-can corp-modal-icon" style="color: var(--error-red);"></i>
+            <h3 style="margin-bottom: 10px;">Eliminar Borrador</h3>
+            <p style="margin-bottom: 20px;">¿Estás seguro de eliminar este borrador de la nube? Esta acción no se puede deshacer.</p>
+            <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+                <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalEliminarBorrador()">Cancelar</button>
+                <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarEliminarBorrador()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
+            <h3 style="margin-bottom: 10px;">Nuevo Cálculo</h3>
+            <p style="margin-bottom: 20px;">¿Estás seguro de iniciar un nuevo cálculo? Se borrarán los datos actuales no guardados.</p>
+            <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+                <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalConfirmarNuevoGlobal()">Cancelar</button>
+                <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevoCalculo()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAlertaCorp" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-circle-exclamation corp-modal-icon" style="color: var(--ngc-warning);"></i>
+            <h3 id="modalAlertaTitulo" style="margin-bottom: 10px;">Atención</h3>
+            <p id="modalAlertaMensaje" style="margin-bottom: 20px;">Mensaje de alerta.</p>
+            <div class="corp-modal-actions">
+                <button class="corp-btn primary-action" onclick="cerrarModalAlertaCorp()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card">
+            <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+            <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar por WhatsApp</h3>
+            <p style="margin-bottom: 20px;">¿A quién deseas enviarle el detalle?</p>
+            
+            <div class="corp-modal-actions">
+                <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspGuardadoGlobal()">
+                    <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+                </button>
+                
+                <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                    <input type="number" id="inputWspManual" class="corp-input" placeholder="Ej: 3512345678" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                    <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManualGlobal()">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+
+                <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWspGlobal()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+                </button>
+                
+                <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWspGlobal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="border-left: 4px solid var(--ngc-warning);">
+            <i class="fa-solid fa-address-book corp-modal-icon" style="color: var(--ngc-warning);"></i>
+            <h3 style="margin-bottom: 10px;">Cliente no agendado</h3>
+            <p style="margin-bottom: 20px;">Este nombre fue escrito manualmente. Para mantener el orden y guardar en la nube, ¿qué deseas hacer?</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="corp-btn" onclick="accionAgendarCliente()"><i class="fa-solid fa-user-plus"></i> Agendar Nuevo Contacto</button>
+                <button class="corp-btn" style="background: transparent; color: var(--ngc-neon); border: 1px solid var(--ngc-neon);" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-magnifying-glass"></i> Buscar de mi Agenda</button>
+                <button class="corp-btn danger-btn" style="background: transparent; color: var(--error-red); border: 1px dashed var(--error-red);" onclick="opcionContinuarSinAgenda()">No por el momento</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="border-left: 4px solid var(--error-red);">
+            <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
+            <h3 style="margin-bottom: 10px;">¿Continuar sin Nube?</h3>
+            <p style="margin-bottom: 20px;">Al no estar en tu agenda, este cálculo NO se guardará en los borradores de la nube. ¿Deseas continuar de todos modos?</p>
+            <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+                <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border);" onclick="cerrarModalConfirmarSinAgenda()">Volver atrás</button>
+                <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarContinuarSinAgenda()">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE SELECCIÓN EN TABLA (Tensión y Sección) -->
+    <div id="modalSeleccionTabla" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="padding-top: 20px;">
+            <h3 id="tituloModalSeleccion" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Seleccionar</h3>
+            <div id="listaOpcionesModal" class="modal-list-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+                <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalSeleccionTabla()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- NUEVOS MODALES: MENÚ AGRUPADOR Y VISTA PREVIA  -->
+    <!-- ============================================== -->
+    <div id="modalMenuAcciones" class="modal-overlay oculto gpu-accel">
+        <div class="corp-modal-card" style="padding: 20px; align-items: stretch; width: 90%; max-width: 350px;">
+            <h3 style="margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-layer-group corp-accent-color"></i> Acciones Disponibles</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="corp-btn danger-btn" onclick="cerrarMenuAcciones(); generarPDF()"><i class="fa-solid fa-file-pdf"></i> Generar PDF</button>
+                <button class="corp-btn" onclick="cerrarMenuAcciones(); tomarCaptura()"><i class="fa-solid fa-image"></i> Tomar Captura (PNG)</button>
+                <button class="corp-btn success-btn" onclick="cerrarMenuAcciones(); prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
+                <hr style="border: none; border-top: 1px dashed var(--ngc-privacy-border); margin: 5px 0;">
+                <button class="corp-btn" onclick="cerrarMenuAcciones(); guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1); border: 1px solid rgba(245, 195, 59, 0.3);">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
+                </button>
+                <button class="corp-btn" onclick="cerrarMenuAcciones(); abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1); border: 1px solid rgba(35, 116, 225, 0.3);">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
+                </button>
+                <button class="corp-btn" style="margin-top: 5px; background: transparent; border: 1px solid var(--ngc-text-faded); color: var(--ngc-text-main);" onclick="cerrarMenuAcciones()">Cerrar Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalVistaPreviaMovil" class="modal-overlay oculto gpu-accel" style="z-index: 99999; padding: 0;">
+        <div style="width: 100%; height: 100%; background: var(--bg-body); display: flex; flex-direction: column; border-radius: 0;">
+            <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center; background: var(--ngc-bg-input); border-bottom: 1px solid var(--ngc-privacy-border);">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--ngc-neon);"><i class="fa-solid fa-magnifying-glass-plus"></i> Vista Previa</h3>
+                <button class="corp-btn-icon danger" onclick="cerrarVistaPreviaMovil()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="contenedorZoomMovil" style="flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #2a2a2a; position: relative;">
+                <!-- PDF se inyecta aquí dinámicamente -->
+            </div>
+            <div style="padding: 15px; background: var(--ngc-bg-input); border-top: 1px solid var(--ngc-privacy-border); display: flex; justify-content: center;">
+                <span style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-hand-pointer"></i> Pellizca la pantalla para hacer zoom</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NUEVO MENÚ INFERIOR TIPO APP -->
+    <nav class="corp-bottom-nav">
+        <div class="corp-scroll-container" id="corpFooterMenu"></div>
+    </nav>
+
+    <script src="../global.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
