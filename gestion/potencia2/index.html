@@ -36,6 +36,7 @@
             if (!user || !user.emailVerified) window.location.replace('../index.html'); 
         });
     </script>
+
 </head>
 <body>
 
@@ -151,7 +152,7 @@
                             <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
                         </div>
                     </div>
-                    
+
                     <button id="btnGuardarAmbiente" class="corp-btn success-btn" onclick="guardarAmbiente()">
                         <i class="fa-solid fa-plus"></i> Agregar Ambiente
                     </button>
@@ -200,14 +201,33 @@
                     </button>
                 </div>
 
-                <!-- ACCIONES FINALES UNIFICADAS (MENU AGRUPADOR Y VISTA PREVIA) -->
-                <div class="action-grid-main" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="corp-btn primary-action" style="flex: 1;" onclick="abrirVistaPreviaMovil()">
-                        <i class="fa-solid fa-eye"></i> Vista Previa Móvil
+                <!-- ========================================== -->
+                <!-- MENÚ AGRUPADOR DE ACCIONES -->
+                <!-- ========================================== -->
+                <div class="acciones-dropdown-container" style="margin-top: 20px;">
+                    <button class="corp-btn" onclick="toggleAccionesMenu()" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 15px; background: rgba(35, 116, 225, 0.1); color: var(--ngc-neon); border: 1px solid var(--ngc-neon);">
+                        <i class="fa-solid fa-layer-group"></i> Acciones
                     </button>
-                    <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-neon); color: var(--ngc-neon); background: rgba(var(--ngc-neon-rgb), 0.1);" onclick="abrirMenuAcciones()">
-                        <i class="fa-solid fa-layer-group"></i> Menú Acciones
-                    </button>
+                    
+                    <div id="accionesMenu" class="oculto" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px;">
+                        <div class="action-grid-main" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="corp-btn" onclick="abrirVistaPrevia()" style="color: var(--ngc-text-main); background: var(--ngc-bg-input);">
+                                <i class="fa-solid fa-eye"></i> Vista Previa
+                            </button>
+                            <button class="corp-btn danger-btn" onclick="generarPDF()">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                            <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()">
+                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Guardar
+                            </button>
+                            <button class="corp-btn" onclick="abrirModalBorradores()" style="color: #e91e63; background: rgba(233, 30, 99, 0.1);">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> Abrir
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
             </section>
@@ -215,12 +235,14 @@
 
         <!-- PANEL DERECHO: PDF A4 -->
         <aside class="preview-panel">
-            <div id="plantilla-pdf" style="position: relative; overflow: hidden; background: #ffffff; width: 100%;">
-                
-                <!-- SELLO DE AGUA DINÁMICO EXTRAGRANDE -->
-                <div id="selloAguaDinamico" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 8rem; color: rgba(150, 150, 150, 0.08); font-weight: 900; z-index: 0; pointer-events: none; text-align: center; text-transform: uppercase; user-select: none; white-space: nowrap;">BORRADOR</div>
+            <div id="plantilla-pdf">
+                <div class="pdf-container" style="position: relative;">
+                    <!-- SELLO DE AGUA PROTECTOR -->
+                    <div id="marcaAguaPDF" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.3; pointer-events: none; z-index: 10;">
+                        <img src="../img/negro1024.png" style="width: 70%; max-width: 450px;" alt="Logo Agua">
+                        <h1 style="font-size: 5rem; color: #000000; text-align: center; margin-top: 15px; font-weight: bold; font-family: 'Arial Black', sans-serif; line-height: 1;">PLATAFORMA<br>VILLASER</h1>
+                    </div>
 
-                <div class="pdf-container" style="position: relative; z-index: 1;">
                     <header class="pdf-header">
                         <div style="text-align: center; margin-bottom: 20px; width: 100%;">
                             <h2 style="margin: 0; color: #0088aa; font-size: 22px; text-transform: uppercase;">Cálculo de Cargas y Circuitos</h2>
@@ -389,58 +411,38 @@
         </div>
     </div>
 
-    <!-- MODAL DE SELECCIÓN EN TABLA (Tensión y Sección) -->
     <div id="modalSeleccionTabla" class="modal-overlay oculto gpu-accel">
         <div class="corp-modal-card" style="padding-top: 20px;">
             <h3 id="tituloModalSeleccion" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Seleccionar</h3>
-            <div id="listaOpcionesModal" class="modal-list-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
+            
+            <div id="listaOpcionesModal" class="modal-list-container" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;">
+            </div>
+
             <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
                 <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalSeleccionTabla()">Cancelar</button>
             </div>
         </div>
     </div>
-
-    <!-- ============================================== -->
-    <!-- NUEVOS MODALES: MENÚ AGRUPADOR Y VISTA PREVIA  -->
-    <!-- ============================================== -->
-    <div id="modalMenuAcciones" class="modal-overlay oculto gpu-accel">
-        <div class="corp-modal-card" style="padding: 20px; align-items: stretch; width: 90%; max-width: 350px;">
-            <h3 style="margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-layer-group corp-accent-color"></i> Acciones Disponibles</h3>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="corp-btn danger-btn" onclick="cerrarMenuAcciones(); generarPDF()"><i class="fa-solid fa-file-pdf"></i> Generar PDF</button>
-                <button class="corp-btn" onclick="cerrarMenuAcciones(); tomarCaptura()"><i class="fa-solid fa-image"></i> Tomar Captura (PNG)</button>
-                <button class="corp-btn success-btn" onclick="cerrarMenuAcciones(); prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
-                <hr style="border: none; border-top: 1px dashed var(--ngc-privacy-border); margin: 5px 0;">
-                <button class="corp-btn" onclick="cerrarMenuAcciones(); guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1); border: 1px solid rgba(245, 195, 59, 0.3);">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
-                </button>
-                <button class="corp-btn" onclick="cerrarMenuAcciones(); abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1); border: 1px solid rgba(35, 116, 225, 0.3);">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
-                </button>
-                <button class="corp-btn" style="margin-top: 5px; background: transparent; border: 1px solid var(--ngc-text-faded); color: var(--ngc-text-main);" onclick="cerrarMenuAcciones()">Cerrar Menú</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalVistaPreviaMovil" class="modal-overlay oculto gpu-accel" style="z-index: 99999; padding: 0;">
-        <div style="width: 100%; height: 100%; background: var(--bg-body); display: flex; flex-direction: column; border-radius: 0;">
-            <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center; background: var(--ngc-bg-input); border-bottom: 1px solid var(--ngc-privacy-border);">
-                <h3 style="margin: 0; font-size: 1.1rem; color: var(--ngc-neon);"><i class="fa-solid fa-magnifying-glass-plus"></i> Vista Previa</h3>
-                <button class="corp-btn-icon danger" onclick="cerrarVistaPreviaMovil()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="contenedorZoomMovil" style="flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #2a2a2a; position: relative;">
-                <!-- PDF se inyecta aquí dinámicamente -->
-            </div>
-            <div style="padding: 15px; background: var(--ngc-bg-input); border-top: 1px solid var(--ngc-privacy-border); display: flex; justify-content: center;">
-                <span style="font-size: 0.8rem; color: var(--ngc-text-faded);"><i class="fa-solid fa-hand-pointer"></i> Pellizca la pantalla para hacer zoom</span>
-            </div>
-        </div>
-    </div>
     
-    <!-- NUEVO MENÚ INFERIOR TIPO APP -->
     <nav class="corp-bottom-nav">
         <div class="corp-scroll-container" id="corpFooterMenu"></div>
     </nav>
+
+    <!-- ========================================== -->
+    <!-- MODAL FULLSCREEN VISTA PREVIA (MÓVIL) -->
+    <!-- ========================================== -->
+    <div id="modalVistaPrevia" class="oculto gpu-accel" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #525659; z-index: 999999; display: flex; flex-direction: column; overflow-y: auto;">
+        <div style="position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #323639; z-index: 9999999; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            <button class="corp-btn" onclick="cerrarVistaPrevia()" style="width: auto; background: transparent; color: white; border: 1px solid white; padding: 8px 15px;">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <button class="corp-btn danger-btn" onclick="generarPDF()" style="width: auto; padding: 8px 15px; font-weight: bold;">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+            </button>
+        </div>
+        <div id="previewWrapper" style="padding: 20px; display: flex; justify-content: center; min-height: 100%;">
+        </div>
+    </div>
 
     <script src="../global.js"></script>
     <script src="script.js"></script>
