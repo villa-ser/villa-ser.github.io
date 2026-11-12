@@ -679,7 +679,13 @@ function abrirVistaPreviaMobile() {
     contenedor.appendChild(plantilla);
     plantilla.style.display = 'block'; 
     
-    // Calcula la escala para emular el A4 dentro del celular
+    // --- NUEVO: Habilitar zoom (pinza) solo para la vista previa ---
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) {
+        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content');
+    }
+    
+    // Calcula la escala inicial para que entre en la pantalla
     const scale = (window.innerWidth - 20) / 800; 
     plantilla.style.zoom = scale < 1 ? scale : 1;
     
@@ -691,6 +697,12 @@ function cerrarVistaPrevia() {
     const plantilla = document.getElementById('plantilla-pdf');
     const aside = document.querySelector('.preview-panel');
     
+    // --- NUEVO: Restaurar bloqueo de zoom para proteger el resto de la app ---
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) {
+        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    }
+
     plantilla.style.zoom = '';
     plantilla.style.display = ''; 
     
