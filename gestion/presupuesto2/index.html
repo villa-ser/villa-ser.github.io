@@ -363,24 +363,35 @@
                     <div id="totalDisplay" class="total-display">TOTAL: $ 0</div>
                 </div>
 
-                <!-- NOTAS GLOBALES -->
-                <div class="corp-card gpu-accel">
-                    <label>Notas Globales del Presupuesto</label>
-                    <textarea id="obsGenerales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..." onchange="guardarEstadoLocal(); renderTabla();"></textarea>
-                </div>
+                <!-- NOTAS GLOBALES Y VALIDEZ -->
+<div class="corp-card gpu-accel">
+    <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center;">
+        <label style="margin: 0; white-space: nowrap; font-weight: bold; color: var(--ngc-text-main);">Validez (Días):</label>
+        <input type="number" id="diasValidez" class="corp-input" value="15" min="1" style="width: 80px; text-align: center; padding: 8px;" onchange="guardarEstadoLocal(); renderTabla();">
+    </div>
+    <label>Notas Globales del Presupuesto</label>
+    <textarea id="obsGenerales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..." onchange="guardarEstadoLocal(); renderTabla();"></textarea>
+</div>
 
-                <!-- ACCIONES FINALES -->
-                <div class="action-grid-main">
-                    <button id="btnVistaPreviaMobile" class="corp-btn" onclick="abrirVistaPreviaMobile()"><i class="fa-solid fa-eye"></i> Vista Previa</button>
-                    <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
-                    <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
-                    </button>
-                    <button class="corp-btn" onclick="abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1);">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
-                    </button> 
-                </div>
+<!-- ACCIONES FINALES (AGRUPADAS) -->
+<div class="corp-card gpu-accel" style="padding: 10px;">
+    <button class="corp-btn primary-action" onclick="toggleAccionesMenu()" style="font-size: 1.1rem;">
+        <i class="fa-solid fa-layer-group"></i> Acciones
+    </button>
+    
+    <div id="contenedorAcciones" class="action-grid-main oculto" style="margin-top: 15px;">
+        <button id="btnVistaPreviaMobile" class="corp-btn" onclick="abrirVistaPreviaMobile()"><i class="fa-solid fa-eye"></i> Vista Previa</button>
+        <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+        <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
+        <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar
+        </button>
+        <button class="corp-btn" onclick="abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1);">
+        <i class="fa-solid fa-cloud-arrow-down"></i> Abrir
+        </button> 
+    </div>
+</div>
+                
             </section>
         </div>
     </main>
