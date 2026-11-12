@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#18191A">
+    <title>Presupuesto Corporativo | Villaser</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../global.css">
+
+    <script>
+        (function() {
+            const temaGuardado = localStorage.getItem('temaVillaser') || 'system';
+            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (temaGuardado === 'light' || (temaGuardado === 'system' && prefiereClaro)) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOAST CORPORATIVO -->
+<div id="toastCliente" class="toast-corp oculto">
+    <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <div class="toast-content">
+        <div id="toastTitle" class="toast-title">Éxito</div>
+        <div id="toastMessage" class="toast-msg">Acción completada.</div>
+    </div>
+</div>
+
+<!-- MODAL DE EDICIÓN CORPORATIVO -->
+<div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
+        
+        <!-- Campo numérico (Solo visible al editar Precio) -->
+        <input type="number" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; display: none;">
+        
+        <!-- Área de texto (Solo visible al editar Nombre) -->
+        <textarea id="modalEdicionTextarea" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px; min-height: 110px; resize: vertical; display: none;"></textarea>
+        
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalEdicion()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
+        </div>
+    </div>
+</div>
+    
+    <!-- MODAL DE EDICIÓN CORPORATIVO (Reemplaza al prompt nativo) -->
+<!-- <div id="modalEdicionPersonalizada" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3 id="modalEdicionTitulo" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--ngc-text-main); text-align: left; justify-content: flex-start;">Editar</h3>
+        <input type="text" id="modalEdicionInput" class="corp-input" style="margin-bottom: 20px; font-size: 1rem; padding: 12px;">
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalEdicion()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="guardarModalEdicion()">Aceptar</button>
+        </div>
+    </div>
+</div> -->
+    
+<!-- TODOS LOS MODALES ESTANDARIZADOS -->
+<div id="modalRecuperarCliente" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-rotate-left corp-modal-icon"></i>
+        <h3>Borrador Detectado</h3>
+        <p>Tienes un presupuesto pendiente. ¿Deseas recuperarlo?</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn primary-action" onclick="usarClienteMemoria()">Recuperar Borrador</button>
+            <button class="corp-btn danger-btn" onclick="nuevoPresupuesto()">Descartar e Iniciar Nuevo</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalAgendarCliente" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-address-book corp-modal-icon"></i>
+        <h3>¿Vincular a la Agenda?</h3>
+        <p>Si este cliente no está en tu agenda, el presupuesto no se guardará en la nube.</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn success-btn" onclick="opcionBuscarAgenda()"><i class="fa-solid fa-search"></i> Buscar en Agenda</button>
+            <button class="corp-btn primary-action" onclick="accionAgendarCliente()"><i class="fa-solid fa-user-plus"></i> Agendar Nuevo</button>
+            <button class="corp-btn danger-btn" onclick="opcionContinuarSinAgenda()">Continuar sin Nube</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: AGENDA GLOBAL -->
+<div id="modalAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-users"></i> Contactos</h3>
+        <input type="text" id="buscadorAgenda" class="corp-input" placeholder="Buscar nombre o dirección..." oninput="filtrarAgendaGlobal()" style="margin-bottom: 10px;">
+        <div id="listaAgenda" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalAgendaGlobal()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL: BORRADORES GLOBAL -->
+<div id="modalBorradores" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Borradores en Nube</h3>
+        <div id="listaBorradores" class="modal-list-container"></div>
+        <button class="corp-btn" onclick="cerrarModalBorradoresGlobal()" style="margin-top: 15px;">Cerrar</button>
+    </div>
+</div>
+
+    <!-- MODAL ALERTA GENÉRICA (Reemplaza alert nativo) -->
+<div id="modalAlertaCorp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-circle-exclamation corp-modal-icon" style="color: var(--ngc-warning);"></i>
+        <h3 id="modalAlertaTitulo" style="margin-bottom: 10px;">Atención</h3>
+        <p id="modalAlertaMensaje" style="margin-bottom: 20px;">Mensaje de alerta.</p>
+        <div class="corp-modal-actions">
+            <button class="corp-btn primary-action" onclick="cerrarModalAlertaCorp()">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN SIN AGENDA (Reemplaza confirm nativo) -->
+<div id="modalConfirmarSinAgenda" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-triangle-exclamation corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">¿Continuar sin Nube?</h3>
+        <p style="margin-bottom: 20px;">Al no estar en tu agenda, este presupuesto NO se guardará en los borradores de la nube. ¿Deseas continuar de todos modos?</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border);" onclick="cerrarModalConfirmarSinAgenda()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarContinuarSinAgenda()">Continuar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GUARDAR BORRADOR (Reemplaza prompt nativo) -->
+<div id="modalGuardarBorrador" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-cloud-arrow-up corp-modal-icon" style="color: var(--ngc-neon);"></i>
+        <h3 style="margin-bottom: 10px; text-align: left; justify-content: flex-start;">Guardar Borrador</h3>
+        <p style="margin-bottom: 15px; text-align: left;">Verifica o edita el nombre del archivo:</p>
+        <input type="text" id="inputNombreBorrador" class="corp-input" style="margin-bottom: 20px; font-weight: 600; font-size: 1rem;">
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="cerrarModalGuardarBorrador()">Cancelar</button>
+            <button class="corp-btn success-btn" style="flex: 1;" onclick="ejecutarGuardarBorrador()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalConfirmarNuevo" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-rotate-right corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Nuevo Presupuesto</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de iniciar un nuevo presupuesto? Se borrarán los datos actuales no guardados.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalConfirmarNuevoGlobal()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarNuevoPresupuesto()">Aceptar</button>
+        </div>
+    </div>
+</div>
+    <!-- ================================================== -->
+<!-- NUEVO MODAL DE CAPTURA DE PANTALLA -->
+<!-- ================================================== -->
+<div id="modalDescargarCaptura" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="padding-top: 30px;">
+        <i class="fa-solid fa-download" style="font-size: 2.5rem; color: var(--ngc-text-main); margin-bottom: 15px; display: block; text-align: center;"></i>
+        <h3 style="margin-bottom: 5px; font-size: 1.3rem;">¿Descargar archivo?</h3>
+        <p id="pesoCaptura" style="font-size: 1.1rem; color: var(--ngc-text-main); font-weight: bold; text-align: center; margin-bottom: 25px;">(Calculando...)</p>
+        
+        <div style="position: relative; margin-bottom: 25px;">
+            <label style="position: absolute; top: -10px; left: 10px; background: var(--bg-body); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre</label>
+            <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
+                <input type="text" id="nombreArchivoCaptura" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px; outline: none; box-shadow: none;" value="Presupuesto_Cliente">
+                <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.png</span>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px; color: var(--ngc-text-main); margin-bottom: 30px;">
+            <i class="fa-regular fa-folder-open" style="font-size: 1.2rem;"></i>
+            <span style="font-size: 0.9rem;">~/Download</span>
+        </div>
+        
+        <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
+            <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalCaptura()">Cancelar</button>
+            <button class="corp-btn" style="width: auto; background: #cba6f7; color: #1e1e2e; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaCaptura()">Descargar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: WHATSAPP UNIFICADO -->
+<div id="modalWhatsApp" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-brands fa-whatsapp corp-modal-icon" style="color: #25D366; font-size: 3rem;"></i>
+        <h3 style="margin-bottom: 10px; text-transform: uppercase;">Enviar por WhatsApp</h3>
+        <p style="margin-bottom: 20px;">¿A quién deseas enviarle el detalle?</p>
+        
+        <div class="corp-modal-actions">
+            <!-- Botón Contacto Agendado -->
+            <button id="btnWspGuardado" class="corp-btn" style="background: #25D366; color: white; display: none;" onclick="enviarWspGuardadoGlobal()">
+                <i class="fa-brands fa-whatsapp" style="color: white;"></i> Enviar al Cliente
+            </button>
+            
+            <!-- Opción ingreso manual -->
+            <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 5px;">
+                <input type="number" id="inputWspManual" class="corp-input" placeholder="O ingresá un número (Ej: 3512345678)" style="flex: 1; text-align: center; font-size: 0.9rem;">
+                <button class="corp-btn" style="background: #25D366; color: white; border: none; padding: 0 20px; width: auto;" onclick="enviarWspManualGlobal()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Búsqueda en App -->
+            <button class="corp-btn" style="background: transparent; color: #25D366; border: 1px solid #25D366;" onclick="buscarEnWspGlobal()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar en mis contactos
+            </button>
+            
+            <button class="corp-btn danger-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--error-red);" onclick="cerrarModalWspGlobal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+    
+    <!-- ================================================== -->
+<!-- MODAL DESCARGAR PDF (NUEVO) -->
+<!-- ================================================== -->
+<div id="modalDescargarPDF" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card" style="padding-top: 30px;">
+        <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: var(--error-red); margin-bottom: 15px; display: block; text-align: center;"></i>
+        <h3 style="margin-bottom: 5px; font-size: 1.3rem;">Generar PDF</h3>
+        <p style="font-size: 0.9rem; color: var(--ngc-text-faded); text-align: center; margin-bottom: 25px;">Confirma el nombre para guardar tu archivo.</p>
+
+        <div style="position: relative; margin-bottom: 25px;">
+            <label style="position: absolute; top: -10px; left: 10px; background: var(--bg-body); padding: 0 5px; font-size: 0.75rem; color: var(--ngc-text-faded); z-index: 1;">Nombre del archivo</label>
+            <div style="display: flex; align-items: center; border: 1px solid var(--ngc-privacy-border); border-radius: 8px; overflow: hidden; background: var(--ngc-bg-input);">
+                <input type="text" id="nombreArchivoPDF" class="corp-input" style="border: none; border-radius: 0; flex: 1; padding: 15px; outline: none; box-shadow: none;">
+                <span style="padding: 0 15px; color: var(--ngc-text-faded); background: var(--ngc-bg-input);">.pdf</span>
+            </div>
+        </div>
+
+        <div class="corp-modal-actions" style="flex-direction: row; justify-content: flex-end; gap: 15px;">
+            <button class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalPDF()">Cancelar</button>
+            <button id="btnConfirmarDescargaPDF" class="corp-btn danger-btn" style="width: auto; font-weight: bold; padding: 10px 20px; border-radius: 20px;" onclick="ejecutarDescargaPDF()">Descargar</button>
+        </div>
+    </div>
+</div>
+    
+    <!-- MODAL CONFIRMAR ELIMINAR BORRADOR -->
+<div id="modalConfirmarEliminar" class="modal-overlay oculto gpu-accel">
+    <div class="corp-modal-card">
+        <i class="fa-solid fa-trash-can corp-modal-icon" style="color: var(--error-red);"></i>
+        <h3 style="margin-bottom: 10px;">Eliminar Borrador</h3>
+        <p style="margin-bottom: 20px;">¿Estás seguro de eliminar este borrador de la nube? Esta acción no se puede deshacer.</p>
+        <div class="corp-modal-actions" style="flex-direction: row; gap: 10px;">
+            <button class="corp-btn" style="flex: 1; border: 1px solid var(--ngc-privacy-border); background: transparent; color: var(--ngc-text-main);" onclick="cerrarModalEliminarBorrador()">Cancelar</button>
+            <button class="corp-btn danger-btn" style="flex: 1;" onclick="ejecutarEliminarBorrador()">Eliminar</button>
+        </div>
+    </div>
+</div>
+    
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="layout-wrapper">
+    <main class="container">
+        
+        <!-- TOP NAV ALINEADA (Sin botón menú) -->        
+        <nav class="corp-top-nav">
+            <div style="width: 42px;"></div>
+            <div class="corp-nav-title">
+                <i class="fa-solid fa-file-invoice-dollar corp-accent-color"></i> PRESUPUESTOS
+            </div>
+            <button class="corp-btn-icon danger" onclick="abrirModalConfirmarNuevoGlobal()" title="Nuevo Documento">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </nav>
+        
+        <div id="loading" class="corp-card" style="text-align: center; margin-top: 20px; color: var(--ngc-neon);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <p style="font-weight: 600;">Sincronizando Precios...</p>
+        </div>
+
+        <div id="app" class="oculto">
+            <!-- PASO 1: CLIENTE -->
+            <section id="step-cliente" class="corp-card gpu-accel">
+                <h4 class="corp-card-title"><i class="fa-solid fa-user-tag"></i> Datos del Proyecto</h4>
+                <div class="action-grid-main" style="margin-bottom: 15px;">
+                    <button class="corp-btn success-btn" onclick="abrirModalAgendaGlobal()"><i class="fa-solid fa-address-book"></i> Agenda</button>
+                    <button class="corp-btn primary-action" onclick="abrirModalBorradores()"><i class="fa-solid fa-cloud"></i> Borradores</button>
+                </div>
+                
+                <div class="row-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="cliNombre" class="corp-input" placeholder="Ej: Jose Lopez">
+                </div>
+                <div class="row-group-stretch">
+                    <div class="flex-1">
+                        <label>Dirección</label>
+                        <input type="text" id="cliDireccion" class="corp-input" placeholder="Ej: San Martín 123">
+                    </div>
+                    <div class="flex-1">
+                        <label>Nombre del Proyecto</label>
+                        <input type="text" id="cliProyecto" class="corp-input" placeholder="Ej: Remodelación">
+                    </div>
+                </div>
+                
+                <button class="corp-btn primary-action" style="margin-top: 10px;" onclick="iniciarPresupuesto()">
+                    <i class="fa-solid fa-play"></i> Comenzar Carga de Ítems
+                </button>
+            </section>
+            
+            <!-- PASO 2: ÍTEMS -->
+            <section id="step-trabajo" class="oculto">
+                <div class="corp-card gpu-accel">
+                    <h4 class="corp-card-title"><i class="fa-solid fa-list-check"></i> Agregar Trabajos</h4>
+                    
+                    <div class="row-group">
+    <label>Rubro</label>
+    <details id="detTema" class="corp-custom-select">
+        <summary id="sumTema" class="corp-input">-- SELECCIONE RUBRO --</summary>
+        <div id="listTema" class="corp-select-list"></div>
+    </details>
+    <input type="hidden" id="selTema" value="">
+</div>
+
+<div class="row-group">
+    <label>Trabajo</label>
+    <div style="display:flex; gap:8px; width: 100%; align-items: center;">
+        <div style="flex: 1; position: relative;">
+            <details id="detConcepto" class="corp-custom-select" disabled>
+                <summary id="sumConcepto" class="corp-input">-- SELECCIONE TRABAJO --</summary>
+                <div id="listConcepto" class="corp-select-list"></div>
+            </details>
+            <input type="hidden" id="selConcepto" value="">
+        </div>
+        <button id="btnEditConcepto" class="corp-btn-icon oculto" onclick="editarConceptoTemporal()" title="Editar Nombre"><i class="fa-solid fa-pen"></i></button>
+    </div>
+    <span id="badgeConcepto" class="badge-edit oculto">Nombre editado temporalmente</span>
+</div>
+                    
+                    
+                    <div class="row-group-stretch" style="align-items: center;">
+                        <div class="flex-1">
+                            <label>Cantidad</label>
+                            <div class="corp-stepper">
+                                <button class="btn-step" onclick="step('cantidad', -1)">-</button>
+                                <input type="number" id="cantidad" class="corp-input-step" value="1" min="1">
+                                <button class="btn-step" onclick="step('cantidad', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label>Desc %</label>
+                            <div class="corp-stepper">
+                                <button class="btn-step" onclick="step('porcentajeDesc', -5)">-</button>
+                                <input type="number" id="porcentajeDesc" class="corp-input-step" value="0" min="0" max="100">
+                                <button class="btn-step" onclick="step('porcentajeDesc', 5)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="margin:0;">Notas del Ítem</label>
+                            <div style="display:flex; gap:5px;">
+                                <button class="corp-btn-small" onclick="habilitarEdicionObs()" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button class="corp-btn-small" onclick="volverNotasOriginales()" title="Deshacer"><i class="fa-solid fa-rotate-left"></i></button>
+                                <button class="corp-btn-small danger" onclick="borrarTodasNotas()" title="Borrar"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <textarea id="obsManual" class="corp-input" rows="4" placeholder="Notas aclaratorias..." readonly style="min-height: 90px;"></textarea>
+                        
+                    </div>
+                    
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div>
+                            <strong id="unitarioLabel" style="color:var(--ngc-warning); font-size: 1.1rem;">Unit: $ 0,00</strong>
+                            <button id="btnEditPrecio" class="corp-btn-small oculto" onclick="editarPrecioTemporal()" style="margin-left: 5px;"><i class="fa-solid fa-pen"></i></button>
+                            <span id="badgePrecio" class="badge-edit oculto" style="display:block;">Precio editado</span>
+                        </div>
+                        <button class="corp-btn success-btn" style="width: auto; padding: 10px 20px;" onclick="agregarTrabajo()">
+                            <i class="fa-solid fa-plus"></i> Agregar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABLA RESULTADOS -->
+                <div id="zonaCaptura" class="capture-zone gpu-accel">
+                    <table class="corp-table">
+                        <tbody id="cuerpoTabla"></tbody>
+                    </table>
+                    <div id="totalDisplay" class="total-display">TOTAL: $ 0</div>
+                </div>
+
+                <!-- NOTAS GLOBALES -->
+                <div class="corp-card gpu-accel">
+                    <label>Notas Globales del Presupuesto</label>
+                    <textarea id="obsGenerales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..." onchange="guardarEstadoLocal(); renderTabla();"></textarea>
+                </div>
+
+                <!-- ACCIONES FINALES -->
+                <div class="action-grid-main">
+                    <button class="corp-btn" onclick="tomarCaptura()"><i class="fa-solid fa-image"></i> Captura</button>
+                    <button class="corp-btn danger-btn" onclick="generarPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button class="corp-btn success-btn" style="grid-column: span 2;" onclick="prepararEnvioWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp</button>
+                    <button class="corp-btn" onclick="guardarBorradorFirebase(true)" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.1);">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Borrador
+                    </button>
+                    <button class="corp-btn" onclick="abrirModalBorradores()" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.1);">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Abrir Borrador
+                    </button> 
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- VISTA PDF A4 (Se mantiene igual para que html2pdf funcione perfecto) -->
+    <aside class="preview-panel">
+        <div id="plantilla-pdf">
+            <div class="pdf-container">
+                <header class="pdf-header">
+                    <div class="pdf-info-box">
+                        <h2>PRESUPUESTO</h2>
+                        <div class="pdf-row"><b>Nro:</b> <span id="pdf-nro"></span></div>
+                        <div class="pdf-row"><b>Fecha:</b> <span id="pdf-fecha"></span></div>
+                        <div class="pdf-row"><b>Cliente:</b> <span id="pdf-cliente"></span></div>
+                        <div class="pdf-row"><b>Dirección:</b> <span id="pdf-direccion"></span></div>
+                        <div class="pdf-row"><b>Proyecto:</b> <span id="pdf-proyecto"></span></div>
+                    </div>
+                    <div class="pdf-logo-box">
+                        <img id="pdf-img-logo" src="" alt="Logo" style="max-width:100px; max-height:100px; float:right; display:none;">
+                        <h1 id="pdf-text-logo" style="margin:0; font-size:24px; color:#0088aa; display:none;"></h1>
+                    </div>
+                </header>
+                <table class="pdf-table">
+                    <thead><tr><th>Cód</th><th>Descripción</th><th>Cant</th><th>P. Unitario</th><th>Subtotal</th></tr></thead>
+                    <tbody id="pdf-tbody"></tbody>
+                </table>
+                <div class="pdf-body-lower">
+                    <div class="pdf-notas-box">
+                        <h3>Detalle Operativo</h3>
+                        <div id="pdf-notas" class="pdf-notas-content"></div>
+                    </div>
+                    <div class="pdf-totales-box">
+                        <div class="pdf-total-row"><span>Subtotal:</span> <span id="pdf-subtotal"></span></div>
+                        <div class="pdf-total-row" style="color: #d9534f;"><span>Descuentos:</span> <span id="pdf-descuentos"></span></div>
+                        <div class="pdf-total-row final-total"><span>TOTAL:</span> <b id="pdf-total"></b></div>
+                    </div>
+                </div>
+                <footer class="pdf-footer">
+                    <div class="pdf-pagos">
+                        <h4>Condiciones</h4>
+                        <p>Los precios están sujetos a modificaciones sin previo aviso.<br>Validez del presupuesto: 7 días.</p>
+                    </div>
+                    <div class="pdf-right-footer">
+                        <div id="pdf-slogan" class="pdf-slogan"></div>
+                        <div id="headerMembrete" class="pdf-contacto" style="font-weight:bold;"></div>
+                        <div id="pdf-tel" class="pdf-contacto"></div>
+                        <div id="pdf-email" class="pdf-contacto"></div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- NUEVO MENÚ INFERIOR TIPO APP -->
+<nav class="corp-bottom-nav">
+    <div class="corp-scroll-container" id="corpFooterMenu"></div>
+</nav>
+    
+<!-- Scripts obligatorios de Firebase y configuración -->
+<script src="../firebase-config.js"></script>
+<script src="../global.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
