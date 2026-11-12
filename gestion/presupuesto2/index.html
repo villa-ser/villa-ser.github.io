@@ -365,13 +365,23 @@
 
                 <!-- NOTAS GLOBALES Y VALIDEZ -->
 <div class="corp-card gpu-accel">
-    <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center;">
-        <label style="margin: 0; white-space: nowrap; font-weight: bold; color: var(--ngc-text-main);">Validez (Días):</label>
-        <input type="number" id="diasValidez" class="corp-input" value="15" min="1" style="width: 80px; text-align: center; padding: 8px;" onchange="guardarEstadoLocal(); renderTabla();">
+    <div class="row-group" style="margin-bottom: 15px;">
+        <label style="font-weight: bold; color: var(--ngc-text-main);">Validez del Presupuesto (Días)</label>
+        <div class="corp-stepper" style="max-width: 150px;">
+            <!-- El onclick modifica el número, guarda en memoria y actualiza la vista previa del PDF en tiempo real -->
+            <button class="btn-step" onclick="step('diasValidez', -1); guardarEstadoLocal(); renderTabla();">-</button>
+            
+            <!-- El atributo 'readonly' es el encargado de bloquear el teclado táctil -->
+            <input type="number" id="diasValidez" class="corp-input-step" value="15" min="1" readonly>
+            
+            <button class="btn-step" onclick="step('diasValidez', 1); guardarEstadoLocal(); renderTabla();">+</button>
+        </div>
     </div>
+    
     <label>Notas Globales del Presupuesto</label>
     <textarea id="obsGenerales" class="corp-input" rows="3" placeholder="Ej: Válido por 10 días..." onchange="guardarEstadoLocal(); renderTabla();"></textarea>
 </div>
+                
 
 <!-- ACCIONES FINALES (AGRUPADAS) -->
 <div class="corp-card gpu-accel" style="padding: 10px;">
