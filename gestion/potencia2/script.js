@@ -9,6 +9,18 @@ let permiteGuardarNube = true;
 let nombreBorradorActual = null; 
 let telefonoClienteActual = "";
 
+// ==========================================
+// CONTROLADOR DE STEPPERS PARA BOCAS
+// ==========================================
+function stepBocas(id, val) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    
+    // Obtener valor actual, sumar/restar y limitar a un mínimo de 0
+    let newValue = parseInt(el.value || 0) + val;
+    el.value = Math.max(0, newValue);
+}
+
 // MAPA DE CÁLCULO AEA
 const MAPA_IZ = { "1.5": 15, "2.5": 21, "4": 28, "6": 36, "10": 50, "16": 66 };
 
