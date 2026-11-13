@@ -425,20 +425,71 @@ function prepararEnvioWhatsApp() {
     }
 }
 
-function sincronizarVistaPreviaPDF() {
-    document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
-    document.getElementById('pdf-cliente').innerText = document.getElementById('cliNombre').value || 'Sin nombre';
-    document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'Sin dirección';
-    document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
-    
-    const tbody = document.getElementById('pdf-tbody'); 
-    tbody.innerHTML = '';
-    
-    listaItems.forEach(i => { 
-        tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.nota}</td><td>${i.cantidad}</td><td>${i.unidad}</td>` })); 
-    });
-    
-    document.getElementById('pdf-notas').innerText = document.getElementById('obsGenerales').value || 'Sin notas.';
+let escalaBasePreview = 1;
+let escalaActualPreview = 1;
+let anchoRealA4 = 794;
+let altoRealA4 = 1123;
+let zoomPreviewInicializado = false;
+
+function aplicarEscalaVistaPrevia(nuevaEscala) {
+    const plantilla = document.getElementById('plantilla-pdf');
+    const pdfContainer = plantilla ? plantilla.querySelector('.pdf-container') : null;
+    if (!plantilla || !pdfContainer) return;
+
+    escalaActualPreview = Math.max(escalaBasePreview, Math.min(2.5, nuevaEscala));
+    pdfContainer.style.transformOrigin = 'top left';
+    pdfContainer.style.transform = `scale(${escalaActualPreview})`;
+    plantilla.style.width = `${anchoRealA4 * escalaActualPreview}px`;
+    plantilla.style.height = `${altoRealA4 * escalaActualPreview}px`;
+}
+
+function inicializarZoomVistaPrevia() {
+    if (zoomPreviewInicializado) return;
+    const contenedor = document.getElementById('contenedorVistaPreviaMobile');
+    if (!contenedor) return;
+
+    let distInicial = 0;
+    let escalaInicialPellizco = 1;
+
+    contenedor.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            distInicial = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            escalaInicialPellizco = escalaActualPreview;
+        }
+    }, { passive: true });
+
+    contenedor.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && distInicial > 0) {
+            e.preventDefault();
+            const rect = contenedor.getBoundingClientRect();
+            const centroX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const centroY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            const puntoX = centroX - rect.left + contenedor.scrollLeft;
+            const puntoY = centroY - rect.top + contenedor.scrollTop;
+            const escalaPrevia = escalaActualPreview;
+
+            const distActual = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            aplicarEscalaVistaPrevia(escalaInicialPellizco * (distActual / distInicial));
+
+            const factorCambio = escalaActualPreview / escalaPrevia;
+            contenedor.scrollLeft = (puntoX * factorCambio) - (centroX - rect.left);
+            contenedor.scrollTop = (puntoY * factorCambio) - (centroY - rect.top);
+        }
+    }, { passive: false });
+
+    contenedor.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) {
+            distInicial = 0;
+        }
+    }, { passive: true });
+
+    zoomPreviewInicializado = true;
 }
 
 function abrirVistaPreviaMobile() {
@@ -446,46 +497,62 @@ function abrirVistaPreviaMobile() {
         mostrarAlertaCorp("Faltan Datos", "Agregá materiales para ver la vista previa.");
         return;
     }
-    sincronizarVistaPreviaPDF(); 
-    
-    const plantilla = document.getElementById('plantilla-pdf');
+    sincronizarVistaPreviaPDF();
+
+    const modal = document.getElementById('modalVistaPrevia');
     const contenedor = document.getElementById('contenedorVistaPreviaMobile');
-    
+    const plantilla = document.getElementById('plantilla-pdf');
+    const pdfContainer = plantilla.querySelector('.pdf-container');
+
+    modal.classList.remove('oculto');
+    document.body.style.overflow = 'hidden';
+
+    plantilla.style.display = 'inline-block';
+    plantilla.style.textAlign = 'left';
+    plantilla.style.position = 'relative';
+    plantilla.style.overflow = 'hidden';
+    plantilla.style.boxShadow = '0 8px 25px rgba(0,0,0,0.4)';
     contenedor.appendChild(plantilla);
-    plantilla.style.display = 'block'; 
-    
-    // Habilitar zoom (pinza) solo para la vista previa móvil
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content');
+
+    if (pdfContainer) {
+        pdfContainer.style.transform = 'none';
+        anchoRealA4 = pdfContainer.offsetWidth || 794;
+        altoRealA4 = pdfContainer.offsetHeight || 1123;
     }
-    
-    // Calcula la escala para emular el A4 dentro del celular
-    const scale = (window.innerWidth - 20) / 800; 
-    plantilla.style.zoom = scale < 1 ? scale : 1;
-    
-    document.getElementById('modalVistaPrevia').classList.remove('oculto');
-    document.body.style.overflow = 'hidden'; 
+
+    const anchoDisponible = Math.max(280, contenedor.clientWidth - 30);
+    escalaBasePreview = Math.min(1, anchoDisponible / anchoRealA4);
+    aplicarEscalaVistaPrevia(escalaBasePreview);
+
+    contenedor.scrollTop = 0;
+    contenedor.scrollLeft = 0;
+    inicializarZoomVistaPrevia();
 }
 
 function cerrarVistaPrevia() {
     const plantilla = document.getElementById('plantilla-pdf');
+    const pdfContainer = plantilla ? plantilla.querySelector('.pdf-container') : null;
     const aside = document.querySelector('.preview-panel');
-    
-    // Restaurar bloqueo de zoom para proteger la UI de la app
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+
+    if (pdfContainer) {
+        pdfContainer.style.transform = '';
+        pdfContainer.style.transformOrigin = '';
     }
 
-    plantilla.style.zoom = '';
-    plantilla.style.display = ''; 
-    
-    aside.appendChild(plantilla);
-    
+    plantilla.style.width = '';
+    plantilla.style.height = '';
+    plantilla.style.display = '';
+    plantilla.style.textAlign = '';
+    plantilla.style.position = '';
+    plantilla.style.overflow = '';
+    plantilla.style.boxShadow = '';
+
+    if (aside) aside.appendChild(plantilla);
+
     document.getElementById('modalVistaPrevia').classList.add('oculto');
     document.body.style.overflow = '';
 }
+
 
 function generarPDF() {
     if(listaItems.length === 0) return mostrarAlertaCorp("Atención", "No hay materiales para generar el PDF.");
