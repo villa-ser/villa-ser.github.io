@@ -168,9 +168,9 @@
 <!-- ================================================== -->
 <!-- NUEVO MODAL: VISTA PREVIA MÓVIL A PANTALLA COMPLETA -->
 <!-- ================================================== -->
-<div id="modalVistaPrevia" class="modal-overlay oculto gpu-accel" style="z-index: 10000; background: #121212; flex-direction: column; padding: 0;">
-    <!-- Barra Superior -->
-    <div style="display: flex; justify-content: space-between; align-items: center; background: #18191A; padding: 15px 20px; border-bottom: 1px solid var(--ngc-privacy-border); width: 100%; box-sizing: border-box; flex-shrink: 0;">
+<div id="modalVistaPrevia" class="modal-overlay oculto gpu-accel" style="z-index: 10000; background: #121212; flex-direction: column; padding: 0; overflow: hidden;">
+    <!-- Barra Superior Fija -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #18191A; padding: 15px 20px; border-bottom: 1px solid var(--ngc-privacy-border); width: 100%; box-sizing: border-box; flex-shrink: 0; z-index: 2;">
         <button onclick="cerrarVistaPrevia()" class="corp-btn" style="width: auto; background: transparent; color: var(--ngc-text-main); font-weight: bold; border: 1px solid var(--ngc-privacy-border); margin: 0; padding: 8px 15px;">
             <i class="fa-solid fa-arrow-left"></i> Volver
         </button>
@@ -178,12 +178,11 @@
             <i class="fa-solid fa-file-pdf"></i> Generar PDF
         </button>
     </div>
-    <!-- Contenedor Scrollable para el Documento -->
-    <div style="flex: 1; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 20px 0; display: flex; flex-direction: column; align-items: center; background: #333;">
-        <div id="contenedorVistaPreviaMobile" style="width: 100%; display: flex; justify-content: center;"></div>
-    </div>
+    <!-- Contenedor Scrollable en 4 direcciones para el Documento -->
+    <div id="contenedorVistaPreviaMobile" style="flex: 1; width: 100%; overflow: auto; -webkit-overflow-scrolling: touch; padding: 15px; box-sizing: border-box; text-align: center; background: #333; touch-action: pan-x pan-y;"></div>
 </div>
-
+    
+    
 <div class="layout-wrapper">
     <main class="container">
         
