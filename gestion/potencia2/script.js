@@ -773,20 +773,27 @@ function abrirVistaPrevia() {
         return;
     }
     
+    // Sincronizar datos frescos en el PDF
+    calcularGradoYRenderizar(); 
+    
+    const element = document.getElementById('plantilla-pdf');
+    const previewWrapper = document.getElementById('previewWrapper');
+    
+    // Mover la plantilla A4 al Modal Fullscreen
+    element.style.display = 'block';
+    previewWrapper.appendChild(element);
+    
+    // --- CLAVE PARA QUE NO SE RECORTE EL PDF ---
+    // Calcula la escala para que la hoja A4 (aprox 800px) encaje perfecto en cualquier celular
+    const scale = (window.innerWidth - 40) / 800; 
+    element.style.zoom = scale < 1 ? scale : 1;
+    
     // Habilitar zoom táctil (efecto pinza) modificando el viewport temporalmente
     const metaViewport = document.querySelector('meta[name="viewport"]');
     if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes");
     
-    // Sincronizar datos frescos en el PDF
-    calcularGradoYRenderizar(); 
-    
-    // Mover la plantilla A4 al Modal Fullscreen
-    const element = document.getElementById('plantilla-pdf');
-    const previewWrapper = document.getElementById('previewWrapper');
-    element.style.display = 'block';
-    previewWrapper.appendChild(element);
-    
     document.getElementById('modalVistaPrevia').classList.remove('oculto');
+    document.body.style.overflow = 'hidden'; // Bloquear scroll del fondo
 }
 
 function cerrarVistaPrevia() {
@@ -794,9 +801,14 @@ function cerrarVistaPrevia() {
     const metaViewport = document.querySelector('meta[name="viewport"]');
     if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
     
-    // Devolver A4 a su panel original (PC)
     const element = document.getElementById('plantilla-pdf');
     const originalContainer = document.querySelector('.preview-panel');
+    
+    // Limpiar el zoom y restaurar scroll de la app
+    element.style.zoom = '';
+    document.body.style.overflow = '';
+    
+    // Devolver A4 a su panel original (PC)
     if(originalContainer) originalContainer.appendChild(element);
     
     if (window.innerWidth < 992) element.style.display = 'none';
