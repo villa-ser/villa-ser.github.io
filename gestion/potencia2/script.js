@@ -608,7 +608,7 @@ function renderTabla(areaTotal, gradoActual) {
 
     tfootStr += `<tr><td colspan="2" style="text-align:right; padding:5px; position: sticky; left:0; background:${stickyBg}; z-index:1;"><b>DPMS (VA)</b></td>`;
     circuitos.forEach(c => {
-        tfootStr += `<td><input type="number" class="corp-input" style="color:var(--success-green); padding: 2px;" value="${c.dpms}" onchange="updC('${c.id}','dpms',this.value)"></td>`;
+        tfootStr += `<td><input type="number" class="circ-input" style="color:var(--success-green); padding: 2px; width: 45px; margin: 0 auto; display: block; text-align: center;" value="${c.dpms}" onchange="updC('${c.id}','dpms',this.value)"></td>`;
     });
     tfootStr += `<td style="color:var(--ngc-warning); font-weight:bold; font-size:0.75rem;">${circuitoCS.dpms.toFixed(0)}</td><td colspan="2"></td></tr>`;
 
@@ -654,7 +654,7 @@ function renderTabla(areaTotal, gradoActual) {
         let col = evalVerdeRojo(c._ibCalc && parseFloat(c.iz) >= c._ibCalc);
         let valStr = c.iz === "" ? "" : c.iz;
         let style = c.iz !== "" ? `color: ${col}; font-weight:bold;` : 'color: inherit;';
-        tfootStr += `<td><input type="number" class="corp-input" style="${style} padding: 2px;" placeholder="-" value="${valStr}" onchange="updC('${c.id}','iz',this.value)"></td>`;
+        tfootStr += `<td><input type="number" class="circ-input" style="${style} padding: 2px; width: 45px; margin: 0 auto; display: block; text-align: center;" placeholder="-" value="${valStr}" onchange="updC('${c.id}','iz',this.value)"></td>`;
     });
     tfootStr += `<td colspan="2"></td></tr>`;
 
@@ -671,7 +671,8 @@ function renderTabla(areaTotal, gradoActual) {
 
     tfoot.innerHTML = tfootStr;
     sincronizarVistaPreviaPDF(areaTotal, gradoActual, circuitoCS.dpms, sumElegido, totalesBocas, todosLosCircuitos);
-    }
+        }
+                              
 
 // ==========================================
 // VISTA PREVIA Y PDF
