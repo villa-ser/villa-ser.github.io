@@ -905,47 +905,52 @@ function abrirVistaPrevia() {
         return;
     }
     
-    // Sincronizar datos frescos en el PDF
+    // 1. Habilitar zoom táctil (efecto pinza) exclusivamente en la vista previa
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) {
+        metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes");
+    }
+    
+    // 2. Sincronizar datos frescos en el PDF
     calcularGradoYRenderizar(); 
     
+    // 3. Mover la plantilla A4 al Modal Fullscreen y limpiar cualquier escala anterior
     const element = document.getElementById('plantilla-pdf');
     const previewWrapper = document.getElementById('previewWrapper');
-    
-    // Mover la plantilla A4 al Modal Fullscreen
+    previewWrapper.scrollTop = 0;
+    element.style.transform = 'none';
+    element.style.zoom = '1';
     element.style.display = 'block';
     previewWrapper.appendChild(element);
     
-    // --- CLAVE PARA QUE NO SE RECORTE EL PDF ---
-    // Calcula la escala para que la hoja A4 (aprox 800px) encaje perfecto en cualquier celular
-    const scale = (window.innerWidth - 40) / 800; 
-    element.style.zoom = scale < 1 ? scale : 1;
-    
-    // Habilitar zoom táctil (efecto pinza) modificando el viewport temporalmente
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes");
-    
+    // 4. Abrir modal
     document.getElementById('modalVistaPrevia').classList.remove('oculto');
-    document.body.style.overflow = 'hidden'; // Bloquear scroll del fondo
 }
 
 function cerrarVistaPrevia() {
-    // Restaurar bloqueo antizoom nativo de la PWA
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
-    
+    // 1. Ocultar el modal de inmediato para quitar el contenedor táctil
+    const modal = document.getElementById('modalVistaPrevia');
+    modal.classList.add('oculto');
+
+    // 2. Limpiar escalas, zóOM o transformaciones de la plantilla PDF
     const element = document.getElementById('plantilla-pdf');
-    const originalContainer = document.querySelector('.preview-panel');
-    
-    // Limpiar el zoom y restaurar scroll de la app
+    element.style.transform = '';
     element.style.zoom = '';
-    document.body.style.overflow = '';
     
-    // Devolver A4 a su panel original (PC)
+    // 3. Devolver A4 a su panel original (para PC)
+    const originalContainer = document.querySelector('.preview-panel');
     if(originalContainer) originalContainer.appendChild(element);
     
     if (window.innerWidth < 992) element.style.display = 'none';
     
-    document.getElementById('modalVistaPrevia').classList.add('oculto');
+    // 4. Restaurar bloqueo antizoom nativo de la PWA y forzar reinicio de escala en el navegador
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    if (metaViewport) {
+        metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
+    }
+    
+    // 5. Forzar la ventana principal a su posición inicial normal
+    window.scrollTo(0, 0);
 }
 
 // ==========================================
