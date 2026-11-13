@@ -341,7 +341,7 @@ function eliminarCircuito(index) {
 }
 
 function actualizarSelectoresEnFormulario() {
-    const ids = ['IUG', 'TUG', 'ESP'];
+    const ids = ['IUG', 'TUG'];
     ids.forEach(sufijo => {
         const hiddenInput = document.getElementById('circuito' + sufijo);
         const summary = document.getElementById('sumCircuito' + sufijo);
@@ -349,18 +349,13 @@ function actualizarSelectoresEnFormulario() {
         const details = document.getElementById('detCircuito' + sufijo);
 
         if(!list || !hiddenInput) return;
-        
         let valActual = hiddenInput.value;
         list.innerHTML = '';
         
         const optVacia = document.createElement('div');
         optVacia.className = 'corp-select-option';
         optVacia.innerText = '-- Circ --';
-        optVacia.onclick = () => {
-            hiddenInput.value = '';
-            summary.innerText = '-- Circ --';
-            details.removeAttribute('open');
-        };
+        optVacia.onclick = () => { hiddenInput.value = ''; summary.innerText = '-- Circ --'; details.removeAttribute('open'); };
         list.appendChild(optVacia);
 
         let existe = false;
@@ -369,19 +364,15 @@ function actualizarSelectoresEnFormulario() {
             const opt = document.createElement('div');
             opt.className = 'corp-select-option';
             opt.innerText = `${c.id} (${c.tipo})`;
-            opt.onclick = () => {
-                hiddenInput.value = c.id;
-                summary.innerText = `${c.id} (${c.tipo})`;
-                details.removeAttribute('open');
-            };
+            opt.onclick = () => { hiddenInput.value = c.id; summary.innerText = `${c.id} (${c.tipo})`; details.removeAttribute('open'); };
             list.appendChild(opt);
         });
 
-        if (valActual && !existe) {
-            hiddenInput.value = '';
-            summary.innerText = '-- Circ --';
-        }
+        if (valActual && !existe) { hiddenInput.value = ''; summary.innerText = '-- Circ --'; }
     });
+    
+    // Actualizar todos los selectores ESP dinámicos
+    document.querySelectorAll('.esp-item').forEach(item => poblarAcordeonCircuitoElement(item));
 }
 
 function guardarAmbiente() {
@@ -390,20 +381,30 @@ function guardarAmbiente() {
     const largo = parseFloat(document.getElementById('inputLargo').value.replace(',', '.')) || 0;
     const bIUG = parseInt(document.getElementById('bocasIUG').value) || 0; const circIUG = document.getElementById('circuitoIUG').value;
     const bTUG = parseInt(document.getElementById('bocasTUG').value) || 0; const circTUG = document.getElementById('circuitoTUG').value;
-    const bESP = parseInt(document.getElementById('bocasESP').value) || 0; const circESP = document.getElementById('circuitoESP').value;
-    const descESP = document.getElementById('descESP').value.trim();
+    
+    // Recopilar múltiples ESP
+    let esps = [];
+    document.querySelectorAll('.esp-item').forEach(item => {
+        const b = parseInt(item.querySelector('.bocas-esp-input').value) || 0;
+        const c = item.querySelector('.circuito-esp-input').value;
+        const d = item.querySelector('.desc-esp-input').value.trim();
+        if (b > 0 && c) esps.push({ bocas: b, circ: c, desc: d });
+    });
+
+    // Compatibilidad con archivos viejos guardados en Firebase
+    let bESP = 0, circESP = "", descESP = "";
+    if (esps.length > 0) { bESP = esps[0].bocas; circESP = esps[0].circ; descESP = esps[0].desc; }
 
     if (!tipo) return alert("Seleccione el tipo de ambiente o carga.");
     if (!tipo.includes("Acondicionado") && !tipo.includes("Motor") && (ancho <= 0 || largo <= 0)) return alert("Ingrese medidas válidas.");
     
     let areaCalculada = ancho * largo;
-    if (tipo.includes("Semi") || tipo.includes("Balcón") || tipo.includes("Exterior")) {
-        areaCalculada = areaCalculada / 2;
-    }
+    if (tipo.includes("Semi") || tipo.includes("Balcón") || tipo.includes("Exterior")) areaCalculada = areaCalculada / 2;
 
     const obj = {
         id: editandoId ? parseInt(editandoId) : Date.now(),
-        tipo, ancho, largo, area: areaCalculada, bIUG, circIUG, bTUG, circTUG, bESP, circESP, descESP
+        tipo, ancho, largo, area: areaCalculada, bIUG, circIUG, bTUG, circTUG, 
+        bESP, circESP, descESP, esps 
     };
 
     if (editandoId) {
@@ -412,21 +413,27 @@ function guardarAmbiente() {
         cancelarEdicion();
     } else { listaAmbientes.push(obj); }
 
-    document.getElementById('selAmbiente').value = "";
-    document.getElementById('sumAmbiente').innerText = "-- Seleccione Ambiente --";
-    document.getElementById('inputAncho').value = ""; 
-    document.getElementById('inputLargo').value = "";
-    document.getElementById('bocasIUG').value = "0"; 
-    document.getElementById('circuitoIUG').value = "";
-    document.getElementById('sumCircuitoIUG').innerText = "-- Circ --";
-    document.getElementById('bocasTUG').value = "0"; 
-    document.getElementById('circuitoTUG').value = "";
-    document.getElementById('sumCircuitoTUG').innerText = "-- Circ --";
-    document.getElementById('bocasESP').value = "0"; 
-    document.getElementById('circuitoESP').value = "";
-    document.getElementById('sumCircuitoESP').innerText = "-- Circ --";
-    document.getElementById('descESP').value = "";
+    document.getElementById('selAmbiente').value = ""; document.getElementById('sumAmbiente').innerText = "-- Seleccione Ambiente --";
+    document.getElementById('inputAncho').value = ""; document.getElementById('inputLargo').value = "";
+    document.getElementById('bocasIUG').value = "0"; document.getElementById('circuitoIUG').value = ""; document.getElementById('sumCircuitoIUG').innerText = "-- Circ --";
+    document.getElementById('bocasTUG').value = "0"; document.getElementById('circuitoTUG').value = ""; document.getElementById('sumCircuitoTUG').innerText = "-- Circ --";
     
+    // Restablecer ESP dinámico
+    document.getElementById('contenedor-esps').innerHTML = `
+        <div class="esp-item" style="position: relative;">
+            <div class="corp-stepper" style="height: 38px; border-radius: 6px; display: flex; width: 100%; box-sizing: border-box;">
+                <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, -1)">-</button>
+                <input type="number" class="corp-input-step bocas-esp-input" value="0" min="0" readonly style="font-size: 0.95rem; flex: 1; width: 100%; text-align: center; border: none; background: transparent; color: inherit; padding: 0;">
+                <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, 1)">+</button>
+            </div>
+            <details class="corp-custom-select det-circuito-esp" style="margin-top:5px;">
+                <summary class="corp-input sum-circuito-esp" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+                <div class="corp-select-list list-circuito-esp"></div>
+            </details>
+            <input type="hidden" class="circuito-esp-input" value="">
+            <input type="text" class="corp-input desc-esp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+        </div>`;
+    actualizarSelectoresEnFormulario();
     calcularGradoYRenderizar();
 }
 
@@ -443,27 +450,52 @@ function editarAmbiente(id) {
     document.getElementById('sumAmbiente').innerText = amb.tipo || "-- Seleccione Ambiente --";
     document.getElementById('inputAncho').value = amb.ancho || ""; 
     document.getElementById('inputLargo').value = amb.largo || "";
-    document.getElementById('bocasIUG').value = amb.bIUG; 
-    document.getElementById('circuitoIUG').value = amb.circIUG;
     
+    document.getElementById('bocasIUG').value = amb.bIUG; document.getElementById('circuitoIUG').value = amb.circIUG;
     const cIUG = circuitos.find(c => c.id === amb.circIUG);
     document.getElementById('sumCircuitoIUG').innerText = cIUG ? `${cIUG.id} (${cIUG.tipo})` : "-- Circ --";
     
-    document.getElementById('bocasTUG').value = amb.bTUG; 
-    document.getElementById('circuitoTUG').value = amb.circTUG;
-    
+    document.getElementById('bocasTUG').value = amb.bTUG; document.getElementById('circuitoTUG').value = amb.circTUG;
     const cTUG = circuitos.find(c => c.id === amb.circTUG);
     document.getElementById('sumCircuitoTUG').innerText = cTUG ? `${cTUG.id} (${cTUG.tipo})` : "-- Circ --";
     
-    document.getElementById('bocasESP').value = amb.bESP; 
-    document.getElementById('circuitoESP').value = amb.circESP;
+    // Cargar ESPs dinámicos
+    const contenedorEsps = document.getElementById('contenedor-esps');
+    contenedorEsps.innerHTML = '';
     
-    const cESP = circuitos.find(c => c.id === amb.circESP);
-    document.getElementById('sumCircuitoESP').innerText = cESP ? `${cESP.id} (${cESP.tipo})` : "-- Circ --";
+    let espsToLoad = amb.esps && amb.esps.length > 0 ? amb.esps : [{ bocas: amb.bESP || 0, circ: amb.circESP || '', desc: amb.descESP || '' }];
     
-    document.getElementById('descESP').value = amb.descESP;
+    espsToLoad.forEach((esp, idx) => {
+        const newItem = document.createElement('div');
+        newItem.className = 'esp-item';
+        newItem.style.position = 'relative';
+        if(idx > 0) {
+            newItem.style.marginTop = '10px'; newItem.style.paddingTop = '10px'; newItem.style.borderTop = '1px dashed rgba(var(--ngc-neon-rgb), 0.3)';
+        }
+        
+        const btnX = idx > 0 ? `<button onclick="this.parentElement.remove()" style="position:absolute; top: 12px; right: -5px; background: transparent; border: none; color: var(--error-red); font-size: 0.8rem; cursor: pointer; z-index: 10;"><i class="fa-solid fa-xmark"></i></button>` : '';
+        
+        newItem.innerHTML = `
+            ${btnX}
+            <div class="corp-stepper" style="height: 38px; border-radius: 6px; display: flex; width: 100%; box-sizing: border-box;">
+                <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, -1)">-</button>
+                <input type="number" class="corp-input-step bocas-esp-input" value="${esp.bocas}" min="0" readonly style="font-size: 0.95rem; flex: 1; width: 100%; text-align: center; border: none; background: transparent; color: inherit; padding: 0;">
+                <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, 1)">+</button>
+            </div>
+            <details class="corp-custom-select det-circuito-esp" style="margin-top:5px;">
+                <summary class="corp-input sum-circuito-esp" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+                <div class="corp-select-list list-circuito-esp"></div>
+            </details>
+            <input type="hidden" class="circuito-esp-input" value="${esp.circ}">
+            <input type="text" class="corp-input desc-esp-input" value="${esp.desc}" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+        `;
+        contenedorEsps.appendChild(newItem);
+    });
+    
+    actualizarSelectoresEnFormulario();
     window.scrollTo(0, document.getElementById('step-trabajo').offsetTop);
-}
+        }
+
 
 function cancelarEdicion() {
     editandoId = null;
@@ -589,7 +621,7 @@ function calcularGradoYRenderizar() {
     renderTabla(areaTotal, gradoActual);
 }
 
-function renderTabla(areaTotal, gradoActual) {
+   function renderTabla(areaTotal, gradoActual) {
     areaTotal = areaTotal || parseFloat(document.getElementById('ui-sla').innerText) || 0;
     gradoActual = gradoActual || document.getElementById('ui-grado').innerText;
 
@@ -618,10 +650,24 @@ function renderTabla(areaTotal, gradoActual) {
     listaAmbientes.forEach(i => {
         let celdasCircuitos = "";
         circuitos.forEach(c => {
-            let cant = 0; let desc = "";
+            let cant = 0; let descArr = [];
             if (i.circIUG === c.id) cant += i.bIUG;
             if (i.circTUG === c.id) cant += i.bTUG;
-            if (i.circESP === c.id) { cant += i.bESP; desc = i.descESP; }
+            
+            // Lógica Múltiples ESP
+            if (i.esps && i.esps.length > 0) {
+                i.esps.forEach(esp => {
+                    if (esp.circ === c.id) {
+                        cant += esp.bocas;
+                        if (esp.desc) descArr.push(esp.desc);
+                    }
+                });
+            } else if (i.circESP === c.id) { // Soporte a archivos/borradores viejos
+                cant += i.bESP;
+                if (i.descESP) descArr.push(i.descESP);
+            }
+            
+            let desc = descArr.join(', ');
             totalesBocas[c.id] += cant;
             let texto = cant > 0 ? cant : "-";
             if (desc && cant > 0) texto += `<br><small style="color:var(--ngc-text-faded);">${desc}</small>`;
@@ -734,8 +780,8 @@ function renderTabla(areaTotal, gradoActual) {
 
     tfoot.innerHTML = tfootStr;
     sincronizarVistaPreviaPDF(areaTotal, gradoActual, circuitoCS.dpms, sumElegido, totalesBocas, todosLosCircuitos);
-        }
-                              
+   }
+                                
 
 // ==========================================
 // VISTA PREVIA Y PDF
@@ -787,10 +833,19 @@ function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, 
     listaAmbientes.forEach(i => {
         let celdas = "";
         circuitos.forEach(c => {
-            let cant = 0; let desc = "";
+            let cant = 0; let descArr = [];
             if (i.circIUG === c.id) cant += i.bIUG;
             if (i.circTUG === c.id) cant += i.bTUG;
-            if (i.circESP === c.id) { cant += i.bESP; desc = i.descESP; }
+            
+            if (i.esps && i.esps.length > 0) {
+                i.esps.forEach(esp => {
+                    if (esp.circ === c.id) { cant += esp.bocas; if (esp.desc) descArr.push(esp.desc); }
+                });
+            } else if (i.circESP === c.id) {
+                cant += i.bESP; if (i.descESP) descArr.push(i.descESP);
+            }
+            
+            let desc = descArr.join(', ');
             let txt = cant > 0 ? cant : "-";
             if (desc && cant > 0) txt += `<br><span style="font-size:7px;">${desc}</span>`;
             celdas += `<td>${txt}</td>`;
@@ -825,7 +880,8 @@ function sincronizarVistaPreviaPDF(areaTotal, grado, dpmsPonderado, suministro, 
     document.getElementById('pdf-grado-val').innerText = grado;
     document.getElementById('pdf-dpms-val').innerText = `${dpmsPonderado.toFixed(2)} VA`;
     document.getElementById('pdf-sum-val').innerText = suministro;
-}
+                }
+                           
 
 // ==========================================
 // CONTROL DEL MENÚ AGRUPADOR "ACCIONES"
