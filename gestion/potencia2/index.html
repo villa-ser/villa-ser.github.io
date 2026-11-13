@@ -123,35 +123,63 @@
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; background: rgba(var(--ngc-neon-rgb), 0.05); padding: 12px; border-radius: 8px; border: 1px dashed rgba(var(--ngc-neon-rgb), 0.3);">
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas IUG</label>
-                            <input type="number" id="bocasIUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <details id="detCircuitoIUG" class="corp-custom-select" style="margin-top:5px;">
-                                <summary id="sumCircuitoIUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
-                                <div id="listCircuitoIUG" class="corp-select-list"></div>
-                            </details>
-                            <input type="hidden" id="circuitoIUG" value="">
-                        </div>
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas TUG</label>
-                            <input type="number" id="bocasTUG" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <details id="detCircuitoTUG" class="corp-custom-select" style="margin-top:5px;">
-                                <summary id="sumCircuitoTUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
-                                <div id="listCircuitoTUG" class="corp-select-list"></div>
-                            </details>
-                            <input type="hidden" id="circuitoTUG" value="">
-                        </div>
-                        <div>
-                            <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px;">Bocas ESP</label>
-                            <input type="number" id="bocasESP" class="corp-input" placeholder="Cant" min="0" value="0" style="padding: 8px; font-size: 0.85rem; text-align: center;">
-                            <details id="detCircuitoESP" class="corp-custom-select" style="margin-top:5px;">
-                                <summary id="sumCircuitoESP" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
-                                <div id="listCircuitoESP" class="corp-select-list"></div>
-                            </details>
-                            <input type="hidden" id="circuitoESP" value="">
-                            <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
-                        </div>
+    
+    <!-- BLOQUE IUG -->
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px; text-align: center; display: block;">Bocas IUG</label>
+        
+        <!-- Nuevo Stepper IUG -->
+        <div class="corp-stepper" style="height: 38px; border-radius: 6px;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasIUG', -1)">-</button>
+            <input type="number" id="bocasIUG" class="corp-input-step" value="0" min="0" readonly style="font-size: 0.95rem;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasIUG', 1)">+</button>
+        </div>
+        
+        <details id="detCircuitoIUG" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoIUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoIUG" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoIUG" value="">
+    </div>
+    
+    <!-- BLOQUE TUG -->
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px; text-align: center; display: block;">Bocas TUG</label>
+        
+        <!-- Nuevo Stepper TUG -->
+        <div class="corp-stepper" style="height: 38px; border-radius: 6px;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasTUG', -1)">-</button>
+            <input type="number" id="bocasTUG" class="corp-input-step" value="0" min="0" readonly style="font-size: 0.95rem;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasTUG', 1)">+</button>
+        </div>
+        
+        <details id="detCircuitoTUG" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoTUG" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoTUG" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoTUG" value="">
+    </div>
+    
+    <!-- BLOQUE ESP -->
+    <div>
+        <label style="font-size:0.65rem; color:var(--ngc-neon); margin-bottom:4px; text-align: center; display: block;">Bocas ESP</label>
+        
+        <!-- Nuevo Stepper ESP -->
+        <div class="corp-stepper" style="height: 38px; border-radius: 6px;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasESP', -1)">-</button>
+            <input type="number" id="bocasESP" class="corp-input-step" value="0" min="0" readonly style="font-size: 0.95rem;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning);" onclick="stepBocas('bocasESP', 1)">+</button>
+        </div>
+        
+        <details id="detCircuitoESP" class="corp-custom-select" style="margin-top:5px;">
+            <summary id="sumCircuitoESP" class="corp-input" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div id="listCircuitoESP" class="corp-select-list"></div>
+        </details>
+        <input type="hidden" id="circuitoESP" value="">
+        <input type="text" id="descESP" class="corp-input" placeholder="Ej: AA" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+    </div>
                     </div>
+                    
 
                     <button id="btnGuardarAmbiente" class="corp-btn success-btn" onclick="guardarAmbiente()">
                         <i class="fa-solid fa-plus"></i> Agregar Ambiente
