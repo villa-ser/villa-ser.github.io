@@ -897,60 +897,142 @@ function toggleAccionesMenu() {
 }
 
 // ==========================================
-// VISTA PREVIA Y ZOOM INTELIGENTE
+// VISTA PREVIA Y ZOOM INTELIGENTE (AISLADO)
 // ==========================================
+let escalaBasePreview = 1;
+let escalaActualPreview = 1;
+let anchoRealA4 = 794;
+let altoRealA4 = 1123;
+let zoomListenersInicializados = false;
+
+function aplicarEscalaVistaPrevia(nuevaEscala) {
+    const element = document.getElementById('plantilla-pdf');
+    const pdfContainer = element ? element.querySelector('.pdf-container') : null;
+    if (!element || !pdfContainer) return;
+
+    escalaActualPreview = Math.max(escalaBasePreview, Math.min(2.5, nuevaEscala));
+    pdfContainer.style.transformOrigin = 'top left';
+    pdfContainer.style.transform = `scale(${escalaActualPreview})`;
+    element.style.width = `${anchoRealA4 * escalaActualPreview}px`;
+    element.style.height = `${altoRealA4 * escalaActualPreview}px`;
+}
+
+function inicializarZoomVistaPrevia() {
+    if (zoomListenersInicializados) return;
+    const wrapper = document.getElementById('previewWrapper');
+    if (!wrapper) return;
+
+    let distInicial = 0;
+    let escalaInicialPellizco = 1;
+
+    wrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            distInicial = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            escalaInicialPellizco = escalaActualPreview;
+        }
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && distInicial > 0) {
+            e.preventDefault();
+            const rect = wrapper.getBoundingClientRect();
+            const centroX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const centroY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            const puntoX = centroX - rect.left + wrapper.scrollLeft;
+            const puntoY = centroY - rect.top + wrapper.scrollTop;
+            const escalaPrevia = escalaActualPreview;
+
+            const distActual = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            aplicarEscalaVistaPrevia(escalaInicialPellizco * (distActual / distInicial));
+
+            const factorCambio = escalaActualPreview / escalaPrevia;
+            wrapper.scrollLeft = (puntoX * factorCambio) - (centroX - rect.left);
+            wrapper.scrollTop = (puntoY * factorCambio) - (centroY - rect.top);
+        }
+    }, { passive: false });
+
+    wrapper.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) {
+            distInicial = 0;
+        }
+    }, { passive: true });
+
+    zoomListenersInicializados = true;
+}
+
 function abrirVistaPrevia() {
     if (listaAmbientes.length === 0) {
         mostrarAlertaCorp("Sin Contenido", "Cargá ambientes antes de ver la vista previa.");
         return;
     }
-    
-    // 1. Habilitar zoom táctil (efecto pinza) exclusivamente en la vista previa
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes");
-    }
-    
-    // 2. Sincronizar datos frescos en el PDF
-    calcularGradoYRenderizar(); 
-    
-    // 3. Mover la plantilla A4 al Modal Fullscreen y limpiar cualquier escala anterior
-    const element = document.getElementById('plantilla-pdf');
+
+    // 1. Sincronizar datos frescos en el PDF
+    calcularGradoYRenderizar();
+
+    const modal = document.getElementById('modalVistaPrevia');
     const previewWrapper = document.getElementById('previewWrapper');
-    previewWrapper.scrollTop = 0;
-    element.style.transform = 'none';
-    element.style.zoom = '1';
-    element.style.display = 'block';
+    const element = document.getElementById('plantilla-pdf');
+    const pdfContainer = element.querySelector('.pdf-container');
+
+    // 2. Mostrar modal y preparar contenedor de la hoja A4
+    modal.classList.remove('oculto');
+    document.body.style.overflow = 'hidden';
+
+    element.style.display = 'inline-block';
+    element.style.textAlign = 'left';
+    element.style.position = 'relative';
+    element.style.overflow = 'hidden';
+    element.style.boxShadow = '0 8px 25px rgba(0,0,0,0.4)';
     previewWrapper.appendChild(element);
-    
-    // 4. Abrir modal
-    document.getElementById('modalVistaPrevia').classList.remove('oculto');
+
+    // 3. Medir dimensiones reales de la hoja A4 y ajustar al 100% del ancho de pantalla
+    if (pdfContainer) {
+        pdfContainer.style.transform = 'none';
+        anchoRealA4 = pdfContainer.offsetWidth || 794;
+        altoRealA4 = pdfContainer.offsetHeight || 1123;
+    }
+
+    const anchoDisponible = Math.max(280, previewWrapper.clientWidth - 24);
+    escalaBasePreview = Math.min(1, anchoDisponible / anchoRealA4);
+    aplicarEscalaVistaPrevia(escalaBasePreview);
+
+    previewWrapper.scrollTop = 0;
+    previewWrapper.scrollLeft = 0;
+    inicializarZoomVistaPrevia();
 }
 
 function cerrarVistaPrevia() {
-    // 1. Ocultar el modal de inmediato para quitar el contenedor táctil
-    const modal = document.getElementById('modalVistaPrevia');
-    modal.classList.add('oculto');
+    // 1. Ocultar modal y restaurar scroll de la app
+    document.getElementById('modalVistaPrevia').classList.add('oculto');
+    document.body.style.overflow = '';
 
-    // 2. Limpiar escalas, zóOM o transformaciones de la plantilla PDF
+    // 2. Limpiar escalas y estilos temporales de la vista previa
     const element = document.getElementById('plantilla-pdf');
-    element.style.transform = '';
-    element.style.zoom = '';
-    
-    // 3. Devolver A4 a su panel original (para PC)
-    const originalContainer = document.querySelector('.preview-panel');
-    if(originalContainer) originalContainer.appendChild(element);
-    
-    if (window.innerWidth < 992) element.style.display = 'none';
-    
-    // 4. Restaurar bloqueo antizoom nativo de la PWA y forzar reinicio de escala en el navegador
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
+    const pdfContainer = element ? element.querySelector('.pdf-container') : null;
+    if (pdfContainer) {
+        pdfContainer.style.transform = '';
+        pdfContainer.style.transformOrigin = '';
     }
-    
-    // 5. Forzar la ventana principal a su posición inicial normal
-    window.scrollTo(0, 0);
+
+    element.style.width = '';
+    element.style.height = '';
+    element.style.display = '';
+    element.style.textAlign = '';
+    element.style.position = '';
+    element.style.overflow = '';
+    element.style.boxShadow = '';
+
+    // 3. Devolver A4 a su panel original (PC)
+    const originalContainer = document.querySelector('.preview-panel');
+    if (originalContainer) originalContainer.appendChild(element);
+
+    if (window.innerWidth < 992) element.style.display = 'none';
 }
 
 // ==========================================
@@ -969,10 +1051,17 @@ async function generarPDF() {
     }
     
     const element = document.getElementById('plantilla-pdf');
+    const pdfContainer = element ? element.querySelector('.pdf-container') : null;
+    const modalAbierto = !document.getElementById('modalVistaPrevia').classList.contains('oculto');
     
-    if (document.getElementById('modalVistaPrevia').classList.contains('oculto')) {
+    if (!modalAbierto) {
         element.style.display = 'block'; 
         window.scrollTo(0, 0); 
+    } else if (pdfContainer) {
+        // Quitar escala temporalmente para generar el PDF en tamaño A4 completo
+        pdfContainer.style.transform = 'none';
+        element.style.width = '';
+        element.style.height = '';
     }
 
     const marcaAgua = document.getElementById('marcaAguaPDF');
@@ -999,11 +1088,14 @@ async function generarPDF() {
     finally { 
         if (marcaAgua) marcaAgua.style.display = 'flex';
         
-        if (window.innerWidth < 992 && document.getElementById('modalVistaPrevia').classList.contains('oculto')) { 
+        if (modalAbierto) {
+            aplicarEscalaVistaPrevia(escalaActualPreview);
+        } else if (window.innerWidth < 992) { 
             element.style.display = 'none'; 
         } 
     }
 }
+
 
 // ==========================================
 // WHATSAPP (INTEGRACIÓN GLOBAL)
