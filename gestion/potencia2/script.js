@@ -21,6 +21,69 @@ function stepBocas(id, val) {
     el.value = Math.max(0, newValue);
 }
 
+function stepBocasDinamico(btn, val) {
+    const input = btn.parentElement.querySelector('input');
+    let newValue = parseInt(input.value || 0) + val;
+    input.value = Math.max(0, newValue);
+}
+
+function agregarBocaESP() {
+    const container = document.getElementById('contenedor-esps');
+    const newItem = document.createElement('div');
+    newItem.className = 'esp-item';
+    newItem.style.position = 'relative';
+    newItem.style.marginTop = '10px';
+    newItem.style.paddingTop = '10px';
+    newItem.style.borderTop = '1px dashed rgba(var(--ngc-neon-rgb), 0.3)';
+    
+    // Agrega el botón X rojo (eliminar)
+    newItem.innerHTML = `
+        <button onclick="this.parentElement.remove()" style="position:absolute; top: 12px; right: -5px; background: transparent; border: none; color: var(--error-red); font-size: 0.8rem; cursor: pointer; z-index: 10;"><i class="fa-solid fa-xmark"></i></button>
+        <div class="corp-stepper" style="height: 38px; border-radius: 6px; display: flex; width: 100%; box-sizing: border-box;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, -1)">-</button>
+            <input type="number" class="corp-input-step bocas-esp-input" value="0" min="0" readonly style="font-size: 0.95rem; flex: 1; width: 100%; text-align: center; border: none; background: transparent; color: inherit; padding: 0;">
+            <button class="btn-step" style="width: 35px; font-size: 1.1rem; color: var(--ngc-warning); flex-shrink: 0;" onclick="stepBocasDinamico(this, 1)">+</button>
+        </div>
+        <details class="corp-custom-select det-circuito-esp" style="margin-top:5px;">
+            <summary class="corp-input sum-circuito-esp" style="font-size:0.75rem; padding: 6px;">-- Circ --</summary>
+            <div class="corp-select-list list-circuito-esp"></div>
+        </details>
+        <input type="hidden" class="circuito-esp-input" value="">
+        <input type="text" class="corp-input desc-esp-input" placeholder="Ej: Calefactor" style="margin-top:5px; font-size:0.75rem; padding: 6px; text-align: center;">
+    `;
+    container.appendChild(newItem);
+    poblarAcordeonCircuitoElement(newItem);
+}
+
+function poblarAcordeonCircuitoElement(parentItem) {
+    const hiddenInput = parentItem.querySelector('.circuito-esp-input');
+    const summary = parentItem.querySelector('.sum-circuito-esp');
+    const list = parentItem.querySelector('.list-circuito-esp');
+    const details = parentItem.querySelector('.det-circuito-esp');
+    if(!list || !hiddenInput) return;
+    
+    let valActual = hiddenInput.value;
+    list.innerHTML = '';
+    
+    const optVacia = document.createElement('div');
+    optVacia.className = 'corp-select-option';
+    optVacia.innerText = '-- Circ --';
+    optVacia.onclick = () => { hiddenInput.value = ''; summary.innerText = '-- Circ --'; details.removeAttribute('open'); };
+    list.appendChild(optVacia);
+
+    let existe = false;
+    circuitos.forEach(c => {
+        if (c.id === valActual) existe = true;
+        const opt = document.createElement('div');
+        opt.className = 'corp-select-option';
+        opt.innerText = `${c.id} (${c.tipo})`;
+        opt.onclick = () => { hiddenInput.value = c.id; summary.innerText = `${c.id} (${c.tipo})`; details.removeAttribute('open'); };
+        list.appendChild(opt);
+    });
+
+    if (valActual && !existe) { hiddenInput.value = ''; summary.innerText = '-- Circ --'; }
+}
+
 // MAPA DE CÁLCULO AEA
 const MAPA_IZ = { "1.5": 15, "2.5": 21, "4": 28, "6": 36, "10": 50, "16": 66 };
 
