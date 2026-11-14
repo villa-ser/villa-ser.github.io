@@ -671,51 +671,165 @@ function sincronizarVistaPreviaPDF() {
 // ==========================================
 // VISTA PREVIA MÓVIL Y DESCARGA DE PDF
 // ==========================================
+let vpScale = 1;
+let vpPanX = 0;
+let vpPanY = 0;
+let vpGestosIniciados = false;
+
+function actualizarTransformVistaPrevia() {
+    const area = document.getElementById('areaScrollVistaPrevia');
+    const contenedor = document.getElementById('contenedorVistaPreviaMobile');
+    if (!area || !contenedor) return;
+
+    const maxPanX = Math.max(0, (area.clientWidth * (vpScale - 1)) / 2 + 30);
+    vpPanX = Math.min(maxPanX, Math.max(-maxPanX, vpPanX));
+
+    const altoContenido = contenedor.offsetHeight * vpScale;
+    const altoVisible = area.clientHeight - 40;
+    if (altoContenido <= altoVisible) {
+        vpPanY = Math.min(30, Math.max(-30, vpPanY));
+    } else {
+        const minPanY = -(altoContenido - altoVisible) - 20;
+        vpPanY = Math.min(20, Math.max(minPanY, vpPanY));
+    }
+
+    contenedor.style.transform = `translate3d(${vpPanX}px, ${vpPanY}px, 0) scale(${vpScale})`;
+}
+
+function inicializarGestosVistaPrevia() {
+    if (vpGestosIniciados) return;
+    const area = document.getElementById('areaScrollVistaPrevia');
+    if (!area) return;
+    vpGestosIniciados = true;
+
+    let distInicial = 0;
+    let scaleInicial = 1;
+    let lastX = 0;
+    let lastY = 0;
+    let arrastrando = false;
+    let ultimoTap = 0;
+
+    const distanciaToques = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+
+    area.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            arrastrando = false;
+            distInicial = distanciaToques(e.touches);
+            scaleInicial = vpScale;
+        } else if (e.touches.length === 1) {
+            arrastrando = true;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+
+            // Doble toque para alternar zoom 1x / 2.2x
+            const ahora = Date.now();
+            if (ahora - ultimoTap < 280) {
+                if (vpScale > 1.1) {
+                    vpScale = 1;
+                    vpPanX = 0;
+                    vpPanY = 0;
+                } else {
+                    const rect = area.getBoundingClientRect();
+                    const dx = e.touches[0].clientX - rect.left - rect.width / 2;
+                    const dy = e.touches[0].clientY - rect.top - 20;
+                    vpScale = 2.2;
+                    vpPanX = dx - dx * vpScale;
+                    vpPanY = dy - dy * vpScale;
+                }
+                actualizarTransformVistaPrevia();
+            }
+            ultimoTap = ahora;
+        }
+    }, { passive: true });
+
+    area.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && distInicial > 0) {
+            e.preventDefault();
+            const distActual = distanciaToques(e.touches);
+            const nuevoScale = Math.min(3.5, Math.max(1, scaleInicial * (distActual / distInicial)));
+
+            const rect = area.getBoundingClientRect();
+            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            const dx = midX - rect.left - rect.width / 2;
+            const dy = midY - rect.top - 20;
+
+            const factor = nuevoScale / vpScale;
+            vpPanX = dx - (dx - vpPanX) * factor;
+            vpPanY = dy - (dy - vpPanY) * factor;
+            vpScale = nuevoScale;
+
+            if (vpScale === 1) vpPanX = 0;
+            actualizarTransformVistaPrevia();
+        } else if (e.touches.length === 1 && arrastrando) {
+            e.preventDefault();
+            const cx = e.touches[0].clientX;
+            const cy = e.touches[0].clientY;
+            if (vpScale > 1) vpPanX += cx - lastX;
+            vpPanY += cy - lastY;
+            lastX = cx;
+            lastY = cy;
+            actualizarTransformVistaPrevia();
+        }
+    }, { passive: false });
+
+    area.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) distInicial = 0;
+        if (e.touches.length === 1) {
+            arrastrando = true;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+        } else if (e.touches.length === 0) {
+            arrastrando = false;
+        }
+    }, { passive: true });
+}
+
 function abrirVistaPreviaMobile() {
     if (listaItems.length === 0) {
         mostrarAlertaCorp("Faltan Trabajos", "Agregá trabajos para ver la vista previa.");
         return;
     }
-    sincronizarVistaPreviaPDF(); 
-    
+    sincronizarVistaPreviaPDF();
+    inicializarGestosVistaPrevia();
+
     const plantilla = document.getElementById('plantilla-pdf');
     const contenedor = document.getElementById('contenedorVistaPreviaMobile');
-    
+
+    vpScale = 1;
+    vpPanX = 0;
+    vpPanY = 0;
+    contenedor.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
+
     contenedor.appendChild(plantilla);
-    plantilla.style.display = 'block'; 
-    
-    // --- NUEVO: Habilitar zoom (pinza) solo para la vista previa ---
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content');
-    }
-    
-    // Calcula la escala inicial para que entre en la pantalla
-    const scale = (window.innerWidth - 20) / 800; 
+    plantilla.style.display = 'block';
+
+    // Ajusta el ancho A4 (800px) al ancho del teléfono
+    const scale = (window.innerWidth - 20) / 800;
     plantilla.style.zoom = scale < 1 ? scale : 1;
-    
+
     document.getElementById('modalVistaPrevia').classList.remove('oculto');
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
 }
 
 function cerrarVistaPrevia() {
     const plantilla = document.getElementById('plantilla-pdf');
+    const contenedor = document.getElementById('contenedorVistaPreviaMobile');
     const aside = document.querySelector('.preview-panel');
-    
-    // --- NUEVO: Restaurar bloqueo de zoom para proteger el resto de la app ---
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (metaViewport) {
-        metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-    }
+
+    vpScale = 1;
+    vpPanX = 0;
+    vpPanY = 0;
+    if (contenedor) contenedor.style.transform = '';
 
     plantilla.style.zoom = '';
-    plantilla.style.display = ''; 
-    
+    plantilla.style.display = '';
+
     aside.appendChild(plantilla);
-    
+
     document.getElementById('modalVistaPrevia').classList.add('oculto');
     document.body.style.overflow = '';
-}
+        }
 
 function generarPDF() {
     if (listaItems.length === 0) {
