@@ -442,9 +442,6 @@ function ejecutarBusqueda() {
         card.style.cursor = "pointer";
         card.style.padding = "20px";
 
-        const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
-        const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
-
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                 <div style="flex: 1; padding-right: 15px;">
@@ -466,7 +463,7 @@ function ejecutarBusqueda() {
                     <span style="color: var(--ngc-text-faded); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Notas Aclaratorias / Condiciones</span><br> 
                     <span style="color: var(--ngc-text-main); display: block; margin-top: 3px; white-space: pre-wrap;">${item.observaciones ? item.observaciones : "Sin notas aclaratorias adicionales para este concepto."}</span>
                 </div>
-                <div style="display: flex; gap: 15px; margin-bottom: 18px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 0;">
                     <div style="flex: 1; font-size: 0.85rem;">
                         <span style="color: var(--ngc-text-faded); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Fuente Info</span><br> 
                         <span style="color: var(--ngc-text-main); display: block; margin-top: 3px;">${item.organizacion}</span>
@@ -476,16 +473,10 @@ function ejecutarBusqueda() {
                         <span style="color: var(--ngc-text-main); display: block; margin-top: 3px;">${item.tema}</span>
                     </div>
                 </div>
-                
-                <a href="${urlWp}" target="_blank" class="corp-btn success-btn btn-whatsapp" style="width: 100%;">
-                    <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar Viabilidad
-                </a>
             </div>
         `;
 
-        card.addEventListener("click", (e) => {
-            if (e.target.closest('.btn-whatsapp')) return;
-            
+        card.addEventListener("click", () => {
             card.classList.toggle("active");
             
             const details = card.querySelector('.result-details');
