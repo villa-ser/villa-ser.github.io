@@ -127,7 +127,7 @@ const rutas = {
     'btnAgenda': './agenda/index.html',
     'btnProveedores': './proveedores/index.html',
     'btnPresupuesto2': './presupuesto2/index.html',
-    'btnNuevoCliente': './nuevo_cliente/index.html',
+    'btnCalculadora': './leyescalc/index.html',
     'btnCatalogos': './catalogos/index.html',
     'btnFotos': './fotos/index.html',
     'btnPresupuestoPC': './presupuestoPC/index.html',
