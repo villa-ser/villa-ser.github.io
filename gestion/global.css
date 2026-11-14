@@ -545,3 +545,201 @@ details[open] summary .acc-icon-indicator {
         stroke-dashoffset: -14; /* Mueve los segmentos hacia adelante */
     }
 }
+
+/* ============================================================== */
+/* ESTILOS PARA CALCULADORAS ELÉCTRICAS UNIFICADAS                */
+/* ============================================================== */
+
+.nav-calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.nav-calc-btn {
+    padding: 10px 4px;
+    font-size: 0.72rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 8px;
+}
+
+.nav-calc-btn i {
+    font-size: 1rem;
+}
+
+.modo-activo { 
+    background: rgba(35, 116, 225, 0.14) !important; 
+    color: var(--ngc-neon) !important; 
+    border: 1px solid var(--ngc-neon) !important; 
+}
+
+.calc-box {
+    background: var(--ngc-bg-input);
+    border: 1px solid var(--ngc-privacy-border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+    user-select: none;
+}
+
+.calc-box.active {
+    border-color: var(--ngc-neon);
+    background: rgba(35, 116, 225, 0.12);
+    box-shadow: 0 0 0 2px rgba(35, 116, 225, 0.18);
+}
+
+.calc-box.solved {
+    border-color: var(--success-green);
+    box-shadow: 0 0 0 2px rgba(49, 162, 76, 0.18);
+}
+
+.calc-box label {
+    margin: 0;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.calc-val {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ngc-text-main);
+    display: block;
+    margin-top: 3px;
+    min-height: 1.3rem;
+}
+
+.sub-active {
+    color: var(--ngc-neon) !important;
+    text-decoration: underline;
+}
+
+.results-banner {
+    background: var(--ngc-bg-input);
+    padding: 12px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--ngc-privacy-border);
+    text-align: center;
+}
+
+.formula-box {
+    background: var(--ngc-bg-input);
+    border: 1px dashed var(--ngc-privacy-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    color: var(--ngc-text-main);
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.formula-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ngc-neon);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.circuits-list {
+    max-height: 135px;
+    overflow-y: auto;
+    background: var(--ngc-bg-input);
+    border: 1px solid var(--ngc-privacy-border);
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.circuit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 2px;
+    border-bottom: 1px solid var(--ngc-privacy-border);
+    font-size: 0.82rem;
+}
+
+.circuit-item:last-child {
+    border-bottom: none;
+}
+
+.tag-cab, .tag-pia {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+.tag-cab {
+    background: rgba(245, 195, 59, 0.18);
+    color: var(--ngc-warning);
+    border: 1px solid var(--ngc-warning);
+}
+
+.tag-pia {
+    background: rgba(35, 116, 225, 0.18);
+    color: var(--ngc-neon);
+    border: 1px solid var(--ngc-neon);
+}
+
+.ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.74rem;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.ref-table th, .ref-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--ngc-privacy-border);
+}
+
+.ref-table th {
+    color: var(--ngc-text-faded);
+}
+
+.teclado-grid {
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 8px; 
+    margin-top: 4px;
+}
+
+.teclado-grid .corp-btn {
+    padding: 15px 10px;
+    font-size: 1.15rem;
+}
+
+.export-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.export-actions .corp-btn {
+    flex: 1;
+    font-size: 0.78rem;
+    padding: 10px 8px;
+}
+
+.sub-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.sub-cat-grid.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sub-cat-grid.cols-1 {
+    grid-template-columns: 1fr;
+}
