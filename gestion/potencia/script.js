@@ -1340,9 +1340,9 @@ function generarMenuInferior() {
         { nombre: 'Potencia', icon: 'fa-bolt', url: '#', active: true },
         { nombre: 'Agenda', icon: 'fa-address-book', url: '../agenda/index.html' },
         { nombre: 'Mano de Obra', icon: 'fa-hand-holding-dollar', url: '../costos/index.html' },
-        { nombre: 'Calculadora', icon: 'fa-solid fa-calculator', url: '../leyescalc/index.html' },
-        { nombre: 'Proveedores', icon: 'fa-solid fa-truck-fast', url: '../proveedores/index.html' },
-        { nombre: 'Catalogos', icon: 'fa-solid fa-book-open', url: '../catalogos/index.html' }
+        { nombre: 'Calculadora', icon: 'fa-calculator', url: '../leyescalc/index.html' },
+        { nombre: 'Proveedores', icon: 'fa-truck-fast', url: '../proveedores/index.html' },
+        { nombre: 'Catalogos', icon: 'fa-book-open', url: '../catalogos/index.html' }
     ];
     
     modulos.forEach(mod => {
@@ -1351,6 +1351,16 @@ function generarMenuInferior() {
         btn.innerHTML = `<i class="fa-solid ${mod.icon}"></i><span>${mod.nombre}</span>`;
         btn.onclick = () => { if(!mod.active) window.location.href = mod.url; };
         footer.appendChild(btn);
+    });
+
+        // Centra automáticamente el botón activo en la vista
+    requestAnimationFrame(() => {
+        const btnActivo = footer.querySelector('.corp-nav-item.active');
+        if (btnActivo) {
+            const footerRect = footer.getBoundingClientRect();
+            const btnRect = btnActivo.getBoundingClientRect();
+            footer.scrollLeft += (btnRect.left - footerRect.left) - (footerRect.width / 2) + (btnRect.width / 2);
+        }
     });
 }
 
