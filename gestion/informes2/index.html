@@ -103,29 +103,40 @@
             <!-- SECCIÓN TRABAJO -->
             <section id="step-trabajo" class="oculto flex-column gap-15">
                 
-                                <div class="corp-card gpu-accel">
+                        <div class="corp-card gpu-accel">
                     <h4 class="corp-card-title"><i class="fa-solid fa-pen-to-square corp-accent-color"></i> Redacción</h4>
                     <div class="row-group">
-                        <textarea id="textoInforme" class="corp-input" placeholder="Redactar texto aquí..." style="height: 100px; resize: vertical;"></textarea>
+                        <textarea id="textoInforme" class="corp-input" placeholder="Redactar texto aquí..." style="height: 110px; resize: vertical;"></textarea>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px;">
-                        <button type="button" class="corp-btn" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.12);" onclick="agregarBloque('titulo')">
-                            <i class="fa-solid fa-heading"></i> Título
-                        </button>
-                        <button type="button" class="corp-btn" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.12);" onclick="agregarBloque('subtitulo')">
-                            <i class="fa-solid fa-t"></i> Subtítulo
-                        </button>
-                        <button type="button" class="corp-btn" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.12);" onclick="aplicarNegritaSeleccion()">
+                    <!-- Herramientas de formato sobre el texto -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+                        <button type="button" class="corp-btn" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.12); padding: 10px 6px; font-size: 0.85rem;" onclick="aplicarFormatoSeleccion('**')">
                             <i class="fa-solid fa-bold"></i> Negrita
                         </button>
-                        <button type="button" class="corp-btn success-btn" onclick="agregarBloque('parrafo')">
+                        <button type="button" class="corp-btn" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.12); padding: 10px 6px; font-size: 0.85rem;" onclick="aplicarFormatoSeleccion('*')">
+                            <i class="fa-solid fa-italic"></i> Cursiva
+                        </button>
+                        <button type="button" class="corp-btn" style="color: var(--ngc-warning); background: rgba(245, 195, 59, 0.12); padding: 10px 6px; font-size: 0.85rem;" onclick="aplicarVinetasSeleccion()">
+                            <i class="fa-solid fa-list-ul"></i> Viñetas
+                        </button>
+                    </div>
+
+                    <!-- Botones para insertar bloque al informe -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px;">
+                        <button type="button" class="corp-btn" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.12); padding: 10px 6px; font-size: 0.85rem;" onclick="agregarBloque('titulo')">
+                            <i class="fa-solid fa-heading"></i> Título
+                        </button>
+                        <button type="button" class="corp-btn" style="color: var(--ngc-neon); background: rgba(35, 116, 225, 0.12); padding: 10px 6px; font-size: 0.85rem;" onclick="agregarBloque('subtitulo')">
+                            <i class="fa-solid fa-t"></i> Subtítulo
+                        </button>
+                        <button type="button" class="corp-btn success-btn" style="padding: 10px 6px; font-size: 0.85rem;" onclick="agregarBloque('parrafo')">
                             <i class="fa-solid fa-paragraph"></i> Párrafo
                         </button>
                     </div>
                     
                     <div id="lista-parrafos" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
-                                </div>
+                        </div>
                 
 
                 <!-- NOTAS GLOBALES NORMALIZADAS -->
