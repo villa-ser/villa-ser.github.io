@@ -166,27 +166,184 @@ function mostrarToast(titulo, mensaje) {
 // ==========================================
 // FLUJO INFORME Y PÁRRAFOS
 // ==========================================
-function agregarParrafo() {
-    const texto = document.getElementById('textoInforme').value.trim();
-    if (!texto) {
-        mostrarAlertaCorp("Campo Vacío", "Escriba un párrafo antes de agregar.");
+function normalizarBloqueInforme(item) {
+    if (typeof item === 'string') {
+        return { tipo: 'parrafo', texto: item };
+    }
+    return {
+        tipo: item && item.tipo ? item.tipo : 'parrafo',
+        texto: item && item.texto ? item.texto : ''
+    };
+}
+
+function formatearTextoHTML(texto) {
+    const escapado = String(texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    return escapado
+        .replace(/\*\*\*([^\n]+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+        .replace(/\*\*([^\n]+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+}
+
+function renderizarBloqueHTML(item, esPDF = false) {
+    const bloque = normalizarBloqueInforme(item);
+    const contenido = formatearTextoHTML(bloque.texto);
+
+    if (bloque.tipo === 'titulo') {
+        const estilo = esPDF
+            ? 'text-align: center; font-size: 17px; font-weight: 700; margin: 4px 0 14px 0; text-indent: 0; color: #111;'
+            : 'text-align: center; font-size: 1.15rem; font-weight: 700; margin: 4px 0 12px 0; text-indent: 0;';
+        return `<div style="${estilo}">${contenido}</div>`;
+    }
+
+    if (bloque.tipo === 'subtitulo') {
+        const estilo = esPDF
+            ? 'text-align: left; font-size: 14.5px; font-weight: 700; margin: 12px 0 6px 0; text-indent: 0; color: #111;'
+            : 'text-align: left; font-size: 1rem; font-weight: 700; margin: 10px 0 6px 0; text-indent: 0;';
+        return `<div style="${estilo}">${contenido}</div>`;
+    }
+
+    const tieneVinetas = bloque.texto.split('\n').some(linea => linea.trim().startsWith('•'));
+    if (tieneVinetas) {
+        const padding = esPDF ? '14px' : '10px';
+        return `<div style="margin-bottom: 10px; text-indent: 0; padding-left: ${padding}; line-height: 1.55;">${contenido}</div>`;
+    }
+
+    const indent = esPDF ? '20px' : '15px';
+    return `<p style="margin-bottom: 10px; text-indent: ${indent};">${contenido}</p>`;
+}
+
+function aplicarFormatoSeleccion(marcador) {
+    const textarea = document.getElementById('textoInforme');
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const textoCompleto = textarea.value;
+    const len = marcador.length;
+
+    if (start === end) {
+        const nombreFormato = marcador === '**' ? 'negrita' : 'cursiva';
+        mostrarToast("Seleccioná texto", `Marcá primero las palabras para poner o quitar ${nombreFormato}.`);
+        textarea.focus();
         return;
     }
-    
-    informeParrafos.push(texto);
-    document.getElementById('textoInforme').value = "";
+
+    const seleccion = textoCompleto.slice(start, end);
+    const antes = textoCompleto.slice(0, start);
+    const despues = textoCompleto.slice(end);
+
+    const tieneInterno = marcador === '**'
+        ? (seleccion.startsWith('**') && seleccion.endsWith('**') && seleccion.length > 4)
+        : ((seleccion.startsWith('***') && seleccion.endsWith('***') && seleccion.length > 6) ||
+           (seleccion.startsWith('*') && !seleccion.startsWith('**') && seleccion.endsWith('*') && !seleccion.endsWith('**') && seleccion.length > 2));
+
+    if (tieneInterno) {
+        const sinFormato = seleccion.slice(len, -len);
+        textarea.value = antes + sinFormato + despues;
+        textarea.focus();
+        textarea.setSelectionRange(start, start + sinFormato.length);
+        return;
+    }
+
+    const tieneExterno = marcador === '**'
+        ? (antes.endsWith('**') && despues.startsWith('**'))
+        : ((antes.endsWith('***') && despues.startsWith('***')) ||
+           (antes.endsWith('*') && !antes.endsWith('**') && despues.startsWith('*') && !despues.endsWith('**')));
+
+    if (tieneExterno) {
+        textarea.value = antes.slice(0, -len) + seleccion + despues.slice(len);
+        textarea.focus();
+        textarea.setSelectionRange(start - len, end - len);
+        return;
+    }
+
+    textarea.value = `${antes}${marcador}${seleccion}${marcador}${despues}`;
+    textarea.focus();
+    textarea.setSelectionRange(start + len, end + len);
+}
+
+function aplicarNegritaSeleccion() {
+    aplicarFormatoSeleccion('**');
+}
+
+function aplicarVinetasSeleccion() {
+    const textarea = document.getElementById('textoInforme');
+    if (!textarea) return;
+
+    const texto = textarea.value;
+    if (!texto.trim()) {
+        textarea.value = '• ';
+        textarea.focus();
+        textarea.setSelectionRange(2, 2);
+        return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    const lineStart = texto.lastIndexOf('\n', start - 1) + 1;
+    const rawLineEnd = texto.indexOf('\n', end);
+    const lineEnd = rawLineEnd === -1 ? texto.length : rawLineEnd;
+
+    const bloqueLineas = texto.slice(lineStart, lineEnd);
+    const lineas = bloqueLineas.split('\n');
+    const todasConVineta = lineas.filter(l => l.trim() !== '').every(l => /^\s*•\s*/.test(l));
+
+    const nuevasLineas = lineas.map(linea => {
+        if (linea.trim() === '') return linea;
+        if (todasConVineta) {
+            return linea.replace(/^(\s*)•\s*/, '$1');
+        }
+        return /^\s*•\s*/.test(linea) ? linea : `• ${linea.trimStart()}`;
+    });
+
+    const reemplazo = nuevasLineas.join('\n');
+    textarea.value = texto.slice(0, lineStart) + reemplazo + texto.slice(lineEnd);
+    textarea.focus();
+    textarea.setSelectionRange(lineStart, lineStart + reemplazo.length);
+}
+
+function agregarBloque(tipo = 'parrafo') {
+    const textarea = document.getElementById('textoInforme');
+    const texto = textarea.value.trim();
+    if (!texto) {
+        mostrarAlertaCorp("Campo Vacío", "Escriba un texto antes de agregar.");
+        return;
+    }
+
+    informeParrafos.push({ tipo, texto });
+    textarea.value = "";
+    renderizarParrafos();
+}
+
+function agregarParrafo() {
+    agregarBloque('parrafo');
+}
+
+function moverBloque(index, direccion) {
+    const nuevoIndex = index + direccion;
+    if (nuevoIndex < 0 || nuevoIndex >= informeParrafos.length) return;
+
+    const temp = informeParrafos[index];
+    informeParrafos[index] = informeParrafos[nuevoIndex];
+    informeParrafos[nuevoIndex] = temp;
     renderizarParrafos();
 }
 
 function eliminarParrafo(index) {
-    if (confirm("¿Eliminar este párrafo?")) {
+    if (confirm("¿Eliminar este elemento?")) {
         informeParrafos.splice(index, 1);
         renderizarParrafos();
     }
 }
 
 function editarParrafo(index) {
-    document.getElementById('textoInforme').value = informeParrafos[index];
+    const bloque = normalizarBloqueInforme(informeParrafos[index]);
+    document.getElementById('textoInforme').value = bloque.texto;
     informeParrafos.splice(index, 1);
     renderizarParrafos();
     document.getElementById('textoInforme').focus();
@@ -195,21 +352,35 @@ function editarParrafo(index) {
 function renderizarParrafos() {
     const contenedor = document.getElementById('lista-parrafos');
     contenedor.innerHTML = '';
-    
-    informeParrafos.forEach((parrafo, index) => {
+
+    const etiquetas = {
+        titulo: 'TÍTULO',
+        subtitulo: 'SUBTÍTULO',
+        parrafo: 'PÁRRAFO'
+    };
+
+    informeParrafos.forEach((item, index) => {
+        const bloque = normalizarBloqueInforme(item);
+        const esPrimero = index === 0;
+        const esUltimo = index === informeParrafos.length - 1;
+
         const div = document.createElement('div');
         div.style.cssText = 'background: var(--ngc-bg-input); border: 1px solid var(--ngc-privacy-border); padding: 12px; border-radius: 8px; position: relative; font-size: 0.85rem; line-height: 1.5; color: var(--ngc-text-main);';
         div.innerHTML = `
-            <p>${parrafo}</p>
-            <div style="display: flex; gap: 10px; margin-top: 8px; justify-content: flex-end;">
-                <button onclick="editarParrafo(${index})" style="background: transparent; border: none; color: #ff9800; cursor: pointer;"><i class="fa-solid fa-pen"></i></button>
-                <button onclick="eliminarParrafo(${index})" style="background: transparent; border: none; color: var(--error-red); cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+            <div style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; color: var(--ngc-neon); margin-bottom: 4px;">${etiquetas[bloque.tipo] || 'PÁRRAFO'}</div>
+            ${renderizarBloqueHTML(bloque, false)}
+            <div style="display: flex; gap: 12px; margin-top: 8px; justify-content: flex-end; align-items: center;">
+                <button type="button" onclick="moverBloque(${index}, -1)" ${esPrimero ? 'disabled' : ''} title="Subir" style="background: transparent; border: none; color: var(--ngc-neon); cursor: pointer; opacity: ${esPrimero ? '0.3' : '1'}; padding: 4px;"><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" onclick="moverBloque(${index}, 1)" ${esUltimo ? 'disabled' : ''} title="Bajar" style="background: transparent; border: none; color: var(--ngc-neon); cursor: pointer; opacity: ${esUltimo ? '0.3' : '1'}; padding: 4px;"><i class="fa-solid fa-arrow-down"></i></button>
+                <button type="button" onclick="editarParrafo(${index})" title="Editar" style="background: transparent; border: none; color: #ff9800; cursor: pointer; padding: 4px;"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" onclick="eliminarParrafo(${index})" title="Eliminar" style="background: transparent; border: none; color: var(--error-red); cursor: pointer; padding: 4px;"><i class="fa-solid fa-trash"></i></button>
             </div>
         `;
         contenedor.appendChild(div);
     });
     actualizarVistaPreviews();
-}
+    }
+
 
 // ==========================================
 // NUEVO MENÚ ACCIONES AGRUPADAS
@@ -230,7 +401,7 @@ function actualizarVistaPreviews() {
     infoClientArea.innerHTML = `<strong>Cliente:</strong> ${cliNombre}<br><strong>Dirección:</strong> ${cliDir}<br><strong>Proyecto:</strong> ${cliProyecto}`;
     
     const previewArea = document.getElementById('previewInforme');
-    previewArea.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 15px;">${p}</p>`).join('');
+    previewArea.innerHTML = informeParrafos.map(p => renderizarBloqueHTML(p, false)).join('');
 
     const og = document.getElementById('obsGenerales').value;
     const previewGlobales = document.getElementById('previewNotasGlobales');
@@ -253,7 +424,7 @@ function actualizarVistaPreviews() {
     if(pdfCliente) pdfCliente.innerText = cliNombre;
     if(pdfDir) pdfDir.innerText = cliDir;
     if(pdfProyecto) pdfProyecto.innerText = cliProyecto;
-    if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => `<p style="margin-bottom: 10px; text-indent: 20px;">${p}</p>`).join('');
+    if(pdfTexto) pdfTexto.innerHTML = informeParrafos.map(p => renderizarBloqueHTML(p, true)).join('');
 
     if (og && pdfNotasBox && pdfNotas) {
         pdfNotas.innerText = og;
@@ -476,7 +647,21 @@ function prepararEnvioWhatsApp() {
     msg += `*Cliente:* ${document.getElementById('cliNombre').value || 'Sin Nombre'}\n`;
     msg += `*Proyecto:* ${document.getElementById('cliProyecto').value || '-'}\n\n`;
     
-    informeParrafos.forEach(p => msg += `${p}\n\n`);
+    informeParrafos.forEach(item => {
+        const bloque = normalizarBloqueInforme(item);
+        const textoWsp = bloque.texto
+            .replace(/\*\*\*([^\n]+?)\*\*\*/g, '*_$1_*')
+            .replace(/\*\*([^\n]+?)\*\*/g, '*$1*')
+            .replace(/\*([^*\n]+?)\*/g, '_$1_');
+
+        if (bloque.tipo === 'titulo') {
+            msg += `*${textoWsp.toUpperCase()}*\n\n`;
+        } else if (bloque.tipo === 'subtitulo') {
+            msg += `*${textoWsp}*\n`;
+        } else {
+            msg += `${textoWsp}\n\n`;
+        }
+    });
     
     const og = document.getElementById('obsGenerales').value;
     if (og) msg += `*NOTAS GLOBALES:*\n${og}\n`;
