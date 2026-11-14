@@ -425,6 +425,22 @@ function prepararEnvioWhatsApp() {
     }
 }
 
+function sincronizarVistaPreviaPDF() {
+    document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString('es-AR');
+    document.getElementById('pdf-cliente').innerText = document.getElementById('cliNombre').value || 'Sin nombre';
+    document.getElementById('pdf-direccion').innerText = document.getElementById('cliDireccion').value || 'Sin dirección';
+    document.getElementById('pdf-proyecto').innerText = document.getElementById('cliProyecto').value || '-';
+    
+    const tbody = document.getElementById('pdf-tbody'); 
+    tbody.innerHTML = '';
+    
+    listaItems.forEach(i => { 
+        tbody.appendChild(Object.assign(document.createElement('tr'), { innerHTML: `<td>${i.material}</td><td>${i.nota}</td><td>${i.cantidad}</td><td>${i.unidad}</td>` })); 
+    });
+    
+    document.getElementById('pdf-notas').innerText = document.getElementById('obsGenerales').value || 'Sin notas.';
+}
+
 let escalaBasePreview = 1;
 let escalaActualPreview = 1;
 let anchoRealA4 = 794;
