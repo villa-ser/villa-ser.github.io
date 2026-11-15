@@ -1,0 +1,141 @@
+/* ============================================================== */
+/* ESCRITORIO.CSS - ADAPTACIÓN PARA TABLETS Y PC                  */
+/* ============================================================== */
+
+/* -------------------------------------------------------------- */
+/* 1. TABLETS (768px a 991px)                                     */
+/* -------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 991px) {
+    .layout-wrapper {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+
+    /* Expandimos el contenedor para aprovechar la pantalla */
+    .layout-wrapper .container {
+        max-width: 650px !important;
+    }
+
+    /* Convertimos la lista de botones en una grilla de 2 columnas */
+    #mainButtons {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px !important;
+    }
+
+    /* El último elemento (Compartir y Agendar) ocupa todo el ancho */
+    #mainButtons > div:last-child {
+        grid-column: 1 / -1;
+        margin-top: 5px !important;
+    }
+}
+
+/* -------------------------------------------------------------- */
+/* 2. ESCRITORIO / PC (992px en adelante)                         */
+/* -------------------------------------------------------------- */
+@media (min-width: 992px) {
+    /* Centrado absoluto vertical y horizontal */
+    .layout-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 100vh !important;
+        padding: 40px 20px !important;
+    }
+
+    /* Diseño Split-View: 50% / 50% para simetría perfecta */
+    .layout-wrapper .container {
+        max-width: 1100px !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr; /* Ambas columnas iguales */
+        gap: 40px !important;
+        align-items: center; /* Alinea los bloques al centro verticalmente */
+        margin: auto !important;
+    }
+
+    /* Tarjeta de perfil (Izquierda): Eliminar sticky para que se comporte como un bloque fijo */
+    .layout-wrapper .container > .corp-card:first-child {
+        position: relative !important; /* Quitamos el sticky */
+        top: 0 !important;
+        margin-bottom: 0 !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        height: 100%; /* Toma la altura necesaria */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Hacemos que la imagen del Hero cubra bien el espacio extra si la tarjeta se estira */
+    .hero-banner-container {
+        flex-grow: 1; /* Absorbe el espacio extra */
+        min-height: 250px;
+    }
+
+    /* Contenedor derecho (Botones) */
+    #mainButtons {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px !important;
+        align-content: center; /* Centra los botones verticalmente si la tarjeta izquierda es más alta */
+        height: 100%;
+    }
+
+    /* Los botones Compartir y Agendar siguen ocupando todo el ancho inferior */
+    #mainButtons > div:last-child {
+        grid-column: 1 / -1;
+        margin-top: 5px !important;
+    }
+
+    /* Ajustes visuales para el formulario en PC (si se abre) */
+    #formSection {
+        margin-top: 0 !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        padding: 35px 30px !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Formulario: 2 columnas */
+    #consultForm {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 15px !important;
+    }
+
+    #consultForm > div:nth-child(1),
+    #consultForm > div:nth-child(2) {
+        margin-bottom: 0 !important;
+    }
+
+    #consultForm > div:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+
+    #btnSubmit {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* 3. HOVER EFFECTS (Solo funcionales y visibles en PC)           */
+    /* -------------------------------------------------------------- */
+    
+    .corp-btn {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    }
+
+    .corp-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px var(--card-shadow);
+        filter: brightness(1.05);
+    }
+
+    .corp-btn:active {
+        transform: translateY(0);
+    }
+
+    a[href*="wa.me"]:hover { border-color: #25D366 !important; background: rgba(37, 211, 102, 0.05) !important; }
+    a[href*="facebook"]:hover { border-color: #1877F2 !important; background: rgba(24, 119, 242, 0.05) !important; }
+    a[href*="instagram"]:hover { border-color: #E4405F !important; background: rgba(228, 64, 95, 0.05) !important; }
+}
