@@ -1,3 +1,30 @@
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. LÓGICA DE ANIMACIÓN FADE-IN EN ESCALERA (SCROLL)
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -20px 0px', 
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        const elementosVisibles = entries.filter(entry => entry.isIntersecting);
+        elementosVisibles.forEach((entry, index) => {
+            setTimeout(() => {
+                entry.target.classList.add('visible');
+            }, index * 120); 
+            observer.unobserve(entry.target);
+        });
+    }, observerOptions);
+
+    const elementosAnimar = document.querySelectorAll('.fade-in-up');
+    elementosAnimar.forEach(el => observer.observe(el));
+
+    // Renderizar iconos de Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+
 // =========================================================
 // SCRIPTS ESPECÍFICOS DEL "BUSCADOR INTELIGENTE"
 // =========================================================
@@ -100,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // LÓGICA CLON FLOTANTE CTA
     // ==========================================
-    const ctaOriginal = document.querySelector('.cta-escritorio');
+/*    const ctaOriginal = document.querySelector('.cta-escritorio');
     const colDerecha = document.querySelector('.col-derecha');
     
     if (ctaOriginal && colDerecha) {
@@ -124,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (window.scrollY > 300 && !isColDerechaVisible) ctaClone.classList.add('visible');
             else ctaClone.classList.remove('visible'); 
         }
-    }
+    } */
 
     // ==========================================
     // LECTURA DE URL PARAMS (?servicio=)
@@ -350,7 +377,7 @@ function ejecutarBusqueda() {
     const palabrasBusqueda = obtenerPalabrasClave(rawQuery).filter(p => !palabrasVacias.has(p)).slice(0, 5);
 
     if (palabrasBusqueda.length === 0) {
-        resultsContainer.innerHTML = `<div class="no-results">Por favor ingresá términos técnicos más específicos.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Ej: "tablero", "boca", "jabalina"</span></div>`;
+        resultsContainer.innerHTML = `<div class="corp-card fade-in-up visible" style="text-align:center; padding: 25px 15px;"><span style="color:var(--ngc-text-main); font-weight:600;">Por favor ingresá términos técnicos específicos.</span><br><span style="font-size:0.8rem; color:var(--ngc-text-faded); display:block; margin-top:10px;">Ej: "tablero", "boca", "jabalina"</span></div>`;
         return;
     }
 
@@ -408,7 +435,7 @@ function ejecutarBusqueda() {
     const mejoresResultados = coincidencias.slice(0, 10).map(c => c.item);
 
     if (mejoresResultados.length === 0) {
-        resultsContainer.innerHTML = `<div class="no-results">No se encontraron precios referenciales.<br><span style="font-size:0.75rem; font-weight:normal; color:var(--ngc-text-muted); display:block; margin-top:10px;">Intentá usar palabras más cortas o generales. (Ej: "tablero", "boca", "jabalina")</span></div>`;
+        resultsContainer.innerHTML = `<div class="corp-card fade-in-up visible" style="text-align:center; padding: 25px 15px;"><span style="color:var(--error-red); font-weight:600;">No se encontraron precios referenciales.</span><br><span style="font-size:0.8rem; color:var(--ngc-text-faded); display:block; margin-top:10px;">Intentá usar palabras más cortas o generales. (Ej: "tablero", "boca", "jabalina")</span></div>`;
         return;
     }
 
@@ -422,53 +449,75 @@ function ejecutarBusqueda() {
         }
 
         const card = document.createElement("div");
-        card.className = "result-card gpu-accel"; 
+        
+        // ACÁ ESTÁ LA MAGIA DEL ESTILO: usamos corp-card para los resultados
+        card.className = "corp-card fade-in-up visible"; 
+        card.style.cursor = "pointer";
+        card.style.padding = "20px";
 
         const mensajeWp = encodeURIComponent(`Hola Sergio, quisiera solicitar un presupuesto a medida basado en este concepto: "${item.concepto}". Vi que el valor referencial de mano de obra es de ${precioFormat}.`);
         const urlWp = `https://wa.me/543513559347?text=${mensajeWp}`;
 
+        // Reestructurado al 100% con HTML en línea para evitar requerir más CSS externo
         card.innerHTML = `
-            <div class="result-header">
-                <span class="result-concept">${item.concepto}</span>
-                <div class="price-container">
-                    <span class="result-price">${precioFormat}</span>
-                    <span class="price-note">Solo Mano de Obra</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <span style="font-size: 0.95rem; font-weight: 700; color: var(--ngc-text-main); flex: 1; padding-right: 15px; line-height: 1.4;">${item.concepto}</span>
+                <div style="text-align: right; min-width: 90px;">
+                    <span style="font-size: 1.1rem; font-weight: 700; color: var(--ngc-neon); display: block;">${precioFormat}</span>
+                    <span style="font-size: 0.65rem; color: var(--ngc-text-faded); text-transform: uppercase; font-weight: 600;">Solo M. de Obra</span>
                 </div>
             </div>
             
-            <div class="result-obs-preview">
-                <span class="click-to-expand"><i class="fa-solid fa-chevron-down"></i> Toca para ver detalles</span>
+            <div class="result-obs-preview" style="font-size: 0.8rem; color: var(--ngc-neon); display: flex; align-items: center; gap: 6px; font-weight: 500;">
+                <i class="fa-solid fa-chevron-down acc-icon-indicator" style="transition: transform 0.3s;"></i> <span class="txt-ver-mas">Ver detalles</span>
             </div>
             
-            <div class="result-details">
-                <div class="detail-row obs-row">
-                    <span class="detail-label">Observaciones:</span><br> 
-                    ${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación. No incluye materiales."}
+            <div class="result-details" style="margin-top: 15px; border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px; display: none;">
+                <div style="margin-bottom: 12px; font-size: 0.85rem;">
+                    <span style="color: var(--ngc-text-faded); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Observaciones</span><br> 
+                    <span style="color: var(--ngc-text-main); display: block; margin-top: 3px;">${item.observaciones ? item.observaciones : "Precio estimativo por el servicio de instalación. No incluye materiales."}</span>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Entidad Referencia:</span><br> ${item.organizacion}
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Categoría:</span><br> ${item.tema}
+                <div style="display: flex; gap: 15px; margin-bottom: 18px;">
+                    <div style="flex: 1; font-size: 0.85rem;">
+                        <span style="color: var(--ngc-text-faded); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Entidad</span><br> 
+                        <span style="color: var(--ngc-text-main); display: block; margin-top: 3px;">${item.organizacion}</span>
+                    </div>
+                    <div style="flex: 1; font-size: 0.85rem;">
+                        <span style="color: var(--ngc-text-faded); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Categoría</span><br> 
+                        <span style="color: var(--ngc-text-main); display: block; margin-top: 3px;">${item.tema}</span>
+                    </div>
                 </div>
                 
-                <div class="wsp-section">
-                    <a href="${urlWp}" target="_blank" class="btn-whatsapp">
-                        <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar Viabilidad
-                    </a>
-                </div>
+                <a href="${urlWp}" target="_blank" class="corp-btn success-btn btn-whatsapp" style="width: 100%;">
+                    <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> Consultar Viabilidad
+                </a>
             </div>
         `;
 
+        // Lógica de acordeón resuelta en JavaScript (sin tocar CSS extra)
         card.addEventListener("click", (e) => {
-            if (e.target.closest('.btn-whatsapp')) return;
+            if (e.target.closest('.btn-whatsapp')) return; // Evita que se abra/cierre si tocás el botón
+            
             card.classList.toggle("active");
+            
+            const details = card.querySelector('.result-details');
+            const icon = card.querySelector('.acc-icon-indicator');
+            const txt = card.querySelector('.txt-ver-mas');
+            
+            if (card.classList.contains("active")) {
+                details.style.display = "block";
+                icon.style.transform = "rotate(180deg)";
+                txt.textContent = "Ocultar detalles";
+            } else {
+                details.style.display = "none";
+                icon.style.transform = "rotate(0deg)";
+                txt.textContent = "Ver detalles";
+            }
         });
 
         resultsContainer.appendChild(card);
     });
-    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-}
+        }
 
 function busquedaRapida(termino) {
     const searchInput = document.getElementById("searchInput");
@@ -480,3 +529,21 @@ function busquedaRapida(termino) {
         btnBuscar.click();
     }
 }
+
+// LÓGICA PARA COMPARTIR LA WEB (Nativo en celulares)
+function compartirWeb() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III',
+            text: 'Buscador de precios referenciales de mano de obra eléctrica en Córdoba. Consultá costos estimativos para instalaciones y reparaciones.',
+            url: window.location.href
+        }).catch((error) => console.log('Error al compartir:', error));
+    } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert("¡Enlace copiado al portapapeles!");
+        });
+    }
+}
+
+
+    
