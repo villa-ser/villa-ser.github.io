@@ -137,7 +137,7 @@ const rutas = {
 
 Object.keys(rutas).forEach(id => {
     const btn = document.getElementById(id);
-    if (btn) btn.addEventListener('click', () => window.location.href = rutas[id]);
+    if (btn) btn.addEventListener('click', () => window.location.replace(rutas[id]));
 });
 
 // ==========================================
