@@ -204,52 +204,141 @@ label {
     margin-top: 15px; font-size: 0.85rem; font-weight: bold; text-align: center; color: var(--corp-danger);
 }
 
-/* ================== MENÚ FLOTANTE ================== */
+/* ================== BARRA SUPERIOR CORPORATIVA (APP BAR) ================== */
+.corp-navbar {
+    display: none; /* Se activa vía JS con display: flex al iniciar sesión */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: var(--corp-card-bg);
+    border-bottom: var(--corp-border);
+    box-shadow: 0 2px 8px var(--corp-shadow);
+    z-index: 9999;
+    justify-content: center;
+    padding: 0 15px;
+}
 
-/* ================== MENÚ DE USUARIO INTEGRADO (BARRA SUPERIOR) ================== */
+.corp-navbar-inner {
+    width: 100%;
+    max-width: 450px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Polo Izquierdo: Marca */
+.navbar-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.navbar-logo {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-logo .logo-header-oscuro,
+.navbar-logo .logo-header-claro {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    margin: 0;
+}
+
+.navbar-brand-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.05;
+}
+
+.navbar-brand-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: var(--corp-text-faded);
+}
+
+.navbar-brand-main {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+/* Polo Derecho: Píldora de Usuario */
 .corp-fab-inline {
     display: flex;
     align-items: center;
     position: relative;
+    flex-shrink: 0;
+}
+
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 4px 4px 12px;
+    background: var(--bg-body);
+    border: var(--corp-border);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.user-pill:active {
+    transform: scale(0.97);
+    background: var(--corp-btn-bg);
+}
+
+.user-pill-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--corp-text-main);
+    max-width: 95px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-avatar-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(35, 116, 225, 0.15);
+    color: var(--corp-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
 }
 
 .corp-dropdown {
     position: absolute; 
-    width: 200px;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 210px;
     background: var(--corp-card-bg); 
     border: var(--corp-border);
     border-radius: 12px; 
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); 
     padding: 8px; 
     z-index: 10000;
 }
-[data-theme="light"] .corp-dropdown { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+[data-theme="light"] .corp-dropdown { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
 
-
-/*.corp-fab {
-    position: fixed; top: 15px; right: 15px; 
-    background: var(--corp-card-bg); border: var(--corp-border);
-    width: 45px; height: 45px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px var(--corp-shadow);
-    z-index: 9999; cursor: pointer;
-} */
-.corp-fab i { color: var(--corp-accent); font-size: 1.2rem; }
-
-/*.corp-dropdown {
-    position: absolute; 
-    top: 60px; /* Aumentamos la distancia para separarlo del botón */
-/*    right: 0; 
-    width: 200px;
-    background: var(--corp-card-bg); 
-    border: var(--corp-border);
-    border-radius: 12px; 
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-    padding: 8px; 
-    z-index: 10000;
-}*/
-
-/*[data-theme="light"] .corp-dropdown { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }*/
 .dropdown-email {
     color: var(--corp-text-faded); font-size: 0.75rem; text-align: center; 
     margin-bottom: 5px; padding-bottom: 8px; border-bottom: 1px solid var(--corp-border); 
@@ -282,23 +371,6 @@ label {
 }
 .corp-grid-btn i { font-size: 2.8rem; color: var(--corp-accent); } /* Íconos escalados al nuevo tamaño del botón */
 .corp-grid-btn:active { background: var(--corp-btn-bg); transform: scale(0.97); }
-
-/* ================== GRILLA DE MÓDULOS ================== */
-/*.corp-grid {
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 10px; 
-    width: 100%;
-} */
-
-/*.corp-grid-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 15px 5px; background: var(--corp-card-bg); border: var(--corp-border);
-    border-radius: 12px; color: var(--corp-text-main); font-size: 0.75rem; font-weight: 600;
-    gap: 8px; box-shadow: 0 1px 2px var(--corp-shadow); transition: 0.2s; cursor: pointer;
-}*/
-/*.corp-grid-btn i { font-size: 1.5rem; color: var(--corp-accent); }*/
-/*.corp-grid-btn:active { background: var(--corp-btn-bg); transform: scale(0.97); }*/
 
 /* ================== MODALES CORPORATIVOS ================== */
 .corp-modal {
@@ -405,39 +477,3 @@ label {
 #appScreen {
     margin-top: 25px; 
 }
-
-
-/* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
-/*.logo-header-oscuro, .logo-header-claro {
-    display: none;
-}
-.logo-header-oscuro { display: block; }
-[data-theme="light"] .logo-header-oscuro { display: none; }
-[data-theme="light"] .logo-header-claro { display: block; }
-
-#mainHeader {
-    margin-top: 15px; 
-}
-
-#appScreen {
-    margin-top: 25px; /* Empuja la grilla un poco más abajo dando el aire solicitado */
-/*} */
-
-/* ================== DISTRIBUCIÓN PANTALLAS Y LOGOS ================== */
-/*.logo-header-oscuro, .logo-header-claro {
-    width: 75px;
-    height: auto;
-    margin: 0 auto 15px auto;
-}
-.logo-header-oscuro { display: block; }
-.logo-header-claro { display: none; }
-[data-theme="light"] .logo-header-oscuro { display: none; }
-[data-theme="light"] .logo-header-claro { display: block; }
-
-#mainHeader {
-    margin-top: auto; /* Empuja la cabecera y el login al centro exacto */
-/*}
-
-#appScreen {
-    margin-top: 75px !important; /* ÁREA SEGURA: Distancia estricta para no pisar el botón de perfil */
-/*} */
