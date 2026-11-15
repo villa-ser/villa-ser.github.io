@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricista Habilitado Categoría III en Córdoba Capital | Villaser</title>
+    <link rel="canonical" href="https://villaser.com.ar/" />
+    
+    <!-- CSS GLOBAL CORPORATIVO -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="img/perfil-logo.avif">
+
+    <!-- Metadatos para compartir en Redes Sociales (WhatsApp, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Electricista Habilitado Categoría III en Córdoba Capital | Villaser">
+    <meta property="og:description" content="Instalaciones eléctricas seguras en Córdoba Capital. Sergio Villagra, electricista habilitado Categoría III (ERSeP). Cotizá tu proyecto hoy.">
+    <meta property="og:url" content="https://villaser.com.ar/index.html">
+    <meta property="og:locale" content="es_AR">
+    
+    <!-- Configuración exacta de la imagen -->
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.avif">
+    <meta property="og:image:secure_url" content="https://villaser.com.ar/img/perfil-logo.avif">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
+    <meta property="og:image:alt" content="Fotografía en blanco y negro de un electricista con lentes, serio frente a una pared de tiza con iconos de seguridad eléctrica y el texto VILLASER ELECTRICISTA.">
+
+    <!-- Twitter Cards (Refuerzo para WhatsApp y otras plataformas) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Electricista Habilitado Categoría III en Córdoba Capital | Villaser">
+    <meta name="twitter:description" content="Instalaciones eléctricas seguras en Córdoba Capital. Sergio Villagra, electricista habilitado Categoría III (ERSeP). Cotizá tu proyecto hoy.">
+    <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
+  
+    <script>
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser');
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        
+        if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    })();
+</script>
+
+</head>
+    <body>
+    <!-- 1. Botón Flotante de Tema y Logo -->
+    <div class="corp-top-nav" style="position: absolute; top: 15px; left: 15px; right: 15px; width: auto; z-index: 999;">
+        <button onclick="toggleTema()" class="corp-btn-icon" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon" id="icono-tema"></i>
+        </button>
+        <div style="background: var(--ngc-glass); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <img src="../img/logo.avif" alt="Villaser" style="height: 25px;" class="logo-oscuro">
+            <img src="../img/logoclaro.avif" alt="Villaser" style="height: 25px; display: none;" class="logo-claro">
+        </div>
+    </div>
+
+    <!-- 2. Contenedor Principal -->
+    <main class="layout-wrapper" style="padding-top: 60px;">
+        <div class="container">
+            
+            <!-- TARJETA DE PERFIL CON BANNER ANIMADO -->
+            <div class="corp-card gpu-accel fade-in-up" style="padding: 0; overflow: hidden; text-align: center;">
+                <div class="hero-banner-container">
+                    <div class="hero-banner-animado"></div>
+                    <div class="hero-overlay"></div>
+                </div>
+                <div style="padding: 20px;">
+                    <h1 class="corp-card-title" style="justify-content: center; font-size: 1.6rem; margin-bottom: 5px;">Sergio Villagra</h1>
+                    <h2 style="font-size: 0.9rem; color: var(--ngc-text-faded); margin-bottom: 12px; font-weight: 500;">Asesor e instalador eléctrico</h2>
+                    
+                    <span class="corp-status-badge" style="margin-bottom: 15px;">
+                        <i class="fa-solid fa-check-circle"></i> Registro ERSeP: 29029389 - 14027
+                    </span>
+                    
+                    <p style="font-size: 0.9rem; color: var(--ngc-text-main); margin-bottom: 20px; line-height: 1.5;">
+                        Garantizo la seguridad de tu hogar o comercio aplicando normativas vigentes (Ley 10.281). 
+                        Soluciones rápidas, prolijas y certificadas en Córdoba Capital.
+                    </p>
+                    
+                    <a href="https://wa.me/543513559347?text=Hola%20Sergio..." target="_blank" class="corp-btn corp-btn-large primary-action">
+                        <i class="fab fa-whatsapp"></i> SOLICITAR ASESORAMIENTO
+                    </a>
+                </div>
+            </div>
+
+            <!-- TARJETA DE PRIVACIDAD -->
+            <div class="corp-card gpu-accel fade-in-up">
+                <h3 class="corp-card-title"><i class="fa-solid fa-shield-halved corp-accent-color"></i> Compromiso de Privacidad</h3>
+                <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 8px;">
+                    Respeto absoluto por la intimidad de tu hogar y familia. No publico fotografías de los interiores de mis clientes.
+                </p>
+                <p style="font-size: 0.8rem; color: var(--ngc-text-faded); margin: 0; font-style: italic;">
+                    * Este sitio web no utiliza cookies de rastreo publicitario.
+                </p>
+            </div>
+            
+            <!-- BOTONES PRINCIPALES (Apilados 1 columna) -->
+            <div class="action-grid-stack">
+                <a href="servicios/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
+                <a href="buscadorinteligente/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-tags"></i> Ver Precios</a>
+            </div>
+
+            <!-- SERVICIOS RÁPIDOS GIGANTES (1 por fila con Safe-Scroll) -->
+            <div class="action-grid-stack">
+                
+                <div class="mega-btn-wrapper fade-in-up">
+                    <button onclick="abrirModalServicio('apto')" class="corp-btn corp-btn-mega mega-success">
+                        <i class="fa-solid fa-file-signature"></i> <span>Apto Eléctrico</span>
+                    </button>
+                </div>
+                
+                <div class="mega-btn-wrapper fade-in-up">
+                    <button onclick="abrirModalServicio('fugas')" class="corp-btn corp-btn-mega mega-danger">
+                        <i class="fa-solid fa-plug-circle-exclamation"></i> <span>Fugas y Cortos</span>
+                    </button>
+                </div>
+                
+                <div class="mega-btn-wrapper fade-in-up">
+                    <button onclick="abrirModalServicio('tableros')" class="corp-btn corp-btn-mega mega-warning">
+                        <i class="fa-solid fa-charging-station"></i> <span>Tableros</span>
+                    </button>
+                </div>
+                
+                <div class="mega-btn-wrapper fade-in-up">
+                    <button onclick="abrirModalServicio('obra')" class="corp-btn corp-btn-mega mega-neon">
+                        <i class="fa-solid fa-helmet-safety"></i> <span>Luz de Obra</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- CTA CALCULADORA GIGANTE -->
+            <div class="mega-btn-wrapper fade-in-up" style="padding: 15px;">
+                <a href="calculadora/index.html" class="mega-card-calc" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 95%;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div class="corp-btn-icon primary-action icon-calc"><i class="fa-solid fa-calculator"></i></div>
+                        <div>
+                            <h3 class="corp-card-title" style="margin: 0; font-size: 1.2rem;">Calculadora de Consumo</h3>
+                            <p style="font-size: 0.9rem; color: var(--ngc-text-faded); margin: 0;">Evaluá el consumo de tu hogar</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--ngc-text-faded); font-size: 1.5rem;"></i>
+                </a>
+            </div>
+
+            <!-- MENÚ DESPLEGABLE -->
+            <button id="btn-explorar" class="corp-btn corp-btn-large gpu-accel fade-in-up" style="margin-bottom: 5px;">
+                Explorar más secciones <i class="fas fa-chevron-down" id="icono-menu" style="transition: 0.3s;"></i>
+            </button>
+            
+            <div id="menu-botones" class="oculto">
+                <div class="action-grid-stack">
+                    <a href="tips/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
+                    <a href="perfil/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
+                    <a href="historia/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-book-open"></i> Historia</a>
+                    <a href="webs/index.html" class="corp-btn corp-btn-stack fade-in-up"><i class="fa-solid fa-globe"></i> Web's</a>
+                </div>
+            </div>
+
+            <!-- FOOTER CORPORATIVO -->
+            <div class="corp-card fade-in-up" style="margin-top: auto; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; justify-content: center; gap: 15px; width: 100%;">
+                    <a href="mailto:contacto@villaser.com.ar" class="corp-btn-icon" aria-label="Enviar correo"><i class="far fa-envelope"></i></a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="corp-btn-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="corp-btn-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <button type="button" onclick="compartirWeb()" class="corp-btn-icon" aria-label="Compartir página"><i class="fa-solid fa-share-nodes"></i></button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="corp-btn-icon success" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: center;">
+                    &copy; 2026 Villaser. Diseñado por <span style="color: var(--ngc-neon); font-weight: bold;">Sergio Villagra</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL CORPORATIVO (Se mantiene intacto) -->
+    <div id="modalServicio" class="modal-overlay oculto">
+        <div class="corp-modal-card gpu-accel">
+            <i id="modal-icono" class="corp-modal-icon"></i>
+            <h3 id="modal-titulo">Título</h3>
+            <p id="modal-desc">Descripción</p>
+            <div class="corp-modal-actions">
+                <a href="#" id="modal-wsp" target="_blank" class="corp-btn corp-btn-large success-btn">
+                    <i class="fab fa-whatsapp"></i> Consultar
+                </a>
+                <button class="corp-btn corp-btn-large" onclick="cerrarModalServicio()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+    </body>
+    
+                      
+</html>
