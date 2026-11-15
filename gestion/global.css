@@ -743,3 +743,34 @@ details[open] summary .acc-icon-indicator {
 .sub-cat-grid.cols-1 {
     grid-template-columns: 1fr;
 }
+
+/* ============================================================== */
+/* LISTA DE SUGERENCIAS - BÚSQUEDA AVANZADA (MÓDULO COSTOS)       */
+/* ============================================================== */
+.corp-suggestions-list {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--ngc-glass);
+    border: 1px solid var(--ngc-privacy-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+[data-theme="light"] .corp-suggestions-list {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.corp-suggestions-list li:hover,
+.corp-suggestions-list li:active {
+    background: var(--ngc-bg-input);
+    color: var(--ngc-neon) !important;
+    font-weight: 600;
+}
