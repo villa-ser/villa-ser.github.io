@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PRELOAD OPTIMIZADO PARA AMBOS FONDOS Y LOGOS -->
+    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="high">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Webs y Enlaces de Interés | Villaser Electricista Córdoba</title>
+    <link rel="canonical" href="https://villaser.com.ar/webs/" />
+    
+    <meta name="description" content="Directorio de enlaces útiles sobre electricidad en Córdoba: accesos a ERSeP, EPEC, asociaciones del sector y distribuidores de materiales.">
+    <meta name="keywords" content="ERSeP cordoba tramites, EPEC sucursales, materiales electricos cordoba, AEA normativas, colegio de especialistas">
+    <meta name="author" content="Sergio Adrian Villagra">
+
+     <!-- Metadatos para compartir en Redes Sociales (WhatsApp, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Webs y Enlaces de Interés | Villaser Electricista Córdoba">
+    <meta property="og:description" content="Directorio de enlaces útiles sobre electricidad en Córdoba: accesos a ERSeP, EPEC, asociaciones del sector y distribuidores de materiales.">
+    <meta property="og:url" content="https://villaser.com.ar/webs/index.html">
+    <meta property="og:locale" content="es_AR">
+    
+    <meta property="og:image" content="https://villaser.com.ar/img/perfil-logo.avif">
+    <meta property="og:image:secure_url" content="https://villaser.com.ar/img/perfil-logo.avif">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
+    <meta property="og:image:alt" content="Fotografía en blanco y negro de un electricista con lentes, serio frente a una pared de tiza con iconos de seguridad eléctrica y el texto VILLASER ELECTRICISTA.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Webs y Enlaces de Interés | Villaser Electricista Córdoba">
+    <meta name="twitter:description" content="Directorio de enlaces útiles sobre electricidad en Córdoba: accesos a ERSeP, EPEC, asociaciones del sector y distribuidores de materiales.">
+    <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
+    
+    <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
+
+    <script>
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser');
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        
+        if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    })();
+    </script>
+    
+
+    <!-- Librerías -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos compartidos -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <!-- NAV SUPERIOR (Estilo App Equilibrado) -->
+<div class="corp-top-nav" style="position: absolute; top: 15px; left: 15px; right: 15px; width: auto; z-index: 990; display: flex; justify-content: space-between; align-items: center;">
+    
+    <!-- IZQUIERDA: Controles -->
+    <div style="display: flex; gap: 10px;">
+        <a href="../index.html" class="corp-btn-icon" aria-label="Volver al Inicio">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <button onclick="toggleTema()" class="corp-btn-icon" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon icono-tema-global"></i>
+        </button>
+    </div>
+    
+    <!-- CENTRO: Logo -->
+    <div style="background: var(--ngc-glass); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <img src="../img/logo.avif" alt="Villaser" style="height: 25px;" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser" style="height: 25px; display: none;" class="logo-claro">
+    </div>
+
+    <!-- DERECHA: Menú Hamburguesa -->
+    <button onclick="toggleMenuApp()" class="corp-btn-icon primary-action" aria-label="Abrir Menú">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+</div>
+
+<!-- MENÚ OVERLAY CORREDIZO -->
+<div id="app-menu-overlay">
+    
+    <!-- Botón Cerrar -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 30px; margin-top: 10px;">
+        <button onclick="toggleMenuApp()" class="corp-btn-icon" style="background: var(--error-red); color: white; border: none;" aria-label="Cerrar menú">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    
+    <!-- Botones de Navegación Directa -->
+    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 20px;">
+        <span style="color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Navegación Rápida</span>
+        
+        <a href="../index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-house" style="width: 30px;"></i> Inicio</a>
+        <a href="../servicios/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-bolt" style="width: 30px; color: var(--ngc-neon);"></i> Servicios</a>
+        <a href="../buscadorinteligente/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-tags" style="width: 30px; color: var(--success-green);"></i> Ver Precios</a>
+        <a href="../calculadora/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-calculator" style="width: 30px; color: var(--ngc-warning);"></i> Calculadora</a>
+        <a href="../tips/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-lightbulb" style="width: 30px; color: var(--ngc-neon);"></i> Tip's de Seguridad</a>
+        <a href="../perfil/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-user-tie" style="width: 30px;"></i> Perfil y CV</a>
+        <a href="../historia/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-book-open" style="width: 30px;"></i> Historia Ley 10.281</a>
+        <a href="../webs/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-globe" style="width: 30px;"></i> Webs de Interés</a>
+    </div>
+</div>
+    
+    
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="layout-wrapper" style="padding-top: 80px;">
+        <div class="container" style="gap: 20px;">
+            
+            <!-- TARJETA INTRODUCTORIA -->
+            <div class="corp-card fade-in-up">
+                <h1 class="corp-card-title" style="justify-content: center; font-size: 1.5rem; margin-bottom: 10px;">Webs de Interés</h1>
+                
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <span style="color: var(--ngc-neon); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; background: rgba(35, 116, 225, 0.1); padding: 5px 12px; border-radius: 20px;">
+                        <i class="fa-solid fa-link"></i> Accesos Directos
+                    </span>
+                </div>
+                
+                <p style="text-align: center; font-size: 0.95rem; color: var(--ngc-text-main); margin-bottom: 0; line-height: 1.6;">
+                    Directorio de consulta rápida con marco legal vigente, entes reguladores y comercios de insumos eléctricos en Córdoba.
+                </p>
+            </div>
+
+            <!-- ETIQUETA SEPARADORA 1 -->
+            <div class="fade-in-up" style="margin-top: 10px;">
+                <span style="font-size: 0.85rem; color: var(--ngc-text-faded); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Marco Legal y Normativo</span>
+            </div>
+
+            <!-- CARD 1: LEY 10.281 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-neon);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(35, 116, 225, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-neon);">
+                        <i data-lucide="scale" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Ley 10.281 - Córdoba</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin-bottom: 15px;">
+                    Ley de Seguridad Eléctrica de la Provincia de Córdoba. Establece las condiciones obligatorias de seguridad en inmuebles públicos y privados.
+                </p>
+                <a href="https://ersep.cba.gov.ar/seguridad-electrica/" target="_blank" class="corp-btn corp-btn-small primary-action">
+                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i> Ver en ERSEP
+                </a>
+            </div>
+
+            <!-- CARD 2: NORMAS AEA -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-warning);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(245, 195, 59, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-warning);">
+                        <i data-lucide="book-open" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Normas AEA</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin-bottom: 15px;">
+                    Reglamentación para la Ejecución de Instalaciones Eléctricas en Inmuebles. La guía técnica fundamental para todo instalador matriculado.
+                </p>
+                <a href="https://aea.org.ar/" target="_blank" class="corp-btn corp-btn-small primary-action">
+                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i> Web Oficial AEA
+                </a>
+            </div>
+
+            <!-- ETIQUETA SEPARADORA 2 -->
+            <div class="fade-in-up" style="margin-top: 15px;">
+                <span style="font-size: 0.85rem; color: var(--ngc-text-faded); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Entes y Servicios</span>
+            </div>
+
+            <!-- CARD 3: ERSEP CÓRDOBA -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--success-green);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(49, 162, 76, 0.1); display: flex; justify-content: center; align-items: center; color: var(--success-green);">
+                        <i data-lucide="building-2" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">ERSEP Córdoba</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin-bottom: 15px;">
+                    Ente Regulador de los Servicios Públicos. Plataforma oficial para consultar el padrón de Instaladores Electricistas Habilitados.
+                </p>
+                <a href="https://ersep.cba.gov.ar/" target="_blank" class="corp-btn corp-btn-small primary-action">
+                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i> Ir a ERSEP
+                </a>
+            </div>
+
+            <!-- CARD 4: EPEC / COOPERATIVAS -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-neon);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(35, 116, 225, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-neon);">
+                        <i data-lucide="zap" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">EPEC / Cooperativas</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin-bottom: 15px;">
+                    Empresa Provincial de Energía de Córdoba. Gestión de nuevos suministros, medidores, luz de obra y consulta de estados de cuenta.
+                </p>
+                <a href="https://www.epec.com.ar/" target="_blank" class="corp-btn corp-btn-small primary-action">
+                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i> Oficina Virtual EPEC
+                </a>
+            </div>
+
+            <!-- CARD 5: RELEVANDO PELIGROS -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--error-red);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(228, 30, 63, 0.1); display: flex; justify-content: center; align-items: center; color: var(--error-red);">
+                        <i data-lucide="hand" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Relevando Peligros</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin-bottom: 15px;">
+                    ONG dedicada a la seguridad ciudadana que detecta y gestiona la solución de peligros en la vía pública mediante la participación social y educativa.
+                </p>
+                <a href="https://relevandopeligros.org/" target="_blank" class="corp-btn corp-btn-small primary-action">
+                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i> Ir a Relevando Peligros
+                </a>
+            </div>
+
+            <!-- ETIQUETA SEPARADORA 3 -->
+            <div class="fade-in-up" style="margin-top: 15px;">
+                <span style="font-size: 0.85rem; color: var(--ngc-text-faded); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Comercios en Córdoba</span>
+            </div>
+
+            <!-- CARD 6: INSUMOS ELÉCTRICOS -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-neon);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(35, 116, 225, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-neon);">
+                        <i data-lucide="shopping-cart" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Insumos Eléctricos</h3>
+                        <span style="font-size: 0.8rem; color: var(--ngc-text-faded);">Principales distribuidores de materiales normalizados</span>
+                    </div>
+                </div>
+                
+                <ul style="list-style-type: none; padding-left: 0; font-size: 0.9rem; line-height: 2.2; color: var(--ngc-text-faded); margin: 0;">
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Electro Alem:</b> Av. Emilio Caraffa 2418</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>MB Materiales:</b> Zona Norte / Sur.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Lúmina:</b> Especialistas en iluminación.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>General Electric / Weg:</b> Línea industrial.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>SGS Materiales:</b> Lino Spilimbergo 5000.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Peusso:</b> Ibarbálz 955.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Emun:</b> Blvd. de Los Alemanes 5274.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Feyro:</b> Blvd. Rivadavia 3052.</li>
+                    <li><i data-lucide="check-circle-2" style="width:16px; color:var(--ngc-neon); vertical-align: middle; margin-right:8px;"></i> <b>Richetta y Cía. S.A.:</b> Av. Amadeo Sabattini 4222.</li>
+                </ul>
+            </div>
+
+            <!-- CTA COMERCIAL (TRÁMITES) -->
+            <div class="corp-card fade-in-up" style="margin-top: 15px; padding: 25px 20px; background: linear-gradient(135deg, var(--ngc-glass), rgba(35, 116, 225, 0.05)); border: 1px solid var(--ngc-neon);">
+                <h3 class="corp-card-title" style="justify-content: center;"><i class="fa-solid fa-file-contract" style="color: var(--ngc-neon);"></i> ¿Necesitás gestionar el Apto?</h3>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--ngc-text-faded); margin-bottom: 20px;">
+                    Me encargo de la documentación que debés presentar ante EPEC y ERSeP bajo Ley 10.281.
+                </p>
+                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20necesito%20asesoramiento%20con%20un%20trámite%20eléctrico." target="_blank" class="corp-btn corp-btn-large success-btn">
+                    <i class="fab fa-whatsapp"></i> Consultar por Trámites
+                </a>
+            </div>
+
+            <!-- FOOTER CORPORATIVO -->
+            <div class="corp-card fade-in-up" style="margin-top: auto; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; justify-content: center; gap: 15px; width: 100%;">
+                    <a href="mailto:contacto@villaser.com.ar" class="corp-btn-icon" aria-label="Enviar correo"><i class="far fa-envelope"></i></a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="corp-btn-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="corp-btn-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <button type="button" onclick="compartirWeb()" class="corp-btn-icon" aria-label="Compartir página"><i class="fa-solid fa-share-nodes"></i></button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="corp-btn-icon success" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: center;">
+                    &copy; 2026 Villaser. Diseñado por <span style="color: var(--ngc-neon); font-weight: bold;">Sergio Villagra</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../global.js" defer></script>
+    <script src="script.js" defer></script>
+</body>
+  </html>
+  
