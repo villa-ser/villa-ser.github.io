@@ -6,8 +6,11 @@
     <title>Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III</title>
     <link rel="canonical" href="https://villaser.com.ar/buscadorinteligente/" />
     
-    <!-- PRELOAD OPTIMIZADO PARA AMBOS FONDOS Y LOGOS -->
     <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="high">
+
+    <meta name="description" content="Buscador de precios referenciales de mano de obra eléctrica en Córdoba. Consultá costos estimativos para instalaciones y reparaciones online.">
+    
+    <!-- Metadatos (Mantenemos tus metadatos exactos) -->
 
     <meta name="description" content="Buscador de precios referenciales de mano de obra eléctrica en Córdoba. Consultá costos estimativos para instalaciones y reparaciones online.">
     <meta name="keywords" content="precios electricista cordoba, costo mano de obra electrica, presupuesto electricista, calculo instalacion electrica">
@@ -33,194 +36,160 @@
     <meta name="twitter:title" content="Precios Referenciales de Mano de Obra | Villaser Electricista Categoría III">
     <meta name="twitter:description" content="Buscador de precios referenciales de mano de obra eléctrica en Córdoba. Consultá costos estimativos para instalaciones y reparaciones online.">
     <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
-
+    
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
 
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
-<script>
+    <script>
     (function() {
-        const TIEMPO_CADUCIDAD = 30 * 60 * 1000; // 30 minutos en milisegundos
         const temaGuardado = localStorage.getItem('temaVillaser');
-        const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
         const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-        let temaFinal = 'dark'; // Por defecto tu CSS es oscuro
-
-        // Si el usuario eligió un tema manualmente
-        if (temaGuardado && tiempoGuardado) {
-            const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-            
-            if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                // Si NO pasaron 30 minutos, respetamos su decisión
-                temaFinal = temaGuardado; 
-            } else {
-                // Si caducó, miramos qué pide el sistema
-                temaFinal = prefiereClaro ? 'light' : 'dark';
-            }
-        } else if (prefiereClaro) {
-            // Si nunca eligió nada y su sistema es claro
-            temaFinal = 'light';
-        }
-
-        // APLICACIÓN EXPLÍCITA A PRUEBA DE CACHÉ
-        if (temaFinal === 'light') {
+        
+        if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
             document.documentElement.setAttribute('data-theme', 'light');
         } else {
-            // Si debe ser oscuro, forzamos quitar el atributo por si el navegador lo cacheó
             document.documentElement.removeAttribute('data-theme');
         }
     })();
-</script>
-
+    </script>
     
     
     <!-- Librerías -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
     
-    <!-- 1. Estilos generales (compartidos) -->
+    <!-- Tus Estilos (El Global y el nuevo corporativo) -->
     <link rel="stylesheet" href="../css/global.css">
-    
-    <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css"> <!-- Aquí debe estar el CSS corporativo Flat -->
 </head>
 <body>
 
-    <!-- 1. Botón Volver (Flotante Izquierda) -->
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
-    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-    <i data-lucide="home"></i>
-</a>
-
-    <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
-            <i class="fas fa-bars"></i> <span>Explorar</span>
+    <!-- NAV SUPERIOR (Estilo App Equilibrado) -->
+<div class="corp-top-nav" style="position: absolute; top: 15px; left: 15px; right: 15px; width: auto; z-index: 990; display: flex; justify-content: space-between; align-items: center;">
+    
+    <!-- IZQUIERDA: Controles -->
+    <div style="display: flex; gap: 10px;">
+        <a href="../index.html" class="corp-btn-icon" aria-label="Volver al Inicio">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <button onclick="toggleTema()" class="corp-btn-icon" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon icono-tema-global"></i>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
-            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
-            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
-            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
-        </div>
+    </div>
+    
+    <!-- CENTRO: Logo -->
+    <div style="background: var(--ngc-glass); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <img src="../img/logo.avif" alt="Villaser" style="height: 25px;" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser" style="height: 25px; display: none;" class="logo-claro">
     </div>
 
-    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
-    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
-        <div class="switch-rocker"></div>
+    <!-- DERECHA: Menú Hamburguesa -->
+    <button onclick="toggleMenuApp()" class="corp-btn-icon primary-action" aria-label="Abrir Menú">
+        <i class="fa-solid fa-bars"></i>
     </button>
+</div>
 
-    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
-        <div class="hero-logo-icon" aria-label="Logo Villaser">
-        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
-        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
+<!-- MENÚ OVERLAY CORREDIZO -->
+<div id="app-menu-overlay">
+    
+    <!-- Botón Cerrar -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 30px; margin-top: 10px;">
+        <button onclick="toggleMenuApp()" class="corp-btn-icon" style="background: var(--error-red); color: white; border: none;" aria-label="Cerrar menú">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
-
-    <main class="ngc-wrapper">
-        <div class="layout-desktop">
-            
-            <!-- COLUMNA IZQUIERDA (Controles) -->
-            <div class="col-izquierda">
-
-                <!-- TÍTULO PRINCIPAL -->
-                <h2 class="ngc-main-title">Buscador de Costos</h2>
-                <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-muted); margin-top: -5px; margin-bottom: 15px;">
-                    Exclusivo Mano de Obra
-                </p>
-
-                <!-- CAJA DE BÚSQUEDA Y TAGS -->
-                <div class="input-section separador-bloque">
-                    <div class="input-group gpu-accel">
-                        <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué necesitás cotizar?</label>
-                        <div class="search-box-row">
-                            <!-- CONTENEDOR PARA AUTOCOMPLETADO -->
-                            <div class="input-wrapper">
-                                <input type="text" id="searchInput" placeholder="Ej: pilar trifásico, tablero..." disabled autocomplete="off">
-                                <ul id="suggestionsList" class="suggestions-dropdown oculto"></ul>
-                            </div>
-                            <button id="btnBuscar" class="btn-search" disabled>Buscar</button>
-                        </div>
-                        
-                        <!-- BÚSQUEDA RÁPIDA -->
-                        <div class="quick-tags-container">
-                            <span class="quick-tag-label">Búsquedas rápidas:</span>
-                            <div class="quick-tags">
-                                <span class="tag" onclick="busquedaRapida('Apto electrico')">Apto Eléctrico</span>
-                                <span class="tag" onclick="busquedaRapida('Armado de Pilar')">Armado de Pilar</span>
-                                <span class="tag" onclick="busquedaRapida('Tablero')">Tableros</span>
-                                <span class="tag" onclick="busquedaRapida('Toma')">Tomas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MENSAJE DE ESTADO -->
-                <div id="status-message" class="status-msg separador-bloque">
-                    <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
-                </div>
-
-                <!-- CONTENEDOR DE RESULTADOS -->
-                <div id="resultsContainer" class="results-wrapper separador-bloque"></div>
-                
-            </div>
-
-            <!-- COLUMNA DERECHA (Resultados y CTA) -->
-            <div class="col-derecha">
-                <!-- CTA ALTERNATIVO -->
-                <div class="separador-bloque cta-escritorio">
-                    <div class="ngc-custom-quote gpu-accel">
-                        <div class="quote-content">
-                            <h3>¿Presupuesto exacto?</h3>
-                            <p>Contactame por WhatsApp, enviame detalles o fotos y te armo una cotización a medida.</p>
-                            <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20viendo%20tu%20buscador%20y%20necesito%20un%20presupuesto%20a%20medida." target="_blank" class="btn-submit">
-                                <i class="fab fa-whatsapp" style="font-size: 1.1rem; margin-right: 5px;"></i> Presupuesto Personalizado
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AVISO LEGAL/REFERENCIAL -->
-                <div class="info-banner separador-bloque gpu-accel">
-                    <div class="banner-title">
-                        <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Importante
-                    </div>
-                    <div class="banner-text">
-                        Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).<br><br>
-                        <span style="color: var(--ngc-text); font-weight: 600;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning-amber);"></i> NO INCLUYEN materiales, viáticos, ni riesgos específicos.</span>
-                    </div>
-                </div>
-            </div>
+    
+    <!-- Botones de Navegación Directa -->
+    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 20px;">
+        <span style="color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Navegación Rápida</span>
         
-        <!-- FOOTER Y CRÉDITOS -->
-            <div class="footer-gnc-compact gpu-accel">
-            <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
-                <i class="far fa-envelope"></i> <span class="social-text">contacto@villaser.com.ar</span>
-                </a>
-            <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
-                <i class="fab fa-instagram"></i> <span class="social-text">@villaserelectricista</span>
-                </a>
-                <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
-                <i class="fab fa-facebook-f"></i> <span class="social-text">Villaser Electricista</span>
-                </a>
-            <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
-                <i class="fa-solid fa-share-nodes"></i> <span class="social-text">Compartir</span>
-            </button>
-                <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
-                <i class="fab fa-whatsapp"></i> <span class="social-text">+54 9 351 355-9347</span>
+        <a href="../index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-house" style="width: 30px;"></i> Inicio</a>
+        <a href="../servicios/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-bolt" style="width: 30px; color: var(--ngc-neon);"></i> Servicios</a>
+        <a href="../buscadorinteligente/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-tags" style="width: 30px; color: var(--success-green);"></i> Ver Precios</a>
+        <a href="../calculadora/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-calculator" style="width: 30px; color: var(--ngc-warning);"></i> Calculadora</a>
+        <a href="../tips/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-lightbulb" style="width: 30px; color: var(--ngc-neon);"></i> Tip's de Seguridad</a>
+        <a href="../perfil/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-user-tie" style="width: 30px;"></i> Perfil y CV</a>
+        <a href="../historia/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-book-open" style="width: 30px;"></i> Historia Ley 10.281</a>
+        <a href="../webs/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-globe" style="width: 30px;"></i> Webs de Interés</a>
+    </div>
+</div>
+    
+
+    <!-- CONTENEDOR PRINCIPAL (Centrado estilo mobile-first) -->
+    <main class="layout-wrapper" style="padding-top: 80px;">
+        <div class="container">
+            
+            <!-- BUSCADOR -->
+            <div class="corp-card fade-in-up">
+                <h2 class="corp-card-title" style="justify-content: center; font-size: 1.4rem; margin-bottom: 5px;">Buscador de Costos</h2>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 20px;">Exclusivo Mano de Obra</p>
+                
+                <label><i class="fa-solid fa-magnifying-glass"></i> ¿Qué necesitás cotizar?</label>
+                <div style="display: flex; flex-direction: column; gap: 10px; position: relative;">
+                    <!-- Input adaptado al nuevo estilo -->
+                    <input type="text" id="searchInput" class="corp-input" placeholder="Ej: pilar trifásico, tablero..." disabled autocomplete="off">
+                    
+                    <!-- Dropdown de sugerencias -->
+                    <ul id="suggestionsList" class="suggestions-dropdown oculto"></ul>
+                    
+                    <button id="btnBuscar" class="corp-btn corp-btn-large primary-action" disabled>
+                        <i class="fa-solid fa-search"></i> Buscar Precio
+                    </button>
+                </div>
+
+                <!-- Búsquedas rápidas (Convertidas en botones estilo corporativo) -->
+                <div style="margin-top: 20px;">
+                    <span style="font-size: 0.8rem; color: var(--ngc-text-faded); display: block; margin-bottom: 10px; font-weight: 600;">Búsquedas rápidas:</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span class="corp-btn corp-btn-small" style="width: auto; cursor: pointer;" onclick="busquedaRapida('Apto electrico')">Apto Eléctrico</span>
+                        <span class="corp-btn corp-btn-small" style="width: auto; cursor: pointer;" onclick="busquedaRapida('Armado de Pilar')">Armado de Pilar</span>
+                        <span class="corp-btn corp-btn-small" style="width: auto; cursor: pointer;" onclick="busquedaRapida('Tablero')">Tableros</span>
+                        <span class="corp-btn corp-btn-small" style="width: auto; cursor: pointer;" onclick="busquedaRapida('Toma')">Tomas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESTADO Y RESULTADOS -->
+            <div id="status-message" style="text-align: center; font-size: 0.9rem; color: var(--ngc-text-faded); padding: 10px;">
+                <i class="fas fa-spinner fa-spin"></i> Sincronizando base de precios...
+            </div>
+            
+            <div id="resultsContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+            <!-- CTA PRESUPUESTO -->
+            <div class="corp-card fade-in-up" style="margin-top: 10px;">
+                <h3 class="corp-card-title"><i class="fa-solid fa-calculator corp-accent-color"></i> ¿Presupuesto exacto?</h3>
+                <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 15px;">Contactame por WhatsApp, enviame detalles o fotos y te armo una cotización a medida.</p>
+                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20viendo%20tu%20buscador%20y%20necesito%20un%20presupuesto%20a%20medida." target="_blank" class="corp-btn success-btn">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Presupuesto Personalizado
                 </a>
             </div>
 
-            <div class="ngc-site-credits">
-                 &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
+            <!-- AVISO LEGAL -->
+            <div class="corp-card fade-in-up" style="border-left: 4px solid var(--ngc-warning);">
+                <h3 class="corp-card-title"><i class="fa-solid fa-shield-alert corp-accent-color" style="color: var(--ngc-warning);"></i> Importante</h3>
+                <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 10px;">Los valores indicados son <strong>estrictamente estimativos</strong> y de carácter referencial (Promedios del sector).</p>
+                <p style="font-size: 0.85rem; color: var(--ngc-text-main); font-weight: 600; margin: 0;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--ngc-warning);"></i> NO INCLUYEN materiales, viáticos ni riesgos específicos.</p>
             </div>
+
+            <!-- FOOTER CORPORATIVO -->
+            <div class="corp-card fade-in-up" style="margin-top: auto; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; justify-content: center; gap: 15px; width: 100%;">
+                    <a href="mailto:contacto@villaser.com.ar" class="corp-btn-icon" aria-label="Enviar correo"><i class="far fa-envelope"></i></a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="corp-btn-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="corp-btn-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <button type="button" onclick="compartirWeb()" class="corp-btn-icon" aria-label="Compartir página"><i class="fa-solid fa-share-nodes"></i></button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="corp-btn-icon success" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: center;">
+                    &copy; 2026 Villaser. Diseñado por <span style="color: var(--ngc-neon); font-weight: bold;">Sergio Villagra</span>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <script src="../js/global.js" defer></script>
-<script src="script.js" defer></script>
+    <script src="../global.js" defer></script>
+    <script src="script.js" defer></script>
 
 </body>
-                      </html>
+</html>
