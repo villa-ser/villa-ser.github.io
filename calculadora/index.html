@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="high">
-
     <title>Calculadora de consumo eléctrico en Córdoba Capital | Villaser</title>
     <link rel="canonical" href="https://villaser.com.ar/calculadora/" />
     
@@ -30,336 +28,374 @@
     <meta name="twitter:image" content="https://villaser.com.ar/img/perfil-logo.avif">
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
+    
+    <link rel="preload" as="image" href="../img/logoclaro.avif" fetchpriority="high">
 
-    <!-- Script de ejecución inmediata para el tema -->
     <script>
-        (function() {
-            const TIEMPO_CADUCIDAD = 30 * 60 * 1000; 
-            const temaGuardado = localStorage.getItem('temaVillaser');
-            const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
-            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-            let temaFinal = 'dark'; 
-
-            if (temaGuardado && tiempoGuardado) {
-                const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-                if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                    temaFinal = temaGuardado; 
-                } else {
-                    temaFinal = prefiereClaro ? 'light' : 'dark';
-                }
-            } else if (prefiereClaro) {
-                temaFinal = 'light';
-            }
-
-            if (temaFinal === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-            }
-        })();
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser');
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        
+        if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    })();
     </script>
     
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- Librerías -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     
-    <!-- Estilos generales y particulares -->
+    <!-- Tus Estilos -->
     <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css"> <!-- Asegúrate de enlazar tu archivo global aquí -->
 </head>
-
 <body>
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
-    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-        <i data-lucide="home"></i>
-    </a>
 
-    <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
-            <i class="fas fa-bars"></i> <span>Explorar</span>
+    <!-- NAV SUPERIOR (Estilo App Equilibrado) -->
+<div class="corp-top-nav" style="position: absolute; top: 15px; left: 15px; right: 15px; width: auto; z-index: 990; display: flex; justify-content: space-between; align-items: center;">
+    
+    <!-- IZQUIERDA: Controles -->
+    <div style="display: flex; gap: 10px;">
+        <a href="../index.html" class="corp-btn-icon" aria-label="Volver al Inicio">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <button onclick="toggleTema()" class="corp-btn-icon" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon icono-tema-global"></i>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
-            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
-            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
-            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
-        </div>
+    </div>
+    
+    <!-- CENTRO: Logo -->
+    <div style="background: var(--ngc-glass); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <img src="../img/logo.avif" alt="Villaser" style="height: 25px;" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser" style="height: 25px; display: none;" class="logo-claro">
     </div>
 
-    <!-- Llave 3D Minimalista -->
-    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
-        <div class="switch-rocker"></div>
+    <!-- DERECHA: Menú Hamburguesa -->
+    <button onclick="toggleMenuApp()" class="corp-btn-icon primary-action" aria-label="Abrir Menú">
+        <i class="fa-solid fa-bars"></i>
     </button>
+</div>
 
-    <!-- Logo Flotante Superior -->
-        <div class="hero-logo-icon" aria-label="Logo Villaser">
-        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
-        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
+<!-- MENÚ OVERLAY CORREDIZO -->
+<div id="app-menu-overlay">
+    
+    <!-- Botón Cerrar -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 30px; margin-top: 10px;">
+        <button onclick="toggleMenuApp()" class="corp-btn-icon" style="background: var(--error-red); color: white; border: none;" aria-label="Cerrar menú">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
+    
+    <!-- Botones de Navegación Directa -->
+    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 20px;">
+        <span style="color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Navegación Rápida</span>
+        
+        <a href="../index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-house" style="width: 30px;"></i> Inicio</a>
+        <a href="../servicios/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-bolt" style="width: 30px; color: var(--ngc-neon);"></i> Servicios</a>
+        <a href="../buscadorinteligente/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-tags" style="width: 30px; color: var(--success-green);"></i> Ver Precios</a>
+        <a href="../calculadora/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-calculator" style="width: 30px; color: var(--ngc-warning);"></i> Calculadora</a>
+        <a href="../tips/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-lightbulb" style="width: 30px; color: var(--ngc-neon);"></i> Tip's de Seguridad</a>
+        <a href="../perfil/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-user-tie" style="width: 30px;"></i> Perfil y CV</a>
+        <a href="../historia/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-book-open" style="width: 30px;"></i> Historia Ley 10.281</a>
+        <a href="../webs/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-globe" style="width: 30px;"></i> Webs de Interés</a>
+    </div>
+</div>
+    
+    
 
     <!-- CONTENEDOR PRINCIPAL -->
-    <main class="ngc-wrapper">
-        <div class="layout-desktop">
+    <main class="layout-wrapper" style="padding-top: 80px;">
+        <div class="container">
             
-            <!-- COLUMNA IZQUIERDA -->
-            <div class="col-izquierda">
-                
-                <!-- TÍTULO Y RESET -->
-                <div class="header-module form-group-transparent gpu-accel">
-                    <h2>Calculadora de Consumo</h2>
-                    <button class="btn-reset" onclick="resetAll()">
+            <!-- TARJETA 1: CONTROLES PRINCIPALES -->
+            <div class="corp-card fade-in-up">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 class="corp-card-title" style="margin: 0; font-size: 1.3rem;"><i class="fa-solid fa-calculator corp-accent-color"></i> Calculadora</h2>
+                    <button class="corp-btn-small danger-btn" onclick="resetAll()">
                         <i class="fa-solid fa-rotate-right"></i> Reset
                     </button>
                 </div>
 
-                <!-- APARATO ELÉCTRICO (DINÁMICO) -->
-                <div class="form-group-transparent gpu-accel">
-                    <!-- CAJA DE APARATO SELECCIONADO (Oculta por defecto) -->
-                    <div id="aparato-seleccionado-container" class="readonly-box oculto">
-                        <span class="readonly-label">CONFIGURA ESTE APARATO:</span>
-                        <span id="aparato-seleccionado-nombre" class="readonly-name"></span>
-                        <span id="aparato-seleccionado-watts" class="readonly-watts"></span>
-                    </div>
-
-                    <input type="hidden" id="aparato" value="0" data-text="">
+                <!-- Toggle Tarifa (Con SEF / Sin SEF) -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <label class="tarifa-radio-wrapper flex-1" style="cursor: pointer; margin: 0;">
+                        <input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()" style="display:none;"> 
+                        <span class="tarifa-btn-content"><i class="fa-solid fa-house-chimney"></i> Sin SEF</span>
+                    </label>
+                    <label class="tarifa-radio-wrapper flex-1" style="cursor: pointer; margin: 0;">
+                        <input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()" style="display:none;"> 
+                        <span class="tarifa-btn-content"><i class="fa-solid fa-house-chimney-window"></i> Con SEF</span>
+                    </label>
                 </div>
 
-                <!-- CAJA DE RECOMENDACIÓN TÉCNICA (Oculta por defecto) -->
-                <div id="recomendacion-container" class="form-group-transparent gpu-accel oculto">
-                    <div class="recomendacion-box">
-                        <span class="reco-title"><i class="fa-solid fa-lightbulb"></i> Uso Recomendado</span>
-                        <p id="reco-texto"></p>
-                        <button type="button" class="btn-reco-detalle" onclick="abrirModalRecomendacion()">Ver detalle técnico</button>
-                    </div>
-                </div>
-
-                <!-- SLIDERS (Ocultos por defecto) -->
-                <div id="sliders-container" class="form-group-transparent gpu-accel oculto">
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <label><i class="fa-regular fa-clock"></i> Uso Diario</label>
-                            <span class="slider-val" id="horas-val">4 hs</span>
-                        </div>
-                        <input type="range" id="horas" class="gnc-range" min="1" max="24" value="4">
-                    </div>
-
-                    <div class="slider-group" style="margin-top: 15px;">
-                        <div class="slider-header">
-                            <label><i class="fa-regular fa-calendar-days"></i> Días a la semana</label>
-                            <span class="slider-val" id="dias-val">7 días</span>
-                        </div>
-                        <input type="range" id="dias" class="gnc-range" min="1" max="7" value="7">
-                    </div>
-                </div>
-
-                <!-- BOTÓN AGREGAR (Oculto por defecto) -->
-                <button id="btn-agregar-lista" class="btn-add gpu-accel oculto" onclick="agregarItem()">
-                    <i class="fa-solid fa-plus"></i> Agregar al consumo total
+                <!-- Botón Seleccionar Aparato -->
+                <button type="button" id="btn-aparato-trigger" class="corp-btn corp-btn-large primary-action" onclick="abrirModalAparatos()">
+                    <i class="fa-solid fa-plug"></i> Agregar Aparato Eléctrico
                 </button>
+
+                <!-- Caja del Aparato Seleccionado (Oculta por defecto) -->
+                <div id="aparato-seleccionado-container" class="oculto" style="background: var(--ngc-bg-input); padding: 15px; border-radius: 8px; border: 1px solid var(--ngc-privacy-border); margin-bottom: 10px;">
+                    <span style="font-size: 0.75rem; color: var(--ngc-text-faded); text-transform: uppercase; font-weight: 600;">Configurando:</span>
+                    <div id="aparato-seleccionado-nombre" style="font-weight: 700; color: var(--ngc-text-main); font-size: 1.1rem; margin-top: 5px;"></div>
+                    <div id="aparato-seleccionado-watts" style="font-size: 0.85rem; color: var(--ngc-neon); margin-top: 2px;"></div>
+                </div>
+                <input type="hidden" id="aparato" value="0" data-text="">
             </div>
 
-            <!-- COLUMNA DERECHA -->
-            <div class="col-derecha">
-                
-                <!-- ENCABEZADO DE RESULTADOS -->
-                <div class="top-controls-row gpu-accel">
-                    <div class="stacked-tarifa-toggle">
-                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="sin_subsidio" checked onchange="recalcularTotal()"> Sin SEF</label>
-                        <label class="tarifa-mini-opt"><input type="radio" name="tarifa" value="con_subsidio" onchange="recalcularTotal()"> Con SEF</label>
+           <!-- TARJETA 2: RECOMENDACIÓN TÉCNICA (Oculta por defecto) -->
+          <!--  <div id="recomendacion-container" class="corp-card fade-in-up visible oculto" style="border-left: 4px solid var(--ngc-neon);">
+                <h3 class="corp-card-title" style="margin-bottom: 10px;"><i class="fa-solid fa-lightbulb corp-accent-color"></i> Uso Recomendado</h3>
+                <p id="reco-texto" style="font-size: 0.9rem; color: var(--ngc-text-main); margin-bottom: 15px;"></p>
+                <button type="button" class="corp-btn" onclick="abrirModalRecomendacion()">
+                    Ver detalle técnico
+                </button>
+            </div>   -->
+
+            <!-- TARJETA 3: SLIDERS MANUALES (Oculta por defecto) -->
+           <!-- <div id="sliders-container" class="corp-card fade-in-up visible oculto">
+                <div class="row-group">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <label style="margin: 0;"><i class="fa-regular fa-clock"></i> Uso Diario</label>
+                        <span id="horas-val" style="font-weight: bold; color: var(--ngc-neon);">4 hs</span>
                     </div>
-                    
-                    <button type="button" id="btn-aparato-trigger" class="btn-aparato-trigger-side gpu-accel" onclick="abrirModalAparatos()">
-                        <i class="fa-solid fa-plus"></i> Aparato Eléctrico
-                    </button>
+                    <input type="range" id="horas" class="corp-range" min="1" max="24" value="4">
                 </div>
-                
-                <!-- PANEL DE TOTALES -->
-                <div class="summary-panel gpu-accel">
+
+                <div class="row-group" style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <label style="margin: 0;"><i class="fa-regular fa-calendar-days"></i> Días a la semana</label>
+                        <span id="dias-val" style="font-weight: bold; color: var(--ngc-neon);">7 días</span>
+                    </div>
+                    <input type="range" id="dias" class="corp-range" min="1" max="7" value="7">
+                </div>
+
+                <button id="btn-agregar-lista" class="corp-btn corp-btn-large success-btn" style="margin-top: 20px;" onclick="agregarItem()">
+                    <i class="fa-solid fa-plus"></i> Añadir a la factura
+                </button>
+            </div> -->
+
+            <!-- TARJETA 4: RESUMEN DE TOTALES -->
+            <div class="corp-card fade-in-up" style="background: linear-gradient(135deg, var(--ngc-glass), rgba(35, 116, 225, 0.05)); border: 1px solid var(--ngc-neon);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <div>
-                        <span class="res-label">CONSUMO ESTIMADO</span>
-                        <span class="total-val"><span id="total-kwh">0.00</span> <span class="res-unit">kWh/mes</span></span>
-                    </div>
-                    <div>
-                        <span class="res-label">TOTAL FACTURA (Aprox)</span>
-                        <span class="pesos-val" id="total-pesos">$ 0</span>
-                    </div>
-                </div>
-
-                <!-- LISTA DE APARATOS -->
-                <div id="lista-items"></div>
-
-                <!-- ETIQUETA DINÁMICA DE ESCALAFÓN CON BARRA DE PROGRESO -->
-                <div id="tier-indicator" class="tier-badge gpu-accel oculto">
-                    <div id="tier-text-container"></div>
-                    <div class="tier-progress-bar">
-                        <div class="tier-segment segment-1" id="seg-1"></div>
-                        <div class="tier-segment segment-2" id="seg-2"></div>
-                        <div class="tier-segment segment-3" id="seg-3"></div>
-                        <div class="tier-segment segment-4" id="seg-4"></div>
-                    </div>
-                </div>
-                
-                <!-- CTA DE OPTIMIZACIÓN -->
-                <div class="cta-optimizar gpu-accel">
-                    <span class="cta-title">¿Tu consumo es muy elevado?</span>
-                    <p>Un electricista habilitado puede detectar fugas invisibles que encarecen tu factura.</p>
-                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20usando%20tu%20calculadora%20y%20me%20gustaría%20consultarte%20por%20una%20revisión%20de%20consumo/fugas." target="_blank" class="btn-cta-wa">
-                        <i class="fab fa-whatsapp"></i> Consultar por Revisión
-                    </a>
-                </div>
-
-                <!-- INFORMACIÓN TÉCNICA -->
-                <div class="ngc-tech-legend gpu-accel">
-                    <span class="legend-title"><i class="fa-solid fa-circle-info"></i> Información Técnica Tarifaria</span>
-                    <div class="legend-section">
-                        <p class="legend-subtitle">Segmentación Energética (Córdoba):</p>
-                        <div class="legend-grid">
-                            <div class="legend-box"><b>Sin Subsidio:</b> Residencial (N1 - Sin SEF)</div>
-                            <div class="legend-box"><b>Con Subsidio:</b> Residencial (N2/N3 - SEF)</div>
+                        <span style="font-size: 0.75rem; color: var(--ngc-text-faded); text-transform: uppercase; font-weight: 600;">Consumo Estimado Mensual</span>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--ngc-text-main);">
+                            <span id="total-kwh">0.00</span> <span style="font-size: 1rem; color: var(--ngc-text-faded);">kWh</span>
                         </div>
                     </div>
-                    <ul class="legend-list">
-                        <li><i class="fa-solid fa-check"></i> <strong>SEF:</strong> Subsidios del Estado Federal (Segmentación Nacional).</li>
-                        <li><i class="fa-solid fa-check"></i> <strong>Cálculo Estimativo:</strong> Incluye IVA (21%) y Tasas (aprox. 15%). No incluye Cargos Fijos.</li>
-                        <li><i class="fa-solid fa-check"></i> <strong>Potencia:</strong> Los Watts son promedios; el consumo real depende de la eficiencia.</li>
-                        <li><i class="fa-solid fa-check"></i> <strong>Vigencia:</strong> Lógica basada en el Cuadro Tarifario escalonado de EPEC.</li>
-                    </ul>
-                    <div class="legend-footer">CÓRDOBA, ARGENTINA</div>
+                </div>
+                <div style="border-top: 1px solid var(--ngc-privacy-border); padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--ngc-text-main);">Total Factura (Aprox.)</span>
+                    <span id="total-pesos" style="font-size: 1.5rem; font-weight: 700; color: var(--success-green);">$ 0</span>
                 </div>
             </div>
-        </div>
-        <!-- FOOTER Y CRÉDITOS -->
-<div class="footer-gnc-compact gpu-accel">
-    <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
-        <i class="far fa-envelope"></i> <span class="social-text">contacto@villaser.com.ar</span>
-    </a>
-    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
-        <i class="fab fa-instagram"></i> <span class="social-text">@villaserelectricista</span>
-    </a>
-    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
-        <i class="fab fa-facebook-f"></i> <span class="social-text">Villaser Electricista</span>
-    </a>
-    <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
-         <i class="fa-solid fa-share-nodes"></i> <span class="social-text">Compartir</span>
-    </button>
-    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
-        <i class="fab fa-whatsapp"></i> <span class="social-text">+54 9 351 355-9347</span>
-    </a>
-</div>
-        <div class="ngc-site-credits">
-    &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
-        </div>
-        
+
+            <!-- INDICADOR DE ESCALAFÓN (Barra de progreso) -->
+            <div id="tier-indicator" class="corp-card fade-in-up visible" style="padding: 15px;">
+                <div id="tier-text-container" style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;"></div>
+                <div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px;">
+                    <div id="seg-1" style="flex: 1; background: var(--ngc-privacy-border); transition: 0.3s;"></div>
+                    <div id="seg-2" style="flex: 1; background: var(--ngc-privacy-border); transition: 0.3s;"></div>
+                    <div id="seg-3" style="flex: 1; background: var(--ngc-privacy-border); transition: 0.3s;"></div>
+                    <div id="seg-4" style="flex: 1; background: var(--ngc-privacy-border); transition: 0.3s;"></div>
+                </div>
+            </div>
+
+            <!-- LISTA DE APARATOS AGREGADOS -->
+            <div id="lista-items" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+            <!-- CTA OPTIMIZACIÓN -->
+            <div class="corp-card fade-in-up" style="border-left: 4px solid var(--ngc-warning); margin-top: 10px;">
+                <h3 class="corp-card-title"><i class="fa-solid fa-triangle-exclamation" style="color: var(--ngc-warning);"></i> ¿Consumo muy elevado?</h3>
+                <p style="font-size: 0.85rem; color: var(--ngc-text-faded); margin-bottom: 15px;">Un electricista habilitado puede detectar fugas invisibles que encarecen tu factura.</p>
+                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20usando%20tu%20calculadora%20y%20me%20gustaría%20consultarte%20por%20una%20revisión%20de%20consumo/fugas." target="_blank" class="corp-btn success-btn">
+                    <i class="fab fa-whatsapp"></i> Consultar por Revisión
+                </a>
+            </div>
+
+                        <!-- INFO TÉCNICA -->
+            <div class="corp-card fade-in-up">
+                <h3 class="corp-card-title"><i class="fa-solid fa-circle-info corp-accent-color"></i> Info Tarifaria (Córdoba)</h3>
+                <ul style="font-size: 0.85rem; color: var(--ngc-text-faded); padding-left: 20px; margin: 0; line-height: 1.6;">
+                    <li><strong>SEF:</strong> Subsidios del Estado Federal (Segmentación Nacional).</li>
+                    <li><strong>Cálculo Estimativo:</strong> Incluye IVA (21%) y Tasas (aprox. 15%). No incluye Cargos Fijos.</li>
+                    <li><strong>Vigencia:</strong> Basado en el Cuadro Tarifario escalonado EPEC.</li>
+                </ul>
+            </div>
+
+            <!-- FOOTER CORPORATIVO (Ahora dentro del container y con "visible") -->
+            <div class="corp-card fade-in-up" style="margin-top: auto; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; justify-content: center; gap: 15px; width: 100%;">
+                    <a href="mailto:contacto@villaser.com.ar" class="corp-btn-icon" aria-label="Enviar correo"><i class="far fa-envelope"></i></a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="corp-btn-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="corp-btn-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <button type="button" onclick="compartirWeb()" class="corp-btn-icon" aria-label="Compartir página"><i class="fa-solid fa-share-nodes"></i></button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="corp-btn-icon success" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: center;">
+                    &copy; 2026 Villaser. Diseñado por <span style="color: var(--ngc-neon); font-weight: bold;">Sergio Villagra</span>
+                </div>
+            </div>
+
+        </div> <!-- ESTE ES EL CIERRE DEL CONTAINER, EL FOOTER DEBE IR ARRIBA DE ESTO -->
     </main>
 
-    <!-- MODAL FLOTANTE DE LISTA DE APARATOS -->
-    <div id="modal-aparatos" class="modal-overlay oculto gpu-accel">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-list-ul"></i> Lista de Aparatos</h3>
-                <button class="btn-close-modal" onclick="cerrarModalAparatos()"><i class="fa-solid fa-xmark"></i></button>
+
+        <!-- MODAL DE LISTA DE APARATOS -->
+    <div id="modal-aparatos" class="modal-overlay oculto">
+        <div class="corp-modal-card" style="max-height: 85vh; display: flex; flex-direction: column; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-list-ul corp-accent-color"></i> Seleccionar Aparato</h3>
+                <button class="corp-btn-icon" style="width: 35px; height: 35px;" onclick="cerrarModalAparatos()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="modal-body" style="padding: 0;">
-                <!-- Climatización -->
-                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-clima')">
-                    Climatización <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div id="acc-clima" class="accordion-content">
-                    <div class="opt-item-row" onclick="selectOption(2200, 'Aire Acondicionado (3000f)')"><span class="item-name">Aire Acondicionado (3000f)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(3500, 'Aire Acondicionado (4500f)')"><span class="item-name">Aire Acondicionado (4500f)</span><div class="item-right"><span class="item-watts">3500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1500, 'Caloventor / Estufa Cuarzo')"><span class="item-name">Caloventor / Estufa Cuarzo</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(2000, 'Radiador Eléctrico')"><span class="item-name">Radiador Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(60, 'Ventilador de Pie/Techo')"><span class="item-name">Ventilador de Pie/Techo</span><div class="item-right"><span class="item-watts">60 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(100, 'Turbo Ventilador')"><span class="item-name">Turbo Ventilador</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-
-               <!-- Cocina -->
-                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-cocina')">
-                    Cocina <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div id="acc-cocina" class="accordion-content">
-                    <div class="opt-item-row" onclick="selectOption(150, 'Heladera con Freezer')"><span class="item-name">Heladera con Freezer</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(250, 'Freezer Pozo')"><span class="item-name">Freezer Pozo</span><div class="item-right"><span class="item-watts">250 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(2000, 'Pava Eléctrica')"><span class="item-name">Pava Eléctrica</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1500, 'Anfe Eléctrico (1 hornalla)')"><span class="item-name">Anfe Eléctrico (1 hornalla)</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(800, 'Microondas')"><span class="item-name">Microondas</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1500, 'Horno Eléctrico Grande')"><span class="item-name">Horno Eléctrico Grande</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(700, 'Cafetera de Filtro')"><span class="item-name">Cafetera de Filtro</span><div class="item-right"><span class="item-watts">700 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1400, 'Cafetera de Cápsulas')"><span class="item-name">Cafetera de Cápsulas</span><div class="item-right"><span class="item-watts">1400 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(600, 'Licuadora / Batidora')"><span class="item-name">Licuadora / Batidora</span><div class="item-right"><span class="item-watts">600 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1200, 'Tostadora / Wanflera')"><span class="item-name">Tostadora / Wanflera</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+            <div style="overflow-y: auto; flex: 1; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+                
+                <!-- Acordeón 1: Climatización -->
+                <div class="corp-details">
+                    <div class="corp-details-summary" onclick="toggleAccordion('acc-clima')">
+                        Climatización <i class="fa-solid fa-chevron-down acc-icon-indicator" style="transition: transform 0.3s;"></i>
+                    </div>
+                    <div id="acc-clima" class="modal-list-container accordion-content" style="display: none; padding: 10px;">
+                        <div class="modal-list-item" onclick="selectOption(2200, 'Aire Acondicionado (3000f)')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Aire Acond. (3000f)</h4><small style="color:var(--ngc-text-faded);">2200 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(3500, 'Aire Acondicionado (4500f)')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Aire Acond. (4500f)</h4><small style="color:var(--ngc-text-faded);">3500 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(1500, 'Caloventor / Estufa Cuarzo')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Caloventor / Estufa</h4><small style="color:var(--ngc-text-faded);">1500 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(2000, 'Radiador Eléctrico')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Radiador Eléctrico</h4><small style="color:var(--ngc-text-faded);">2000 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Lavado y Baño -->
-                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-lavado')">
-                    Lavado y Baño <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div id="acc-lavado" class="accordion-content">
-                    <div class="opt-item-row" onclick="selectOption(800, 'Lavarropas Automático')"><span class="item-name">Lavarropas Automático</span><div class="item-right"><span class="item-watts">800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(500, 'Secarropas Centrífugo')"><span class="item-name">Secarropas Centrífugo</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(2000, 'Secarropas por Calor')"><span class="item-name">Secarropas por Calor</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(2000, 'Termotanque Eléctrico')"><span class="item-name">Termotanque Eléctrico</span><div class="item-right"><span class="item-watts">2000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1800, 'Secador de Pelo')"><span class="item-name">Secador de Pelo</span><div class="item-right"><span class="item-watts">1800 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1000, 'Planchita de Pelo')"><span class="item-name">Planchita de Pelo</span><div class="item-right"><span class="item-watts">1000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-
-                <!-- Movilidad Eléctrica -->
-                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-movilidad')">
-                    Movilidad Eléctrica <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div id="acc-movilidad" class="accordion-content">
-                    <div class="opt-item-row" onclick="selectOption(150, 'Patineta Eléctrica (Carga)')"><span class="item-name">Patineta Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">150 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(500, 'Moto Eléctrica (Carga)')"><span class="item-name">Moto Eléctrica (Carga)</span><div class="item-right"><span class="item-watts">500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(2200, 'Vehículo Eléctrico (Carga Lenta)')"><span class="item-name">Vehículo Eléctrico (Lenta)</span><div class="item-right"><span class="item-watts">2200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(7000, 'Vehículo Eléctrico (Wallbox)')"><span class="item-name">Vehículo Eléctrico (Wallbox)</span><div class="item-right"><span class="item-watts">7000 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+                <!-- Acordeón 2: Cocina -->
+                <div class="corp-details">
+                    <div class="corp-details-summary" onclick="toggleAccordion('acc-cocina')">
+                        Cocina <i class="fa-solid fa-chevron-down acc-icon-indicator" style="transition: transform 0.3s;"></i>
+                    </div>
+                    <div id="acc-cocina" class="modal-list-container accordion-content" style="display: none; padding: 10px;">
+                        <div class="modal-list-item" onclick="selectOption(150, 'Heladera con Freezer')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Heladera c/ Freezer</h4><small style="color:var(--ngc-text-faded);">150 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(2000, 'Pava Eléctrica')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Pava Eléctrica</h4><small style="color:var(--ngc-text-faded);">2000 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(800, 'Microondas')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Microondas</h4><small style="color:var(--ngc-text-faded);">800 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Tecnología y Otros -->
-                <div class="opt-group accordion-header" onclick="toggleAccordion('acc-tecno')">
-                    Tecnología y Otros <i class="fa-solid fa-chevron-down"></i>
+                <!-- Acordeón 3: Lavado y Baño -->
+                <div class="corp-details">
+                    <div class="corp-details-summary" onclick="toggleAccordion('acc-lavado')">
+                        Lavado y Baño <i class="fa-solid fa-chevron-down acc-icon-indicator" style="transition: transform 0.3s;"></i>
+                    </div>
+                    <div id="acc-lavado" class="modal-list-container accordion-content" style="display: none; padding: 10px;">
+                        <div class="modal-list-item" onclick="selectOption(800, 'Lavarropas Automático')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Lavarropas Auto.</h4><small style="color:var(--ngc-text-faded);">800 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(2000, 'Termotanque Eléctrico')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Termotanque Eléc.</h4><small style="color:var(--ngc-text-faded);">2000 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <div id="acc-tecno" class="accordion-content">
-                    <div class="opt-item-row" onclick="selectOption(100, 'Televisor LED / Smart')"><span class="item-name">Televisor LED / Smart</span><div class="item-right"><span class="item-watts">100 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(300, 'Consola de Juegos (PS5/Xbox)')"><span class="item-name">Consola de Juegos</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(300, 'PC Escritorio (Gamer)')"><span class="item-name">PC Escritorio (Gamer)</span><div class="item-right"><span class="item-watts">300 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(45, 'Notebook')"><span class="item-name">Notebook</span><div class="item-right"><span class="item-watts">45 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(15, 'Cargador Rápido Móvil')"><span class="item-name">Cargador Rápido Móvil</span><div class="item-right"><span class="item-watts">15 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(10, 'Iluminación LED (x5 focos)')"><span class="item-name">Iluminación LED (x5)</span><div class="item-right"><span class="item-watts">10 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1500, 'Plancha de Ropa')"><span class="item-name">Plancha de Ropa</span><div class="item-right"><span class="item-watts">1500 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div class="opt-item-row" onclick="selectOption(1200, 'Aspiradora')"><span class="item-name">Aspiradora</span><div class="item-right"><span class="item-watts">1200 W</span><button class="btn-item-add"><i class="fa-solid fa-plus"></i></button></div></div>
+
+                <!-- Acordeón 4: Tecnología y Otros -->
+                <div class="corp-details">
+                    <div class="corp-details-summary" onclick="toggleAccordion('acc-tecno')">
+                        Tecnología y Otros <i class="fa-solid fa-chevron-down acc-icon-indicator" style="transition: transform 0.3s;"></i>
+                    </div>
+                    <div id="acc-tecno" class="modal-list-container accordion-content" style="display: none; padding: 10px;">
+                        <div class="modal-list-item" onclick="selectOption(100, 'Televisor LED / Smart')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">TV LED / Smart</h4><small style="color:var(--ngc-text-faded);">100 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(45, 'Notebook')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Notebook</h4><small style="color:var(--ngc-text-faded);">45 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(10, 'Iluminación LED (x5 focos)')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Iluminación LED (x5)</h4><small style="color:var(--ngc-text-faded);">10 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                        <div class="modal-list-item" onclick="selectOption(1500, 'Plancha de Ropa')">
+                            <div><h4 style="margin:0; font-size:0.9rem; color:var(--ngc-text-main);">Plancha de Ropa</h4><small style="color:var(--ngc-text-faded);">1500 W</small></div>
+                            <button class="corp-btn-icon" style="width:30px; height:30px; pointer-events: none;"><i class="fa-solid fa-plus corp-accent-color"></i></button>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
+    
 
     <!-- MODAL DE EXPLICACIÓN TÉCNICA -->
-    <div id="modal-recomendacion" class="modal-overlay oculto gpu-accel">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-microchip"></i> Detalle Técnico</h3>
-                <button class="btn-close-modal" onclick="cerrarModalRecomendacion()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="modal-body" style="padding: 22px;">
-                <p id="modal-reco-desc" style="color: var(--ngc-text-main); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <button class="btn-add" onclick="usarRecomendacion()" style="margin: 0;">
-                        <i class="fa-solid fa-check"></i> Usar Recomendación
-                    </button>
-                    <button class="btn-aparato-trigger-side" onclick="ingresoManual()" style="margin: 0; padding: 14px; min-height: auto;">
-                        <i class="fa-solid fa-sliders"></i> Ingreso Manual
-                    </button>
-                </div>
+    <div id="modal-recomendacion" class="modal-overlay oculto">
+        <div class="corp-modal-card">
+            <i class="fa-solid fa-microchip corp-modal-icon"></i>
+            <h3 id="modal-titulo" style="margin-bottom: 15px; color: var(--ngc-text-main); font-size: 1.1rem; text-align: center;">Detalle Técnico</h3>
+            <p id="modal-reco-desc" style="color: var(--ngc-text-faded); font-size: 0.9rem; line-height: 1.5; text-align: center; margin-bottom: 25px;"></p>
+            <div class="corp-modal-actions">
+                <button class="corp-btn success-btn" onclick="usarRecomendacion()">
+                    <i class="fa-solid fa-check"></i> Aplicar Recomendación
+                </button>
+                <button class="corp-btn" onclick="ingresoManual()">
+                    <i class="fa-solid fa-sliders"></i> Ingreso Manual
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="../js/global.js" defer></script>
-    <script src="script.js" defer></script>
+    <!-- MODAL DE INGRESO MANUAL -->
+<div id="modal-manual" class="modal-overlay oculto">
+    <div class="corp-modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-sliders corp-accent-color"></i> Configuración Manual</h3>
+            <button class="corp-btn-icon" style="width: 35px; height: 35px;" onclick="cerrarModalManual()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="row-group">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <label style="margin: 0;"><i class="fa-regular fa-clock"></i> Uso Diario</label>
+                <span id="horas-val" style="font-weight: bold; color: var(--ngc-neon);">4 hs</span>
+            </div>
+            <input type="range" id="horas" class="corp-range" min="1" max="24" value="4">
+        </div>
+
+        <div class="row-group" style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <label style="margin: 0;"><i class="fa-regular fa-calendar-days"></i> Días a la semana</label>
+                <span id="dias-val" style="font-weight: bold; color: var(--ngc-neon);">7 días</span>
+            </div>
+            <input type="range" id="dias" class="corp-range" min="1" max="7" value="7">
+        </div>
+
+        <button id="btn-agregar-lista" class="corp-btn corp-btn-large success-btn" style="margin-top: 25px;" onclick="agregarItem()">
+            <i class="fa-solid fa-plus"></i> Añadir a la factura
+        </button>
+    </div>
+</div>
     
+    
+    <script src="../global.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
-    </html>
+</html>
