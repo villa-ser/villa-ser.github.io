@@ -37,34 +37,19 @@
     
     <link rel="icon" type="image/png" href="../img/perfil-logo.avif">
     
-    <!-- Script de ejecución inmediata para el tema (Evita el parpadeo visual) -->
     <script>
-        (function() {
-            const TIEMPO_CADUCIDAD = 30 * 60 * 1000;
-            const temaGuardado = localStorage.getItem('temaVillaser');
-            const tiempoGuardado = localStorage.getItem('temaVillaser_tiempo');
-            const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-            let temaFinal = 'dark';
-
-            if (temaGuardado && tiempoGuardado) {
-                const tiempoPasado = Date.now() - parseInt(tiempoGuardado);
-                if (tiempoPasado <= TIEMPO_CADUCIDAD) {
-                    temaFinal = temaGuardado; 
-                } else {
-                    temaFinal = prefiereClaro ? 'light' : 'dark';
-                }
-            } else if (prefiereClaro) {
-                temaFinal = 'light';
-            }
-
-            if (temaFinal === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-            }
-        })();
+    (function() {
+        const temaGuardado = localStorage.getItem('temaVillaser');
+        const prefiereClaro = window.matchMedia('(prefers-color-scheme: light)').matches;
+        
+        if (temaGuardado === 'light' || (!temaGuardado && prefiereClaro)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    })();
     </script>
+    
     
     <!-- Librerías -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
@@ -74,184 +59,198 @@
     <link rel="stylesheet" href="../css/global.css">
     
     <!-- CSS 100% INDEPENDIENTE DE ESTA CARPETA -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 
-<body>
-    <!-- CONTROLES FLOTANTES SUPERIORES -->
-    <a href="../index.html" class="btn-flotante-accion gpu-accel" id="btn-ir-menu" onclick="sessionStorage.setItem('abrirMenu', 'true');" aria-label="Volver al Inicio">
-        <i data-lucide="home"></i>
-    </a>
-
-    <div class="menu-flotante-container">
-        <button id="btn-menu-flotante" class="btn-flotante-accion btn-explorar gpu-accel" aria-label="Secciones">
-            <i class="fas fa-bars"></i> <span>Explorar</span>
+  <body>
+    <!-- NAV SUPERIOR (Estilo App Equilibrado) -->
+<div class="corp-top-nav" style="position: absolute; top: 15px; left: 15px; right: 15px; width: auto; z-index: 990; display: flex; justify-content: space-between; align-items: center;">
+    
+    <!-- IZQUIERDA: Controles -->
+    <div style="display: flex; gap: 10px;">
+        <a href="../index.html" class="corp-btn-icon" aria-label="Volver al Inicio">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <button onclick="toggleTema()" class="corp-btn-icon" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon icono-tema-global"></i>
         </button>
-        <div id="dropdown-flotante" class="dropdown-flotante-content oculto gpu-accel">
-            <a href="../servicios/index.html"><i class="fa-solid fa-bolt"></i> Mis Servicios</a>
-            <a href="../buscadorinteligente/index.html"><i class="fa-solid fa-tags"></i> Ver Precios</a>
-            <a href="../calculadora/index.html"><i class="fa-solid fa-calculator"></i> Calculadora</a>
-            <a href="../tips/index.html"><i class="fa-solid fa-lightbulb"></i> Tip's</a>
-            <a href="../perfil/index.html"><i class="fa-solid fa-user-tie"></i> Perfil/CV</a>
-            <a href="../historia/index.html"><i class="fa-solid fa-book-open"></i> Historia</a>
-            <a href="../webs/index.html"><i class="fa-solid fa-globe"></i> Web's</a>
-        </div>
+    </div>
+    
+    <!-- CENTRO: Logo -->
+    <div style="background: var(--ngc-glass); border-radius: 8px; padding: 5px 10px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <img src="../img/logo.avif" alt="Villaser" style="height: 25px;" class="logo-oscuro">
+        <img src="../img/logoclaro.avif" alt="Villaser" style="height: 25px; display: none;" class="logo-claro">
     </div>
 
-    <!-- Llave 3D Minimalista (Tema) posicionada a la izquierda del logo -->
-    <button id="btn-tema-servicios" class="switch-plate switch-servicios gpu-accel" aria-label="Cambiar tema día/noche">
-        <div class="switch-rocker"></div>
+    <!-- DERECHA: Menú Hamburguesa -->
+    <button onclick="toggleMenuApp()" class="corp-btn-icon primary-action" aria-label="Abrir Menú">
+        <i class="fa-solid fa-bars"></i>
     </button>
+</div>
 
-    <!-- 2. Logo Flotante Superior (Transición por CSS) -->
-        <div class="hero-logo-icon" aria-label="Logo Villaser">
-        <img src="../img/logo.avif" alt="Villaser Logo" class="logo-oscuro">
-        <img src="../img/logoclaro.avif" alt="Villaser Logo" class="logo-claro">
+<!-- MENÚ OVERLAY CORREDIZO -->
+<div id="app-menu-overlay">
+    
+    <!-- Botón Cerrar -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 30px; margin-top: 10px;">
+        <button onclick="toggleMenuApp()" class="corp-btn-icon" style="background: var(--error-red); color: white; border: none;" aria-label="Cerrar menú">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
+    
+    <!-- Botones de Navegación Directa -->
+    <div style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-bottom: 20px;">
+        <span style="color: var(--ngc-text-faded); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Navegación Rápida</span>
+        
+        <a href="../index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-house" style="width: 30px;"></i> Inicio</a>
+        <a href="../servicios/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-bolt" style="width: 30px; color: var(--ngc-neon);"></i> Servicios</a>
+        <a href="../buscadorinteligente/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-tags" style="width: 30px; color: var(--success-green);"></i> Ver Precios</a>
+        <a href="../calculadora/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-calculator" style="width: 30px; color: var(--ngc-warning);"></i> Calculadora</a>
+        <a href="../tips/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-lightbulb" style="width: 30px; color: var(--ngc-neon);"></i> Tip's de Seguridad</a>
+        <a href="../perfil/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-user-tie" style="width: 30px;"></i> Perfil y CV</a>
+        <a href="../historia/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-book-open" style="width: 30px;"></i> Historia Ley 10.281</a>
+        <a href="../webs/index.html" class="corp-btn corp-btn-large" style="justify-content: flex-start;"><i class="fa-solid fa-globe" style="width: 30px;"></i> Webs de Interés</a>
+    </div>
+</div>
+      
+      
 
-    <main class="ngc-wrapper">
-        <div class="layout-desktop">
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="layout-wrapper" style="padding-top: 80px;">
+        <div class="container" style="gap: 20px;">
             
-            <!-- ========================================== -->
-            <!-- COLUMNA IZQUIERDA (Fija en PC)             -->
-            <!-- ========================================== -->
-            <div class="col-izquierda">
+            <!-- TARJETA INTRODUCTORIA -->
+            <div class="corp-card fade-in-up">
+                <h1 class="corp-card-title" style="justify-content: center; font-size: 1.5rem; margin-bottom: 10px;">Tips de Seguridad</h1>
                 
-                <h1 class="ngc-main-title">Tips de Seguridad</h1>
-
-                <!-- BANNER INFORMATIVO -->
-                <div class="ngc-banner-tips gpu-accel">
-                    <span style="color: var(--success-green); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 5px;">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <span style="color: var(--success-green); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; background: rgba(49, 162, 76, 0.1); padding: 5px 10px; border-radius: 20px;">
                         <i class="fa-solid fa-shield-halved"></i> Prevención Activa
                     </span>
-                    <span>La prevención es la mejor herramienta. Un sistema eléctrico saludable protege tu patrimonio y a tu familia.</span>
                 </div>
+                
+                <p style="text-align: center; font-size: 0.95rem; color: var(--ngc-text-main); margin-bottom: 0; line-height: 1.6;">
+                    La prevención es la mejor herramienta. Un sistema eléctrico saludable protege tu patrimonio y a tu familia.
+                </p>
+            </div>
 
-                <!-- CTA COMERCIAL -->
-                <div class="ngc-tips-cta gpu-accel">
-                    <h3>¿Detectaste alguna anomalía?</h3>
-                    <p>No esperes a que se convierta en un riesgo mayor para tu hogar.</p>
-                    <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20leyendo%20los%20tips%20y%20necesito%20una%20revisión%20técnica." target="_blank" class="btn-cta-wa">
-                        <i class="fab fa-whatsapp"></i> Solicitar Revisión
-                    </a>
+            <!-- ETIQUETA SEPARADORA -->
+            <div class="fade-in-up" style="margin-top: 10px;">
+                <span style="font-size: 0.85rem; color: var(--ngc-text-faded); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Uso Diario y Seguridad</span>
+            </div>
+
+            <!-- TIP 1 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-neon);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(35, 116, 225, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-neon);">
+                        <i data-lucide="shield-alert" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">El Test del Diferencial</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    Presioná el botón de <b>"TEST"</b> en tu Interruptor Diferencial al menos una vez al mes. Si no corta la luz de forma inmediata, debe cambiarse de urgencia.
+                </p>
+            </div>
+
+            <!-- TIP 2 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--error-red);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(228, 30, 63, 0.1); display: flex; justify-content: center; align-items: center; color: var(--error-red);">
+                        <i data-lucide="zap-off" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Evitá los Adaptadores</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    No sobrecargues los tomacorrientes con triples precarios. Generan <b>puntos calientes por resistencia</b> que pueden derivar en incendios estructurales.
+                </p>
+            </div>
+
+            <!-- TIP 3 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--success-green);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(49, 162, 76, 0.1); display: flex; justify-content: center; align-items: center; color: var(--success-green);">
+                        <i data-lucide="thermometer-snowflake" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Climatización Segura</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    Los aires acondicionados exigen un <b>circuito eléctrico exclusivo</b>. Jamás los conectes a un toma común compartido o con alargue.
+                </p>
+            </div>
+
+            <!-- TIP 4 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-warning);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(245, 195, 59, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-warning);">
+                        <i data-lucide="ghost" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">El Consumo Vampiro</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    Los aparatos en <i>standby</i> (luz testigo encendida) <b>consumen energía silenciosamente</b> las 24 horas. Desenchufalos si no los usás.
+                </p>
+            </div>
+
+            <!-- ETIQUETA SEPARADORA -->
+            <div class="fade-in-up" style="margin-top: 15px;">
+                <span style="font-size: 0.85rem; color: var(--ngc-text-faded); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Mantenimiento Preventivo</span>
+            </div>
+
+            <!-- TIP 5 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--error-red);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(228, 30, 63, 0.1); display: flex; justify-content: center; align-items: center; color: var(--error-red);">
+                        <i data-lucide="eye" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Ruidos, Chispas y Olores</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    Si escuchás un leve zumbido o <b>chisporroteo</b> al encender una luz, o percibís olor a plástico tibio, interrumpí la energía del sector de inmediato.
+                </p>
+            </div>
+
+            <!-- TIP 6 -->
+            <div class="corp-card fade-in-up" style="padding: 25px 20px; border-left: 4px solid var(--ngc-neon);">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(35, 116, 225, 0.1); display: flex; justify-content: center; align-items: center; color: var(--ngc-neon);">
+                        <i data-lucide="search-check" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--ngc-text-main);">Antigüedad de la Red</h3>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--ngc-text-faded); line-height: 1.6; margin: 0;">
+                    En viviendas con más de 15 años, los aislamientos de los cables suelen resecarse. Es vital realizar una <b>inspección técnica profesional</b>.
+                </p>
+            </div>
+
+            <!-- CTA COMERCIAL (RECOMPENSA FINAL) -->
+            <div class="corp-card fade-in-up" style="margin-top: 15px; padding: 25px 20px; background: linear-gradient(135deg, var(--ngc-glass), rgba(49, 162, 76, 0.05)); border: 1px solid var(--success-green);">
+                <h3 class="corp-card-title" style="justify-content: center;"><i class="fa-solid fa-user-shield" style="color: var(--success-green);"></i> ¿Detectaste alguna anomalía?</h3>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--ngc-text-faded); margin-bottom: 20px;">
+                    No esperes a que se convierta en un riesgo mayor para tu hogar.
+                </p>
+                <a href="https://wa.me/543513559347?text=Hola%20Sergio,%20estuve%20leyendo%20los%20tips%20y%20necesito%20una%20revisión%20técnica." target="_blank" class="corp-btn corp-btn-large success-btn">
+                    <i class="fab fa-whatsapp"></i> Solicitar Revisión Técnica
+                </a>
+            </div>
+
+            <!-- FOOTER CORPORATIVO -->
+            <div class="corp-card fade-in-up" style="margin-top: auto; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; justify-content: center; gap: 15px; width: 100%;">
+                    <a href="mailto:contacto@villaser.com.ar" class="corp-btn-icon" aria-label="Enviar correo"><i class="far fa-envelope"></i></a>
+                    <a href="https://instagram.com/villaserelectricista" target="_blank" class="corp-btn-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="corp-btn-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <button type="button" onclick="compartirWeb()" class="corp-btn-icon" aria-label="Compartir página"><i class="fa-solid fa-share-nodes"></i></button>
+                    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="corp-btn-icon success" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--ngc-text-faded); text-align: center;">
+                    &copy; 2026 Villaser. Diseñado por <span style="color: var(--ngc-neon); font-weight: bold;">Sergio Villagra</span>
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- COLUMNA DERECHA (Tips Scrolleables)        -->
-            <!-- ========================================== -->
-            <div class="col-derecha">
-                
-                <div class="ngc-section-label">Uso Diario y Seguridad</div>
-
-                <!-- ACORDEONES CON NAME PARA AUTO-CIERRE -->
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="shield-alert"></i></div>
-                            <span>El Test del Diferencial</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>Presioná el botón de <b>"TEST"</b> en tu Interruptor Diferencial al menos una vez al mes. Si no corta la luz de forma inmediata, debe cambiarse de urgencia.</p>
-                    </div>
-                </details>
-
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="zap-off"></i></div>
-                            <span>Evitá los "Triples" y Adaptadores</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>No sobrecargues los tomacorrientes con adaptadores precarios. Generan <b>puntos calientes por resistencia</b> que pueden derivar en incendios estructurales.</p>
-                    </div>
-                </details>
-
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="thermometer-snowflake"></i></div>
-                            <span>Climatización Segura (AA)</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>Los aires acondicionados de gran potencia exigen un <b>circuito eléctrico exclusivo</b>. Jamás los conectes a un toma común compartido o con alargue.</p>
-                    </div>
-                </details>
-                
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="ghost"></i></div>
-                            <span>El "Consumo Vampiro"</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>Los aparatos en modo <i>standby</i> (con la pequeña luz testigo encendida) <b>siguen consumiendo energía silenciosamente</b> las 24 horas. Desenchufalos si no los usás.</p>
-                    </div>
-                </details>
-
-                <div class="ngc-section-label" style="margin-top: 15px;">Mantenimiento Preventivo</div>
-
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="eye"></i></div>
-                            <span>Ruidos, Chispas y Olores</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>Si escuchás un leve zumbido o <b>chisporroteo</b> al encender una luz, o percibís olor a plástico tibio, interrumpí la energía del sector y llamá a un técnico.</p>
-                    </div>
-                </details>
-
-                <details name="consejo" class="gpu-accel">
-                    <summary>
-                        <div class="summary-title">
-                            <div class="icon-box"><i data-lucide="search-check"></i></div>
-                            <span>Antigüedad de la Instalación</span>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron"></i>
-                    </summary>
-                    <div class="ngc-content">
-                        <p>En viviendas con más de 15 años, los aislamientos de los cables suelen resecarse y agrietarse. Realizá una <b>inspección técnica profesional</b> preventiva.</p>
-                    </div>
-                </details>
-            </div>
         </div>
-        <!-- FOOTER Y CRÉDITOS -->
-<div class="footer-gnc-compact gpu-accel">
-    <a href="mailto:contacto@villaser.com.ar" class="btn-social" aria-label="Enviar correo electrónico">
-        <i class="far fa-envelope"></i> <span class="social-text">contacto@villaser.com.ar</span>
-    </a>
-    <a href="https://instagram.com/villaserelectricista" target="_blank" class="btn-social" aria-label="Visitar perfil de Instagram">
-        <i class="fab fa-instagram"></i> <span class="social-text">@villaserelectricista</span>
-    </a>
-    <a href="https://www.facebook.com/profile.php?id=100087189438289" target="_blank" class="btn-social" aria-label="Visitar página de Facebook">
-        <i class="fab fa-facebook-f"></i> <span class="social-text">Villaser Electricista</span>
-    </a>
-    <button type="button" onclick="compartirWeb()" class="btn-social btn-share" aria-label="Compartir esta página web">
-         <i class="fa-solid fa-share-nodes"></i> <span class="social-text">Compartir</span>
-    </button>
-    <a href="https://wa.me/543513559347?text=Hola,%20necesito%20asesoramiento" target="_blank" class="btn-social whatsapp-pulse" aria-label="Enviar mensaje por WhatsApp">
-        <i class="fab fa-whatsapp"></i> <span class="social-text">+54 9 351 355-9347</span>
-    </a>
-</div>
-
-<div class="ngc-site-credits">
-    &copy; 2026 Villaser. Diseñado por <span>Sergio Villagra</span>.
-</div>
     </main>
 
-    <script src="../js/global.js" defer></script>
+    <script src="../global.js" defer></script>
     <script src="script.js" defer></script>
-</body>
-        </html>
-        
+  </body>
+</html>
